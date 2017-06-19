@@ -1,0 +1,1 @@
+add_pyclif_library("kadi-utils" kaldi-utils.clif)

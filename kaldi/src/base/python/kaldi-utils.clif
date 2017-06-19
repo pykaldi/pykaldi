@@ -1,0 +1,3 @@
+from "pykaldi/kaldi/src/base/kaldi-utils.h":
+	namespace `kaldi`:
+		def Sleep(seconds: float)
