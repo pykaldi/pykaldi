@@ -43,7 +43,7 @@ setuptools.setup(
     install_requires=['enum34;python_version<"3.4"'],
     ext_modules=[
         setuptools.Extension(
-            'kaldi-utils', [
+            'pykaldi', [
                 # CLIF-generated sources
                 'kaldi/src/base/python/kaldi-utils.cc',
                 'kaldi/src/base/python/kaldi-utils_init.cc',
@@ -57,9 +57,8 @@ setuptools.setup(
                 user_home + '/opt',
                 ],
             extra_compile_args=['-std=c++11'],
-            library_dirs=['./'],
-            libraries=[''],
-            extra_objects=[],
-            ),
+         ),
         ],
+    # Since another file will require this, make header available
+    data_files=[(user_home + '/home/victor/pykaldi/kaldi/src/base/python/', ['kaldi/src/base/python/kaldi-utils.h'])],
     )
