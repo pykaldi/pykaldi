@@ -28,7 +28,7 @@
 #endif
 
 #include <string>
-// #include "base/kaldi-common.h"
+#include "base/kaldi-common.h"
 
 
 namespace kaldi {
