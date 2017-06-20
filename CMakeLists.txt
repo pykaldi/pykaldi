@@ -27,7 +27,7 @@ function(add_pyclif_library name pyclif_file)
         BYPRODUCTS ${gen_cc} ${gen_h} ${gen_init}
         COMMAND
             ${PYCLIF}
-            -p${CLIF_INSTALL_DIR}/python/types.h
+            # -p${CLIF_INSTALL_DIR}/python/types.h
             --matcher_bin=${CLIF_INSTALL_DIR}/clang/bin/clif-matcher
             -c${gen_cc} -g${gen_h} -i${gen_init}
             --modname=${module_name}
