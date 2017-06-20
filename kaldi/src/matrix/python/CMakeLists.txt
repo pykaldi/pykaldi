@@ -1,1 +1,1 @@
-add_pyclif_library("kaldi-vector" kaldi-vector.clif)
+add_pyclif_library("kaldi_vector" kaldi-vector.clif)

@@ -43,7 +43,7 @@ setuptools.setup(
     install_requires=['enum34;python_version<"3.4"'],
     ext_modules=[
         setuptools.Extension(
-            'pykaldi', [
+            'kaldi_vector', [
                 # CLIF-generated sources
                 'kaldi/src/matrix/python/kaldi-vector.cc',
                 'kaldi/src/matrix/python/kaldi-vector_init.cc',
@@ -55,8 +55,14 @@ setuptools.setup(
             include_dirs=[
                 # Path to clif runtime headers and example cc lib headers
                 user_home + '/opt',
-                user_home + '/pykaldi/kaldi/src/'
-                ],
+                user_home + '/pykaldi/kaldi/src/',
+                user_home + '/pykaldi/kaldi/tools/openfst/include',
+                user_home + '/pykaldi/kaldi/tools/ATLAS/include'
+	     ],
+	    library_dirs = [
+		'/saildisk/tools/kaldi/src/lib/',
+	    ],
+	    libraries = ['kaldi-matrix', 'kaldi-base'],
             extra_compile_args=['-std=c++11'],
          ),
         ],

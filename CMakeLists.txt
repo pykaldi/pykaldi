@@ -31,7 +31,7 @@ function(add_pyclif_library name pyclif_file)
             --matcher_bin=${CLIF_INSTALL_DIR}/clang/bin/clif-matcher
             -c${gen_cc} -g${gen_h} -i${gen_init}
             --modname=${module_name}
-            "-f-I${PYTHON_INCLUDE_DIRS} -I/usr/include/c++/tr1/ -I${CLIF_INSTALL_DIR}/.. -std=c++11 ${PYCLIF_LIBRARY_CXX_FLAGS} ${CMAKE_CXX_FLAGS}"
+            "-f-I${PYTHON_INCLUDE_DIRS} -I${CLIF_INSTALL_DIR}/.. -std=c++11 ${PYCLIF_LIBRARY_CXX_FLAGS} ${CMAKE_CXX_FLAGS}"
             ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
         VERBATIM
         DEPENDS ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}
