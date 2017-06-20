@@ -27,11 +27,11 @@ function(add_pyclif_library name pyclif_file)
         BYPRODUCTS ${gen_cc} ${gen_h} ${gen_init}
         COMMAND
             ${PYCLIF}
-            --matcher_bin=/home/victor/clif_backend/build_matcher/bin/clif-matcher
+            -p${CLIF_INSTALL_DIR}/python/types.h
+            --matcher_bin=${CLIF_INSTALL_DIR}/clang/bin/clif-matcher
             -c${gen_cc} -g${gen_h} -i${gen_init}
-            -I"/home/victor/opt"
             --modname=${module_name}
-            "-f-I/usr/include/python2.7 -I/usr/include/c++/tr1/ -I/home/victor/opt/clif -I/home/victor/opt -std=c++11"
+            "-f-I${PYTHON_INCLUDE_DIRS} -I/usr/include/c++/tr1/ -I${CLIF_INSTALL_DIR}/.. -std=c++11 ${PYCLIF_LIBRARY_CXX_FLAGS}"
             ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
         VERBATIM
         DEPENDS ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}
@@ -39,5 +39,5 @@ function(add_pyclif_library name pyclif_file)
 endfunction(add_pyclif_library)
 
 
-include_directories("/home/victor/opt/")
+include_directories(${CLIF_INSTALL_DIR}/..)
 add_subdirectory("kaldi")
