@@ -5,11 +5,11 @@ from "/home/victor/pykaldi/kaldi/src/base/kaldi-math.h":
 			seed: int
 			def __init__(self)
 
-		def Rand(state: RandomState) -> int 
-		def RandInt(first: int, last: int, state: RandomState) -> int 
-		def WithProb(prob: float, state: RandomState) -> bool
-		def RandUniform(state: RandomState) -> float 
-		def RandGauss(state: RandomState) -> float 
-		def RandPoisson(lambda: floar, state: RandomState) -> int 
+		# def Rand(state: RandomState) -> int 
+		# def RandInt(first: int, last: int, state: RandomState) -> int 
+		# def WithProb(prob: float, state: RandomState) -> bool
+		# def RandUniform(state: RandomState) -> float 
+		# def RandGauss(state: RandomState) -> float 
+		# def RandPoisson(lambda: float, state: RandomState) -> int 
 
 		#TODO: RandPrune, RandGauss2 

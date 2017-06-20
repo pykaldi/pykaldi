@@ -45,8 +45,8 @@ setuptools.setup(
         setuptools.Extension(
             'pykaldi', [
                 # CLIF-generated sources
-                'kaldi/src/base/python/kaldi-utils.cc',
-                'kaldi/src/base/python/kaldi-utils_init.cc',
+                'kaldi/src/base/python/kaldi-math.cc',
+                'kaldi/src/base/python/kaldi-math_init.cc',
                 # 'clif_runtime',
                 user_home + '/opt/clif/python/runtime.cc',
                 user_home + '/opt/clif/python/slots.cc',
@@ -55,6 +55,7 @@ setuptools.setup(
             include_dirs=[
                 # Path to clif runtime headers and example cc lib headers
                 user_home + '/opt',
+                user_home + '/pykaldi/kaldi/src/base/'
                 ],
             extra_compile_args=['-std=c++11'],
          ),
