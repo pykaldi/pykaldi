@@ -22,6 +22,11 @@ A native-code wrapper for Kaldi in python.
     
 # Build instructions
 ```
-	cmake -DPYCLIF=~/opt/clif/bin/pyclif -DCMAKE_CXX_FLAGS="" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+	#Activate clif virtualenv
+	source opt/clif/bin/activate
+	
+	# Change directory and configure
+	cd pykaldi
+	cmake -DPYCLIF=~/opt/clif/bin/pyclif -DCMAKE_CXX_FLAGS="-I/home/victor/clif_backend/build_matcher/lib/clang/5.0.0/include -I/home/victor/Workspace/pykaldi/kaldi/src -I/home/victor/Workspace/kaldi/tools/openfst/include -I/home/victor/Workspace/kaldi/tools/ATLAS/include -std=c++11" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 	make kaldi-vector
 ```
