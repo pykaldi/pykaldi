@@ -1,4 +1,0 @@
-from "/home/victor/pykaldi/kaldi/src/base/kaldi-math.h":
-	namespace `kaldi`:
-		def `Exp` as ExpDouble(x: double) -> double
-		def `Exp` as ExpFloat(x: float) -> float

@@ -1,1 +1,0 @@
-add_pyclif_library("kaldi-math" kaldi-math.clif)

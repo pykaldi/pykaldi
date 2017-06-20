@@ -38,15 +38,15 @@ setuptools.setup(
     version='0.0.1',
     description='Kaldi Python Wrapper',
     url='https://github.com/usc-sail/pykaldi',
-    author='VRMP',
-    author_email='victorrm@usc.edu',
+    author='SAIL',
+    author_email='',
     install_requires=['enum34;python_version<"3.4"'],
     ext_modules=[
         setuptools.Extension(
             'pykaldi', [
                 # CLIF-generated sources
-                'kaldi/src/base/python/kaldi-math.cc',
-                'kaldi/src/base/python/kaldi-math_init.cc',
+                'kaldi/src/matrix/python/kaldi-vector.cc',
+                'kaldi/src/matrix/python/kaldi-vector_init.cc',
                 # 'clif_runtime',
                 user_home + '/opt/clif/python/runtime.cc',
                 user_home + '/opt/clif/python/slots.cc',
@@ -55,11 +55,11 @@ setuptools.setup(
             include_dirs=[
                 # Path to clif runtime headers and example cc lib headers
                 user_home + '/opt',
-                user_home + '/pykaldi/kaldi/src/base/'
+                user_home + '/pykaldi/kaldi/src/'
                 ],
             extra_compile_args=['-std=c++11'],
          ),
         ],
     # Since another file will require this, make header available
-    data_files=[(user_home + '/home/victor/pykaldi/kaldi/src/base/python/', ['kaldi/src/base/python/kaldi-utils.h'])],
+    data_files=[(user_home + '/home/victor/pykaldi/kaldi/src/matrix/python/', ['kaldi/src/matrix/python/kaldi-vector.h'])],
     )

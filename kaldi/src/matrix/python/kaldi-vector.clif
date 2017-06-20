@@ -1,0 +1,5 @@
+from "/home/victor/Workspace/pykaldi/kaldi/src/matrix/kaldi-vector.h":
+	namespace `kaldi`:
+		class `VectorBase<float>` as Vector:
+			def SetZero(self)
+			def IsZero(self) -> bool
