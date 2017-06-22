@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(DOUBLE_PRECISION 0)
+
 find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 
-############################################################################################################
-
+####################################################################################################
 if(NOT PYCLIF)
     find_program(PYCLIF pyclif)
     if(NOT PYCLIF)
@@ -22,8 +23,23 @@ set(kalditools "${KALDI_ROOT}/tools")
 set(ATLAS_ROOT_inc ${kalditools}/ATLAS/include)
 set(OPENFST_ROOT_inc ${kalditools}/openfst/include)
 
-############################################################################################################
+####################################################################################################
 
+add_compile_options(-I..)
+add_compile_options(-std=c++11)
+add_compile_options(-I${OPENFST_ROOT_inc})
+add_compile_options(-DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION})
+add_compile_options(-DHAVE_EXECINFO_H=1)
+add_compile_options(-DHAVE_CXXABI_H)
+add_compile_options(-DHAVE_ATLAS)
+add_compile_options(-I${ATLAS_ROOT_inc})
+add_compile_options(-msse -msse2 -pthread -g -O0)
+add_compile_options(-DKALDI_PARANOID)
+
+# If KALDI_FLAVOR dynamic
+add_compile_options(-fPIC)
+
+####################################################################################################
 # Function to set up rules to invoke pyclif on a .clif file and generate the wrapper .cc and .h files
 function(add_pyclif_library name pyclif_file)
     cmake_parse_arguments(PYCLIF_LIBRARY "" "" "CC_DEPS;CLIF_DEPS;CXX_FLAGS" ${ARGN})
@@ -46,10 +62,7 @@ function(add_pyclif_library name pyclif_file)
             "-f-I${PYTHON_INCLUDE_DIRS} \
                -I${CLIF_INSTALL_DIR}/.. \
                -I${kaldisrc} \
-               -I${ATLAS_ROOT_inc} \
-               -I${OPENFST_ROOT_inc} \
-               -std=c++11 \
-               ${PYCLIF_LIBRARY_CXX_FLAGS} ${CMAKE_CXX_FLAGS}"
+                 ${CMAKE_CXX_FLAGS}"
             ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
         VERBATIM
         DEPENDS ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}

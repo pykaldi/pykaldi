@@ -32,7 +32,7 @@ if py_version < ('2', '7') or py_version[0] == '3' and py_version < ('3', '4'):
   raise RuntimeError('Python version 2.7 or 3.4+ required')
 
 user_home = os.getenv('HOME')
-
+  
 setuptools.setup(
     name='pykaldi',
     version='0.0.1',
@@ -52,17 +52,17 @@ setuptools.setup(
                 user_home + '/opt/clif/python/slots.cc',
                 user_home + '/opt/clif/python/types.cc',
                 ],
-            include_dirs=[
+            #include_dirs=[
                 # Path to clif runtime headers and example cc lib headers
-                user_home + '/opt',
-                user_home + '/pykaldi/kaldi/src/',
-                user_home + '/pykaldi/kaldi/tools/openfst/include',
-                user_home + '/pykaldi/kaldi/tools/ATLAS/include'
-	     ],
-	    library_dirs = [
-		'/saildisk/tools/kaldi/src/lib/',
-	    ],
-	    libraries = ['kaldi-matrix', 'kaldi-base'],
+            #    user_home + '/opt',
+            #    user_home + '/pykaldi/kaldi/src/',
+            #    user_home + '/pykaldi/kaldi/tools/openfst/include',
+            #    user_home + '/pykaldi/kaldi/tools/ATLAS/include'
+	    # ],
+	    #library_dirs = [
+	#	'/saildisk/tools/kaldi/src/lib/',
+	 #   ],
+	  #  libraries = ['kaldi-matrix', 'kaldi-base'],
             extra_compile_args=['-std=c++11'],
          ),
         ],
