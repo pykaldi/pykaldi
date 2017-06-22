@@ -1,42 +1,9 @@
 from "matrix/kaldi-vector.h":
 	namespace `kaldi`:
 		class `VectorBase<float>` as Vector:
-
 			def SetZero(self)
 			def IsZero(self) -> bool
 
 			def SetRandn(self)
 			def SetRandUniform(self)
 			def RandCategorical(self) -> `MatrixIndexT` as int
-
-			def Dim(self) -> `MatrixIndexT` as int
-			def SizeInBytes(self) -> `MatrixIndexT` as int
-			def Data(self) -> Real*
-
-			# def operator() (self, i:`MatrixIndexT` as int) ??
-			# def Range(self, o:`MatrixIndexT` as int, l:`MatrixIndexT` as int) -> SubVector<Real>
-
-			# def `CopyFromVec(VectorBase<float>)` as CopyFromVec(self, v:VectorBase<float>)
-			# def CopyFromPacked(self, M:PackedMatrix<float>)
-
-			def ApplyLog(self)
-			def ApplyLogAndCopy(self, v:VectorBase<float>)
-			def ApplyExp(self)
-			def ApplyAbs(self)
-			def ApplyFloor(self, floor_val:float) -> `MatrixIndexT` as int
-			def ApplyCeiling(self, ceil_val:float) -> `MatrixIndexT` as int
-			def ApplyFloor(self, floor_vec:VectorBase<float>) -> `MatrixIndexT` as int
-			def ApplySoftMax(self) -> float
-			def ApplyLogSoftMax(self) -> float 
-
-			def Tanh(self, src:VectorBase<float>)
-			def Sigmoid(self, src:VectorBase<float>)
-			def ApplyPow(self, power:float)
-			def ApplyPowAbs(self, power:float, include_sign:bool)
-			def Norm(self, p:float) -> float 
-
-			def ApproxEqual(self, other:VectorBase<float>, tol:float) -> bool
-			
-			def InvertElements(self)
-
-			# AddVec, AddVec2, ...
