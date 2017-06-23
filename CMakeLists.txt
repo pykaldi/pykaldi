@@ -25,19 +25,19 @@ set(OPENFST_ROOT_inc ${kalditools}/openfst/include)
 
 ####################################################################################################
 
-add_compile_options(-I..)
-add_compile_options(-std=c++11)
-add_compile_options(-I${OPENFST_ROOT_inc})
-add_compile_options(-DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION})
-add_compile_options(-DHAVE_EXECINFO_H=1)
-add_compile_options(-DHAVE_CXXABI_H)
-add_compile_options(-DHAVE_ATLAS)
-add_compile_options(-I${ATLAS_ROOT_inc})
-add_compile_options(-msse -msse2 -pthread -g -O0)
-add_compile_options(-DKALDI_PARANOID)
+# add_compile_options(-I..)
+# add_compile_options(-std=c++11)
+# add_compile_options(-I${OPENFST_ROOT_inc})
+# add_compile_options(-DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION})
+# add_compile_options(-DHAVE_EXECINFO_H=1)
+# add_compile_options(-DHAVE_CXXABI_H)
+# add_compile_options(-DHAVE_ATLAS)
+# add_compile_options(-I${ATLAS_ROOT_inc})
+# add_compile_options(-msse -msse2 -pthread -g -O0)
+# add_compile_options(-DKALDI_PARANOID)
 
-# If KALDI_FLAVOR dynamic
-add_compile_options(-fPIC)
+# # If KALDI_FLAVOR dynamic
+# add_compile_options(-fPIC)
 
 ####################################################################################################
 # Function to set up rules to invoke pyclif on a .clif file and generate the wrapper .cc and .h files
@@ -57,11 +57,22 @@ function(add_pyclif_library name pyclif_file)
         COMMAND
             ${PYCLIF}
             --matcher_bin=${CLIF_INSTALL_DIR}/clang/bin/clif-matcher
-            --ccdeps_out ${gen_cc} --header_out ${gen_h} --cc_init_out ${gen_init}
+            --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
             --modname=${module_name}
             "-f-I${PYTHON_INCLUDE_DIRS} \
                -I${CLIF_INSTALL_DIR}/.. \
                -I${kaldisrc} \
+               -I.. \
+               -I${OPENFST_ROOT_inc} \
+               -DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION} \
+               -DHAVE_EXECINFO_H=1 \
+               -DHAVE_CXXABI_H \
+               -DHAVE_ATLAS \
+               -I${ATLAS_ROOT_inc} \
+               -msse -msse2 -pthread -g -O0 \
+               -DKALDI_PARANOID \
+               -fPIC \
+               -std=c++11 \
                  ${CMAKE_CXX_FLAGS}"
             ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
         VERBATIM

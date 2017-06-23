@@ -45,27 +45,27 @@ setuptools.setup(
         setuptools.Extension(
             'kaldi_vector', [
                 # CLIF-generated sources
-                'kaldi/src/matrix/python/kaldi-vector.cc',
-                'kaldi/src/matrix/python/kaldi-vector_init.cc',
+                'kaldi/src/matrix/kaldi-vector.cc',
+                'kaldi/src/matrix/kaldi-vector_init.cc',
                 # 'clif_runtime',
                 user_home + '/opt/clif/python/runtime.cc',
                 user_home + '/opt/clif/python/slots.cc',
                 user_home + '/opt/clif/python/types.cc',
                 ],
-            #include_dirs=[
+            include_dirs=[
                 # Path to clif runtime headers and example cc lib headers
-            #    user_home + '/opt',
-            #    user_home + '/pykaldi/kaldi/src/',
-            #    user_home + '/pykaldi/kaldi/tools/openfst/include',
-            #    user_home + '/pykaldi/kaldi/tools/ATLAS/include'
-	    # ],
-	    #library_dirs = [
-	#	'/saildisk/tools/kaldi/src/lib/',
-	 #   ],
-	  #  libraries = ['kaldi-matrix', 'kaldi-base'],
-            extra_compile_args=['-std=c++11'],
+                user_home + '/opt',
+                '/saildisk/tools/kaldi/src/',
+                '/saildisk/tools/kaldi/tools/openfst/include',
+                '/saildisk/tools/kaldi/tools/ATLAS/include'
+	     ],
+	    library_dirs = [
+		'/saildisk/tools/kaldi/src/lib/',
+	     ],
+	    libraries = ['kaldi-matrix', 'kaldi-base'],
+            extra_compile_args=['-std=c++11', '-DKALDI_DOUBLEPRECISION=0', '-DHAVE_EXECINFO_H=1', '-DHAVE_CXXABI_H', '-DHAVE_ATLAS', '-DKALDI_PARANOID'],
          ),
         ],
     # Since another file will require this, make header available
-    data_files=[(user_home + '/home/victor/pykaldi/kaldi/src/matrix/python/', ['kaldi/src/matrix/python/kaldi-vector.h'])],
+    #data_files=[(user_home + '/home/victor/pykaldi/kaldi/src/matrix/python/', ['kaldi/src/matrix/python/kaldi-vector.h'])],
     )
