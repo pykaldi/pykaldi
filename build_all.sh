@@ -3,8 +3,12 @@
 set -e 
 
 # Arguments
-$PYCLIF_DIR = $1
-$KALDI_DIR = $2
+if [ $# -neq 2 ] then
+	echo "Usage: ./build_all.sh PYCLIF_BIN KALDI_DIR"
+fi
+
+PYCLIF_BIN=$1
+KALDI_DIR=$2
 
 # 
 BASE_DIR=$(pwd)
@@ -15,7 +19,7 @@ BUILD_DIR="$BASE_DIR/build"
 
 mkdir -p build
 cd build
-cmake -DPYCLIF="$PYCLIF_DIR" \
+cmake -DPYCLIF="$PYCLIF_BIN" \
 	  -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
 	  -DKALDI_ROOT="$KALDI_DIR" \
 	  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \

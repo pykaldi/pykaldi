@@ -34,9 +34,56 @@ import os
 def check_env_flag(name):
 	return os.getenv(name) in ['ON', '1', 'YES', 'TRUE', 'Y']
 
+################################################################################
+# From: https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
+################################################################################
+def which(program):
+	def is_exe(fpath):
+		return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+	fpath, fname = os.path.split(program)
+	if fpath:
+		if is_exe(program):
+			return program
+	else:
+		for path in os.environ['PATH'].split(os.pathsep):
+			path = path.strip('"')
+			exe_file = os.path.join(path, program)
+			if is_exe(exe_file):
+				return exe_file
+	return None
+
+
+################################################################################
+# Check variables / find programs
+################################################################################
 DEBUG = check_env_flag('DEBUG')
-PYCLIF_DIR = os.getenv('PYCLIF')
-KALDI_DIR = os.getenv('KALDI')
+PYCLIF = which("pyclif")
+
+if not PYCLIF:
+	PYCLIF = os.getenv("PYCLIF")
+	if not PYCLIF:
+		print("We could not find PYCLIF. Try setting PYCLIF environment variable.")
+		sys.exit(1)
+		
+if "KALDI_DIR" not in os.environ:
+	# KALDI = which("kaldi")
+	# if not KALDI:
+	print("We could not find KALDI. Try setting KALDI_DIR environment variable.")
+	sys.exit(1)
+	# else:
+	# 	KALDI_DIR = os.path.join(KALDI, "..")
+
+cwd = os.path.dirname(os.path.abspath(__file__))
+opt = os.path.join(PYCLIF_BIN, "../../..")
+
+if DEBUG:
+	print("#"*25)
+	print("CWD: {}".format(cwd))
+	print("PYCLIF_BIN: {}".format(PYCLIF_BIN))
+	print("KALDI_DIR: {}".format(KALDI_DIR))
+	print("OPT_DIR: {}".format(opt))
+	print("CXX_FLAGS: {}".format(os.getenv("CXX_FLAGS")))
+	print("#"*25)
 
 ################################################################################
 # Workaround setuptools -Wstrict-prototypes warnings
@@ -61,93 +108,24 @@ class build_deps(Command):
 		pass
 
 	def run(self):
-		build_all_cmd = ['bash', 'build_all.sh', PYCLIF_DIR, KALDI_DIR]
+		build_all_cmd = ['bash', 'build_all.sh', PYCLIF_BIN, KALDI_DIR]
 		if subprocess.call(build_all_cmd) != 0:
 			sys.exit(1)
-
-class build_module(Command):
-	user_options = []
-
-	def initialize_options(self):
-		pass
-
-	def finalize_options(self):
-		pass
-
-	def run(self):
-		self.run_command('build_py')
-		self.run_command('build_ext')
-
-class develop(setuptools.command.develop.develop):
-
-	def run(self):
-		build_py.create_version_file()
-		setuptools.command.develop.develop.run(self)
-
-class build_ext(setuptools.command.build_ext.build_ext):
-
-	def run(self):
-		# It's an old-style class in Python 2.7...
-		setuptools.command.build_ext.build_ext.run(self)
-
-
-class build(distutils.command.build.build):
-	sub_commands = [
-		('build_deps', lambda self: True),
-	] + distutils.command.build.build.sub_commands
-
-
-class install(setuptools.command.install.install):
-
-	def run(self):
-		if not self.skip_build:
-			self.run_command('build_deps')
-		setuptools.command.install.install.run(self)
-
-
-class clean(distutils.command.clean.clean):
-
-	def run(self):
-		import glob
-		with open('.gitignore', 'r') as f:
-			ignores = f.read()
-			for wildcard in filter(bool, ignores.split('\n')):
-				for filename in glob.glob(wildcard):
-					try:
-						os.remove(filename)
-					except OSError:
-						shutil.rmtree(filename, ignore_errors=True)
-
-		# It's an old-style class in Python 2.7...
-		distutils.command.clean.clean.run(self)
 
 ################################################################################
 # Configure compile flags
 ################################################################################
-library_dirs = ['/saildisk/tools/kaldi/src/lib/']
-
-
-cwd = os.path.dirname(os.path.abspath(__file__))
+library_dirs = [os.path.join(KALDI_DIR, '/src/lib/')]
 
 include_dirs = [
 	cwd,
 	# Path to clif runtime headers and example cc lib headers
-	user_home + '/opt',
-	'/saildisk/tools/kaldi/src/',
-	'/saildisk/tools/kaldi/tools/openfst/include',
-	'/saildisk/tools/kaldi/tools/ATLAS/include'
+	opt,
+	os.path.join(KALDI_DIR, 'src/'),
+	os.path.join(KALDI_DIR, 'tools/openfst/include'),
+	os.path.join(KALDI_DIR, 'tools/ATLAS/include')
 ]
 
-main_compile_args = []
-main_libraries = ['kaldi-matrix', 'kaldi-base']
-main_link_args = []
-main_sources = [
-	'build/kaldi/matrix/kaldi-vector.cc',
-	'build/kaldi/matrix/kaldi-vector_init.cc',
-	user_home + '/opt/clif/python/runtime.cc',
-	user_home + '/opt/clif/python/slots.cc',
-	user_home + '/opt/clif/python/types.cc',
-]
 extra_compile_args = [
 	'-std=c++11',
 	'-Wno-write-strings', 
@@ -157,24 +135,38 @@ extra_compile_args = [
 	'-DHAVE_ATLAS', 
 	'-DKALDI_PARANOID'
 ]
+extra_link_args = []
+
+# Properties for matrix module
+matrix_compile_args = []
+matrix_libraries = ['kaldi-matrix', 'kaldi-base']
+matrix_link_args = []
+matrix_sources = [
+					'build/kaldi/matrix/kaldi-vector.cc',
+					'build/kaldi/matrix/kaldi-vector_init.cc',
+					os.path.join(opt, 'clif/python/runtime.cc'),
+					os.path.join(opt, 'clif/python/slots.cc'),
+					os.path.join(opt, 'clif/python/types.cc'),
+				 ]
+
 
 if DEBUG:
-    extra_compile_args += ['-O0', '-g']
-    extra_link_args += ['-O0', '-g']
-
+	extra_compile_args += ['-O0', '-g']
+	extra_link_args += ['-O0', '-g']
+	
 ################################################################################
 # Declare extensions and package
 ################################################################################
 extensions = []
 packages = find_packages()
-C = Extension("pykaldi._C",
-			  libraries = main_libraries,
-			  sources = main_sources,
+matrix = Extension("matrix",
+			  libraries = matrix_sources,
+			  sources = matrix_sources,
 			  language = 'c++',
-			  extra_compile_args = extra_compile_args,
+			  extra_compile_args = matrix_compile_args + extra_compile_args,
 			  include_dirs = include_dirs,
 			  library_dirs = library_dirs,
-			  extra_link_args = extra_link_args)
+			  extra_link_args = matrix_link_args + extra_link_args)
 extensions.append(C)
 
 setup(name = 'pykaldi',
@@ -183,15 +175,8 @@ setup(name = 'pykaldi',
 	  author='SAIL',
 	  ext_modules=extensions,
 	  cmdclass= {
-	  				'build': build,
-	  				'build_py': build_py,
-	  				'build_ext': build_ext,
-	  				'build_deps': build_deps,
-	  				'build_module': build_module,
-	  				'develop': develop,
-	  				'install': install,
-	  				'clean': clean
-		  		},
+					'build_deps': build_deps,
+				},
 	  packages=packages,
 	  package_data={},
 	  install_requires=['enum34;python_version<"3.4"'],
