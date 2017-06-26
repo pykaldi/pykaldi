@@ -45,8 +45,8 @@ setuptools.setup(
         setuptools.Extension(
             'kaldi_vector', [
                 # CLIF-generated sources
-                'kaldi/src/matrix/kaldi-vector.cc',
-                'kaldi/src/matrix/kaldi-vector_init.cc',
+                'build/kaldi/matrix/kaldi-vector.cc',
+                'build/kaldi/matrix/kaldi-vector_init.cc',
                 # 'clif_runtime',
                 user_home + '/opt/clif/python/runtime.cc',
                 user_home + '/opt/clif/python/slots.cc',
