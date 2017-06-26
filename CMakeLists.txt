@@ -20,7 +20,10 @@ endif(NOT PYCLIF)
 string(REGEX REPLACE "/bin/pyclif$" "" CLIF_INSTALL_DIR ${PYCLIF})
 
 if(NOT KALDI_ROOT)
-    message(FATAL_ERROR "You need to specify Kaldi path. Do it with -DKALDI_ROOT.")
+    find_program(KALDI_ROOT kaldi)
+    if(NOT KALDI_ROOT)
+      message(FATAL_ERROR "You need to specify Kaldi path. Do it with -DKALDI_ROOT.")
+    endif(NOT KALDI_ROOT)
 endif(NOT KALDI_ROOT)
 
 set(kaldisrc "${KALDI_ROOT}/src")
@@ -28,24 +31,10 @@ set(kalditools "${KALDI_ROOT}/tools")
 set(ATLAS_ROOT_inc ${kalditools}/ATLAS/include)
 set(OPENFST_ROOT_inc ${kalditools}/openfst/include)
 
-####################################################################################################
-
-# add_compile_options(-I..)
-# add_compile_options(-std=c++11)
-# add_compile_options(-I${OPENFST_ROOT_inc})
-# add_compile_options(-DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION})
-# add_compile_options(-DHAVE_EXECINFO_H=1)
-# add_compile_options(-DHAVE_CXXABI_H)
-# add_compile_options(-DHAVE_ATLAS)
-# add_compile_options(-I${ATLAS_ROOT_inc})
-# add_compile_options(-msse -msse2 -pthread -g -O0)
-# add_compile_options(-DKALDI_PARANOID)
-
-# # If KALDI_FLAVOR dynamic
-# add_compile_options(-fPIC)
 
 ####################################################################################################
 # Function to set up rules to invoke pyclif on a .clif file and generate the wrapper .cc and .h files
+####################################################################################################
 function(add_pyclif_library name pyclif_file)
     cmake_parse_arguments(PYCLIF_LIBRARY "" "" "CC_DEPS;CLIF_DEPS;CXX_FLAGS" ${ARGN})
 
@@ -57,7 +46,7 @@ function(add_pyclif_library name pyclif_file)
     string(REPLACE "-" "_" module_name ${pyclif_file_basename})
 
     add_custom_target(
-        ${name}
+        ${name} ALL
         BYPRODUCTS ${gen_cc} ${gen_h} ${gen_init}
         COMMAND
             ${PYCLIF}
