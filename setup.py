@@ -47,7 +47,7 @@ PYCLIF = which("pyclif")
 if not PYCLIF:
 	PYCLIF = os.getenv("PYCLIF")
 	if not PYCLIF:
-		print("We could not find PYCLIF. Try setting PYCLIF environment variable.")
+		print("We could not find PYCLIF. Forgot to activate venv?")
 		sys.exit(1)
 		
 if "KALDI_DIR" not in os.environ:
@@ -58,17 +58,19 @@ if "KALDI_DIR" not in os.environ:
 	# else:
 	# 	KALDI_DIR = os.path.join(KALDI, "..")
 
+KALDI_DIR = os.environ['KALDI_DIR']
+
 cwd = os.path.dirname(os.path.abspath(__file__))
-opt = os.path.join(PYCLIF_BIN, "../../..")
+opt = os.path.dirname(os.path.dirname(os.path.dirname(PYCLIF))) #equals PYCLIF/../..
 
 if DEBUG:
-	print("#"*25)
+	print("#"*50)
 	print("CWD: {}".format(cwd))
-	print("PYCLIF_BIN: {}".format(PYCLIF_BIN))
+	print("PYCLIF: {}".format(PYCLIF))
 	print("KALDI_DIR: {}".format(KALDI_DIR))
 	print("OPT_DIR: {}".format(opt))
 	print("CXX_FLAGS: {}".format(os.getenv("CXX_FLAGS")))
-	print("#"*25)
+	print("#"*50)
 
 ################################################################################
 # Workaround setuptools -Wstrict-prototypes warnings
@@ -93,14 +95,19 @@ class build_deps(Command):
 		pass
 
 	def run(self):
-		build_all_cmd = ['bash', 'build_all.sh', PYCLIF_BIN, KALDI_DIR]
+		build_all_cmd = ['bash', 'build_all.sh', KALDI_DIR, PYCLIF]
 		if subprocess.call(build_all_cmd) != 0:
 			sys.exit(1)
+
+class build_ext(setuptools.command.build_ext.build_ext):
+	def run(self):
+		self.run_command("build_deps")
+		return setuptools.command.build_ext.build_ext.run(self)
 
 ################################################################################
 # Configure compile flags
 ################################################################################
-library_dirs = [os.path.join(KALDI_DIR, '/src/lib/')]
+library_dirs = [os.path.join(KALDI_DIR, 'src/lib/')]
 
 include_dirs = [
 	cwd,
@@ -144,15 +151,15 @@ if DEBUG:
 ################################################################################
 extensions = []
 packages = find_packages()
-matrix = Extension("matrix",
-			  libraries = matrix_sources,
+matrix = Extension("kaldi_vector",
 			  sources = matrix_sources,
 			  language = 'c++',
 			  extra_compile_args = matrix_compile_args + extra_compile_args,
 			  include_dirs = include_dirs,
 			  library_dirs = library_dirs,
+			  libraries = matrix_libraries,
 			  extra_link_args = matrix_link_args + extra_link_args)
-extensions.append(C)
+extensions.append(matrix)
 
 setup(name = 'pykaldi',
 	  version = '0.0.1',
@@ -161,6 +168,7 @@ setup(name = 'pykaldi',
 	  ext_modules=extensions,
 	  cmdclass= {
 					'build_deps': build_deps,
+					'build_ext': build_ext
 				},
 	  packages=packages,
 	  package_data={},
