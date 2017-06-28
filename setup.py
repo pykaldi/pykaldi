@@ -14,28 +14,28 @@ import os
 
 
 ################################################################################
-# From: https://github.com/pytorch/pytorch/blob/master/tools/setup_helpers/env.py
+# https://github.com/pytorch/pytorch/blob/master/tools/setup_helpers/env.py
 ################################################################################
 def check_env_flag(name):
-	return os.getenv(name) in ['ON', '1', 'YES', 'TRUE', 'Y']
+    return os.getenv(name) in ['ON', '1', 'YES', 'TRUE', 'Y']
 
 ################################################################################
-# From: https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
+# https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
 ################################################################################
 def which(program):
-	def is_exe(fpath):
-		return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-	fpath, fname = os.path.split(program)
-	if fpath:
-		if is_exe(program):
-			return program
-	else:
-		for path in os.environ['PATH'].split(os.pathsep):
-			path = path.strip('"')
-			exe_file = os.path.join(path, program)
-			if is_exe(exe_file):
-				return exe_file
-	return None
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ['PATH'].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
 
 
 ################################################################################
@@ -45,32 +45,32 @@ DEBUG = check_env_flag('DEBUG')
 PYCLIF = which("pyclif")
 
 if not PYCLIF:
-	PYCLIF = os.getenv("PYCLIF")
-	if not PYCLIF:
-		print("We could not find PYCLIF. Forgot to activate venv?")
-		sys.exit(1)
-		
+    PYCLIF = os.getenv("PYCLIF")
+    if not PYCLIF:
+        print("We could not find PYCLIF. Forgot to activate venv?")
+        sys.exit(1)
+
 if "KALDI_DIR" not in os.environ:
-	# KALDI = which("kaldi")
-	# if not KALDI:
-	print("We could not find KALDI. Try setting KALDI_DIR environment variable.")
-	sys.exit(1)
-	# else:
-	# 	KALDI_DIR = os.path.join(KALDI, "..")
+    # KALDI = which("kaldi")
+    # if not KALDI:
+    print("KALDI_DIR environment variable is not set.")
+    sys.exit(1)
+    # else:
+    #     KALDI_DIR = os.path.join(KALDI, "..")
 
 KALDI_DIR = os.environ['KALDI_DIR']
 
 cwd = os.path.dirname(os.path.abspath(__file__))
-opt = os.path.dirname(os.path.dirname(os.path.dirname(PYCLIF))) #equals PYCLIF/../..
+opt = os.path.dirname(os.path.dirname(os.path.dirname(PYCLIF))) # PYCLIF/../..
 
 if DEBUG:
-	print("#"*50)
-	print("CWD: {}".format(cwd))
-	print("PYCLIF: {}".format(PYCLIF))
-	print("KALDI_DIR: {}".format(KALDI_DIR))
-	print("OPT_DIR: {}".format(opt))
-	print("CXX_FLAGS: {}".format(os.getenv("CXX_FLAGS")))
-	print("#"*50)
+    print("#"*50)
+    print("CWD: {}".format(cwd))
+    print("PYCLIF: {}".format(PYCLIF))
+    print("KALDI_DIR: {}".format(KALDI_DIR))
+    print("OPT_DIR: {}".format(opt))
+    print("CXX_FLAGS: {}".format(os.getenv("CXX_FLAGS")))
+    print("#"*50)
 
 ################################################################################
 # Workaround setuptools -Wstrict-prototypes warnings
@@ -79,30 +79,30 @@ if DEBUG:
 import distutils.sysconfig
 cfg_vars = distutils.sysconfig.get_config_vars()
 for key, value in cfg_vars.items():
-	if type(value) == str:
-			cfg_vars[key] = value.replace("-Wstrict-prototypes", "")
+    if type(value) == str:
+        cfg_vars[key] = value.replace("-Wstrict-prototypes", "")
 
 ################################################################################
 # Custom build commands
 ################################################################################
 class build_deps(Command):
-	user_options = []
+    user_options = []
 
-	def initialize_options(self):
-		pass
+    def initialize_options(self):
+        pass
 
-	def finalize_options(self):
-		pass
+    def finalize_options(self):
+        pass
 
-	def run(self):
-		build_all_cmd = ['bash', 'build_all.sh', KALDI_DIR, PYCLIF]
-		if subprocess.call(build_all_cmd) != 0:
-			sys.exit(1)
+    def run(self):
+        build_all_cmd = ['bash', 'build_all.sh', KALDI_DIR, PYCLIF]
+        if subprocess.call(build_all_cmd) != 0:
+            sys.exit(1)
 
 class build_ext(setuptools.command.build_ext.build_ext):
-	def run(self):
-		self.run_command("build_deps")
-		return setuptools.command.build_ext.build_ext.run(self)
+    def run(self):
+        self.run_command("build_deps")
+        return setuptools.command.build_ext.build_ext.run(self)
 
 ################################################################################
 # Configure compile flags
@@ -110,22 +110,22 @@ class build_ext(setuptools.command.build_ext.build_ext):
 library_dirs = [os.path.join(KALDI_DIR, 'src/lib/')]
 
 include_dirs = [
-	cwd,
-	# Path to clif runtime headers and example cc lib headers
-	opt,
-	os.path.join(KALDI_DIR, 'src/'),
-	os.path.join(KALDI_DIR, 'tools/openfst/include'),
-	os.path.join(KALDI_DIR, 'tools/ATLAS/include')
+    cwd,
+    os.path.join(cwd, 'build/kaldi'),  # Path to wrappers generated by clif
+    opt,  # Path to clif runtime headers and example cc lib headers
+    os.path.join(KALDI_DIR, 'src/'),
+    os.path.join(KALDI_DIR, 'tools/openfst/include'),
+    os.path.join(KALDI_DIR, 'tools/ATLAS/include')
 ]
 
 extra_compile_args = [
-	'-std=c++11',
-	'-Wno-write-strings', 
-	'-DKALDI_DOUBLEPRECISION=0', 
-	'-DHAVE_EXECINFO_H=1', 
-	'-DHAVE_CXXABI_H', 
-	'-DHAVE_ATLAS', 
-	'-DKALDI_PARANOID'
+    '-std=c++11',
+    '-Wno-write-strings',
+    '-DKALDI_DOUBLEPRECISION=0',
+    '-DHAVE_EXECINFO_H=1',
+    '-DHAVE_CXXABI_H',
+    '-DHAVE_ATLAS',
+    '-DKALDI_PARANOID'
 ]
 extra_link_args = []
 
@@ -134,43 +134,67 @@ matrix_compile_args = []
 matrix_libraries = ['kaldi-matrix', 'kaldi-base']
 matrix_link_args = []
 matrix_sources = [
-					'build/kaldi/matrix/kaldi-vector.cc',
-					'build/kaldi/matrix/kaldi-vector_init.cc',
-					os.path.join(opt, 'clif/python/runtime.cc'),
-					os.path.join(opt, 'clif/python/slots.cc'),
-					os.path.join(opt, 'clif/python/types.cc'),
-				 ]
+    'build/kaldi/matrix/kaldi-vector.cc',
+    'build/kaldi/matrix/kaldi-vector_init.cc',
+    os.path.join(opt, 'clif/python/runtime.cc'),
+    os.path.join(opt, 'clif/python/slots.cc'),
+    os.path.join(opt, 'clif/python/types.cc'),
+    ]
 
 
 if DEBUG:
-	extra_compile_args += ['-O0', '-g']
-	extra_link_args += ['-O0', '-g']
-	
+    extra_compile_args += ['-O0', '-g']
+    extra_link_args += ['-O0', '-g']
+
 ################################################################################
 # Declare extensions and package
 ################################################################################
 extensions = []
 packages = find_packages()
-matrix = Extension("kaldi_vector",
-			  sources = matrix_sources,
-			  language = 'c++',
-			  extra_compile_args = matrix_compile_args + extra_compile_args,
-			  include_dirs = include_dirs,
-			  library_dirs = library_dirs,
-			  libraries = matrix_libraries,
-			  extra_link_args = matrix_link_args + extra_link_args)
-extensions.append(matrix)
+matrix_common = Extension("kaldi.matrix.matrix_common",
+                          sources=[
+                              'build/kaldi/matrix/matrix-common_clifwrap.cc',
+                              'build/kaldi/matrix/matrix-common_clifwrap_init.cc',
+                              os.path.join(opt, 'clif/python/runtime.cc'),
+                              os.path.join(opt, 'clif/python/slots.cc'),
+                              os.path.join(opt, 'clif/python/types.cc'),
+                              ],
+                          language='c++',
+                          extra_compile_args=matrix_compile_args + extra_compile_args,
+                          include_dirs=include_dirs,
+                          library_dirs=library_dirs,
+                          libraries=matrix_libraries,
+                          extra_link_args=matrix_link_args + extra_link_args)
+extensions.append(matrix_common)
 
-setup(name = 'pykaldi',
-	  version = '0.0.1',
-	  description='Kaldi Python Wrapper',
-	  author='SAIL',
-	  ext_modules=extensions,
-	  cmdclass= {
-					'build_deps': build_deps,
-					'build_ext': build_ext
-				},
-	  packages=packages,
-	  package_data={},
-	  install_requires=['enum34;python_version<"3.4"'],
-	  )
+kaldi_vector = Extension("kaldi.matrix.kaldi_vector",
+                         sources=[
+                             'build/kaldi/matrix/kaldi-vector_clifwrap.cc',
+                             'build/kaldi/matrix/kaldi-vector_clifwrap_init.cc',
+                             os.path.join(opt, 'clif/python/runtime.cc'),
+                             os.path.join(opt, 'clif/python/slots.cc'),
+                             os.path.join(opt, 'clif/python/types.cc'),
+                             ],
+                         language='c++',
+                         extra_compile_args=matrix_compile_args + extra_compile_args,
+                         include_dirs=include_dirs,
+                         library_dirs=library_dirs,
+                         extra_objects=['/home/dogan/tools/pykaldi/build/lib.linux-x86_64-2.7/kaldi/matrix/matrix_common.so'],
+                         libraries=matrix_libraries,
+                         extra_link_args=matrix_link_args + extra_link_args)
+extensions.append(kaldi_vector)
+
+setup(
+    name = 'pykaldi',
+    version = '0.0.1',
+    description='Kaldi Python Wrapper',
+    author='SAIL',
+    ext_modules=extensions,
+    cmdclass= {
+        'build_deps': build_deps,
+        'build_ext': build_ext
+        },
+    packages=packages,
+    package_data={},
+    install_requires=['enum34;python_version<"3.4"'],
+    )

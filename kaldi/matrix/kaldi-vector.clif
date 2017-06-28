@@ -1,13 +1,10 @@
+from "matrix/matrix-common_clifwrap.h" import *
+
 from "matrix/kaldi-vector.h":
-	namespace `kaldi`:
-		class `VectorBase<float>` as VectorBase:
-		      def IsZero(self) -> bool
+    namespace `kaldi`:
+        class `VectorBase<float>` as VectorBase:
+            def IsZero(self) -> bool
 
-		class `Vector<float>` as Vector(VectorBase):
-		      pass
-		      # This is added by default
-		      # def __init__(self)
-
-		      #@add__init__
-		      #def `Vector` as VectorWithSize(self, s:`MatrixIndexT` as int, resize_type:`MatrixResizeType` as int) -> VectorBase
-
+        class `Vector<float>` as Vector(VectorBase):
+            @add__init__
+            def `Vector` as NewWithSize(self, s: `MatrixIndexT` as int, resize_type: ResizeType = default)

@@ -1,3 +1,10 @@
+
+#Emacs backup files
+\#*#
+*~
+
+env.sh
+
 # CMake files
 CMakeCache.txt
 CMakeFiles

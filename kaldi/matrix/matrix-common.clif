@@ -1,0 +1,12 @@
+from "matrix/matrix-common.h":
+    namespace `kaldi`:
+        enum MatrixTransposeType
+
+        enum `MatrixResizeType` as ResizeType with:
+          `kCopyData` as COPY_DATA
+          `kUndefined` as UNDEFINED
+          `kSetZero` as SET_ZERO
+
+        enum MatrixStrideType
+
+        enum SpCopyType
