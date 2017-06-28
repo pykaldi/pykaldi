@@ -1,0 +1,159 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: Clif
+scopeName: source.clif
+fileTypes: ["clif"]
+uuid: 67b6678b-acbd-4efc-9cd0-99484cd09ab5
+
+patterns:
+  - include: '#comments'
+  - include: '#types'
+
+  - comment: String literal
+    begin: \"
+    beginCaptures:
+      '0': {name: punctuation.definition.string.begin}
+    end: \"
+    endCaptures:
+      '0': {name: punctuation.definition.string.end}
+    name: string.quoted.double
+    patterns:
+    - include: '#string_escaped_char'
+
+  - comment: Clif control import keywords
+    name: keyword.control.import.clif
+    match: \b(?:(import|from|as|pass))\b
+
+  - comment: Clif namespace
+    name: meta.namespace.clif
+    begin: \b(namespace)\s+\`
+    beginCaptures:
+      '1': {name: storage.type.namespace.clif}
+    end: (\`\:)|\s*($\n?|#.*$\n?)
+    endCaptures:
+      '1': {name: punctuation.section.namespace.begin.clif}
+      '2': {name: invalid.illegal.incorrect-namespace-name.clif}
+    patterns:
+    - contentName: entity.name.type.namespace.clif
+      begin: (?=[[:alpha:]_][[:alnum:]_]*)
+      end: (?![[:alnum:]_])
+      patterns:
+      - include: '#string_escaped_char'
+
+  - comment: Clif class
+    name: meta.class.clif 
+    begin: \b(class)\s+
+    beginCaptures:
+      '1': {name: storage.type.class.clif}
+    end: (\:)|\s*($\n?|#.*$\n?)
+    endCaptures:
+      '1': {name: punctuation.section.class.begin.clif}
+      '2': {name: invalid.illegal.missing-section-begin.clif}
+    patterns:
+    - include: '#Crename'
+
+    - name: keyword.operator.clif
+      match: \s+(as)
+
+    - name: entity.name.type.class.python.clif
+      match: ([[:alpha:]_][[:alnum:]_]*(?=\:|\())
+
+    - name: meta.class.inheritance.python
+      begin: (\()
+      beginCaptures:
+        '1': {name: punctuation.definition.inheritance.begin.clif}
+      end: (?=\)|:)
+      patterns:
+      - contentName: entity.other.inherited-class.clif
+        begin: (?<=\(|,)\s*
+        end: \s*(?:(,)|(?=\)))
+        endCaptures:
+          '1': {name: punctuation.separator.inheritance.clif}
+        patterns:
+        - include: $self
+
+  - comment: Clif functions
+    name: meta.function.clif
+    begin: \b(def)\s+
+    beginCaptures:
+      '1': {name: storage.type.function.clif}
+    end: ($\n?)
+    patterns:
+    # Possible C rename
+    - include: '#Crename'
+
+    # Function name
+    - name: entity.name.function.clif
+      match: ([[:alpha:]_][[:alnum:]_]*(?=\())
+
+    # Parameter list
+    - begin: (\()
+      beginCaptures:
+        '1': {name: punctuation.definition.parameters.begin.clif}
+      end: (\))
+      patterns:
+      - name: variable.parameter.parameter.function.language.clif
+        match: (self)
+      - name: punctuation.separator.parameters.clif
+        match: (,)
+      - name: variable.parameter.parameter.C.clif
+        begin: ([[:alpha:]_][[:alnum:]_]*)(?=\:)
+        beginCaptures:
+          '1': {name: variable.parameter.parameter.function.clif}
+        end: (,)|(?=\))
+        endCaptures:
+          '1': {name: punctuation.separator.parameters.clif}
+        patterns:
+        - include: '#Crename'
+
+        - match: \s+(as)
+          name: keyword.operator.clif
+
+        - include: '#types'
+
+    # Output type
+    - name: meta.function.returnvalue.clif
+      begin: (-\>)
+      end: (?=$\n?)
+      patterns:
+      - include: '#types'
+
+  - comment: Clif decorator
+    name: meta.function.decorator.clif
+    begin: (\@[[:alpha:]_][[:alnum:]_]*)
+    beginCaptures:
+      '1': {name: entity.name.function.decorator.clif}
+    end: ($\n?)
+    
+
+repository:
+  string_escaped_char:
+    patterns:
+    - match: \b[[:alnum:]]*\b 
+      name: constant.character.escape
+  
+  comments:
+    patterns:
+    - match: "#.*"
+      name: comment.line.number-sign.clif
+
+  types:
+    patterns:
+    - match: \b(int|bytes|str|bool|float|list|tuple|set|dict|object)\b
+      name: support.type.clif
+
+  cclass:
+    patterns:
+    - match: ([[:alpha:]][[:alnum:]_]*(<[[:alpha:]][[:alnum:]_]+>)?)
+      name: entity.name.type.class.C.clif
+
+  pythonclass:
+    patterns:
+    - match: ([[:alpha:]][[:alnum:]_]*)
+      name: entity.name.type.class.python.clif
+
+  Crename:
+    match: (\`([[:alpha:]_][[:alnum:]_]*)(<[[:alpha:]][[:alnum:]_]+>)?\`)
+    name: string.quoted.single
+
+
