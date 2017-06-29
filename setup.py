@@ -103,10 +103,20 @@ class build_deps(Command):
         if subprocess.call(build_all_cmd) != 0:
             sys.exit(1)
 
+
 class build_ext(setuptools.command.build_ext.build_ext):
     def run(self):
         self.run_command("build_deps")
         return setuptools.command.build_ext.build_ext.run(self)
+
+    def get_ext_filename(self, ext_name):
+        """Convert the name of an extension (eg. "foo.bar") into the name
+        of the file from which it will be loaded (eg. "foo/bar.so").
+        """
+        from distutils.sysconfig import get_config_var
+        ext_path = ext_name.split('.')
+        ext_suffix = get_config_var('SO')
+        return os.path.join(*ext_path) + ext_suffix
 
 
 class build(distutils.command.build.build):
