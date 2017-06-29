@@ -109,13 +109,14 @@ class build_ext(setuptools.command.build_ext.build_ext):
         self.run_command("build_deps")
         return setuptools.command.build_ext.build_ext.run(self)
 
-    def get_ext_filename(self, ext_name):
+    def get_ext_filename(self, fullname):
         """Convert the name of an extension (eg. "foo.bar") into the name
-        of the file from which it will be loaded (eg. "foo/bar.so").
+        of the file from which it will be loaded (eg. "foo/bar.so"). This
+        patch overrides platform specific extension suffix with ".so".
         """
         from distutils.sysconfig import get_config_var
-        ext_path = ext_name.split('.')
-        ext_suffix = get_config_var('SO')
+        ext_path = fullname.split('.')
+        ext_suffix = '.so'
         return os.path.join(*ext_path) + ext_suffix
 
 
