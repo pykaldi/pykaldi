@@ -3,8 +3,48 @@ from "matrix/matrix-common_clifwrap.h" import *
 from "matrix/kaldi-vector.h":
     namespace `kaldi`:
         class `VectorBase<float>` as VectorBase:
-            def IsZero(self) -> bool
+            def SetZero(self)
+
+            def IsZero(self, cutoff: float = default) -> bool
+
+            def Set(self, f: float)
+
+            def SetRandn(self)
+
+            def SetRandUniform(self)
+
+            def RandCategorical(self) -> int
+
+            def `Dim` as __len__(self) -> int
+
+            def SizeInBytes(self) -> int
+
+            # FIXME(DC):
+            # 1. How to wrap a raw pointer to array of unknown bound?
+            # 2. How to disambiguate matching C++ functions that only differ
+            #    in arg/return constness?
+            # def Data(self) -> float
+
+            @sequential
+            def `operator()` as __getitem__(self, i: int) -> float
+
+            # FIXME(DC):
+            # C++ VectorBase class does not expose an item setter that we
+            # can wrap with __setitem__
+            # @sequential
+            # def `operator()` as __setitem__(self, i: int, v: float)
+
+            def Sum(self) -> float
 
         class `Vector<float>` as Vector(VectorBase):
             @add__init__
-            def `Vector` as NewWithSize(self, s: `MatrixIndexT` as int, resize_type: MatrixResizeType = default)
+            def `Vector` as NewWithSize(self, s: int,
+                                        resize_type: MatrixResizeType = default)
+
+            def Swap(self, other: Vector)
+
+            def Resize(self, length: int,
+                       resize_type: MatrixResizeType = default)
+
+            @sequential
+            def `RemoveElement` as __delitem__(self, i: int)
