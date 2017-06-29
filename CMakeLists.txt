@@ -12,17 +12,38 @@ find_package(PythonLibs REQUIRED)
 
 ####################################################################################################
 if(NOT PYCLIF)
-    find_program(PYCLIF pyclif)
-    if(NOT PYCLIF)
-        message(FATAL_ERROR "The 'pyclif' program was not found. Specify with -DPYCLIF.")
+    set(PYCLIF $ENV{PYCLIF})
+    if (NOT PYCLIF)
+      find_program(PYCLIF pyclif)
+      if(NOT PYCLIF)
+          message(FATAL_ERROR "The 'pyclif' program was not found. Specify PYCLIF environmental variable or with option -DPYCLIF.")
+      endif(NOT PYCLIF)
     endif(NOT PYCLIF)
 endif(NOT PYCLIF)
-string(REGEX REPLACE "/bin/pyclif$" "" CLIF_INSTALL_DIR ${PYCLIF})
+message("Using PYCLIF: $PYCLIF")
+
+if(NOT CLIF_INSTALL_DIR)
+  set(CLIF_INSTALL_DIR $ENV{CLIF_INSTALL_DIR})
+  if(NOT CLIF_INSTALL_DIR)
+    string(REGEX REPLACE "/bin/pyclif$" "" CLIF_INSTALL_DIR ${PYCLIF})
+    message("Environmental variable CLIF_INSTALL_DIR or option -DCLIF_INSTALL_DIR was not set. Defaulting to ${CLIF_INSTALL_DIR}.")
+  endif(NOT CLIF_INSTALL_DIR)
+endif(NOT CLIF_INSTALL_DIR)
+message("Using CLIF_INSTALL_DIR: $CLIF_INSTALL_DIR")
+
+# Find clif-matcher 
+find_program(CLIF_MATCHER clif-matcher PATHS CLIF_INSTALL_DIR, CLIF_INSTALL_DIR/clang/bin)
+if(NOT CLIF_MATCHER)
+  message(FATAL_ERROR "The 'clif-matcher' program was not found in ${CLIF_INSTALL_DIR}.")
+endif(NOT CLIF_MATCHER)
 
 if(NOT KALDI_ROOT)
-    find_program(KALDI_ROOT kaldi)
+    set(KALDI_ROOT $ENV{KALDI_ROOT})
     if(NOT KALDI_ROOT)
-      message(FATAL_ERROR "You need to specify Kaldi path. Do it with -DKALDI_ROOT.")
+      find_program(KALDI_ROOT kaldi)
+      if(NOT KALDI_ROOT)
+        message(FATAL_ERROR "You need to specify Kaldi path. Specify KALDI_ROOT environmental variable or with option -DKALDI_ROOT.")
+      endif(NOT KALDI_ROOT)
     endif(NOT KALDI_ROOT)
 endif(NOT KALDI_ROOT)
 
@@ -50,7 +71,7 @@ function(add_pyclif_library name pyclif_file)
         BYPRODUCTS ${gen_cc} ${gen_h} ${gen_init}
         COMMAND
             ${PYCLIF}
-            --matcher_bin=${CLIF_INSTALL_DIR}/clang/bin/clif-matcher
+            --matcher_bin=${CLIF_MATCHER}
             --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
             --modname=${module_name}
             -I${CMAKE_BINARY_DIR}/kaldi

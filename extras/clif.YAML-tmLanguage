@@ -8,6 +8,7 @@ uuid: 67b6678b-acbd-4efc-9cd0-99484cd09ab5
 patterns:
   - include: '#comments'
   - include: '#types'
+  - include: '#keywords'
 
   - comment: String literal
     begin: \"
@@ -19,10 +20,6 @@ patterns:
     name: string.quoted.double
     patterns:
     - include: '#string_escaped_char'
-
-  - comment: Clif control import keywords
-    name: keyword.control.import.clif
-    match: \b(?:(import|from|as|pass))\b
 
   - comment: Clif namespace
     name: meta.namespace.clif
@@ -51,9 +48,6 @@ patterns:
       '2': {name: invalid.illegal.missing-section-begin.clif}
     patterns:
     - include: '#Crename'
-
-    - name: keyword.operator.clif
-      match: \s+(as)
 
     - name: entity.name.type.class.python.clif
       match: ([[:alpha:]_][[:alnum:]_]*(?=\:|\())
@@ -92,24 +86,34 @@ patterns:
         '1': {name: punctuation.definition.parameters.begin.clif}
       end: (\))
       patterns:
-      - name: variable.parameter.parameter.function.language.clif
-        match: (self)
-      - name: punctuation.separator.parameters.clif
-        match: (,)
-      - name: variable.parameter.parameter.C.clif
-        begin: ([[:alpha:]_][[:alnum:]_]*)(?=\:)
+      
+      - match: (self)
+        name: variable.parameter.parameter.function.language.clif
+
+      - match: (,)
+        name: punctuation.separator.parameters.clif
+
+      - begin: ([[:alpha:]_][[:alnum:]_]*)\s*(\:)(?!\:)
         beginCaptures:
-          '1': {name: variable.parameter.parameter.function.clif}
-        end: (,)|(?=\))
-        endCaptures:
-          '1': {name: punctuation.separator.parameters.clif}
+          '1': {name: meta.function-call.arguments.clif}
+          '2': {name: keyword.operator.assignment.clif}
+        end: \s*(?=(,)|\))
+        # endCaptures:
+        #   '1': {name: punctuation.separator.parameters.clif}
         patterns:
         - include: '#Crename'
-
-        - match: \s+(as)
-          name: keyword.operator.clif
-
         - include: '#types'
+
+        # case for value assignation
+        - begin: \s*(\=)\s*
+          beginCaptures:
+            '1': {name: keyword.operator.assignment.clif}
+          end: \s*(?=(,)|\))
+          patterns:
+          - match: (default)
+            name: variable.parameter.parameter.function.language.clif
+          - match: ([[:alpha:]_][[:alnum:]_]*)
+            name: variable.parameter.parameter.function.clif
 
     # Output type
     - name: meta.function.returnvalue.clif
@@ -127,9 +131,14 @@ patterns:
     
 
 repository:
+  keywords:
+    patterns:
+    - match: \b(from|as|import|pass)\b
+      name: keyword.operator.control.clif
+
   string_escaped_char:
     patterns:
-    - match: \b[[:alnum:]]*\b 
+    - match: \b\w*\b 
       name: constant.character.escape
   
   comments:
@@ -153,7 +162,9 @@ repository:
       name: entity.name.type.class.python.clif
 
   Crename:
-    match: (\`([[:alpha:]_][[:alnum:]_]*)(<[[:alpha:]][[:alnum:]_]+>)?\`)
-    name: string.quoted.single
-
-
+    patterns:
+    - match: (\`([[:alpha:]_][[:alnum:]_]*)(<[[:alpha:]][[:alnum:]_]+>)?(\(\))?\`)\s+(as)
+      captures:
+        '1': {name: string.quoted.single}
+        '5': {name: keyword.operator.clif}
+      include: '#types'

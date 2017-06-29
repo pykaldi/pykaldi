@@ -44,25 +44,25 @@ def which(program):
 ################################################################################
 DEBUG = check_env_flag('DEBUG')
 PYCLIF = which("pyclif")
+CWD = os.path.dirname(os.path.abspath(__file__))
 
 if not PYCLIF:
-    PYCLIF = os.getenv("PYCLIF")
-    if not PYCLIF:
-        print("We could not find PYCLIF. Forgot to activate venv?")
-        sys.exit(1)
+  PYCLIF = os.getenv("PYCLIF")
+  if not PYCLIF:
+      print("We could not find PYCLIF. Forgot to activate venv?")
+      sys.exit(1)
 
 if "KALDI_DIR" not in os.environ:
-    # KALDI = which("kaldi")
-    # if not KALDI:
-    print("KALDI_DIR environment variable is not set.")
-    sys.exit(1)
-    # else:
-    #     KALDI_DIR = os.path.join(KALDI, "..")
+  print("KALDI_DIR environment variable is not set.")
+  sys.exit(1)
 
-KALDI_DIR = os.environ['KALDI_DIR']
-
-CWD = os.path.dirname(os.path.abspath(__file__))
 CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
+if "CLIF_INSTALL_DIR" not in os.environ:
+    print("CLIF_INSTALL_DIR environment variable is not set.")
+    print("Defaulting to {}".format(CLIF_DIR))
+else:
+    opt = os.environ['CLIF_INSTALL_DIR']
+
 
 if DEBUG:
     print("#"*50)
@@ -96,7 +96,7 @@ class build_deps(Command):
         pass
 
     def run(self):
-        build_all_cmd = ['bash', 'build_all.sh', KALDI_DIR, PYCLIF]
+        build_all_cmd = ['bash', 'build_all.sh', KALDI_DIR, PYCLIF, CLIF_DIR]
         if subprocess.call(build_all_cmd) != 0:
             sys.exit(1)
 
