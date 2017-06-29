@@ -55,13 +55,14 @@ if not PYCLIF:
 if "KALDI_DIR" not in os.environ:
   print("KALDI_DIR environment variable is not set.")
   sys.exit(1)
+KALDI_DIR = os.environ['KALDI_DIR']
 
 CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
-if "CLIF_INSTALL_DIR" not in os.environ:
-    print("CLIF_INSTALL_DIR environment variable is not set.")
+if "CLIF_DIR" not in os.environ:
+    print("CLIF_DIR environment variable is not set.")
     print("Defaulting to {}".format(CLIF_DIR))
 else:
-    opt = os.environ['CLIF_INSTALL_DIR']
+    CLIF_DIR = os.environ['CLIF_DIR']
 
 
 if DEBUG:
@@ -141,12 +142,6 @@ extra_link_args = []
 
 libraries = [':_clif.so']
 
-# Properties for matrix module
-matrix_compile_args = []
-matrix_libraries = ['kaldi-matrix', 'kaldi-base']
-matrix_link_args = []
-
-
 if DEBUG:
     extra_compile_args += ['-O0', '-g']
     extra_link_args += ['-O0', '-g']
@@ -155,59 +150,61 @@ if DEBUG:
 # Declare extensions and package
 ################################################################################
 extensions = []
-packages = find_packages()
 
-clif = Extension("kaldi._clif",
-                  sources=[
-                      os.path.join(CLIF_DIR, 'python/runtime.cc'),
-                      os.path.join(CLIF_DIR, 'python/slots.cc'),
-                      os.path.join(CLIF_DIR, 'python/types.cc'),
-                      ],
-                  language='c++',
-                  extra_compile_args=extra_compile_args,
-                  include_dirs=include_dirs)
+clif = Extension(
+    "kaldi._clif",
+    sources=[
+        os.path.join(CLIF_DIR, 'python/runtime.cc'),
+        os.path.join(CLIF_DIR, 'python/slots.cc'),
+        os.path.join(CLIF_DIR, 'python/types.cc'),
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs)
 extensions.append(clif)
 
-matrix_common = Extension("kaldi.matrix.matrix_common",
-                          sources=[
-                              'build/kaldi/matrix/matrix-common_clifwrap.cc',
-                              'build/kaldi/matrix/matrix-common_clifwrap_init.cc',
-                              ],
-                          language='c++',
-                          extra_compile_args=matrix_compile_args + extra_compile_args,
-                          include_dirs=include_dirs,
-                          library_dirs=library_dirs,
-                          runtime_library_dirs=runtime_library_dirs,
-                          libraries=matrix_libraries + libraries,
-                          extra_link_args=matrix_link_args + extra_link_args)
+matrix_common = Extension(
+    "kaldi.matrix.matrix_common",
+    sources=[
+        'build/kaldi/matrix/matrix-common_clifwrap.cc',
+        'build/kaldi/matrix/matrix-common_clifwrap_init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs,
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=['kaldi-matrix', 'kaldi-base'] + libraries,
+    extra_link_args=extra_link_args)
 extensions.append(matrix_common)
 
-kaldi_vector = Extension("kaldi.matrix.kaldi_vector",
-                         sources=[
-                             'build/kaldi/matrix/kaldi-vector_clifwrap.cc',
-                             'build/kaldi/matrix/kaldi-vector_clifwrap_init.cc',
-                             ],
-                         language='c++',
-                         extra_compile_args=matrix_compile_args + extra_compile_args,
-                         include_dirs=include_dirs,
-                         library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
-                         runtime_library_dirs=runtime_library_dirs,
-                         libraries=[':matrix_common.so'] + matrix_libraries + libraries,
-                         extra_link_args=matrix_link_args + extra_link_args)
+kaldi_vector = Extension(
+    "kaldi.matrix.kaldi_vector",
+    sources=[
+        'build/kaldi/matrix/kaldi-vector_clifwrap.cc',
+        'build/kaldi/matrix/kaldi-vector_clifwrap_init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':matrix_common.so', 'kaldi-matrix', 'kaldi-base'] + libraries,
+    extra_link_args=extra_link_args)
 extensions.append(kaldi_vector)
 
-setup(
-    name = 'pykaldi',
-    version = '0.0.1',
-    description='Kaldi Python Wrapper',
-    author='SAIL',
-    ext_modules=extensions,
-    cmdclass= {
-        'build_deps': build_deps,
-        'build_ext': build_ext,
-        'build': build,
-        },
-    packages=packages,
-    package_data={},
-    install_requires=['enum34;python_version<"3.4"'],
-    )
+packages = find_packages()
+
+setup(name = 'pykaldi',
+      version = '0.0.1',
+      description='Kaldi Python Wrapper',
+      author='SAIL',
+      ext_modules=extensions,
+      cmdclass= {
+          'build_deps': build_deps,
+          'build_ext': build_ext,
+          'build': build,
+          },
+      packages=packages,
+      package_data={},
+      install_requires=['enum34;python_version<"3.4"'])

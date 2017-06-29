@@ -12,45 +12,42 @@ find_package(PythonLibs REQUIRED)
 
 ####################################################################################################
 if(NOT PYCLIF)
-    set(PYCLIF $ENV{PYCLIF})
-    if (NOT PYCLIF)
-      find_program(PYCLIF pyclif)
-      if(NOT PYCLIF)
-          message(FATAL_ERROR "The 'pyclif' program was not found. Specify PYCLIF environmental variable or with option -DPYCLIF.")
-      endif(NOT PYCLIF)
+  set(PYCLIF $ENV{PYCLIF})
+  if (NOT PYCLIF)
+    find_program(PYCLIF pyclif)
+    if(NOT PYCLIF)
+      message(FATAL_ERROR "Could not find 'pyclif'. Set PYCLIF environment variable or -DPYCLIF option.")
     endif(NOT PYCLIF)
+  endif(NOT PYCLIF)
 endif(NOT PYCLIF)
-message("Using PYCLIF: $PYCLIF")
+message("Using PYCLIF: ${PYCLIF}")
 
-if(NOT CLIF_INSTALL_DIR)
-  set(CLIF_INSTALL_DIR $ENV{CLIF_INSTALL_DIR})
-  if(NOT CLIF_INSTALL_DIR)
-    string(REGEX REPLACE "/bin/pyclif$" "" CLIF_INSTALL_DIR ${PYCLIF})
-    message("Environmental variable CLIF_INSTALL_DIR or option -DCLIF_INSTALL_DIR was not set. Defaulting to ${CLIF_INSTALL_DIR}.")
-  endif(NOT CLIF_INSTALL_DIR)
-endif(NOT CLIF_INSTALL_DIR)
-message("Using CLIF_INSTALL_DIR: $CLIF_INSTALL_DIR")
+if(NOT CLIF_DIR)
+  set(CLIF_DIR $ENV{CLIF_DIR})
+  if(NOT CLIF_DIR)
+    string(REGEX REPLACE "/bin/pyclif$" "" CLIF_DIR ${PYCLIF})
+    message("Environment variable CLIF_DIR or option -DCLIF_DIR was not set. Defaulting to ${CLIF_DIR}.")
+  endif(NOT CLIF_DIR)
+endif(NOT CLIF_DIR)
+message("Using CLIF_DIR: ${CLIF_DIR}")
 
-# Find clif-matcher 
-find_program(CLIF_MATCHER clif-matcher PATHS CLIF_INSTALL_DIR, CLIF_INSTALL_DIR/clang/bin)
+# Find clif-matcher
+find_program(CLIF_MATCHER clif-matcher PATHS ${CLIF_DIR}, ${CLIF_DIR}/clang/bin)
 if(NOT CLIF_MATCHER)
-  message(FATAL_ERROR "The 'clif-matcher' program was not found in ${CLIF_INSTALL_DIR}.")
+  message(FATAL_ERROR "Could not find 'clif-matcher' in ${CLIF_DIR}/clang/bin/.")
 endif(NOT CLIF_MATCHER)
 
-if(NOT KALDI_ROOT)
-    set(KALDI_ROOT $ENV{KALDI_ROOT})
-    if(NOT KALDI_ROOT)
-      find_program(KALDI_ROOT kaldi)
-      if(NOT KALDI_ROOT)
-        message(FATAL_ERROR "You need to specify Kaldi path. Specify KALDI_ROOT environmental variable or with option -DKALDI_ROOT.")
-      endif(NOT KALDI_ROOT)
-    endif(NOT KALDI_ROOT)
-endif(NOT KALDI_ROOT)
+if(NOT KALDI_DIR)
+  set(KALDI_DIR $ENV{KALDI_DIR})
+  if(NOT KALDI_DIR)
+    message(FATAL_ERROR "You need to specify Kaldi directory. Set KALDI_DIR environmen variable or -DKALDI_DIR option.")
+  endif(NOT KALDI_DIR)
+endif(NOT KALDI_DIR)
 
-set(kaldisrc "${KALDI_ROOT}/src")
-set(kalditools "${KALDI_ROOT}/tools")
-set(ATLAS_ROOT_inc ${kalditools}/ATLAS/include)
-set(OPENFST_ROOT_inc ${kalditools}/openfst/include)
+set(KALDI_SRC_DIR "${KALDI_DIR}/src")
+set(KALDI_TOOLS_DIR "${KALDI_DIR}/tools")
+set(ATLAS_INC_DIR ${KALDI_TOOLS_DIR}/ATLAS/include)
+set(OPENFST_INC_DIR ${KALDI_TOOLS_DIR}/openfst/include)
 
 
 ####################################################################################################
@@ -76,15 +73,15 @@ function(add_pyclif_library name pyclif_file)
             --modname=${module_name}
             -I${CMAKE_BINARY_DIR}/kaldi
             "-f-I${PYTHON_INCLUDE_DIRS} \
-               -I${CLIF_INSTALL_DIR}/.. \
-               -I${kaldisrc} \
+               -I${CLIF_DIR}/.. \
+               -I${KALDI_SRC_DIR} \
                -I.. \
-               -I${OPENFST_ROOT_inc} \
+               -I${OPENFST_INC_DIR} \
                -DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION} \
                -DHAVE_EXECINFO_H=1 \
                -DHAVE_CXXABI_H \
                -DHAVE_ATLAS \
-               -I${ATLAS_ROOT_inc} \
+               -I${ATLAS_INC_DIR} \
                -msse -msse2 -pthread -g -O0 \
                -DKALDI_PARANOID \
                -fPIC \
@@ -97,5 +94,5 @@ function(add_pyclif_library name pyclif_file)
 endfunction(add_pyclif_library)
 
 
-include_directories(${CLIF_INSTALL_DIR}/..)
+include_directories(${CLIF_DIR}/..)
 add_subdirectory("kaldi")
