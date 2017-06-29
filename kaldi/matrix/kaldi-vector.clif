@@ -7,4 +7,4 @@ from "matrix/kaldi-vector.h":
 
         class `Vector<float>` as Vector(VectorBase):
             @add__init__
-            def `Vector` as NewWithSize(self, s: `MatrixIndexT` as int, resize_type: ResizeType = default)
+            def `Vector` as NewWithSize(self, s: `MatrixIndexT` as int, resize_type: MatrixResizeType = default)

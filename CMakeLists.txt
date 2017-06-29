@@ -39,9 +39,9 @@ function(add_pyclif_library name pyclif_file)
     cmake_parse_arguments(PYCLIF_LIBRARY "" "" "CC_DEPS;CLIF_DEPS;CXX_FLAGS" ${ARGN})
 
     string(REPLACE ".clif" "" pyclif_file_basename ${pyclif_file})
-    set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}.cc")
-    set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}.h")
-    set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_init.cc")
+    set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_clifwrap.cc")
+    set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_clifwrap.h")
+    set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_clifwrap_init.cc")
 
     string(REPLACE "-" "_" module_name ${pyclif_file_basename})
 
@@ -53,6 +53,7 @@ function(add_pyclif_library name pyclif_file)
             --matcher_bin=${CLIF_INSTALL_DIR}/clang/bin/clif-matcher
             --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
             --modname=${module_name}
+            -I${CMAKE_BINARY_DIR}/kaldi
             "-f-I${PYTHON_INCLUDE_DIRS} \
                -I${CLIF_INSTALL_DIR}/.. \
                -I${kaldisrc} \
