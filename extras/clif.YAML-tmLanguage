@@ -133,12 +133,12 @@ patterns:
 repository:
   keywords:
     patterns:
-    - match: \b(from|as|import|pass)\b
+    - match: \b(from|as|import|pass|enum|const)\b
       name: keyword.operator.control.clif
 
   string_escaped_char:
     patterns:
-    - match: \b\w*\b 
+    - match: \w+
       name: constant.character.escape
   
   comments:

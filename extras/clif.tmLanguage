@@ -400,7 +400,7 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\b(from|as|import|pass)\b</string>
+					<string>\b(from|as|import|pass|enum|const)\b</string>
 					<key>name</key>
 					<string>keyword.operator.control.clif</string>
 				</dict>
@@ -424,7 +424,7 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\b\w*\b</string>
+					<string>\w*</string>
 					<key>name</key>
 					<string>constant.character.escape</string>
 				</dict>
