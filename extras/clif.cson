@@ -1,0 +1,277 @@
+name: "Clif"
+scopeName: "source.clif"
+fileTypes: [
+	"clif"
+]
+uuid: "67b6678b-acbd-4efc-9cd0-99484cd09ab5"
+patterns: [
+	{
+		include: "#comments"
+	},
+	{
+		include: "#types"
+	},
+	{
+		include: "#keywords"
+	},
+	{
+		comment: "String literal"
+		begin: "\\\""
+		beginCaptures:
+			"0":
+				name: "punctuation.definition.string.begin"
+		end: "\\\""
+		endCaptures:
+			"0":
+				name: "punctuation.definition.string.end"
+		name: "string.quoted.double"
+		patterns: [
+			{
+				include: "#string_escaped_char"
+			}
+		]
+	},
+	{
+		comment: "Clif namespace"
+		name: "meta.namespace.clif"
+		begin: "\\b(namespace)\\s+\\`"
+		beginCaptures:
+			"1":
+				name: "storage.type.namespace.clif"
+		end: "(\\`\\:)|\\s*($\\n?|#.*$\\n?)"
+		endCaptures:
+			"1":
+				name: "punctuation.section.namespace.begin.clif"
+			"2":
+				name: "invalid.illegal.incorrect-namespace-name.clif"
+		patterns: [
+			{
+				contentName: "entity.name.type.namespace.clif"
+				begin: "(?=[[:alpha:]_][[:alnum:]_]*)"
+				end: "(?![[:alnum:]_])"
+				patterns: [
+					{
+						include: "#string_escaped_char"
+					}
+				]
+			}
+		]
+	},
+	{
+		comment: "Clif class"
+		name: "meta.class.clif"
+		begin: "\\b(class)\\s+"
+		beginCaptures:
+			"1":
+				name: "storage.type.class.clif"
+		end: "(\\:)|\\s*($\\n?|#.*$\\n?)"
+		endCaptures:
+			"1":
+				name: "punctuation.section.class.begin.clif"
+			"2":
+				name: "invalid.illegal.missing-section-begin.clif"
+		patterns: [
+			{
+				include: "#Crename"
+			}
+			{
+				name: "entity.name.type.class.python.clif"
+				match: "([[:alpha:]_][[:alnum:]_]*(?=\\:|\\())"
+			}
+			{
+				name: "meta.class.inheritance.python"
+				begin: "(\\()"
+				beginCaptures:
+					"1":
+						name: "punctuation.definition.inheritance.begin.clif"
+				end: "(?=\\)|:)"
+				patterns: [
+					{
+						contentName: "entity.other.inherited-class.clif"
+						begin: "(?<=\\(|,)\\s*"
+						end: "\\s*(?:(,)|(?=\\)))"
+						endCaptures:
+							"1":
+								name: "punctuation.separator.inheritance.clif"
+						patterns: [
+							{
+								include: "$self"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		comment: "Clif functions"
+		name: "meta.function.clif"
+		begin: "\\b(def)\\s+"
+		beginCaptures:
+			"1":
+				name: "storage.type.function.clif"
+		end: "($\\n?)"
+		patterns: [
+			{
+				include: "#Crename"
+			},
+			{
+				name: "entity.name.function.clif"
+				match: "([[:alpha:]_][[:alnum:]_]*(?=\\())"
+			},
+			{
+				name: "meta.function.parameters.clif"
+				begin: "(\\()"
+				beginCaptures:
+					"1":
+						name: "punctuation.definition.parameters.begin.clif"
+				end: "(\\))"
+				patterns: [
+					{
+						match: "(self)"
+						name: "variable.language.self.clif"
+					}
+					{
+						match: "(,)"
+						name: "punctuation.separator.parameters.clif"
+					}
+					{
+						begin: "([[:alpha:]_][[:alnum:]_]*)\\s*(\\:)(?!\\:)"
+						beginCaptures:
+							"1":
+								name: "meta.function-call.arguments.clif"
+							"2":
+								name: "keyword.operator.assignment.clif"
+						end: "\\s*(?=(,)|\\))"
+						patterns: [
+							{
+								include: "#Crename"
+							}
+							{
+								include: "#types"
+							}
+							{
+								begin: "\\s*(\\=)\\s*"
+								beginCaptures:
+									"1":
+										name: "keyword.operator.assignment.clif"
+								end: "\\s*(?=(,)|\\))"
+								patterns: [
+									{
+										match: "(default)"
+										name: "variable.language.default.clif"
+									}
+									{
+										match: "([[:alpha:]_][[:alnum:]_]*)"
+										name: "variable.parameter.parameter.function.clif"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				name: "meta.function.returnvalue.clif"
+				begin: "(-\\>)"
+				end: "(?=$\\n?)"
+				patterns: [
+					{
+						include: "#types"
+					}
+				]
+			}
+		]
+	},
+	{
+		comment: "Clif decorator"
+		name: "meta.function.decorator.clif"
+		begin: "(\\@[[:alpha:]_][[:alnum:]_]*)"
+		beginCaptures:
+			"1":
+				name: "entity.name.function.decorator.clif"
+		end: "($\\n?)"
+	}
+]
+repository:
+	keywords:
+		patterns: [
+			{
+				match: "\\b(from)\\b"
+				name: "keyword.control.import.from.clif"
+			},
+			{
+				match: "\\b(import)\\b"
+				name: "keyword.control.import.clif"
+			},
+			{
+				match: "\\b(pass)\\b"
+				name: "keyword.control.statement.clif"
+			},
+			{
+				match: "\\b(as|enum|const)\\b"
+				name: "keyword.other.clif"
+			}
+		]
+	string_escaped_char:
+		patterns: [
+			{
+				match: "\\w+"
+				name: "constant.character.escape"
+			}
+		]
+	comments:
+		patterns: [
+			{
+				match: "#.*"
+				name: "comment.line.number-sign.clif"
+			}
+		]
+	types:
+		patterns: [
+			{
+				match: "\\b(int|bytes|str|bool|float|list|tuple|set|dict|object)\\b"
+				name: "support.type.clif"
+			}
+		]
+	cclass:
+		patterns: [
+			{
+				match: "([[:alpha:]][[:alnum:]_]*(<[[:alpha:]][[:alnum:]_]+>)?)"
+				name: "entity.name.type.class.C.clif"
+			}
+		]
+	pythonclass:
+		patterns: [
+			{
+				match: "([[:alpha:]][[:alnum:]_]*)"
+				name: "entity.name.type.class.python.clif"
+			}
+		]
+	Crename:
+		patterns: [
+			{
+				# match: "(\\`([[:alpha:]_][[:alnum:]_]*)(<[[:alpha:]][[:alnum:]_]+>)?(\\(\\))?\\`)\\s+(as)"
+				begin: "(\\`)(?=([[:alpha:]_][[:alnum:]_]*))"
+				beginCaptures:
+					'1':
+						name: "punctuation.definition.string.begin.clif"
+				end: "(\\`)"
+				endCaptures:
+					'1':
+						name: "punctuation.definition.string.end.clif"
+				patterns: [
+					{
+						match: "\\s*([[:alpha:]_][[:alnum:]_]*)(<[[:alpha:]][[:alnum:]_]+>)?(\\(\\))?"
+						name: 'entity.name.type.class.clif'
+						patterns: [
+							include: "#types"
+						]
+					},
+				]
+			},
+			{
+				match: "\\b(as)\\b"
+				name: "keyword.other.clif"
+			}
+		]
