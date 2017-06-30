@@ -1,50 +1,149 @@
 from "matrix/matrix-common_clifwrap.h" import *
 
 from "matrix/kaldi-vector.h":
-    namespace `kaldi`:
-        class `VectorBase<float>` as VectorBase:
-            def SetZero(self)
+  namespace `kaldi`:
+    class `VectorBase<float>` as VectorBase:
+      def SetZero(self)
 
-            def IsZero(self, cutoff: float = default) -> bool
+      def IsZero(self, cutoff: float = default) -> bool
 
-            def Set(self, f: float)
+      def Set(self, f: float)
 
-            def SetRandn(self)
+      def SetRandn(self)
 
-            def SetRandUniform(self)
+      def SetRandUniform(self)
 
-            def RandCategorical(self) -> int
+      def RandCategorical(self) -> int
 
-            def `Dim` as __len__(self) -> int
+      def `Dim` as __len__(self) -> int
 
-            def SizeInBytes(self) -> int
+      def SizeInBytes(self) -> int
 
-            # FIXME(DC):
-            # 1. How to wrap a raw pointer to array of unknown bound?
-            # 2. How to disambiguate matching C++ functions that only differ
-            #    in arg/return constness?
-            # def Data(self) -> float
+      # NOTE(Dogan):
+      # It is probably a bad idea to expose the Data method in Python since its
+      # return value is a pointer to the underlying data array which can easily
+      # become dangling as C++ object lifetime is different from Python object
+      # lifetime. Also, CLIF does not support C arrays (or raw pointers to C
+      # arrays), hence we cannot automatically generate a wrapper for it. One
+      # option is to add another method to the C++ API wrapping the data array
+      # with a shared pointer. Another option is to write the wrapper manually.
+      # def Data(self) -> float
 
-            @sequential
-            def `operator()` as __getitem__(self, i: int) -> float
+      @sequential
+      def `operator()` as __getitem__(self, i: int) -> float
 
-            # FIXME(DC):
-            # C++ VectorBase class does not expose an item setter that we
-            # can wrap with __setitem__
-            # @sequential
-            # def `operator()` as __setitem__(self, i: int, v: float)
+      @sequential
+      def `Set` as __setitem__(self, i: int, v: float)
 
-            def Sum(self) -> float
+      # FIXME: This does not work!
+      # def Range(self, o: int, l: int) -> SubVector
 
-        class `Vector<float>` as Vector(VectorBase):
-            @add__init__
-            def `Vector` as NewWithSize(self, s: int,
-                                        resize_type: MatrixResizeType = default)
+      # FIXME: This does not work!
+      # def CopyFromVec(self, v: VectorBase)
 
-            def Swap(self, other: Vector)
+      def ApplyLog(self)
 
-            def Resize(self, length: int,
-                       resize_type: MatrixResizeType = default)
+      def ApplyLogAndCopy(self, v: VectorBase)
 
-            @sequential
-            def `RemoveElement` as __delitem__(self, i: int)
+      def ApplyExp(self)
+
+      def ApplyAbs(self)
+
+      def ApplyFloor(self, floor: float) -> int
+
+      def ApplyCeiling(self, ceiling: float) -> int
+
+      def `ApplyFloor` as ApplyVectorFloor(self, floor: VectorBase) -> int
+
+      def ApplySoftMax(self) -> float
+
+      def ApplyLogSoftMax(self) -> float
+
+      def Tanh(self, src: VectorBase)
+
+      def Sigmoid(self, src: VectorBase)
+
+      def ApplyPow(self, power: float)
+
+      def ApplyPowAbs(self, power: float, include_sign: bool = default)
+
+      def Norm(self, p: float) -> float
+
+      def ApproxEqual(self, other: VectorBase, tol: float = default) -> bool
+
+      def InvertElements(self)
+
+      def AddVec(self, alpha: float, v: VectorBase)
+
+      # FIXME: This does not work!
+      # def AddVec2(self, alpha: float, v: VectorBase)
+
+      def ReplaceValue(self, orig: float, changed: float)
+
+      # FIXME: This does not work!
+      # def MulElements(self, v: VectorBase)
+
+      # FIXME: This does not work!
+      # def DivElements(self, v: VectorBase)
+
+      def Add(self, c: float)
+
+      def AddVecVec(self, alpha: float, v: VectorBase,
+                    r: VectorBase, beta: float)
+
+      def AddVecDivVec(self, alpha: float, v: VectorBase,
+                       r: VectorBase, beta: float)
+
+      def Scale(self, alpha: float)
+
+      def Max(self) -> float
+
+      def `Max` as MaxIndex(self, index: int) -> float
+
+      def Min(self) -> float
+
+      def `Min` as MinIndex(self, index: int) -> float
+
+      def Sum(self) -> float
+
+      def SumLog(self) -> float
+
+      def LogSumExp(self, prune: float = default) -> float
+
+    class `Vector<float>` as Vector(VectorBase):
+      @add__init__
+      def `Vector` as NewFromSize(self, s: int,
+                                  resize_type: MatrixResizeType = default)
+
+      # FIXME: This does not work!
+      # @add__init__
+      # def `Vector` as NewFromCopy(self, v: VectorBase)
+
+      def Swap(self, other: Vector)
+
+      def Resize(self, length: int,
+                 resize_type: MatrixResizeType = default)
+
+      # NOTE: Since CLIF combines setitem and delitem into a single wrapper,
+      # we need to expose setitem in Vector as well. Otherwise setitem raises
+      # NotImplementedError at runtime. This is probably a CLIF bug.
+      @sequential
+      def `Set` as __setitem__(self, i: int, v: float)
+
+      @sequential
+      def `RemoveElement` as __delitem__(self, i: int)
+
+    class `SubVector<float>` as SubVector(VectorBase):
+      @add__init__
+      def `SubVector` as NewFromVector(self, t: VectorBase,
+                                       origin: int, length: int)
+
+      @add__init__
+      def `SubVector` as NewFromCopy(self, other: SubVector)
+
+    # FIXME: These do not work!
+    # def ApproxEqual(a: VectorBase, b: VectorBase, tol: float = default) -> bool
+    #
+    # def AssertEqual(a: VectorBase, b: VectorBase, tol: float = default) -> bool
+    #
+    # def VecVec(v1: VectorBase, v2: VectorBase) -> float
