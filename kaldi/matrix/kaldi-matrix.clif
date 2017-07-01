@@ -15,8 +15,6 @@ from "matrix/kaldi-matrix.h":
       # def Data(self) -> float*
       # def RowData(self) -> float*
 
-      def Row(self, r: int) -> SubVector
-
       # FIXME(Dogan): This fails becasue SubVector assignment op is private.
       # @sequential
       # def `Row` as __getitem__(self, r: int) -> SubVector
