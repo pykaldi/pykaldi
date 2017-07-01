@@ -15,12 +15,6 @@ import os
 
 
 ################################################################################
-# https://github.com/pytorch/pytorch/blob/master/tools/setup_helpers/env.py
-################################################################################
-def check_env_flag(name):
-    return os.getenv(name) in ['ON', '1', 'YES', 'TRUE', 'Y']
-
-################################################################################
 # https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
 ################################################################################
 def which(program):
@@ -38,11 +32,10 @@ def which(program):
                 return exe_file
     return None
 
-
 ################################################################################
 # Check variables / find programs
 ################################################################################
-DEBUG = check_env_flag('DEBUG')
+DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = which("pyclif")
 CWD = os.path.dirname(os.path.abspath(__file__))
 
@@ -151,6 +144,7 @@ extra_compile_args = [
     '-DHAVE_ATLAS',
     '-DKALDI_PARANOID'
 ]
+
 extra_link_args = []
 
 libraries = [':_clif.so']
@@ -160,7 +154,7 @@ if DEBUG:
     extra_link_args += ['-O0', '-g']
 
 ################################################################################
-# Declare extensions and package
+# Declare extensions and packages
 ################################################################################
 extensions = []
 
@@ -215,12 +209,12 @@ kaldi_matrix = Extension(
     language='c++',
     extra_compile_args=extra_compile_args,
     include_dirs=include_dirs,
-    library_dirs=library_dirs+['build/lib/kaldi/matrix'],
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
     runtime_library_dirs=runtime_library_dirs,
-    libraries=[':matrix_common.so', ':kaldi_vector.so', 'kaldi-matrix', 'kaldi-base'] + libraries,
+    libraries=[':kaldi_vector.so', ':matrix_common.so', 'kaldi-matrix',
+               'kaldi-base'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_matrix)
-
 
 packages = find_packages()
 

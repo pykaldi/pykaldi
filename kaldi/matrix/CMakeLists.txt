@@ -5,5 +5,5 @@ add_pyclif_library("kaldi_vector" kaldi-vector.clif
 )
 
 add_pyclif_library("kaldi_matrix" kaldi-matrix.clif
-  CLIF_DEPS matrix_common
+  CLIF_DEPS kaldi_vector matrix_common
 )
