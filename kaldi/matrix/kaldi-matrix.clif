@@ -184,11 +184,52 @@ from "matrix/kaldi-matrix.h":
             # Note (VM):
             # I'm skipping the templated function, assuming we only deal with float
             def AddVecToRows(self, alpha:float, v:VectorBase)
+            
             def AddVecToCols(self, alpha:float, v:VectorBase)
 
             def AddMat(self, alpha:float, M:MatrixBase, transA:MatrixTransposeType = default)
+            
             def SymAddMat2(self, alpha:float, M:MatrixBase, transA:MatrixTransposeType, beta:float)
+            
             def AddDiagVecMat(self, alpha:float, v:VectorBase, M:MatrixBase, transM:MatrixTransposeType, beta:float = default)
+            
+            def AddMatDiagVec(self, alpha:float, M:MatrixBase, transM:MatrixTransposeType, v:VectorBase, beta:float = default)
+
+            def AddMatMatElements(self, alpha: float, A:MatrixBase, B:MatrixBase, beta:float)
+
+            # FIXME:
+            # Missing SpMatrix definition
+            # def AddSp(self, alpha:float, S:SpMatrix)
+
+            def AddMatMat(self, alpha:float, A:MatrixBase, transA:MatrixTransposeType, B:MatrixBase, transB:MatrixTransposeType, beta:float)
+
+            def SetMatMatDivMat(self, A:MatrixBase, B:MatrixBase, C:MatrixBase)
+
+            def AdMatSmat(self, A:MatrixBase, transA:MatrixTransposeType, B:MatrixBase, transB:MatrixTransposeType, beta:float)
+
+            def AddSmatMat(self, A:MatrixBase, transA:MatrixTransposeType, B:MatrixBase, transB:MatrixTransposeType, beta:float)
+
+            def AddMatMatMat(self, alpha:float, A:MatrixBase, transA:MatrixTransposeType, B:MatrixBase, transB:MatrixTransposeType, C:MatrixBase, transC:MatrixTransposeType, beta:float)
+
+            # FIXME:
+            # Missing definitions
+            # def AddSpMat(self, alpha:float, A:SpMatrix, B:MatrixBase, transB:MatrixTransposeType, beta:float)
+            # def AddTpMat(self, alpha:float, A:TpMatrix, transA:MatrixTransposeType, B:MatrixBase, transB:MatrixTransposeType, beta:float)
+            # def AddMatSp(self, alpha:float, A:MatrixBase, transA:MatrixTransposeType, B:SpMatrix, beta:float)
+            # def AddMatTp(self, alpha:float, A:MatrixBase, transA:MatrixTransposeType, B:TpMatrix, transB:MatrixTransposeType, beta:float)
+            # def AddTpTp
+            # def AddSpSp
+
+            def CopyLowerToUpper(self)
+            
+            def CopyUpperToLower(self)
+
+            def OrthogonalizeRows(self)
+            
+            # FIXME: How?!
+            # void Read(std::istream & in, bool binary, bool add = false);
+            # void Write(std::ostream & out, bool binary) const;
+ 
 
       class `Matrix<float>` as Matrix(MatrixBase):
 
