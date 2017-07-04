@@ -34,8 +34,33 @@ from "matrix/kaldi-matrix.h":
       def SetRandUniform(self)
 
       # Copying functions #
+      def CopyFromMat(self, M:MatrixBase, trans:MatrixTransposeType = default)
+
+      # FIXME (VM): Missing definitions
+      # def `CopyFromMat` as CopyFromCudaMat(self, M:CuMatrixBase, trans:MatrixTransposeType = default)
+      # def CopyFromMat(self, M:CompressedMatrix);
+      # def CopyFromSp(self, M:SpMatrix);
+      # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
+
+      # FIXME (VM):
+      # def CopyRowsFromVec(self, v:VectorBase)
+
+      # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
+
+      # FIXME (VM):
+      # Cannot implement
+      # void CopyRowsFromVec(const VectorBase<OtherReal> &v);
+
+      def `CopyColsFromVec` as CopyColsFromVec(self, v:VectorBase)
+
+      def CopyColFromVec(self, v:VectorBase, col:`MatrixIndexT` as int)
+
+      def CopyRowFromVec(self, v:VectorBase, row:`MatrixIndexT` as int)
+
+      def CopyDiagFromVec(self, v:VectorBase)
 
       # Accessing sub-parts of matrix #
+
 
       # Special functions #
 
@@ -246,6 +271,34 @@ from "matrix/kaldi-matrix.h":
       #
       # @sequential
       # def `RemoveRow` as __delitem__(self, r: int)
+
+      # FIXME (VM):
+      # Missing definition
+      # @add__init__
+      # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
+                  # MatrixTransposeType trans = kNoTrans);
+
+      def Swap(self, other:Matrix)
+
+      # def `Swap` as SwapCuda(self, mat:CuMatrix)
+
+      # FIXME (VM):
+      # This doesnt work because function cannot be specialized
+      # @add__init__
+      # def `Matrix` as FromMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
+
+
+
+    # FIXME (VM):
+    # Circular definition
+    # class `SubMatrix<float>` as SubMatrix(MatrixBase):
+        # pass
+
+    # FIXME (VM):
+    # This doesn't work because "Function template can't be specialized with these arguments.
+    #                            Clif expects it in the file matrix/kaldi-matrix.h but found it at 
+    #                            /home/dogan/tools/kaldi/src/base/kaldi-math.h:262:1"
+    # def ApproxEqual(A:MatrixBase, B:MatrixBase, tol:float = default) -> bool
 
 
     def TraceMatMat(A: MatrixBase, B: MatrixBase,
