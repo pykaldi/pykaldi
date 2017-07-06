@@ -263,11 +263,11 @@ from "matrix/kaldi-vector.h":
 
     # NOTE(Dogan): Explicit mention of compatible type `float` is needed for
     # template deduction. CLIF defaults to `double` for Python float.
-    def ApproxEqual(a: VectorBase, b: VectorBase,
-                    tol: `float` as float = default) -> bool
+    def `ApproxEqual` as ApproxEqualVector(a: VectorBase, b: VectorBase,
+                                           tol: `float` as float = default) -> bool
 
-    def AssertEqual(a: VectorBase, b: VectorBase,
-                    tol: `float` as float = default)
+    def `AssertEqual` as AssertEqualVector(a: VectorBase, b: VectorBase,
+                                           tol: `float` as float = default)
 
     def VecVec(v1: VectorBase, v2: VectorBase) -> float
 
