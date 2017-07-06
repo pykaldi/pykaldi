@@ -2,304 +2,377 @@ from "matrix/matrix-common_clifwrap.h" import *
 from "matrix/kaldi-vector_clifwrap.h" import *
 
 from "matrix/kaldi-matrix.h":
-  namespace `kaldi`:
-    class `MatrixBase<float>` as MatrixBase:
+    namespace `kaldi`:
+        class `MatrixBase<float>` as MatrixBase:
+            num_rows_: `MatrixIndexT` as int = property(`NumRows`)
+            num_cols_: `MatrixIndexT` as int = property(`NumCols`)
+            
+            # FIXME (VM): maybe?
+            # stride_: `MatrixIndexT` as int = property(`stride_`)
 
-      num_rows_: `MatrixIndexT` as int = property(`NumRows`)
-      num_cols_: `MatrixIndexT` as int = property(`NumCols`)
+            def Stride(self) -> int
 
-      def Stride(self) -> int
+            def SizeInBytes(self) -> int
 
-      def SizeInBytes(self) -> int
+            # def Data(self) -> float*
+            # def RowData(self) -> float*
 
-      # def Data(self) -> float*
-      # def RowData(self) -> float*
+            # FIXME(Dogan): This fails becasue SubVector assignment op is private.
+            # @sequential
+            # def `Row` as __getitem__(self, r: int) -> SubVector
 
-      # FIXME(Dogan): This fails becasue SubVector assignment op is private.
-      # @sequential
-      # def `Row` as __getitem__(self, r: int) -> SubVector
+            # FIXME(Dogan): Argument order is reversed in C++. Handle in Python.
+            # @sequential
+            # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
 
-      # FIXME(Dogan): Argument order is reversed in C++. Handle in Python.
-      # @sequential
-      # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
+            # def Index
 
-      # def Index
+            def SetZero(self)
 
-      def SetZero(self)
+            def SetUnit(self)
 
-      def SetUnit(self)
+            def SetRandn(self)
 
-      def SetRandn(self)
+            def SetRandUniform(self)
 
-      def SetRandUniform(self)
+            # Copying functions #
+            def CopyFromMat(self, M:MatrixBase, trans:MatrixTransposeType = default)
 
-      # Copying functions #
-      def CopyFromMat(self, M:MatrixBase, trans:MatrixTransposeType = default)
+            # FIXME (VM): Missing definitions
+            # def `CopyFromMat` as CopyFromCudaMat(self, M:CuMatrixBase, trans:MatrixTransposeType = default)
+            # def CopyFromMat(self, M:CompressedMatrix);
+            # def CopyFromSp(self, M:SpMatrix);
+            # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
 
-      # FIXME (VM): Missing definitions
-      # def `CopyFromMat` as CopyFromCudaMat(self, M:CuMatrixBase, trans:MatrixTransposeType = default)
-      # def CopyFromMat(self, M:CompressedMatrix);
-      # def CopyFromSp(self, M:SpMatrix);
-      # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
+            # FIXME (VM):
+            # def CopyRowsFromVec(self, v:VectorBase)
 
-      # FIXME (VM):
-      # def CopyRowsFromVec(self, v:VectorBase)
+            # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
-      # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
+            # FIXME (VM):
+            # Cannot implement
+            # void CopyRowsFromVec(const VectorBase<OtherReal> &v);
 
-      # FIXME (VM):
-      # Cannot implement
-      # void CopyRowsFromVec(const VectorBase<OtherReal> &v);
+            def `CopyColsFromVec` as CopyColsFromVec(self, v:VectorBase)
 
-      def `CopyColsFromVec` as CopyColsFromVec(self, v:VectorBase)
+            def CopyColFromVec(self, v:VectorBase, col:`MatrixIndexT` as int)
 
-      def CopyColFromVec(self, v:VectorBase, col:`MatrixIndexT` as int)
+            def CopyRowFromVec(self, v:VectorBase, row:`MatrixIndexT` as int)
 
-      def CopyRowFromVec(self, v:VectorBase, row:`MatrixIndexT` as int)
+            def CopyDiagFromVec(self, v:VectorBase)
 
-      def CopyDiagFromVec(self, v:VectorBase)
+            # Accessing sub-parts of matrix #
 
-      # Accessing sub-parts of matrix #
 
+            # Special functions #
 
-      # Special functions #
+            def Sum(self) -> float
 
-      def Sum(self) -> float
+            def Trace(self, check_square: bool = default) -> float
 
-      def Trace(self, check_square: bool = default) -> float
+            def Max(self) -> float
 
-      def Max(self) -> float
+            def Min(self) -> float
 
-      def Min(self) -> float
+            def `MulElements` as __mult__(self, A: MatrixBase)
 
-      def `MulElements` as __mult__(self, A: MatrixBase)
+            def `DivElements` as __div__(self, A: MatrixBase)
 
-      def `DivElements` as __div__(self, A: MatrixBase)
+            def Scale(self, alpha: float)
 
-      def Scale(self, alpha: float)
+            def `Max` as MaxWithMat(self, A: MatrixBase)
 
-      def `Max` as MaxWithMat(self, A: MatrixBase)
+            def `Min` as MinWithMat(self, A: MatrixBase)
 
-      def `Min` as MinWithMat(self, A: MatrixBase)
+            def MulColsVec(self, scale: VectorBase)
 
-      def MulColsVec(self, scale: VectorBase)
+            def MulRowsVec(self, scale: VectorBase)
 
-      def MulRowsVec(self, scale: VectorBase)
+            def MulRowsGroupMat(self, src: MatrixBase)
 
-      def MulRowsGroupMat(self, src: MatrixBase)
+            # FIXME:
+            # def LogDet(self, det_sign: float) -> float
+            # def Invert(self, log_det: float = default, det_sign: float = default, inverse_needed: bool = default)
+            # def InvertDouble(self, logDet: float = default, det_sign: float = default, inverse_needed: bool = default)
 
-      # FIXME:
-      # def LogDet(self, det_sign: float) -> float
-      # def Invert(self, log_det: float = default, det_sign: float = default, inverse_needed: bool = default)
-      # def InvertDouble(self, logDet: float = default, det_sign: float = default, inverse_needed: bool = default)
+            def InvertElements(self)
 
-      def InvertElements(self)
+            def Transpose(self)
 
-      def Transpose(self)
+            def CopyCols(self, src: MatrixBase, indices: int)
 
-      def CopyCols(self, src: MatrixBase, indices: int)
+            def CopyRows(self, src: MatrixBase, indices: int)
 
-      def CopyRows(self, src: MatrixBase, indices: int)
+            def AddCols(self, src: MatrixBase, indices: int)
 
-      def AddCols(self, src: MatrixBase, indices: int)
+            # FIXME:
+            # void CopyRows(const Real *const *src);
+            # void CopyToRows(Real *const *dst) const;
 
-      # FIXME:
-      # void CopyRows(const Real *const *src);
-      # void CopyToRows(Real *const *dst) const;
+            def AddRows(self, alpha: float, src: MatrixBase, indexes: int)
 
-      def AddRows(self, alpha: float, src: MatrixBase, indexes: int)
+            # FIXME:
+            # void AddRows(Real alpha, const Real *const *src);
+            # void AddToRows(Real alpha, Real *const *dst) const;
+            #
 
-      # FIXME:
-      # void AddRows(Real alpha, const Real *const *src);
-      # void AddToRows(Real alpha, Real *const *dst) const;
-      #
+            def ApplyFloor(self, floor_val: float)
 
-      def ApplyFloor(self, floor_val: float)
+            def ApplyCeiling(self, ceiling_val: float)
 
-      def ApplyCeiling(self, ceiling_val: float)
+            def ApplyLog(self)
 
-      def ApplyLog(self)
+            def ApplyExp(self)
 
-      def ApplyExp(self)
+            def ApplyPow(self, power: float)
 
-      def ApplyPow(self, power: float)
+            def ApplyPowAbs(self, power: float, include_sign: bool = default)
 
-      def ApplyPowAbs(self, power: float, include_sign: bool = default)
+            def ApplyHeaviside(self)
 
-      def ApplyHeaviside(self)
+            # FIXME:
+            #  This doesn't work because VectorBase<Real>() is protected
+            # def Eig(self, P: MatrixBase) -> (eigs_real: VectorBase, eigs_imag: VectorBase)
 
-      # FIXME:
-      #  This doesn't work because VectorBase<Real>() is protected
-      # def Eig(self, P: MatrixBase) -> (eigs_real: VectorBase, eigs_imag: VectorBase)
+            def Power(self, pow: float) -> bool
 
-      def Power(self, pow: float) -> bool
+            # FIXME:
+            # void Svd(VectorBase<Real> *s, MatrixBase<Real> *U, MatrixBase<Real> *Vt) const;
 
-      # FIXME:
-      # void Svd(VectorBase<Real> *s, MatrixBase<Real> *U, MatrixBase<Real> *Vt) const;
+            def Svd(self, s: VectorBase)
 
-      def Svd(self, s: VectorBase)
+            def MinSingularValue(self) -> float
 
-      def MinSingularValue(self) -> float
+            def TestUninitialized(self)
 
-      def TestUninitialized(self)
+            def Cond(self) -> float
 
-      def Cond(self) -> float
+            def IsSymmetric(self, cutoff: float = default) -> bool
 
-      def IsSymmetric(self, cutoff: float = default) -> bool
+            def IsDiagonal(self, cutoff: float = default) -> bool
 
-      def IsDiagonal(self, cutoff: float = default) -> bool
+            def IsUnit(self, cutoff: float = default) -> bool
 
-      def IsUnit(self, cutoff: float = default) -> bool
+            def IsZero(self, cutoff: float = default) -> bool
 
-      def IsZero(self, cutoff: float = default) -> bool
+            def FrobeniusNorm(self) -> float
 
-      def FrobeniusNorm(self) -> float
+            def ApproxEqual(self, other: MatrixBase, tol: float = default) -> bool
 
-      def ApproxEqual(self, other: MatrixBase, tol: float = default) -> bool
+            def Equal(self, other: MatrixBase) -> bool
 
-      def Equal(self, other: MatrixBase) -> bool
+            def LargestAbsElem(self) -> float
 
-      def LargestAbsElem(self) -> float
+            def LogSumExp(self, prune: float = default) -> float
 
-      def LogSumExp(self, prune: float = default) -> float
+            def ApplySoftMax(self) -> float
 
-      def ApplySoftMax(self) -> float
+            def Sigmoid(self, src: MatrixBase)
 
-      def Sigmoid(self, src: MatrixBase)
+            def Heaviside(self, src: MatrixBase)
 
-      def Heaviside(self, src: MatrixBase)
+            def SoftHinge(self, src: MatrixBase)
 
-      def SoftHinge(self, src: MatrixBase)
+            def GroupPnorm(self, src: MatrixBase, power: float)
 
-      def GroupPnorm(self, src: MatrixBase, power: float)
+            # FIXME:
+            # This doesn't follow Google conventions for C++,
+            # where inputs must come before any output
+            # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase, power: float)
 
-      # FIXME:
-      # This doesn't follow Google conventions for C++,
-      # where inputs must come before any output
-      # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase, power: float)
+            def GroupMax(self, src: MatrixBase)
 
-      def GroupMax(self, src: MatrixBase)
+            # FIXME:
+            # def GroupMaxDeriv(self, input: MatrixBase) -> (output: MatrixBase)
 
-      # FIXME:
-      # def GroupMaxDeriv(self, input: MatrixBase) -> (output: MatrixBase)
+            def Tanh(self, src: MatrixBase)
 
-      def Tanh(self, src: MatrixBase)
+            def DiffSigmoid(self, value: MatrixBase, diff: MatrixBase)
 
-      def DiffSigmoid(self, value: MatrixBase, diff: MatrixBase)
+            def DiffTanh(self, value: MatrixBase, diff: MatrixBase)
 
-      def DiffTanh(self, value: MatrixBase, diff: MatrixBase)
+            def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase, check_thresh: float = default)
 
-      def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase, check_thresh: float = default)
+            # FIXME:
+            # What to do here?
+            # friend Real kaldi::TraceMatMat<Real>(const MatrixBase<Real> &A,
+            # const MatrixBase<Real> &B, MatrixTransposeType trans);  // tr (A B)
 
-      # FIXME:
-      # What to do here?
-      # friend Real kaldi::TraceMatMat<Real>(const MatrixBase<Real> &A,
-      # const MatrixBase<Real> &B, MatrixTransposeType trans);  // tr (A B)
+            def Add(self, alpha: float)
 
-      def Add(self, alpha: float)
+            def AddToDiag(self, alpha: float)
 
-      def AddToDiag(self, alpha: float)
+            def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase)
 
-      def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase)
+            #   template<typename OtherReal>
+            #   void AddVecVec(const Real alpha, const VectorBase<OtherReal> &a,
+            #       const VectorBase<OtherReal> &b);
 
-      #   template<typename OtherReal>
-      #   void AddVecVec(const Real alpha, const VectorBase<OtherReal> &a,
-      #       const VectorBase<OtherReal> &b);
+            # Note (VM):
+            # I'm skipping the templated function, assuming we only deal with float
+            def AddVecToRows(self, alpha: float, v: VectorBase)
 
-      # Note (VM):
-      # I'm skipping the templated function, assuming we only deal with float
-      def AddVecToRows(self, alpha: float, v: VectorBase)
+            def AddVecToCols(self, alpha: float, v: VectorBase)
 
-      def AddVecToCols(self, alpha: float, v: VectorBase)
+            def AddMat(self, alpha: float, M: MatrixBase, transA: MatrixTransposeType = default)
 
-      def AddMat(self, alpha: float, M: MatrixBase, transA: MatrixTransposeType = default)
+            def SymAddMat2(self, alpha: float, M: MatrixBase, transA: MatrixTransposeType, beta: float)
 
-      def SymAddMat2(self, alpha: float, M: MatrixBase, transA: MatrixTransposeType, beta: float)
+            def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase, transM: MatrixTransposeType, beta: float = default)
 
-      def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase, transM: MatrixTransposeType, beta: float = default)
+            def AddMatDiagVec(self, alpha: float, M: MatrixBase, transM: MatrixTransposeType, v: VectorBase, beta: float = default)
 
-      def AddMatDiagVec(self, alpha: float, M: MatrixBase, transM: MatrixTransposeType, v: VectorBase, beta: float = default)
+            def AddMatMatElements(self, alpha: float, A: MatrixBase, B: MatrixBase, beta: float)
 
-      def AddMatMatElements(self, alpha: float, A: MatrixBase, B: MatrixBase, beta: float)
+            # FIXME:
+            # Missing SpMatrix definition
+            # def AddSp(self, alpha: float, S:SpMatrix)
 
-      # FIXME:
-      # Missing SpMatrix definition
-      # def AddSp(self, alpha: float, S:SpMatrix)
+            def AddMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
 
-      def AddMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase, C: MatrixBase)
 
-      def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase, C: MatrixBase)
+            def AddMatSmat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
 
-      def AddMatSmat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddSmatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
 
-      def AddSmatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddMatMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, C: MatrixBase, transC: MatrixTransposeType, beta: float)
 
-      def AddMatMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, C: MatrixBase, transC: MatrixTransposeType, beta: float)
+            # FIXME:
+            # Missing definitions
+            # def AddSpMat(self, alpha: float, A:SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            # def AddTpMat(self, alpha: float, A:TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            # def AddMatSp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:SpMatrix, beta: float)
+            # def AddMatTp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:TpMatrix, transB: MatrixTransposeType, beta: float)
+            # def AddTpTp
+            # def AddSpSp
 
-      # FIXME:
-      # Missing definitions
-      # def AddSpMat(self, alpha: float, A:SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float)
-      # def AddTpMat(self, alpha: float, A:TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
-      # def AddMatSp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:SpMatrix, beta: float)
-      # def AddMatTp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:TpMatrix, transB: MatrixTransposeType, beta: float)
-      # def AddTpTp
-      # def AddSpSp
+            def CopyLowerToUpper(self)
 
-      def CopyLowerToUpper(self)
+            def CopyUpperToLower(self)
 
-      def CopyUpperToLower(self)
+            def OrthogonalizeRows(self)
 
-      def OrthogonalizeRows(self)
+            # FIXME: How?!
+            # void Read(std::istream & in, bool binary, bool add = false);
+            # void Write(std::ostream & out, bool binary) const;
 
-      # FIXME: How?!
-      # void Read(std::istream & in, bool binary, bool add = false);
-      # void Write(std::ostream & out, bool binary) const;
+        class `Matrix<float>` as Matrix(MatrixBase):
+            
+            @add__init__
+            def Matrix(self, r:`MatrixIndexT` as int, c:`MatrixIndexT` as int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
-
-    class `Matrix<float>` as Matrix(MatrixBase):
-
-      @add__init__
-      def `Matrix` as MatrixWithSize(self, r: int, c: int,
-                                     resize_type: MatrixResizeType = default,
-                                     stride_type: MatrixStrideType = default)
-
-      # NOTE: Both of these methods need to be defined in the derived class, or
-      # delitem code corrupts the getitem code generated for the base class.
-      # See: https://github.com/google/clif/issues/8
-      # @sequential
-      # def `Row` as __getitem__(self, r: int) -> SubVector
-      #
-      # @sequential
-      # def `RemoveRow` as __delitem__(self, r: int)
-
-      # FIXME (VM):
-      # Missing definition
-      # @add__init__
-      # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
+            # TODO:
+            # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
                   # MatrixTransposeType trans = kNoTrans);
 
-      def Swap(self, other:Matrix)
+            def Swap(self, other:Matrix)
 
-      # def `Swap` as SwapCuda(self, mat:CuMatrix)
+            # TODO:
+            # void Swap(CuMatrix<Real> *mat);
 
-      # FIXME (VM):
-      # This doesnt work because function cannot be specialized
-      # @add__init__
-      # def `Matrix` as FromMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
+            # FIXME (VM):
+            # @add__init__
+            # def `Matrix` as FromMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
+
+            # TODO:
+            # @add__init__
+            # def `Matrix` as FromSpMatrix(self, M:SpMatrix)
+            # @add__init__
+            # def `Matrix` as FromCompressedMatrix(self, C:CompressedMatrix)
+            # @add__init__
+            # def `Matrix` as FromCompressedMatrix(self, M:TpMatrix, trans:MatrixTransposeType = default)
+
+            # FIXME: How?!
+            # void Read(std::istream & in, bool binary, bool add = false);
+
+            def RemoveRow(self, i:`MatrixIndexT` as int)
+
+            def Transpose(self)
+
+            def Resize(self, r:`MatrixIndexT` as int, c:`MatrixIndexT` as int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+
+            # FIXME (VM):
+            # def `operator` as __copy__(self, other:MatrixBase)
+
+            # NOTE (VM):
+            # Clif complains about random inits... might not work
+            def `Init` as __init__(self, r:`MatrixIndexT` as int, c:`MatrixIndexT` as int)
+
+        class HtkHeader:
+            mNSamples: int 
+            mSamplePeriod: int 
+            mSampleSize: int 
+            mSampleKind: int
+
+        # TODO:
+        # template<typename Real>
+        # bool ReadHtk(std::istream &is, Matrix<Real> *M, HtkHeader *header_ptr);
+
+        # // Write (HTK format) features to file from matrix.
+        # template<typename Real>
+        # bool WriteHtk(std::ostream &os, const MatrixBase<Real> &M, HtkHeader htk_hdr);
+
+        # // Write (CMUSphinx format) features to file from matrix.
+        # template<typename Real>
+        # bool WriteSphinx(std::ostream &os, const MatrixBase<Real> &M);
+
+        # FIXME (VM):
+        # Circular definition
+        class `SubMatrix<float>` as SubMatrix(MatrixBase):
+            
+            @add__init__
+            def SubMatrix(self, T:MatrixBase, ro:`MatrixIndexT` as int, r:`MatrixIndexT` as int, co:`MatrixIndexT` as int, c:`MatrixIndexT` as int)
+
+            # FIXME (VM):
+            # Name "SubMatrix" already defined in class SubMatrix (wtf??)
+            # @add__init__
+            # def SubMatrix(self, other:SubMatrix)
 
 
 
-    # FIXME (VM):
-    # Circular definition
-    # class `SubMatrix<float>` as SubMatrix(MatrixBase):
-        # pass
+        # FIXME (VM):
+        # This doesn't work because "Function template can't be specialized with these arguments.
+        #                            Clif expects it in the file matrix/kaldi-matrix.h but found it at 
+        #                            /home/dogan/tools/kaldi/src/base/kaldi-math.h:262:1"
+        # def ApproxEqual(A:MatrixBase, B:MatrixBase, tol:float = default) -> bool
+        # def AssertEqual(A:MatrixBase, B:MatrixBase, tol:float = default)
 
-    # FIXME (VM):
-    # This doesn't work because "Function template can't be specialized with these arguments.
-    #                            Clif expects it in the file matrix/kaldi-matrix.h but found it at 
-    #                            /home/dogan/tools/kaldi/src/base/kaldi-math.h:262:1"
-    # def ApproxEqual(A:MatrixBase, B:MatrixBase, tol:float = default) -> bool
+        # FIXME (VM):
+        # Clif cannot find these methods
+        # def `TraceMat<float>` as TraceMat(A: MatrixBase) -> float
+
+        # def `TraceMatMatMat<float>` as TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
+                                                      # B: MatrixBase, transB: MatrixTransposeType,
+                                                      # C: MatrixBase, transC: MatrixTransposeType) -> float
+
+        # def `TraceMatMatMatMat<float>` as TraceMatMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
+                                                            # B: MatrixBase, transB: MatrixTransposeType,
+                                                            # C: MatrixBase, transC: MatrixTransposeType,
+                                                            # D: MatrixBase, transD: MatrixTransposeType) -> float
+
+        # def `SortSVD<float>` as SortSVD(s: VectorBase, U: MatrixBase, Vt: MatrixBase, sort_on_absolute_value: bool = default)
 
 
-    def TraceMatMat(A: MatrixBase, B: MatrixBase,
-                    trans: MatrixTransposeType = default) -> float
+        # def `CreateEigenvalueMatrix<float>` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase) -> (D:MatrixBase)
+
+        # TODO:
+        # template<typename Real>
+        # bool AttemptComplexPower(Real *x_re, Real *x_im, Real power);
+
+
+        # template<typename Real>
+        # std::ostream & operator << (std::ostream & Out, const MatrixBase<Real> & M);
+
+        # template<typename Real>
+        # std::istream & operator >> (std::istream & In, MatrixBase<Real> & M);
+
+        # // The Matrix read allows resizing, so we override the MatrixBase one.
+        # template<typename Real>
+        # std::istream & operator >> (std::istream & In, Matrix<Real> & M);
+
+
+        # template<typename Real>
+        # bool SameDim(const MatrixBase<Real> &M, const MatrixBase<Real> &N) {
+        #   return (M.NumRows() == N.NumRows() && M.NumCols() == N.NumCols());
+        # }
