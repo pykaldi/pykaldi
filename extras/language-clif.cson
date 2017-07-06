@@ -1,0 +1,18 @@
+# If you want some examples of settings, check out:
+# https://github.com/atom/language-gfm/blob/master/settings/gfm.cson
+
+'.source.clif':
+  'editor':
+    'commentStart': '# '
+    'tabLength': 2
+    'softTabs': true
+    'preferredLineLength': 79
+    'autoIndentOnPaste': false
+    'increaseIndentPattern': '^\\s*(from|namespace|class|staticmethods|enum)\\b.*:\\s*$'
+  'bracket-matcher':
+    autocompleteCharacters: [
+      '()'
+      '<>'
+      '""'
+      '``'
+    ]
