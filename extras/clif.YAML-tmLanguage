@@ -9,37 +9,136 @@ patterns:
   - include: '#comments'
   - include: '#types'
   - include: '#keywords'
-
-  - comment: String literal
-    begin: \"
-    beginCaptures:
-      '0': {name: punctuation.definition.string.begin}
-    end: \"
-    endCaptures:
-      '0': {name: punctuation.definition.string.end}
-    name: string.quoted.double
-    patterns:
-    - include: '#string_escaped_char'
+  - include: '#string_quoted_double'
 
   - comment: Clif namespace
     name: meta.namespace.clif
-    begin: \b(namespace)\s+\`
+    begin: \b(namespace)\s+
     beginCaptures:
       '1': {name: storage.type.namespace.clif}
-    end: (\`\:)|\s*($\n?|#.*$\n?)
+    end: (\:)|\s*($\n?|#.*$\n?)
     endCaptures:
       '1': {name: punctuation.section.namespace.begin.clif}
       '2': {name: invalid.illegal.incorrect-namespace-name.clif}
     patterns:
-    - contentName: entity.name.type.namespace.clif
-      begin: (?=[[:alpha:]_][[:alnum:]_]*)
-      end: (?![[:alnum:]_])
+    - include: '#namespace'
+
+  - comment: Clif static methods
+    name: meta.staticmethods.clif
+    begin: \b(staticmethods\s+from)\s+
+    beginCaptures:
+      '1': {name: storage.type.staticmethods.clif}
+    end: (\:)|\s*($\n?|#.*$\n?)
+    endCaptures:
+      '1': {name: punctuation.section.namespace.begin.clif}
+    patterns:
+    - include: "#namespace"
+
+  - comment: Clif capsule
+    match: ^\s*(capsule)\s+(\`[A-Za-z_][A-Za-z0-9_]*\`\s*(as))?\s*([A-Za-z_][A-Za-z0-9_]*)
+    captures:
+      '1': {name: keyword.other.clif}
+      '2': {name: variable.clif}
+      '3': {name: keyword.other.clif}
+      '4': {name: variable.clif}
+
+  - comment: Clif use
+    contentName: entity.name.type.clif
+    begin: ^\s*(use)
+    beginCaptures:
+      '1': {name: keyword.other.clif}
+    end: $\n?
+    patterns:
+    - include: '#cclass'
+
+    - match: \b(as)\b 
+      name: keyword.other.clif
+    
+    - include: '#types'
+
+  - comment: Clif variable
+    name: meta.other.clif 
+    begin: ^\s*(\`[A-Za-z_][A-Za-z0-9_]*\`\s*(as))?\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?=\:)
+    beginCaptures:
+      '1': {name: variable.clif}
+      '2': {name: keyword.other.clif}
+      '3': {name: variable.clif}
+    end: $\n?
+    patterns:
+    - contentName: entity.name.type.clif
+      begin: (\:)
+      end: (?=\=|$\n?)
       patterns:
-      - include: '#string_escaped_char'
+      - match: \`[A-Za-z_][A-Za-z0-9_]*\`
+        name: entity.name.type.clif
+
+      - match: (\b(as)\b) 
+        name: keyword.other.clif 
+
+      - include: '#types'
+
+    - name: meta.other.clif 
+      begin: (\=\s*(property)\s*\()
+      beginCaptures:
+        '1': {name: support.function.clif}
+      end: (\))
+      patterns:
+      - include: '#cfunction'
+
+  - comment: Clif constant
+    name: meta.other.clif 
+    begin: ^\s*(const)
+    beginCaptures:
+      '1': {name: storage.modifier.clif}
+    end: ($\n?)
+    patterns:
+    - match: \`[A-Za-z_][A-Za-z0-9_]*\`
+      name: constant.c.clif 
+
+    - match: \b(as)\b
+      name: keyword.other.clif
+
+    - match: ([A-Za-z_][A-Za-z0-9_]*)
+      name: constant.python.clif
+
+    - name: meta.other.clif 
+      begin: (\:)
+      end: (?=$\n?)
+      patterns:
+      - match: (\`[A-Za-z_][A-Za-z0-9_]*\`)
+        name: entity.name.type.clif
+      - match: \b(as)\b 
+        name: keyword.other.clif
+      - include: '#types'
+
+  - comment: Clif enum
+    name: meta.other.clif
+    begin: ^\s*(enum)
+    beginCaptures:
+      '1': {name: keyword.other.clif}
+    end: ((with)\s*:) | ($\n?)
+    endCaptures:
+      '2': {name: keyword.other.clif}
+    patterns:
+    - include: '#cclass'
+
+    - match: \b(as)\b
+      name: keyword.other.clif 
+
+    - match: ([A-Za-z_][A-Za-z0-9_]*)
+      name: entity.name.type
+
+  - comment: Clif enum values
+    name: meta.other.clif 
+    match: ^\s*(\`[A-Za-z_][A-Za-z0-9_]*\`)\s*(as)\s*([A-Za-z_][A-Za-z0-9_]*)\s*$
+    captures:
+      '1': {name: constant.numeric.clif}
+      '2': {name: keyword.other.clif}
+      '3': {name: constant.numeric.clif}
 
   - comment: Clif class
     name: meta.class.clif 
-    begin: \b(class)\s+
+    begin: ^\s*(class)\s+
     beginCaptures:
       '1': {name: storage.type.class.clif}
     end: (\:)|\s*($\n?|#.*$\n?)
@@ -47,10 +146,16 @@ patterns:
       '1': {name: punctuation.section.class.begin.clif}
       '2': {name: invalid.illegal.missing-section-begin.clif}
     patterns:
-    - include: '#Crename'
+    - include: '#cclass'
 
-    - name: entity.name.type.class.python.clif
-      match: ([[:alpha:]_][[:alnum:]_]*(?=\:|\())
+    - match: \b(as)\b 
+      name: keyword.other.clif
+
+    - begin: (?=[A-Za-z_][A-Za-z0-9_]*)
+      contentName: entity.name.type.class.python.clif 
+      end: (?![A-Za-z0-9_])
+      patterns:
+      - include: '#entity_name_class'
 
     - name: meta.class.inheritance.python
       begin: (\()
@@ -74,14 +179,19 @@ patterns:
     end: ($\n?)
     patterns:
     # Possible C rename
-    - include: '#Crename'
+    - include: '#cfunction'
 
-    # Function name
-    - name: entity.name.function.clif
-      match: ([[:alpha:]_][[:alnum:]_]*(?=\())
+    - match: \b(as)\b 
+      name: keyword.other.clif
 
-    # Parameter list
-    - begin: (\()
+    - begin: (?=[A-Za-z_][A-Za-z0-9_]*)
+      contentName: entity.name.function.clif
+      end: (?![A-Za-z0-9_])
+      patterns:
+      - include: '#entity_name_function'
+
+    - name: meta.function.parameters.clif
+      begin: (\()
       beginCaptures:
         '1': {name: punctuation.definition.parameters.begin.clif}
       end: (\))
@@ -93,7 +203,8 @@ patterns:
       - match: (,)
         name: punctuation.separator.parameters.clif
 
-      - begin: ([[:alpha:]_][[:alnum:]_]*)\s*(\:)(?!\:)
+      - contentName: entity.name.type.clif
+        begin: ([A-Za-z_][A-Za-z0-9_]*)\s*(\:)(?!\:)
         beginCaptures:
           '1': {name: meta.function-call.arguments.clif}
           '2': {name: keyword.operator.assignment.clif}
@@ -101,7 +212,11 @@ patterns:
         # endCaptures:
         #   '1': {name: punctuation.separator.parameters.clif}
         patterns:
-        - include: '#Crename'
+        - include: '#cclass'
+
+        - match: \b(as)\b 
+          name: keyword.other.clif
+
         - include: '#types'
 
         # case for value assignation
@@ -112,7 +227,7 @@ patterns:
           patterns:
           - match: (default)
             name: variable.parameter.parameter.function.language.clif
-          - match: ([[:alpha:]_][[:alnum:]_]*)
+          - match: ([A-Za-z_][A-Za-z0-9_]*)
             name: variable.parameter.parameter.function.clif
 
     # Output type
@@ -120,11 +235,16 @@ patterns:
       begin: (-\>)
       end: (?=$\n?)
       patterns:
+      - include: '#cclass'
+
+      - match: \b(as)\b 
+        name: keyword.other.clif
+
       - include: '#types'
 
   - comment: Clif decorator
     name: meta.function.decorator.clif
-    begin: (\@[[:alpha:]_][[:alnum:]_]*)
+    begin: (\@[A-Za-z_][A-Za-z0-9_]*)
     beginCaptures:
       '1': {name: entity.name.function.decorator.clif}
     end: ($\n?)
@@ -133,14 +253,31 @@ patterns:
 repository:
   keywords:
     patterns:
-    - match: \b(from|as|import|pass|enum|const)\b
-      name: keyword.operator.control.clif
+    - match: \b(from)\b 
+      name: keyword.control.import.from.clif 
 
-  string_escaped_char:
+    - match: \b(import)\b 
+      name: keyword.control.import.clif
+
+    - match: \b(pass|return)\b 
+      name: keyword.control.statement.clif 
+
+    - match: \b(as|enum|const)\b
+      name: keyword.other.clif
+
+  string_quoted_double:
     patterns:
-    - match: \w+
-      name: constant.character.escape
-  
+    - comment: Double quoted string
+      name: string.quoted.double.single-line.clif 
+      begin: (\")
+      beginCaptures:
+        '1': {name: punctuation.definition.string.begin.clif}
+      end: ((?<=\")(\")|\")|(\n)
+      endCaptures:
+        '1': {name: punctuation.definition.string.end.clif}
+        '2': {name: meta.empty-string.double.clif}
+        '3': {name: invalid.illegal.unclosed-string.clif}
+
   comments:
     patterns:
     - match: "#.*"
@@ -148,23 +285,43 @@ repository:
 
   types:
     patterns:
-    - match: \b(int|bytes|str|bool|float|list|tuple|set|dict|object)\b
+    - match: (?x)\b(int|bytes|str|bool|float|list|tuple|set|dict|object)\b
       name: support.type.clif
+
+  namespace:
+    patterns:
+    - match: (\`[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\`)
+      name: entity.name.type.namespace.clif 
 
   cclass:
     patterns:
-    - match: ([[:alpha:]][[:alnum:]_]*(<[[:alpha:]][[:alnum:]_]+>)?)
-      name: entity.name.type.class.C.clif
+    - match: (\`\s*[A-Za-z_][A-Za-z0-9_]*\s*(<\s*([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)\s*(,\s*[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\s*)*>\s*)?\`)
+      name: entity.name.type.class.c.clif
 
-  pythonclass:
+  cfunction:
     patterns:
-    - match: ([[:alpha:]][[:alnum:]_]*)
-      name: entity.name.type.class.python.clif
+    - match: \`\s*(([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)|(operator([-*&<>=+!]|\(\)|\[\])))\s*\`
+      name: entity.name.function.c.clif
 
-  Crename:
+  entity_name_class:
     patterns:
-    - match: (\`([[:alpha:]_][[:alnum:]_]*)(<[[:alpha:]][[:alnum:]_]+>)?(\(\))?\`)\s+(as)
-      captures:
-        '1': {name: string.quoted.single}
-        '5': {name: keyword.operator.clif}
-      include: '#types'
+    - include: '#illegal_names'
+    - include: '#generic_names'
+
+  entity_name_function:
+    patterns:
+    - include: '#magic_function_names'
+    - include: '#illegal_names'
+    - include: '#generic_names'
+
+  generic_names:
+    match: ([A-Za-z_][A-Za-z0-9_]*)
+
+  illegal_names:
+    match: \b(and|as|assert|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|print|raise|return|try|while|with|yield|await)\b
+    name: invalid.illegal.name.python.clif 
+
+  magic_function_names:
+    comment: these methods have magic interpretation by python and are generally called indirectly through syntactic constructs
+    match: (?x)\b(__(?:abs|add|and|bool|bytes|call|cmp|coerce|complex|contains|del|delattr|delete|delitem|delslice|dir|div|divmod|enter|eq|exit|float|floordiv|format|ge|get|getattr|getattribute|getitem|getslice|gt|hash|hex|iadd|iand|idiv|ifloordiv|ilshift|imatmul|imod|imul|index|init|instancecheck|int|invert|ior|ipow|irshift|isub|iter|itruediv|ixor|le|len|length_hint|long|lshift|lt|matmul|missing|mod|mul|ne|neg|next|new|nonzero|oct|or|pos|pow|radd|rand|rdiv|rdivmod|repr|reversed|rfloordiv|rlshift|rmatmul|rmod|rmul|ror|round|rpow|rrshift|rshift|rsub|rtruediv|rxor|set|setattr|setitem|setslice|str|sub|subclasscheck|truediv|unicode|xor)__)\b
+    name: support.function.magic.python.clif

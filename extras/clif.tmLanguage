@@ -23,41 +23,12 @@
 			<string>#keywords</string>
 		</dict>
 		<dict>
-			<key>begin</key>
-			<string>\"</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.begin</string>
-				</dict>
-			</dict>
-			<key>comment</key>
-			<string>String literal</string>
-			<key>end</key>
-			<string>\"</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.end</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>string.quoted.double</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#string_escaped_char</string>
-				</dict>
-			</array>
+			<key>include</key>
+			<string>#string_quoted_double</string>
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>\b(namespace)\s+\`</string>
+			<string>\b(namespace)\s+</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -69,7 +40,7 @@
 			<key>comment</key>
 			<string>Clif namespace</string>
 			<key>end</key>
-			<string>(\`\:)|\s*($\n?|#.*$\n?)</string>
+			<string>(\:)|\s*($\n?|#.*$\n?)</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>1</key>
@@ -88,17 +59,184 @@
 			<key>patterns</key>
 			<array>
 				<dict>
+					<key>include</key>
+					<string>#namespace</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>\b(staticmethods\s+from)\s+</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>storage.type.staticmethods.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif static methods</string>
+			<key>end</key>
+			<string>(\:)|\s*($\n?|#.*$\n?)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.namespace.begin.clif</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>meta.staticmethods.clif</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#namespace</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>variable.clif</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<key>4</key>
+				<dict>
+					<key>name</key>
+					<string>variable.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif capsule</string>
+			<key>match</key>
+			<string>^\s*(capsule)\s+(\`[A-Za-z_][A-Za-z0-9_]*\`\s*(as))?\s*([A-Za-z_][A-Za-z0-9_]*)</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>^\s*(use)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif use</string>
+			<key>contentName</key>
+			<string>entity.name.type.clif</string>
+			<key>end</key>
+			<string>$\n?</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#cclass</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(as)\b</string>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#types</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>^\s*(\`[A-Za-z_][A-Za-z0-9_]*\`\s*(as))?\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?=\:)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>variable.clif</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>variable.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif variable</string>
+			<key>end</key>
+			<string>$\n?</string>
+			<key>name</key>
+			<string>meta.other.clif</string>
+			<key>patterns</key>
+			<array>
+				<dict>
 					<key>begin</key>
-					<string>(?=[[:alpha:]_][[:alnum:]_]*)</string>
+					<string>(\:)</string>
 					<key>contentName</key>
-					<string>entity.name.type.namespace.clif</string>
+					<string>entity.name.type.clif</string>
 					<key>end</key>
-					<string>(?![[:alnum:]_])</string>
+					<string>(?=\=|$\n?)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>\`[A-Za-z_][A-Za-z0-9_]*\`</string>
+							<key>name</key>
+							<string>entity.name.type.clif</string>
+						</dict>
+						<dict>
+							<key>match</key>
+							<string>(\b(as)\b)</string>
+							<key>name</key>
+							<string>keyword.other.clif</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#types</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(\=\s*(property)\s*\()</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>support.function.clif</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(\))</string>
+					<key>name</key>
+					<string>meta.other.clif</string>
 					<key>patterns</key>
 					<array>
 						<dict>
 							<key>include</key>
-							<string>#string_escaped_char</string>
+							<string>#cfunction</string>
 						</dict>
 					</array>
 				</dict>
@@ -106,7 +244,144 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>\b(class)\s+</string>
+			<string>^\s*(const)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>storage.modifier.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif constant</string>
+			<key>end</key>
+			<string>($\n?)</string>
+			<key>name</key>
+			<string>meta.other.clif</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\`[A-Za-z_][A-Za-z0-9_]*\`</string>
+					<key>name</key>
+					<string>constant.c.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(as)\b</string>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>([A-Za-z_][A-Za-z0-9_]*)</string>
+					<key>name</key>
+					<string>constant.python.clif</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(\:)</string>
+					<key>end</key>
+					<string>(?=$\n?)</string>
+					<key>name</key>
+					<string>meta.other.clif</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>(\`[A-Za-z_][A-Za-z0-9_]*\`)</string>
+							<key>name</key>
+							<string>entity.name.type.clif</string>
+						</dict>
+						<dict>
+							<key>match</key>
+							<string>\b(as)\b</string>
+							<key>name</key>
+							<string>keyword.other.clif</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#types</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>^\s*(enum)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif enum</string>
+			<key>end</key>
+			<string>((with)\s*:) | ($\n?)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>meta.other.clif</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#cclass</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(as)\b</string>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>([A-Za-z_][A-Za-z0-9_]*)</string>
+					<key>name</key>
+					<string>entity.name.type</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.clif</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif enum values</string>
+			<key>match</key>
+			<string>^\s*(\`[A-Za-z_][A-Za-z0-9_]*\`)\s*(as)\s*([A-Za-z_][A-Za-z0-9_]*)\s*$</string>
+			<key>name</key>
+			<string>meta.other.clif</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>^\s*(class)\s+</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -138,13 +413,28 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#Crename</string>
+					<string>#cclass</string>
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>([[:alpha:]_][[:alnum:]_]*(?=\:|\())</string>
+					<string>\b(as)\b</string>
 					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?=[A-Za-z_][A-Za-z0-9_]*)</string>
+					<key>contentName</key>
 					<string>entity.name.type.class.python.clif</string>
+					<key>end</key>
+					<string>(?![A-Za-z0-9_])</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#entity_name_class</string>
+						</dict>
+					</array>
 				</dict>
 				<dict>
 					<key>begin</key>
@@ -211,13 +501,28 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#Crename</string>
+					<string>#cfunction</string>
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>([[:alpha:]_][[:alnum:]_]*(?=\())</string>
+					<string>\b(as)\b</string>
 					<key>name</key>
+					<string>keyword.other.clif</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?=[A-Za-z_][A-Za-z0-9_]*)</string>
+					<key>contentName</key>
 					<string>entity.name.function.clif</string>
+					<key>end</key>
+					<string>(?![A-Za-z0-9_])</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#entity_name_function</string>
+						</dict>
+					</array>
 				</dict>
 				<dict>
 					<key>begin</key>
@@ -232,6 +537,8 @@
 					</dict>
 					<key>end</key>
 					<string>(\))</string>
+					<key>name</key>
+					<string>meta.function.parameters.clif</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -248,7 +555,7 @@
 						</dict>
 						<dict>
 							<key>begin</key>
-							<string>([[:alpha:]_][[:alnum:]_]*)\s*(\:)(?!\:)</string>
+							<string>([A-Za-z_][A-Za-z0-9_]*)\s*(\:)(?!\:)</string>
 							<key>beginCaptures</key>
 							<dict>
 								<key>1</key>
@@ -262,13 +569,21 @@
 									<string>keyword.operator.assignment.clif</string>
 								</dict>
 							</dict>
+							<key>contentName</key>
+							<string>entity.name.type.clif</string>
 							<key>end</key>
 							<string>\s*(?=(,)|\))</string>
 							<key>patterns</key>
 							<array>
 								<dict>
 									<key>include</key>
-									<string>#Crename</string>
+									<string>#cclass</string>
+								</dict>
+								<dict>
+									<key>match</key>
+									<string>\b(as)\b</string>
+									<key>name</key>
+									<string>keyword.other.clif</string>
 								</dict>
 								<dict>
 									<key>include</key>
@@ -297,7 +612,7 @@
 										</dict>
 										<dict>
 											<key>match</key>
-											<string>([[:alpha:]_][[:alnum:]_]*)</string>
+											<string>([A-Za-z_][A-Za-z0-9_]*)</string>
 											<key>name</key>
 											<string>variable.parameter.parameter.function.clif</string>
 										</dict>
@@ -318,6 +633,16 @@
 					<array>
 						<dict>
 							<key>include</key>
+							<string>#cclass</string>
+						</dict>
+						<dict>
+							<key>match</key>
+							<string>\b(as)\b</string>
+							<key>name</key>
+							<string>keyword.other.clif</string>
+						</dict>
+						<dict>
+							<key>include</key>
 							<string>#types</string>
 						</dict>
 					</array>
@@ -326,7 +651,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(\@[[:alpha:]_][[:alnum:]_]*)</string>
+			<string>(\@[A-Za-z_][A-Za-z0-9_]*)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -345,40 +670,27 @@
 	</array>
 	<key>repository</key>
 	<dict>
-		<key>Crename</key>
-		<dict>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>string.quoted.single</string>
-						</dict>
-						<key>5</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.operator.clif</string>
-						</dict>
-					</dict>
-					<key>include</key>
-					<string>#types</string>
-					<key>match</key>
-					<string>(\`([[:alpha:]_][[:alnum:]_]*)(&lt;[[:alpha:]][[:alnum:]_]+&gt;)?(\(\))?\`)\s+(as)</string>
-				</dict>
-			</array>
-		</dict>
 		<key>cclass</key>
 		<dict>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>match</key>
-					<string>([[:alpha:]][[:alnum:]_]*(&lt;[[:alpha:]][[:alnum:]_]+&gt;)?)</string>
+					<string>(\`\s*[A-Za-z_][A-Za-z0-9_]*\s*(&lt;\s*([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)\s*(,\s*[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\s*)*&gt;\s*)?\`)</string>
 					<key>name</key>
-					<string>entity.name.type.class.C.clif</string>
+					<string>entity.name.type.class.c.clif</string>
+				</dict>
+			</array>
+		</dict>
+		<key>cfunction</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\`\s*(([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)|(operator([-*&amp;&lt;&gt;=+!]|\(\)|\[\])))\s*\`</string>
+					<key>name</key>
+					<string>entity.name.function.c.clif</string>
 				</dict>
 			</array>
 		</dict>
@@ -394,39 +706,140 @@
 				</dict>
 			</array>
 		</dict>
+		<key>entity_name_class</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#illegal_names</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#generic_names</string>
+				</dict>
+			</array>
+		</dict>
+		<key>entity_name_function</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#magic_function_names</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#illegal_names</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#generic_names</string>
+				</dict>
+			</array>
+		</dict>
+		<key>generic_names</key>
+		<dict>
+			<key>match</key>
+			<string>([A-Za-z_][A-Za-z0-9_]*)</string>
+		</dict>
+		<key>illegal_names</key>
+		<dict>
+			<key>match</key>
+			<string>\b(and|as|assert|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|print|raise|return|try|while|with|yield|await)\b</string>
+			<key>name</key>
+			<string>invalid.illegal.name.python.clif</string>
+		</dict>
 		<key>keywords</key>
 		<dict>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\b(from|as|import|pass|enum|const)\b</string>
+					<string>\b(from)\b</string>
 					<key>name</key>
-					<string>keyword.operator.control.clif</string>
+					<string>keyword.control.import.from.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(import)\b</string>
+					<key>name</key>
+					<string>keyword.control.import.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(pass|return)\b</string>
+					<key>name</key>
+					<string>keyword.control.statement.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(as|enum|const)\b</string>
+					<key>name</key>
+					<string>keyword.other.clif</string>
 				</dict>
 			</array>
 		</dict>
-		<key>pythonclass</key>
+		<key>magic_function_names</key>
+		<dict>
+			<key>comment</key>
+			<string>these methods have magic interpretation by python and are generally called indirectly through syntactic constructs</string>
+			<key>match</key>
+			<string>(?x)\b(__(?:abs|add|and|bool|bytes|call|cmp|coerce|complex|contains|del|delattr|delete|delitem|delslice|dir|div|divmod|enter|eq|exit|float|floordiv|format|ge|get|getattr|getattribute|getitem|getslice|gt|hash|hex|iadd|iand|idiv|ifloordiv|ilshift|imatmul|imod|imul|index|init|instancecheck|int|invert|ior|ipow|irshift|isub|iter|itruediv|ixor|le|len|length_hint|long|lshift|lt|matmul|missing|mod|mul|ne|neg|next|new|nonzero|oct|or|pos|pow|radd|rand|rdiv|rdivmod|repr|reversed|rfloordiv|rlshift|rmatmul|rmod|rmul|ror|round|rpow|rrshift|rshift|rsub|rtruediv|rxor|set|setattr|setitem|setslice|str|sub|subclasscheck|truediv|unicode|xor)__)\b</string>
+			<key>name</key>
+			<string>support.function.magic.python.clif</string>
+		</dict>
+		<key>namespace</key>
 		<dict>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>match</key>
-					<string>([[:alpha:]][[:alnum:]_]*)</string>
+					<string>(\`[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\`)</string>
 					<key>name</key>
-					<string>entity.name.type.class.python.clif</string>
+					<string>entity.name.type.namespace.clif</string>
 				</dict>
 			</array>
 		</dict>
-		<key>string_escaped_char</key>
+		<key>string_quoted_double</key>
 		<dict>
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>match</key>
-					<string>\w*</string>
+					<key>begin</key>
+					<string>(\")</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.string.begin.clif</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>Double quoted string</string>
+					<key>end</key>
+					<string>((?&lt;=\")(\")|\")|(\n)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.string.end.clif</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>meta.empty-string.double.clif</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>invalid.illegal.unclosed-string.clif</string>
+						</dict>
+					</dict>
 					<key>name</key>
-					<string>constant.character.escape</string>
+					<string>string.quoted.double.single-line.clif</string>
 				</dict>
 			</array>
 		</dict>
@@ -436,7 +849,7 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\b(int|bytes|str|bool|float|list|tuple|set|dict|object)\b</string>
+					<string>(?x)\b(int|bytes|str|bool|float|list|tuple|set|dict|object)\b</string>
 					<key>name</key>
 					<string>support.type.clif</string>
 				</dict>
