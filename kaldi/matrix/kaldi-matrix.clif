@@ -4,11 +4,11 @@ from "matrix/kaldi-vector_clifwrap.h" import *
 from "matrix/kaldi-matrix.h":
     namespace `kaldi`:
         class `MatrixBase<float>` as MatrixBase:
-            num_rows_: `MatrixIndexT` as int = property(`NumRows`)
-            num_cols_: `MatrixIndexT` as int = property(`NumCols`)
+            num_rows_: int = property(`NumRows`)
+            num_cols_: int = property(`NumCols`)
             
             # FIXME (VM): maybe?
-            # stride_: `MatrixIndexT` as int = property(`stride_`)
+            # stride_: int = property(`stride_`)
 
             def Stride(self) -> int
 
@@ -45,7 +45,7 @@ from "matrix/kaldi-matrix.h":
             # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
 
             # FIXME (VM):
-            # def CopyRowsFromVec(self, v:VectorBase)
+            def CopyRowsFromVec(self, v:VectorBase)
 
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
@@ -55,9 +55,9 @@ from "matrix/kaldi-matrix.h":
 
             def `CopyColsFromVec` as CopyColsFromVec(self, v:VectorBase)
 
-            def CopyColFromVec(self, v:VectorBase, col:`MatrixIndexT` as int)
+            def CopyColFromVec(self, v:VectorBase, col:int)
 
-            def CopyRowFromVec(self, v:VectorBase, row:`MatrixIndexT` as int)
+            def CopyRowFromVec(self, v:VectorBase, row:int)
 
             def CopyDiagFromVec(self, v:VectorBase)
 
@@ -260,7 +260,7 @@ from "matrix/kaldi-matrix.h":
         class `Matrix<float>` as Matrix(MatrixBase):
             
             @add__init__
-            def Matrix(self, r:`MatrixIndexT` as int, c:`MatrixIndexT` as int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def Matrix(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
@@ -286,18 +286,18 @@ from "matrix/kaldi-matrix.h":
             # FIXME: How?!
             # void Read(std::istream & in, bool binary, bool add = false);
 
-            def RemoveRow(self, i:`MatrixIndexT` as int)
+            def RemoveRow(self, i:int)
 
             def Transpose(self)
 
-            def Resize(self, r:`MatrixIndexT` as int, c:`MatrixIndexT` as int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def Resize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
             # FIXME (VM):
             # def `operator` as __copy__(self, other:MatrixBase)
 
             # NOTE (VM):
             # Clif complains about random inits... might not work
-            def `Init` as __init__(self, r:`MatrixIndexT` as int, c:`MatrixIndexT` as int)
+            def `Init` as __init__(self, r:int, c:int)
 
         class HtkHeader:
             mNSamples: int 
@@ -322,7 +322,7 @@ from "matrix/kaldi-matrix.h":
         class `SubMatrix<float>` as SubMatrix(MatrixBase):
             
             @add__init__
-            def SubMatrix(self, T:MatrixBase, ro:`MatrixIndexT` as int, r:`MatrixIndexT` as int, co:`MatrixIndexT` as int, c:`MatrixIndexT` as int)
+            def SubMatrix(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
 
             # FIXME (VM):
             # Name "SubMatrix" already defined in class SubMatrix (wtf??)
