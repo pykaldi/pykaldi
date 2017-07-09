@@ -9,6 +9,7 @@ from kaldi.matrix.matrix_common import *
 import kaldi.matrix.kaldi_vector
 from kaldi.matrix.kaldi_vector import ApproxEqualVector, AssertEqualVector
 from kaldi.matrix.kaldi_vector import VecVec
+from kaldi.matrix.kaldi_vector_numpy import vector_to_numpy
 
 import kaldi.matrix.kaldi_matrix
 # from kaldi.matrix.kaldi_matrix import *
@@ -50,8 +51,9 @@ class _VectorBase(object):
         """Returns a new subvector (a range of elements) of the vector."""
         return SubVector(self, offset, length)
 
-    # def numpy(self):
-    #     """Returns this vector as a numpy ndarray."""
+    def numpy(self):
+        """Returns this vector as a numpy ndarray."""
+        return vector_to_numpy(self)
 
 
 class Vector(kaldi_vector.Vector, _VectorBase):

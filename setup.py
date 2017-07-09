@@ -59,6 +59,8 @@ if "CLIF_DIR" not in os.environ:
 else:
     CLIF_DIR = os.environ['CLIF_DIR']
 
+import numpy as np
+NUMPY_INC_DIR = np.get_include()
 
 if DEBUG:
     print("#"*50)
@@ -132,7 +134,8 @@ include_dirs = [
     os.path.join(CLIF_DIR, '..'),  # Path to clif install dir
     KALDI_SRC_DIR,
     os.path.join(KALDI_DIR, 'tools/openfst/include'),
-    os.path.join(KALDI_DIR, 'tools/ATLAS/include')
+    os.path.join(KALDI_DIR, 'tools/ATLAS/include'),
+    NUMPY_INC_DIR,
 ]
 
 extra_compile_args = [
@@ -150,7 +153,7 @@ extra_link_args = []
 libraries = [':_clif.so']
 
 if DEBUG:
-    extra_compile_args += ['-O0', '-g']
+    extra_compile_args += ['-O0', '-g', '-UNDEBUG']
     extra_link_args += ['-O0', '-g']
 
 ################################################################################
@@ -200,6 +203,21 @@ kaldi_vector = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_vector)
 
+kaldi_vector_numpy = Extension(
+    "kaldi.matrix.kaldi_vector_numpy",
+    sources=[
+        'kaldi/matrix/kaldi-vector-numpy.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':kaldi_vector.so', ':matrix_common.so', 'kaldi-matrix',
+               'kaldi-base'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(kaldi_vector_numpy)
+
 kaldi_matrix = Extension(
     "kaldi.matrix.kaldi_matrix",
     sources=[
@@ -230,4 +248,4 @@ setup(name = 'pykaldi',
           },
       packages=packages,
       package_data={},
-      install_requires=['enum34;python_version<"3.4"'])
+      install_requires=['enum34;python_version<"3.4"','numpy'])
