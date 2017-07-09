@@ -7,7 +7,7 @@ from "matrix/kaldi-vector.h":
 
       def IsZero(self, cutoff: float = default) -> bool
 
-      def Set(self, f: float)
+      def `Set` as fill_(self, f: float)
 
       def SetRandn(self)
 
@@ -17,9 +17,11 @@ from "matrix/kaldi-vector.h":
 
       def `Dim` as __len__(self) -> int
 
-      def SizeInBytes(self) -> int
+      def `Dim` as size(self) -> int
 
-      # NOTE(Dogan):
+      def `SizeInBytes` as size_in_bytes(self) -> int
+
+      # NOTE:
       # It is probably a bad idea to expose the Data method in Python since its
       # return value is a pointer to the underlying data array which can easily
       # become dangling as C++ object lifetime is different from Python object
@@ -31,18 +33,18 @@ from "matrix/kaldi-vector.h":
       # def Data(self) -> float
 
       @sequential
-      def `operator()` as __getitem__(self, i: int) -> float
+      def `operator()` as __getitem__(self, index: int) -> float
 
       @sequential
-      def `Set` as __setitem__(self, i: int, v: float)
+      def `Set` as __setitem__(self, index: int, value: float)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since SubVector is not defined yet.
       # def Range(self, o: int, l: int) -> SubVector
 
       def CopyFromVec(self, v: VectorBase)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since PackedMatrix is not defined yet.
       # def CopyFromPacked(self, M: PackedMatrix)
 
@@ -54,11 +56,12 @@ from "matrix/kaldi-vector.h":
 
       def ApplyAbs(self)
 
-      def ApplyFloor(self, floor: float) -> int
+      def `ApplyFloor` as floor_(self, floor: float) -> int
 
       def ApplyCeiling(self, ceiling: float) -> int
 
-      def `ApplyFloor` as ApplyFloorVector(self, floor: VectorBase) -> int
+      def `ApplyFloor` as ApplyFloorVector(self,
+                                           floor_vector: VectorBase) -> int
 
       def ApplySoftMax(self) -> float
 
@@ -82,24 +85,24 @@ from "matrix/kaldi-vector.h":
 
       def AddVec2(self, alpha: float, v: VectorBase)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def AddMatVec(self, alpha: `float` as float, M: MatrixBase,
       #               trans: MatrixTransposeType, v: VectorBase,
       #               beta: `float` as float)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def AddMatSvec(self, alpha: `float` as float, M: MatrixBase,
       #                trans: MatrixTransposeType, v: VectorBase,
       #                beta: `float` as float)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since SpMatrix is not defined yet.
       # def AddSpVec(self, alpha: `float` as float, M: SpMatrix,
       #              v: VectorBase, beta: `float` as float)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def AddTpVec(self, alpha: `float` as float, M: TpMatrix,
       #              trans: MatrixTransposeType, v: VectorBase,
@@ -111,7 +114,7 @@ from "matrix/kaldi-vector.h":
 
       def DivElements(self, v: VectorBase)
 
-      def Add(self, c: float)
+      def Add(self, constant: float)
 
       def AddVecVec(self, alpha: float, v: VectorBase,
                     r: VectorBase, beta: float)
@@ -121,53 +124,53 @@ from "matrix/kaldi-vector.h":
 
       def Scale(self, alpha: float)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def MulTp(self, M: TpMatrix, trans: MatrixTransposeType)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def Solve(self, M: TpMatrix, trans: MatrixTransposeType)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def CopyRowsFromMat(self, M: MatrixBase)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def CopyColsFromMat(self, M: MatrixBase)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def CopyRowFromMat(self, M: MatrixBase, row: int)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def CopyColFromMat(self, M: MatrixBase, col: int)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def CopyDiagFromMat(self, M: MatrixBase)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since PackedMatrix is not defined yet.
       # def CopyDiagFromPacked(self, M: PackedMatrix)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since SpMatrix is not defined yet.
       # def CopyDiagFromSp(self, M: SpMatrix)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def CopyDiagFromTp(self, M: TpMatrix)
 
-      def Max(self) -> float
+      def `Max` as max(self) -> float
 
-      def `Max` as MaxIndex(self, index: int) -> float
+      def `Max` as MaxIndex(self) -> (value: float, index: int)
 
-      def Min(self) -> float
+      def `Min` as min(self) -> float
 
-      def `Min` as MinIndex(self, index: int) -> float
+      def `Min` as MinIndex(self) -> (value: float, index: int)
 
       def Sum(self) -> float
 
@@ -175,23 +178,23 @@ from "matrix/kaldi-vector.h":
 
       def LogSumExp(self, prune: float = default) -> float
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def AddRowSumMat(self, alpha: `float` as float, M: MatrixBase,
       #                  beta: `float` as float = default)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def AddColSumMat(self, alpha: `float` as float, M: MatrixBase,
       #                  beta: `float` as float = default)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def AddDiagMat2(self, alpha: `float` as float, M: MatrixBase,
       #                 trans: MatrixTransposeType = default,
       #                 beta: `float` as float = default)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # def AddDiagMatMat(self, alpha: `float` as float,
       #                   M: MatrixBase, transM: MatrixTransposeType,
@@ -205,64 +208,70 @@ from "matrix/kaldi-vector.h":
       # def Write(in: ostream, binary: bool);
 
     class `SubVector<float>` as SubVector(VectorBase):
-      @add__init__
-      def `SubVector` as New(self, t: VectorBase, origin: int, length: int)
+      def __init__(self, t: VectorBase, offset: int, length: int)
 
       @add__init__
-      def `SubVector` as Copy(self, other: SubVector)
+      def `SubVector` as NewWithSubVector(self, s: SubVector)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since PackedMatrix is not defined yet.
       # @add__init__
       # def `SubVector` as CopyFromPackedMatrix(self, M: PackedMatrix)
 
-      # NOTE(Dogan):
+      # NOTE:
       # We cannot wrap this here since MatrixBase is not defined yet.
       # @add__init__
       # def `SubVector` as CopyFromMatrixRow(self, M: MatrixBase, row: int)
 
-      def Range(self, o: int, l: int) -> SubVector
+      def Range(self, offset: int, length: int) -> SubVector
+
+      # def Attach(self, v: VectorBase, offset: int, length: int)
 
 
     class `Vector<float>` as Vector(VectorBase):
       @add__init__
-      def `Vector` as New(self, s: int,
-                          resize_type: MatrixResizeType = default)
+      def `Vector` as NewWithSize(self, size: int,
+                                  resize_type: MatrixResizeType = default)
 
-      # NOTE(Dogan):
+      # NOTE:
       # Match fails since this signature matches both copy constructors.
+      # No need to wrap this one since the copy constructor with VectorBase
+      # argument covers both cases and does the same thing internally.
       # @add__init__
-      # def `Vector` as CopyFromVector(self, v: Vector)
+      # def `Vector` as NewWithVector(self, v: Vector)
 
       @add__init__
-      def `Vector` as Copy(self, v: VectorBase)
+      def `Vector` as NewWithVector(self, v: VectorBase)
 
       def Swap(self, other: Vector)
 
       # TODO(Dogan): Wrap istream.
       # def Read(in: istream, binary: bool, add: bool = false);
 
-      def Range(self, o: int, l: int) -> SubVector
+      def Range(self, offset: int, length: int) -> SubVector
 
-      def Resize(self, length: int,
-                 resize_type: MatrixResizeType = default)
+      def `Resize` as resize_(self, length: int,
+                              resize_type: MatrixResizeType = default)
 
-      # NOTE: Since CLIF combines setitem and delitem into a single wrapper,
+      # NOTE:
+      # Since CLIF combines setitem and delitem into a single wrapper,
       # we need to expose setitem in Vector as well. Otherwise setitem raises
       # NotImplementedError at runtime. This is probably a bug in CLIF.
       @sequential
-      def `Set` as __setitem__(self, i: int, v: float)
+      def `Set` as __setitem__(self, index: int, value: float)
 
       @sequential
-      def `RemoveElement` as __delitem__(self, i: int)
+      def `RemoveElement` as __delitem__(self, index: int)
 
     # TODO(Dogan): Wrap iostream and look into wrapping stream ops in Python.
     # def `operator<<` as Write(out: ostream, v: VectorBase) -> ostream
     # def `operator>>` as Write(in: istream, v: VectorBase) -> istream
     # def `operator>>` as Write(in: istream, v: Vector) -> istream
 
-    # NOTE(Dogan): Explicit mention of compatible type `float` is needed for
-    # template deduction. CLIF defaults to `double` for Python float.
+    # NOTE:
+    # Explicit mention of compatible type `float` is needed for template
+    # deduction. CLIF defaults to `double` for Python float.
+    # These functions were renamed to avoid possible name conflicts.
     def `ApproxEqual` as ApproxEqualVector(a: VectorBase, b: VectorBase,
                                            tol: `float` as float = default) -> bool
 
@@ -271,6 +280,6 @@ from "matrix/kaldi-vector.h":
 
     def VecVec(v1: VectorBase, v2: VectorBase) -> float
 
-    # NOTE(Dogan):
+    # NOTE:
     # We cannot wrap this here since MatrixBase is not defined yet.
     # def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float
