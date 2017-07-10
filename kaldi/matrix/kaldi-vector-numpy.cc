@@ -1,6 +1,6 @@
 
 #include <Python.h>
-// #include "clif/python/ptr_util.h"
+#include "clif/python/ptr_util.h"
 // #include "clif/python/optional.h"
 #include "/home/dogan/anaconda2/envs/clif/python/types.h"
 #define PY_ARRAY_UNIQUE_SYMBOL __numpy_array_api
@@ -16,7 +16,7 @@ using namespace clif;
 // vector_to_numpy(v: VectorBase) -> ndarray
 static PyObject* VectorToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   PyObject* obj;
-  char* names[] = { C("v"), nullptr };
+  char* names[] = { C("vector"), nullptr };
   if (!PyArg_ParseTupleAndKeywords(args, kw, "O:vector_to_numpy",
                                    names, &obj)) {
     return nullptr;
@@ -53,11 +53,57 @@ static PyObject* VectorToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   return arr;
 }
 
+// numpy_to_vector(a:ndarray) -> SubVector
+static PyObject* NumpyToVector(PyObject* self, PyObject* args, PyObject* kw) {
+  PyObject* obj;
+  char* names[] = { C("array"), nullptr };
+  if (!PyArg_ParseTupleAndKeywords(args, kw, "O:numpy_to_vector",
+                                   names, &obj)) {
+    return nullptr;
+  }
+  if (!PyArray_Check(obj)) {
+    PyErr_SetString(PyExc_RuntimeError, "Input is not a numpy ndarray.");
+    return nullptr;
+  }
+  if (PyArray_NDIM((PyArrayObject*)obj) != 1) {
+    PyErr_SetString(PyExc_RuntimeError, "Input ndarray is not 1-dimensional.");
+    return nullptr;
+  }
+  int dtype = PyArray_TYPE((PyArrayObject*)obj);
+  if (dtype == NPY_FLOAT) {
+    PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
+                                        NPY_ARRAY_BEHAVED);
+    std::unique_ptr<::kaldi::SubVector<float>> subvector;
+    PyObject* err_type = nullptr;
+    string err_msg{"C++ exception"};
+    try {
+      subvector = ::gtl::MakeUnique<::kaldi::SubVector<float>>(
+          (float*)PyArray_DATA((PyArrayObject*)array),
+          PyArray_DIM((PyArrayObject*)array, 0));
+    } catch(const std::exception& e) {
+      err_type = PyExc_RuntimeError;
+      err_msg += string(": ") + e.what();
+    } catch (...) {
+      err_type = PyExc_RuntimeError;
+    }
+    Py_DECREF(array);
+    if (err_type) {
+      PyErr_SetString(err_type, err_msg.c_str());
+      return nullptr;
+    }
+    return Clif_PyObjFrom(std::move(subvector), {});
+  }
+  PyErr_SetString(PyExc_RuntimeError,
+                  "Cannot convert given ndarray to a SubVector since "
+                  "it has an invalid dtype. Supported types: float.");
+  return nullptr;
+}
+
 static PyMethodDef Methods[] = {
   {C("vector_to_numpy"), (PyCFunction)VectorToNumpy,
    METH_VARARGS | METH_KEYWORDS, C("vector_to_numpy(v:VectorBase) -> ndarray")},
-  // {C("numpy_to_vector"), (PyCFunction)NumpyToVector,
-  //  METH_VARARGS | METH_KEYWORDS, C("numpy_to_vector(a:ndarray) -> Vector")},
+  {C("numpy_to_vector"), (PyCFunction)NumpyToVector,
+   METH_VARARGS | METH_KEYWORDS, C("numpy_to_vector(a:ndarray) -> SubVector")},
   {}
 };
 

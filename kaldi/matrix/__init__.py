@@ -9,7 +9,7 @@ from kaldi.matrix.matrix_common import *
 import kaldi.matrix.kaldi_vector
 from kaldi.matrix.kaldi_vector import ApproxEqualVector, AssertEqualVector
 from kaldi.matrix.kaldi_vector import VecVec
-from kaldi.matrix.kaldi_vector_numpy import vector_to_numpy
+import kaldi.matrix.kaldi_vector_numpy
 
 import kaldi.matrix.kaldi_matrix
 # from kaldi.matrix.kaldi_matrix import *
@@ -152,3 +152,15 @@ class Matrix(kaldi_matrix.Matrix):
     """Python wrapper for kaldi::Matrix<float>"""
     def __init__(self):
         super(Matrix, self).__init__()
+
+################################################################################
+# Define Vector and Matrix Utility Functions
+################################################################################
+
+def vector_to_numpy(vector):
+    """Converts a Vector to a numpy array."""
+    return kaldi_vector_numpy.vector_to_numpy(vector)
+
+def numpy_to_vector(array):
+    """Converts a numpy array to a SubVector."""
+    return SubVector(kaldi_vector_numpy.numpy_to_vector(array))
