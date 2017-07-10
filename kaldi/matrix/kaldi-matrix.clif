@@ -25,7 +25,11 @@ from "matrix/kaldi-matrix.h":
             # @sequential
             # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
 
-            # def Index
+            # Note (VM):
+            # __getitem__ takes only two arguments, but 
+            # here we need three, so we should use a custom
+            # method.
+            def `operator()` as getitem_(self, r:int, c:int) -> float
 
             def SetZero(self)
 
@@ -43,15 +47,9 @@ from "matrix/kaldi-matrix.h":
             # def CopyFromMat(self, M:CompressedMatrix);
             # def CopyFromSp(self, M:SpMatrix);
             # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
-
-            # FIXME (VM):
-            def CopyRowsFromVec(self, v:VectorBase)
-
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
-            # FIXME (VM):
-            # Cannot implement
-            # void CopyRowsFromVec(const VectorBase<OtherReal> &v);
+            def CopyRowsFromVec(self, v:VectorBase)
 
             def `CopyColsFromVec` as CopyColsFromVec(self, v:VectorBase)
 
@@ -62,7 +60,8 @@ from "matrix/kaldi-matrix.h":
             def CopyDiagFromVec(self, v:VectorBase)
 
             # Accessing sub-parts of matrix #
-
+            # Note (VM):
+            # Implemented in child class Matrix<Real>
 
             # Special functions #
 
@@ -91,9 +90,9 @@ from "matrix/kaldi-matrix.h":
             def MulRowsGroupMat(self, src: MatrixBase)
 
             # FIXME:
-            # def LogDet(self, det_sign: float) -> float
-            # def Invert(self, log_det: float = default, det_sign: float = default, inverse_needed: bool = default)
-            # def InvertDouble(self, logDet: float = default, det_sign: float = default, inverse_needed: bool = default)
+            def LogDet(self, det_sign: `float` as float = default) -> float
+            def Invert(self, log_det: `float` as float = default, det_sign: `float` as float = default, inverse_needed: bool = default)
+            def InvertDouble(self, logDet: `float` as float = default, det_sign: `float` as float = default, inverse_needed: bool = default)
 
             def InvertElements(self)
 
@@ -204,10 +203,6 @@ from "matrix/kaldi-matrix.h":
 
             def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase)
 
-            #   template<typename OtherReal>
-            #   void AddVecVec(const Real alpha, const VectorBase<OtherReal> &a,
-            #       const VectorBase<OtherReal> &b);
-
             # Note (VM):
             # I'm skipping the templated function, assuming we only deal with float
             def AddVecToRows(self, alpha: float, v: VectorBase)
@@ -257,10 +252,21 @@ from "matrix/kaldi-matrix.h":
             # void Read(std::istream & in, bool binary, bool add = false);
             # void Write(std::ostream & out, bool binary) const;
 
+        class `SubMatrix<float>` as SubMatrix(MatrixBase):
+            
+            def __init__(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
+
+            @add__init__
+            def `SubMatrix` as NewWithData(self, data:`float` as float, num_rows: int, num_cols: int, stride: int)
+
+            @add__init__
+            def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
+
+
         class `Matrix<float>` as Matrix(MatrixBase):
             
             @add__init__
-            def Matrix(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def `Matrix` as NewWithSize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
@@ -271,9 +277,8 @@ from "matrix/kaldi-matrix.h":
             # TODO:
             # void Swap(CuMatrix<Real> *mat);
 
-            # FIXME (VM):
-            # @add__init__
-            # def `Matrix` as FromMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
+            @add__init__
+            def `Matrix` as NewWithMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
 
             # TODO:
             # @add__init__
@@ -283,21 +288,70 @@ from "matrix/kaldi-matrix.h":
             # @add__init__
             # def `Matrix` as FromCompressedMatrix(self, M:TpMatrix, trans:MatrixTransposeType = default)
 
-            # FIXME: How?!
+            # Note (VM):
+            # Are we implementing this?
             # void Read(std::istream & in, bool binary, bool add = false);
 
             def RemoveRow(self, i:int)
 
             def Transpose(self)
 
-            def Resize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def `Resize` as resize_(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
-            # FIXME (VM):
-            # def `operator` as __copy__(self, other:MatrixBase)
+            # Todo (VM):
+            # <strikethrough>Check if this actually works</strikethrough>
+            # Better to do it in python
+            # def `operator=` as __copy__(self, other:MatrixBase) -> Matrix
 
             # NOTE (VM):
-            # Clif complains about random inits... might not work
-            def `Init` as __init__(self, r:int, c:int)
+            # This is actually a private method,
+            # so it might not be a good idea to wrap it
+            # def `Init` as __init__(self, r:int, c:int)
+
+            # Accessing of sub-parts of the matrix. #
+            def Row(self, i:int) -> SubVector
+
+            def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+
+            def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
+
+            def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
+
+
+
+        def `TraceMat` as TraceMat(A: MatrixBase) -> float
+
+        def `TraceMatMatMat` as TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
+                                               B: MatrixBase, transB: MatrixTransposeType,
+                                               C: MatrixBase, transC: MatrixTransposeType) -> float
+
+        def `TraceMatMatMatMat` as TraceMatMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
+                                                     B: MatrixBase, transB: MatrixTransposeType,
+                                                     C: MatrixBase, transC: MatrixTransposeType,
+                                                     D: MatrixBase, transD: MatrixTransposeType) -> float
+        
+        def `ApproxEqual` as ApproxEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default) -> bool
+
+        def `AssertEqual` as AssertEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default)
+
+        # Note (VM):
+        # Cannot be implemented as it is because outputs are before inputs
+        # def `SortSVD` as SortSVD(s: VectorBase, U: MatrixBase, Vt: MatrixBase, sort_on_absolute_value: bool = default)
+
+        # Note (VM):
+        # MatrixBase's constructor is protected, and thus one cannot instanciate D
+        # How to solve such problem?
+        # def `CreateEigenvalueMatrix` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase) -> (D:MatrixBase)
+
+        def `AttemptComplexPower` as AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
+
+        # TODO (VM):
+        # def `operator<<` as Write(out: ostream, M: MatrixBase) -> ostream
+        # def `operator>>` as Write(in: istream, M: MatrixBase) -> istream
+        # def `operator>>` as Write(in: istream, M: Matrix) -> istream
+              
+        def `SameDim` as AssertSameDim(M: MatrixBase, N: MatrixBase) -> bool
+
 
         class HtkHeader:
             mNSamples: int 
@@ -316,63 +370,3 @@ from "matrix/kaldi-matrix.h":
         # // Write (CMUSphinx format) features to file from matrix.
         # template<typename Real>
         # bool WriteSphinx(std::ostream &os, const MatrixBase<Real> &M);
-
-        # FIXME (VM):
-        # Circular definition
-        class `SubMatrix<float>` as SubMatrix(MatrixBase):
-            
-            @add__init__
-            def SubMatrix(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
-
-            # FIXME (VM):
-            # Name "SubMatrix" already defined in class SubMatrix (wtf??)
-            # @add__init__
-            # def SubMatrix(self, other:SubMatrix)
-
-
-
-        # FIXME (VM):
-        # This doesn't work because "Function template can't be specialized with these arguments.
-        #                            Clif expects it in the file matrix/kaldi-matrix.h but found it at 
-        #                            /home/dogan/tools/kaldi/src/base/kaldi-math.h:262:1"
-        # def ApproxEqual(A:MatrixBase, B:MatrixBase, tol:float = default) -> bool
-        # def AssertEqual(A:MatrixBase, B:MatrixBase, tol:float = default)
-
-        # FIXME (VM):
-        # Clif cannot find these methods
-        # def `TraceMat<float>` as TraceMat(A: MatrixBase) -> float
-
-        # def `TraceMatMatMat<float>` as TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
-                                                      # B: MatrixBase, transB: MatrixTransposeType,
-                                                      # C: MatrixBase, transC: MatrixTransposeType) -> float
-
-        # def `TraceMatMatMatMat<float>` as TraceMatMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
-                                                            # B: MatrixBase, transB: MatrixTransposeType,
-                                                            # C: MatrixBase, transC: MatrixTransposeType,
-                                                            # D: MatrixBase, transD: MatrixTransposeType) -> float
-
-        # def `SortSVD<float>` as SortSVD(s: VectorBase, U: MatrixBase, Vt: MatrixBase, sort_on_absolute_value: bool = default)
-
-
-        # def `CreateEigenvalueMatrix<float>` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase) -> (D:MatrixBase)
-
-        # TODO:
-        # template<typename Real>
-        # bool AttemptComplexPower(Real *x_re, Real *x_im, Real power);
-
-
-        # template<typename Real>
-        # std::ostream & operator << (std::ostream & Out, const MatrixBase<Real> & M);
-
-        # template<typename Real>
-        # std::istream & operator >> (std::istream & In, MatrixBase<Real> & M);
-
-        # // The Matrix read allows resizing, so we override the MatrixBase one.
-        # template<typename Real>
-        # std::istream & operator >> (std::istream & In, Matrix<Real> & M);
-
-
-        # template<typename Real>
-        # bool SameDim(const MatrixBase<Real> &M, const MatrixBase<Real> &N) {
-        #   return (M.NumRows() == N.NumRows() && M.NumCols() == N.NumCols());
-        # }
