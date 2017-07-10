@@ -9,11 +9,11 @@ from kaldi.matrix.matrix_common import *
 import kaldi.matrix.kaldi_vector
 from kaldi.matrix.kaldi_vector import ApproxEqualVector, AssertEqualVector
 from kaldi.matrix.kaldi_vector import VecVec
-import kaldi.matrix.kaldi_vector_numpy
 
 import kaldi.matrix.kaldi_matrix
 # from kaldi.matrix.kaldi_matrix import *
 
+import kaldi.matrix.kaldi_numpy
 
 # For Python2/3 compatibility
 try:
@@ -159,8 +159,16 @@ class Matrix(kaldi_matrix.Matrix):
 
 def vector_to_numpy(vector):
     """Converts a Vector to a numpy array."""
-    return kaldi_vector_numpy.vector_to_numpy(vector)
+    return kaldi_numpy.vector_to_numpy(vector)
 
 def numpy_to_vector(array):
     """Converts a numpy array to a SubVector."""
-    return SubVector(kaldi_vector_numpy.numpy_to_vector(array))
+    return SubVector(kaldi_numpy.numpy_to_vector(array))
+
+def matrix_to_numpy(matrix):
+    """Converts a Matrix to a numpy array."""
+    return kaldi_numpy.matrix_to_numpy(matrix)
+
+def numpy_to_matrix(array):
+    """Converts a numpy array to a SubMatrix."""
+    return SubMAtrix(kaldi_numpy.numpy_to_matrix(array))

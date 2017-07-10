@@ -203,21 +203,6 @@ kaldi_vector = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_vector)
 
-kaldi_vector_numpy = Extension(
-    "kaldi.matrix.kaldi_vector_numpy",
-    sources=[
-        'kaldi/matrix/kaldi-vector-numpy.cc',
-        ],
-    language='c++',
-    extra_compile_args=extra_compile_args,
-    include_dirs=include_dirs,
-    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
-    runtime_library_dirs=runtime_library_dirs,
-    libraries=[':kaldi_vector.so', ':matrix_common.so', 'kaldi-matrix',
-               'kaldi-base'] + libraries,
-    extra_link_args=extra_link_args)
-extensions.append(kaldi_vector_numpy)
-
 kaldi_matrix = Extension(
     "kaldi.matrix.kaldi_matrix",
     sources=[
@@ -233,6 +218,21 @@ kaldi_matrix = Extension(
                'kaldi-base'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_matrix)
+
+kaldi_numpy = Extension(
+    "kaldi.matrix.kaldi_numpy",
+    sources=[
+        'kaldi/matrix/kaldi-numpy.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':kaldi_matrix.so', ':kaldi_vector.so', ':matrix_common.so',
+               'kaldi-matrix', 'kaldi-base'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(kaldi_numpy)
 
 packages = find_packages()
 
