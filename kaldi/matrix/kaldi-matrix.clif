@@ -25,7 +25,11 @@ from "matrix/kaldi-matrix.h":
             # @sequential
             # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
 
-            # def Index
+            # Note (VM):
+            # __getitem__ takes only two arguments, but 
+            # here we need three, so we should use a custom
+            # method.
+            def `operator()` as getitem_(self, r:int, c:int) -> float
 
             def SetZero(self)
 
@@ -56,7 +60,8 @@ from "matrix/kaldi-matrix.h":
             def CopyDiagFromVec(self, v:VectorBase)
 
             # Accessing sub-parts of matrix #
-
+            # Note (VM):
+            # Implemented in child class Matrix<Real>
 
             # Special functions #
 
@@ -247,10 +252,21 @@ from "matrix/kaldi-matrix.h":
             # void Read(std::istream & in, bool binary, bool add = false);
             # void Write(std::ostream & out, bool binary) const;
 
+        class `SubMatrix<float>` as SubMatrix(MatrixBase):
+            
+            def __init__(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
+
+            @add__init__
+            def `SubMatrix` as NewWithData(self, data:`float` as float, num_rows: int, num_cols: int, stride: int)
+
+            @add__init__
+            def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
+
+
         class `Matrix<float>` as Matrix(MatrixBase):
             
             @add__init__
-            def Matrix(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def `Matrix` as NewWithSize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
@@ -261,9 +277,8 @@ from "matrix/kaldi-matrix.h":
             # TODO:
             # void Swap(CuMatrix<Real> *mat);
 
-            # FIXME (VM):
             @add__init__
-            def `Matrix` as FromMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
+            def `Matrix` as NewWithMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
 
             # TODO:
             # @add__init__
@@ -281,16 +296,27 @@ from "matrix/kaldi-matrix.h":
 
             def Transpose(self)
 
-            def Resize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def `Resize` as resize_(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
             # Todo (VM):
-            # Check if this actually works
-            def `operator=` as __copy__(self, other:MatrixBase) -> Matrix
+            # <strikethrough>Check if this actually works</strikethrough>
+            # Better to do it in python
+            # def `operator=` as __copy__(self, other:MatrixBase) -> Matrix
 
             # NOTE (VM):
             # This is actually a private method,
             # so it might not be a good idea to wrap it
             # def `Init` as __init__(self, r:int, c:int)
+
+            # Accessing of sub-parts of the matrix. #
+            def Row(self, i:int) -> SubVector
+
+            def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+
+            def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
+
+            def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
+
 
 
         def `TraceMat` as TraceMat(A: MatrixBase) -> float
@@ -344,13 +370,3 @@ from "matrix/kaldi-matrix.h":
         # // Write (CMUSphinx format) features to file from matrix.
         # template<typename Real>
         # bool WriteSphinx(std::ostream &os, const MatrixBase<Real> &M);
-
-        class `SubMatrix<float>` as SubMatrix(MatrixBase):
-            
-            def __init__(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
-
-            @add__init__
-            def `SubMatrix` as NewWithData(self, data:`float` as float, num_rows: int, num_cols: int, stride: int)
-
-            @add__init__
-            def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
