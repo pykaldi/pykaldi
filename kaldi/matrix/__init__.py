@@ -162,10 +162,10 @@ class _MatrixBase(object):
 
     def range(self, row_offset, row_length, col_offset, col_length):
         """Returns a new submatrix of the matrix."""
-        return SubMatrix(row_offset, row_length, col_offset, col_length)
+        return SubMatrix(self, row_offset, row_length, col_offset, col_length)
 
 class SubMatrix(kaldi_matrix.SubMatrix, _MatrixBase):
-    def __init__(self, src, row_offset = 0, row_length = None, 
+    def __init__(self, src, row_offset = 0, row_length = None,
                             col_offset = 0, col_length = None):
         """Creates a new submatrix from the source (sub)matrix
            If 'length' is None, it defaults to rows (or cols) - offset.
@@ -208,16 +208,16 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
     """Python wrapper for kaldi::Matrix<float>"""
     def __init__(self, size=None, **kwargs):
         """Creates a new Matrix.
-            
+
         If no arguments are given, returns a new empty matrix.
-        'size' is a tuple (or list) of matrix dimensions. If given, 
+        'size' is a tuple (or list) of matrix dimensions. If given,
                 return matrix with dimension size[0] x size[1].
 
         Args:
             size (tuple or list): Matrix dimensions
         """
         super(Matrix, self).__init__()
-        
+
         if size is not None:
             if not (isinstance(size, tuple) or isinstance(size, list)):
                 raise TypeError("Matrix size argument must be a tuple or list.")
@@ -242,19 +242,19 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
         """Custom indexing method
 
         Returns:
-            - the value at the given index if the index is an integer tuple 
+            - the value at the given index if the index is an integer tuple
             - a submatrix if at least one index is a slice with step = 1
         """
 
         if isinstance(index, tuple):
             if len(index) != 2:
-                raise IndexError("too many indices for Matrix")  
+                raise IndexError("too many indices for Matrix")
 
             # Simple indexing by two integers
             if isinstance(index[0], int) and isinstance(index[1], int):
                 return self.getitem_(index[0], index[1])
 
-            # 
+            #
             row_offset, col_offset = 0, 0
             row_end, col_end = self.shape()
             row_step, col_step = 1, 1
@@ -273,11 +273,11 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
                 if col_step != 1:
                     raise NotImplementedError("slicing with steps not implemented yet")
 
-            return self.range(row_offset, row_end - row_offset, 
+            return self.range(row_offset, row_end - row_offset,
                               col_offset, col_end - col_offset)
 
-            
-        raise IndexError("something went wrong")  
+
+        raise IndexError("something went wrong")
 
 
 ################################################################################
@@ -298,4 +298,4 @@ def matrix_to_numpy(matrix):
 
 def numpy_to_matrix(array):
     """Converts a numpy array to a SubMatrix."""
-    return SubMAtrix(kaldi_numpy.numpy_to_matrix(array))
+    return SubMatrix(kaldi_numpy.numpy_to_matrix(array))
