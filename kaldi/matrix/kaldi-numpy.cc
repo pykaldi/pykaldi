@@ -247,7 +247,15 @@ PyMODINIT_FUNC PyInit_kaldi_numpy(void) {
   };
   PyObject* module = PyModule_Create(&Module);
   if (!module) return nullptr;
-  import_array();
+  // We do not use the import_array() macro with Python 3 since we want to
+  // decrement the module reference count in case of import failure.
+  if (_import_array() < 0) {
+    PyErr_Print();
+    PyErr_SetString(PyExc_ImportError,
+                    "numpy.core.multiarray failed to import");
+    Py_DECREF(module);
+    return nullptr;
+  }
   return module;
 }
 #endif
