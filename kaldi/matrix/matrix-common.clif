@@ -1,9 +1,20 @@
 from "matrix/matrix-common.h":
-    namespace `kaldi`:
-        enum MatrixTransposeType
+  namespace `kaldi`:
+    enum MatrixTransposeType with:
+      `kTrans` as TRANS
+      `kNoTrans` as NO_TRANS
 
-        enum MatrixResizeType
+    enum MatrixResizeType with:
+      `kSetZero` as SET_ZERO
+      `kUndefined` as UNDEFINED
+      `kCopyData` as COPY_DATA
 
-        enum MatrixStrideType
+    enum MatrixStrideType with:
+      `kDefaultStride` as DEFAULT
+      `kStrideEqualNumCols` as NUM_COLS
 
-        enum SpCopyType
+    enum SpCopyType with:
+        `kTakeLower` as TAKE_LOWER
+        `kTakeUpper` as TAKE_UPPER
+        `kTakeMean` as TAKE_MEAN
+        `kTakeMeanAndCheck` as TAKE_MEAN_AND_CHECK

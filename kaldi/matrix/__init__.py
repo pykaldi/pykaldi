@@ -4,7 +4,10 @@ import os
 # This is needed for extension libs to be able to load each other.
 sys.path.append(os.path.dirname(__file__))
 
-from kaldi.matrix.matrix_common import *
+# Absolute import of matrix_common does not work on Python 3 for some reason.
+# Symbols in matrix_common are assigned to module importlib._bootstrap ????
+import matrix_common
+from matrix_common import MatrixResizeType, MatrixTransposeType
 
 import kaldi.matrix.kaldi_vector
 from kaldi.matrix.kaldi_vector import ApproxEqualVector, AssertEqualVector
@@ -47,13 +50,13 @@ class _VectorBase(object):
         """True if two vectors have the same size and data, false otherwise."""
         self.ApproxEqual(other, tol)
 
-    def range(self, offset, length):
-        """Returns a new subvector (a range of elements) of the vector."""
-        return SubVector(self, offset, length)
-
     def numpy(self):
         """Returns this vector as a numpy ndarray."""
         return vector_to_numpy(self)
+
+    def range(self, offset, length):
+        """Returns a new subvector (a range of elements) of the vector."""
+        return SubVector(self, offset, length)
 
 
 class Vector(kaldi_vector.Vector, _VectorBase):
@@ -76,9 +79,9 @@ class Vector(kaldi_vector.Vector, _VectorBase):
                             "cannot be given at the same time.")
         super(Vector, self).__init__()
         if size is not None:
-            self.resize_(size, MatrixResizeType.kUndefined)
+            self.resize_(size, MatrixResizeType.UNDEFINED)
         elif src is not None:
-            self.resize_(len(src), MatrixResizeType.kUndefined)
+            self.resize_(len(src), MatrixResizeType.UNDEFINED)
             self.CopyFromVec(src)
 
     def __getitem__(self, index):
@@ -114,20 +117,18 @@ class SubVector(kaldi_vector.SubVector, _VectorBase):
             length (int): Length of the subvector.
         """
         src_len = len(src)
-        if 0 <= offset < src_len:
-            max_len = src_len - offset
-            if length is None:
-                length = max_len
-            if 0 <= length <= max_len:
-                super(SubVector, self).__init__(src, offset, length)
-            else:
-                raise IndexError("Argument length={} should be in the range "
-                                 "[0,{}] when offset={} and len(src)={}."
-                                 .format(length, max_len, offset, src_len))
-        else:
+        if not (0 <= offset <= src_len):
             raise IndexError("Argument offset={} should be in the range "
-                             "[0,{}) when len(src)={}."
+                             "[0,{}] when len(src)={}."
                              .format(offset, src_len, src_len))
+        max_len = src_len - offset
+        if length is None:
+            length = max_len
+        if not (0 <= length <= max_len):
+            raise IndexError("Argument length={} should be in the range "
+                             "[0,{}] when offset={} and len(src)={}."
+                             .format(length, max_len, offset, src_len))
+        super(SubVector, self).__init__(src, offset, length)
 
     def __getitem__(self, index):
         """Custom item indexing method.
@@ -147,6 +148,7 @@ class SubVector(kaldi_vector.SubVector, _VectorBase):
         else:
             raise TypeError("SubVector index must be an integer or a slice.")
 
+
 class _MatrixBase(object):
     def shape(self):
         """Returns dimensions of matrix"""
@@ -164,44 +166,46 @@ class _MatrixBase(object):
         """Returns a new submatrix of the matrix."""
         return SubMatrix(self, row_offset, row_length, col_offset, col_length)
 
+
 class SubMatrix(kaldi_matrix.SubMatrix, _MatrixBase):
-    def __init__(self, src, row_offset = 0, row_length = None,
-                            col_offset = 0, col_length = None):
+    def __init__(self, src, row_offset = 0, rows = None,
+                            col_offset = 0, cols = None):
         """Creates a new submatrix from the source (sub)matrix
-           If 'length' is None, it defaults to rows (or cols) - offset.
+
+           If 'rows' is None, it defaults to src.num_rows_ - row_offset.
+           If 'cols' is None, it defaults to src.num_cols_ - col_offset.
 
            Args:
                 src (MatrixBase): Source (sub)matrix.
                 row_offset, col_offset: Start of the submatrix.
-                row_length, col_length: Length of the submatrix.
+                rows, cols: Dimensions of the submatrix.
         """
-        src_rows, src_cols = src.shape()
-        if not (0 <= row_offset < src_rows):
-            raise IndexError("Row offset={} should be in the range "
-                             "[0,{}) when nrows(src)={}."
+        src_rows, src_cols = src.num_rows_, src.num_cols_
+        if not (0 <= row_offset <= src_rows):
+            raise IndexError("Argument row_offset={} should be in the range "
+                             "[0,{}] when src.num_rows_={}."
                              .format(row_offset, src_rows, src_rows))
-        if not (0 <= col_offset < src_cols):
-            raise IndexError("Col offset={} should be in the range "
-                             "[0,{}) when ncols(src)={}."
+        if not (0 <= col_offset <= src_cols):
+            raise IndexError("Argument col_offset={} should be in the range "
+                             "[0,{}] when src.num_cols_={}."
                              .format(col_offset, src_cols, src_cols))
 
-        max_row_len, max_col_len = src_rows - row_offset, src_cols - col_offset
-        if row_length is None:
-            row_length = max_row_len
-        if col_length is None:
-            col_length = max_col_len
+        max_rows, max_cols = src_rows - row_offset, src_cols - col_offset
+        if rows is None:
+            rows = max_rows
+        if cols is None:
+            cols = max_cols
 
-        if not (0 <= row_length <= max_row_len):
-            raise IndexError("Row length={} should be in the range "
-                             "[0,{}) when offset={} and nrows(src)={}."
-                             .format(row_length, max_row_len, row_offset, src_rows))
-        if not (0 <= col_length <= max_col_len):
-            raise IndexError("Col length={} should be in the range "
-                             "[0,{}) when offset={} and ncols(src)={}."
-                             .format(col_length, max_col_len, col_offset, src_cols))
+        if not (0 <= rows <= max_rows):
+            raise IndexError("Argument rows={} should be in the range "
+                             "[0,{}] when offset={} and src.num_rows_={}."
+                             .format(rows, max_rows, row_offset, src_rows))
+        if not (0 <= cols <= max_cols):
+            raise IndexError("Argument cols={} should be in the range "
+                             "[0,{}] when offset={} and src.num_cols_={}."
+                             .format(cols, max_cols, col_offset, src_cols))
 
-        super(SubMatrix, self).__init__(src, row_offset, row_length,
-                                             col_offset, col_length)
+        super(SubMatrix, self).__init__(src, row_offset, rows, col_offset, cols)
 
 
 class Matrix(kaldi_matrix.Matrix, _MatrixBase):
@@ -229,7 +233,9 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
                 raise TypeError("Matrix dimensions must be integer.")
 
             if not (size[0] > 0 and size[1] > 0):
-                raise TypeError("Matrix dimensions must be positive.")
+                if not (size[0] == 0 and size[1] == 0):
+                    raise TypeError("Both Matrix dimensions must be positive "
+                                    "or both of them should be 0.")
 
             # TODO (VM):
             # Include missing parameters here
