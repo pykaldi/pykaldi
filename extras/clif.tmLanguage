@@ -425,7 +425,7 @@
 					<key>begin</key>
 					<string>(?=[A-Za-z_][A-Za-z0-9_]*)</string>
 					<key>contentName</key>
-					<string>entity.name.type.class.python.clif</string>
+					<string>entity.name.type.class.clif</string>
 					<key>end</key>
 					<string>(?![A-Za-z0-9_])</string>
 					<key>patterns</key>
@@ -450,7 +450,7 @@
 					<key>end</key>
 					<string>(?=\)|:)</string>
 					<key>name</key>
-					<string>meta.class.inheritance.python</string>
+					<string>meta.class.inheritance.clif</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -525,106 +525,20 @@
 					</array>
 				</dict>
 				<dict>
+					<key>include</key>
+					<string>#tuples</string>
+				</dict>
+				<dict>
 					<key>begin</key>
-					<string>(\()</string>
+					<string>(-\&gt;)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.parameters.begin.clif</string>
+							<string>support.class.clif</string>
 						</dict>
 					</dict>
-					<key>end</key>
-					<string>(\))</string>
-					<key>name</key>
-					<string>meta.function.parameters.clif</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>match</key>
-							<string>(self)</string>
-							<key>name</key>
-							<string>variable.parameter.parameter.function.language.clif</string>
-						</dict>
-						<dict>
-							<key>match</key>
-							<string>(,)</string>
-							<key>name</key>
-							<string>punctuation.separator.parameters.clif</string>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>([A-Za-z_][A-Za-z0-9_]*)\s*(\:)(?!\:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
-									<string>meta.function-call.arguments.clif</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>keyword.operator.assignment.clif</string>
-								</dict>
-							</dict>
-							<key>contentName</key>
-							<string>entity.name.type.clif</string>
-							<key>end</key>
-							<string>\s*(?=(,)|\))</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>#cclass</string>
-								</dict>
-								<dict>
-									<key>match</key>
-									<string>\b(as)\b</string>
-									<key>name</key>
-									<string>keyword.other.clif</string>
-								</dict>
-								<dict>
-									<key>include</key>
-									<string>#types</string>
-								</dict>
-								<dict>
-									<key>begin</key>
-									<string>\s*(\=)\s*</string>
-									<key>beginCaptures</key>
-									<dict>
-										<key>1</key>
-										<dict>
-											<key>name</key>
-											<string>keyword.operator.assignment.clif</string>
-										</dict>
-									</dict>
-									<key>end</key>
-									<string>\s*(?=(,)|\))</string>
-									<key>patterns</key>
-									<array>
-										<dict>
-											<key>match</key>
-											<string>(default)</string>
-											<key>name</key>
-											<string>variable.parameter.parameter.function.language.clif</string>
-										</dict>
-										<dict>
-											<key>match</key>
-											<string>([A-Za-z_][A-Za-z0-9_]*)</string>
-											<key>name</key>
-											<string>variable.parameter.parameter.function.clif</string>
-										</dict>
-									</array>
-								</dict>
-							</array>
-						</dict>
-					</array>
-				</dict>
-				<dict>
-					<key>begin</key>
-					<string>(-\&gt;)</string>
 					<key>end</key>
 					<string>(?=$\n?)</string>
 					<key>name</key>
@@ -644,6 +558,10 @@
 						<dict>
 							<key>include</key>
 							<string>#types</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#tuples</string>
 						</dict>
 					</array>
 				</dict>
@@ -678,7 +596,7 @@
 					<key>match</key>
 					<string>(\`\s*[A-Za-z_][A-Za-z0-9_]*\s*(&lt;\s*([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)\s*(,\s*[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\s*)*&gt;\s*)?\`)</string>
 					<key>name</key>
-					<string>entity.name.type.class.c.clif</string>
+					<string>string.quoted.single.clif</string>
 				</dict>
 			</array>
 		</dict>
@@ -690,7 +608,7 @@
 					<key>match</key>
 					<string>\`\s*(([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)|(operator([-*&amp;&lt;&gt;=+!]|\(\)|\[\])))\s*\`</string>
 					<key>name</key>
-					<string>entity.name.function.c.clif</string>
+					<string>string.quoted.single.clif</string>
 				</dict>
 			</array>
 		</dict>
@@ -797,7 +715,7 @@
 					<key>match</key>
 					<string>(\`[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\`)</string>
 					<key>name</key>
-					<string>entity.name.type.namespace.clif</string>
+					<string>string.quoted.single.clif</string>
 				</dict>
 			</array>
 		</dict>
@@ -840,6 +758,107 @@
 					</dict>
 					<key>name</key>
 					<string>string.quoted.double.single-line.clif</string>
+				</dict>
+			</array>
+		</dict>
+		<key>tuples</key>
+		<dict>
+			<key>begin</key>
+			<string>(\()</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.parameters.begin.clif</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Clif tuples / parameter list</string>
+			<key>end</key>
+			<string>(\))</string>
+			<key>name</key>
+			<string>meta.function.parameters.clif</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>(self)</string>
+					<key>name</key>
+					<string>variable.parameter.parameter.function.language.clif</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>(,)</string>
+					<key>name</key>
+					<string>punctuation.separator.parameters.clif</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>([A-Za-z_][A-Za-z0-9_]*)\s*(\:)(?!\:)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>meta.function-call.arguments.clif</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.assignment.clif</string>
+						</dict>
+					</dict>
+					<key>contentName</key>
+					<string>entity.name.type.clif</string>
+					<key>end</key>
+					<string>\s*(?=(,)|\))</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#cclass</string>
+						</dict>
+						<dict>
+							<key>match</key>
+							<string>\b(as)\b</string>
+							<key>name</key>
+							<string>keyword.other.clif</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#types</string>
+						</dict>
+						<dict>
+							<key>begin</key>
+							<string>\s*(\=)\s*</string>
+							<key>beginCaptures</key>
+							<dict>
+								<key>1</key>
+								<dict>
+									<key>name</key>
+									<string>keyword.operator.assignment.clif</string>
+								</dict>
+							</dict>
+							<key>end</key>
+							<string>\s*(?=(,)|\))</string>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>match</key>
+									<string>(default)</string>
+									<key>name</key>
+									<string>variable.parameter.parameter.function.language.clif</string>
+								</dict>
+								<dict>
+									<key>match</key>
+									<string>([A-Za-z_][A-Za-z0-9_]*)</string>
+									<key>name</key>
+									<string>variable.parameter.parameter.function.clif</string>
+								</dict>
+							</array>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>

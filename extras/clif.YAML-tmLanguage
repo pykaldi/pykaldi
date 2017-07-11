@@ -152,12 +152,12 @@ patterns:
       name: keyword.other.clif
 
     - begin: (?=[A-Za-z_][A-Za-z0-9_]*)
-      contentName: entity.name.type.class.python.clif 
+      contentName: entity.name.type.class.clif 
       end: (?![A-Za-z0-9_])
       patterns:
       - include: '#entity_name_class'
 
-    - name: meta.class.inheritance.python
+    - name: meta.class.inheritance.clif
       begin: (\()
       beginCaptures:
         '1': {name: punctuation.definition.inheritance.begin.clif}
@@ -190,49 +190,13 @@ patterns:
       patterns:
       - include: '#entity_name_function'
 
-    - name: meta.function.parameters.clif
-      begin: (\()
-      beginCaptures:
-        '1': {name: punctuation.definition.parameters.begin.clif}
-      end: (\))
-      patterns:
-      
-      - match: (self)
-        name: variable.parameter.parameter.function.language.clif
-
-      - match: (,)
-        name: punctuation.separator.parameters.clif
-
-      - contentName: entity.name.type.clif
-        begin: ([A-Za-z_][A-Za-z0-9_]*)\s*(\:)(?!\:)
-        beginCaptures:
-          '1': {name: meta.function-call.arguments.clif}
-          '2': {name: keyword.operator.assignment.clif}
-        end: \s*(?=(,)|\))
-        # endCaptures:
-        #   '1': {name: punctuation.separator.parameters.clif}
-        patterns:
-        - include: '#cclass'
-
-        - match: \b(as)\b 
-          name: keyword.other.clif
-
-        - include: '#types'
-
-        # case for value assignation
-        - begin: \s*(\=)\s*
-          beginCaptures:
-            '1': {name: keyword.operator.assignment.clif}
-          end: \s*(?=(,)|\))
-          patterns:
-          - match: (default)
-            name: variable.parameter.parameter.function.language.clif
-          - match: ([A-Za-z_][A-Za-z0-9_]*)
-            name: variable.parameter.parameter.function.clif
+    - include: '#tuples'
 
     # Output type
     - name: meta.function.returnvalue.clif
       begin: (-\>)
+      beginCaptures:
+        '1': {name: support.class.clif}
       end: (?=$\n?)
       patterns:
       - include: '#cclass'
@@ -242,13 +206,14 @@ patterns:
 
       - include: '#types'
 
+      - include: '#tuples'
+
   - comment: Clif decorator
     name: meta.function.decorator.clif
     begin: (\@[A-Za-z_][A-Za-z0-9_]*)
     beginCaptures:
       '1': {name: entity.name.function.decorator.clif}
     end: ($\n?)
-    
 
 repository:
   keywords:
@@ -291,17 +256,17 @@ repository:
   namespace:
     patterns:
     - match: (\`[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\`)
-      name: entity.name.type.namespace.clif 
+      name: string.quoted.single.clif 
 
   cclass:
     patterns:
     - match: (\`\s*[A-Za-z_][A-Za-z0-9_]*\s*(<\s*([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)\s*(,\s*[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\s*)*>\s*)?\`)
-      name: entity.name.type.class.c.clif
+      name: string.quoted.single.clif
 
   cfunction:
     patterns:
     - match: \`\s*(([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)|(operator([-*&<>=+!]|\(\)|\[\])))\s*\`
-      name: entity.name.function.c.clif
+      name: string.quoted.single.clif
 
   entity_name_class:
     patterns:
@@ -325,3 +290,43 @@ repository:
     comment: these methods have magic interpretation by python and are generally called indirectly through syntactic constructs
     match: (?x)\b(__(?:abs|add|and|bool|bytes|call|cmp|coerce|complex|contains|del|delattr|delete|delitem|delslice|dir|div|divmod|enter|eq|exit|float|floordiv|format|ge|get|getattr|getattribute|getitem|getslice|gt|hash|hex|iadd|iand|idiv|ifloordiv|ilshift|imatmul|imod|imul|index|init|instancecheck|int|invert|ior|ipow|irshift|isub|iter|itruediv|ixor|le|len|length_hint|long|lshift|lt|matmul|missing|mod|mul|ne|neg|next|new|nonzero|oct|or|pos|pow|radd|rand|rdiv|rdivmod|repr|reversed|rfloordiv|rlshift|rmatmul|rmod|rmul|ror|round|rpow|rrshift|rshift|rsub|rtruediv|rxor|set|setattr|setitem|setslice|str|sub|subclasscheck|truediv|unicode|xor)__)\b
     name: support.function.magic.python.clif
+
+  tuples:
+    comment: Clif tuples / parameter list
+    name: meta.function.parameters.clif
+    begin: (\()
+    beginCaptures:
+      '1': {name: punctuation.definition.parameters.begin.clif}
+    end: (\))
+    patterns:
+    
+    - match: (self)
+      name: variable.parameter.parameter.function.language.clif
+
+    - match: (,)
+      name: punctuation.separator.parameters.clif
+
+    - contentName: entity.name.type.clif
+      begin: ([A-Za-z_][A-Za-z0-9_]*)\s*(\:)(?!\:)
+      beginCaptures:
+        '1': {name: meta.function-call.arguments.clif}
+        '2': {name: keyword.operator.assignment.clif}
+      end: \s*(?=(,)|\))
+      patterns:
+      - include: '#cclass'
+
+      - match: \b(as)\b 
+        name: keyword.other.clif
+
+      - include: '#types'
+
+      # case for value assignation
+      - begin: \s*(\=)\s*
+        beginCaptures:
+          '1': {name: keyword.operator.assignment.clif}
+        end: \s*(?=(,)|\))
+        patterns:
+        - match: (default)
+          name: variable.parameter.parameter.function.language.clif
+        - match: ([A-Za-z_][A-Za-z0-9_]*)
+          name: variable.parameter.parameter.function.clif
