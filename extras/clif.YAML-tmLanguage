@@ -113,7 +113,7 @@ patterns:
 
   - comment: Clif enum
     name: meta.other.clif
-    begin: ^\s*(enum)
+    begin: \b(enum)\b
     beginCaptures:
       '1': {name: keyword.other.clif}
     end: ((with)\s*:) | ($\n?)

@@ -17,19 +17,15 @@ from "matrix/kaldi-matrix.h":
             # def Data(self) -> float*
             # def RowData(self) -> float*
 
-            # FIXME(Dogan): This fails becasue SubVector assignment op is private.
-            # @sequential
-            # def `Row` as __getitem__(self, r: int) -> SubVector
-
             # FIXME(Dogan): Argument order is reversed in C++. Handle in Python.
             # @sequential
             # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
 
             # Note (VM):
-            # __getitem__ takes only two arguments, but 
-            # here we need three, so we should use a custom
-            # method.
-            def `operator()` as getitem_(self, r:int, c:int) -> float
+            # __getitem__ takes only two arguments (self, index), but 
+            # here we need three (self, row, col). 
+            # We cannot use a perfect mapping
+            def `operator()` as _getitem(self, r:int, c:int) -> float
 
             def SetZero(self)
 
@@ -261,6 +257,15 @@ from "matrix/kaldi-matrix.h":
 
             @add__init__
             def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
+
+            # Accessing of sub-parts of the matrix. #
+            def Row(self, i:int) -> SubVector
+
+            def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+
+            def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
+
+            def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
 
         class `Matrix<float>` as Matrix(MatrixBase):
