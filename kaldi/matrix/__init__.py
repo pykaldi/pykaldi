@@ -184,7 +184,7 @@ class _MatrixBase(object):
         """
         if isinstance(index, tuple):
             if len(index) != 2:
-                raise IndexError("too many indices for {}".format(self.__class__.__name__))  
+                raise IndexError("too many indices for {}".format(self.__class__.__name__))
 
             # Simple indexing by two integers
             if isinstance(index[0], int) and isinstance(index[1], int):
@@ -227,7 +227,7 @@ class _MatrixBase(object):
 
         raise IndexError("{} index must be a tuple".format(self.__class__.__name__))
 
-    
+
 class Matrix(kaldi_matrix.Matrix, _MatrixBase):
     """Python wrapper for kaldi::Matrix<float>"""
     def __init__(self, size=None, **kwargs):
@@ -309,4 +309,12 @@ def vector_to_numpy(vector):
 
 def numpy_to_vector(array):
     """Converts a numpy array to a SubVector."""
-    return SubVector(kaldi_vector_numpy.numpy_to_vector(array))
+    return SubVector(kaldi_numpy.numpy_to_vector(array))
+
+def matrix_to_numpy(matrix):
+    """Converts a Matrix to a numpy array."""
+    return kaldi_numpy.matrix_to_numpy(matrix)
+
+def numpy_to_matrix(array):
+    """Converts a numpy array to a SubMatrix."""
+    return SubMatrix(kaldi_numpy.numpy_to_matrix(array))
