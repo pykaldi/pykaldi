@@ -1,0 +1,52 @@
+from "matrix/matrix-common_clifwrap.h" import *
+from "matrix/kaldi-vector_clifwrap.h" import *
+from "matrix/kaldi-matrix_clifwrap.h" import *
+
+from "matrix/matrix-functions.h":
+    namespace `kaldi`:
+
+        # Note (VM):
+        # Cannot be implemented as it is (v is both in/out)
+        # def ComplexFft(v:VectorBase, forward:bool, tmp_work:Vector)
+
+        # Cannot be implemented as it is (outputs before inputs)
+        # def ComplexFt(in:VectorBase, out:VectorBase, forward:bool)
+
+        # Cannot be implemented as it is (outputs before inputs)
+        # def RealFft(v:VectorBase, forward:bool)
+
+        # Cannot be implemented as it is (outputs before inputs)
+        # def RealFftInefficient(v:VectorBase, forward:bool)
+
+        # 
+        # def ComputeDctMatrix(M:Matrix)
+
+        # Cannot be implemented as b is both in/out
+        # def ComplexMul(a_re:float, a_im:float, b_re:float, b_im:float)
+
+        # Cannot be implemented as c is both in/out
+        # def ComplexAddProduct(a_re:float, a_im:float, b_re:float, b_im:float, c_re:float, c_im:float)
+
+        # FIXME (VM):
+        # Either clif finds it in matrix-functions-inl.h or it doesnt find it at all
+        # def `ComplexImExp` as ComplexImExp(x:float) -> (a_re:`float` as float, a_im:`float` as float)
+
+        class `MatrixExponential<float>` as MatrixExponential:
+
+            def Compute(self, M:MatrixBase, X:MatrixBase)
+
+            # TODO (VM):
+            # def Compute(self, M:SpMatrix) -> (X:SpMatrix)
+
+            # def `Backprop` as Backprop(self, hX:Matrix) -> (hM:Matrix)
+
+            # TODO (VM):
+            # def `Backprop` as BackpropSp(self, hX:SpMatrix) -> (hM:SpMatrix)
+
+        # Cannot be implemented as it is (outputs before inputs)
+        # def ComputePca(X:MatrixBase, U:MatrixBase, A:MatrixBase, print_eigs:bool, exact:bool)
+
+        # Cannot be implemented as plus, minus is both in/out
+        # def AddOuterProductPlusMinus(alpha:float, a:VectorBase, b:VectorBase, plus:MatrixBase, minus:MatrixBase)
+
+        def `AssertSameDim` as AssertSameDim(mat1:MatrixBase, mat2:MatrixBase)
