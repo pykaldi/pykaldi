@@ -351,8 +351,10 @@ from "matrix/kaldi-matrix.h":
         # Cannot be implemented as it is because outputs are before inputs
         # def `SortSVD` as SortSVD(s: VectorBase, U: MatrixBase, Vt: MatrixBase, sort_on_absolute_value: bool = default)
 
-        # TODO (VM): Check it works
-        def CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase, D:MatrixBase)
+        # Note (VM):
+        # MatrixBase's constructor is protected, and thus one cannot instanciate D
+        # How to solve such problem?
+        # def `CreateEigenvalueMatrix` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase) -> (D:MatrixBase)
 
         def `AttemptComplexPower` as AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
 
