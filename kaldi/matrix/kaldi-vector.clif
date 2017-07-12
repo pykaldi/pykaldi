@@ -1,4 +1,4 @@
-from "matrix/matrix-common_clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
 
 from "matrix/kaldi-vector.h":
   namespace `kaldi`:
@@ -207,25 +207,25 @@ from "matrix/kaldi-vector.h":
       # TODO(Dogan): Wrap ostream.
       # def Write(in: ostream, binary: bool);
 
-    class `SubVector<float>` as SubVector(VectorBase):
-      def __init__(self, t: VectorBase, offset: int, length: int)
-
-      @add__init__
-      def `SubVector` as NewWithSubVector(self, s: SubVector)
-
-      # NOTE:
-      # We cannot wrap this here since PackedMatrix is not defined yet.
-      # @add__init__
-      # def `SubVector` as CopyFromPackedMatrix(self, M: PackedMatrix)
-
-      # NOTE:
-      # We cannot wrap this here since MatrixBase is not defined yet.
-      # @add__init__
-      # def `SubVector` as CopyFromMatrixRow(self, M: MatrixBase, row: int)
-
-      def Range(self, offset: int, length: int) -> SubVector
-
-      # def Attach(self, v: VectorBase, offset: int, length: int)
+    # class `SubVector<float>` as SubVector(VectorBase):
+    #   def __init__(self, t: VectorBase, offset: int, length: int)
+    #
+    #   @add__init__
+    #   def `SubVector` as NewWithSubVector(self, s: SubVector)
+    #
+    #   # NOTE:
+    #   # We cannot wrap this here since PackedMatrix is not defined yet.
+    #   # @add__init__
+    #   # def `SubVector` as CopyFromPackedMatrix(self, M: PackedMatrix)
+    #
+    #   # NOTE:
+    #   # We cannot wrap this here since MatrixBase is not defined yet.
+    #   # @add__init__
+    #   # def `SubVector` as CopyFromMatrixRow(self, M: MatrixBase, row: int)
+    #
+    #   def Range(self, offset: int, length: int) -> SubVector
+    #
+    #   # def Attach(self, v: VectorBase, offset: int, length: int)
 
 
     class `Vector<float>` as Vector(VectorBase):
@@ -248,7 +248,10 @@ from "matrix/kaldi-vector.h":
       # TODO(Dogan): Wrap istream.
       # def Read(in: istream, binary: bool, add: bool = false);
 
-      def Range(self, offset: int, length: int) -> SubVector
+      # NOTE:
+      # We cannot wrap Range here since SubVector is wrapped elsewhere. We
+      # implement the Range method in Python by constructing a SubVector.
+      # def Range(self, offset: int, length: int) -> SubVector
 
       def `Resize` as resize_(self, length: int,
                               resize_type: MatrixResizeType = default)

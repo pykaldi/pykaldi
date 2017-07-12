@@ -57,9 +57,9 @@ function(add_pyclif_library name pyclif_file)
     cmake_parse_arguments(PYCLIF_LIBRARY "" "" "CC_DEPS;CLIF_DEPS;CXX_FLAGS" ${ARGN})
 
     string(REPLACE ".clif" "" pyclif_file_basename ${pyclif_file})
-    set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_clifwrap.cc")
-    set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_clifwrap.h")
-    set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}_clifwrap_init.cc")
+    set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.cc")
+    set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.h")
+    set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
 
     string(REPLACE "-" "_" module_name ${pyclif_file_basename})
 

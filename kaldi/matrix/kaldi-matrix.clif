@@ -1,12 +1,12 @@
-from "matrix/matrix-common_clifwrap.h" import *
-from "matrix/kaldi-vector_clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
 
 from "matrix/kaldi-matrix.h":
     namespace `kaldi`:
         class `MatrixBase<float>` as MatrixBase:
             num_rows_: int = property(`NumRows`)
             num_cols_: int = property(`NumCols`)
-            
+
             # FIXME (VM): maybe?
             # stride_: int = property(`stride_`)
 
@@ -23,7 +23,7 @@ from "matrix/kaldi-matrix.h":
 
             # Note (VM):
             # __getitem__ takes only two arguments (self, index), but 
-            # here we need three (self, row, col). 
+            # here we need three (self, row, col).
             # We cannot use a perfect mapping
             def `operator()` as _getitem(self, r:int, c:int) -> float
 
@@ -248,15 +248,18 @@ from "matrix/kaldi-matrix.h":
             # void Read(std::istream & in, bool binary, bool add = false);
             # void Write(std::ostream & out, bool binary) const;
 
-        class `SubMatrix<float>` as SubMatrix(MatrixBase):
-            
-            def __init__(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
-
-            @add__init__
-            def `SubMatrix` as NewWithData(self, data:`float` as float, num_rows: int, num_cols: int, stride: int)
-
-            @add__init__
-            def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
+        # class `SubMatrix<float>` as SubMatrix(MatrixBase):
+        #
+        #     def __init__(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
+        #
+        #     # Note:
+        #     # We cannot wrap this constructor automatically since CLIF does
+        #     # not support wrapping raw data pointers.
+        #     # @add__init__
+        #     # def `SubMatrix` as NewWithData(self, data:`float` as float, num_rows: int, num_cols: int, stride: int)
+        #
+        #     @add__init__
+        #     def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
 
             # Accessing of sub-parts of the matrix. #
             def Row(self, i:int) -> SubVector
@@ -269,7 +272,7 @@ from "matrix/kaldi-matrix.h":
 
 
         class `Matrix<float>` as Matrix(MatrixBase):
-            
+
             @add__init__
             def `Matrix` as NewWithSize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
 
@@ -313,14 +316,19 @@ from "matrix/kaldi-matrix.h":
             # so it might not be a good idea to wrap it
             # def `Init` as __init__(self, r:int, c:int)
 
-            # Accessing of sub-parts of the matrix. #
-            def Row(self, i:int) -> SubVector
+            # NOTE:
+            # We cannot wrap Row here since SubVector is wrapped elsewhere.
+            # We implement it in Python by constructing a SubVector object.
+            # def Row(self, i:int) -> SubVector
 
-            def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
-
-            def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
-
-            def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
+            # NOTE:
+            # We cannot wrap *Range here since SubMatrix is wrapped elsewhere.
+            # We implement them in Python by constructing SubMatrix objects.
+            # def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+            #
+            # def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
+            #
+            # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
 
 
@@ -334,7 +342,7 @@ from "matrix/kaldi-matrix.h":
                                                      B: MatrixBase, transB: MatrixTransposeType,
                                                      C: MatrixBase, transC: MatrixTransposeType,
                                                      D: MatrixBase, transD: MatrixTransposeType) -> float
-        
+
         def `ApproxEqual` as ApproxEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default) -> bool
 
         def `AssertEqual` as AssertEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default)
@@ -354,14 +362,14 @@ from "matrix/kaldi-matrix.h":
         # def `operator<<` as Write(out: ostream, M: MatrixBase) -> ostream
         # def `operator>>` as Write(in: istream, M: MatrixBase) -> istream
         # def `operator>>` as Write(in: istream, M: Matrix) -> istream
-              
+
         def `SameDim` as AssertSameDim(M: MatrixBase, N: MatrixBase) -> bool
 
 
         class HtkHeader:
-            mNSamples: int 
-            mSamplePeriod: int 
-            mSampleSize: int 
+            mNSamples: int
+            mSamplePeriod: int
+            mSampleSize: int
             mSampleKind: int
 
         # TODO:

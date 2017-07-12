@@ -16,7 +16,7 @@ from kaldi.matrix.kaldi_vector import VecVec
 import kaldi.matrix.kaldi_matrix
 # from kaldi.matrix.kaldi_matrix import *
 
-import kaldi.matrix.kaldi_numpy
+import kaldi.matrix.kaldi_matrix_ext
 
 # For Python2/3 compatibility
 try:
@@ -46,10 +46,8 @@ class _VectorBase(object):
         self.CopyFromVec(src)
         return self
 
-    # Note (VM):
-    # Was missing a return
-    def equal(self, other, tol=0.0):
-        """True if two vectors have the same size and data, false otherwise."""
+    def equal(self, other, tol=1e-16):
+        """Checks if vectors have the same size and data within tolerance."""
         return self.ApproxEqual(other, tol)
 
     def numpy(self):
@@ -107,7 +105,7 @@ class Vector(kaldi_vector.Vector, _VectorBase):
             raise TypeError("Vector index must be an integer or a slice.")
 
 
-class SubVector(kaldi_vector.SubVector, _VectorBase):
+class SubVector(kaldi_matrix_ext.SubVector, _VectorBase):
     """Python wrapper for kaldi::SubVector<float>"""
 
     def __init__(self, src, offset=0, length=None):
@@ -155,24 +153,24 @@ class SubVector(kaldi_vector.SubVector, _VectorBase):
 
 class _MatrixBase(object):
     def shape(self):
-        """Returns dimensions of matrix"""
+        """Returns dimensions of matrix."""
         return self.num_rows_, self.num_cols_
 
     def nrows(self):
-        """Returns number of rows"""
+        """Returns number of rows."""
         return self.num_rows_
 
     def ncols(self):
-        """Returns number of columns"""
+        """Returns number of columns."""
         return self.num_cols_
 
-    def equal(self, other, tol = 1e-16):
-        """True if two matrices have the same size and data within tol. False otherwise"""
+    def equal(self, other, tol=1e-16):
+        """Checks if matrices have the same size and data within tolerance."""
         return self.ApproxEqual(other, tol)
 
-    def range(self, row_offset, row_length, col_offset, col_length):
+    def range(self, row_offset, rows, col_offset, cols):
         """Returns a new submatrix of the matrix."""
-        return SubMatrix(self, row_offset, row_length, col_offset, col_length)
+        return SubMatrix(self, row_offset, rows, col_offset, cols)
 
     def __getitem__(self, index):
         """Custom indexing method
@@ -186,7 +184,7 @@ class _MatrixBase(object):
             if len(index) != 2:
                 raise IndexError("too many indices for {}".format(self.__class__.__name__))
 
-            # Simple indexing by two integers
+            # Simple indexing with two integers
             if isinstance(index[0], int) and isinstance(index[1], int):
                 if index[0] >= self.nrows() or index[1] >= self.ncols():
                     raise IndexError("indices out of bounds.")
@@ -196,7 +194,7 @@ class _MatrixBase(object):
 
                 return self._getitem(index[0], index[1]) #Call C-impl
 
-            # Indexing by two slices
+            # Indexing with two slices
             if isinstance(index[0], slice) and isinstance(index[1], slice):
                 row_start, row_end, row_step = index[0].indices(self.nrows())
                 col_start, col_end, col_step = index[0].indices(self.ncols())
@@ -223,7 +221,6 @@ class _MatrixBase(object):
                     return self.range(index[0], 1, start, end - start)
                 else:
                     return [self.__getitem__((index[0], j)) for j in xrange(start, end, step)]
-
 
         raise IndexError("{} index must be a tuple".format(self.__class__.__name__))
 
@@ -259,7 +256,8 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
 
             self.resize_(size[0], size[1], MatrixResizeType.UNDEFINED)
 
-class SubMatrix(kaldi_matrix.SubMatrix, _MatrixBase):
+
+class SubMatrix(kaldi_matrix_ext.SubMatrix, _MatrixBase):
     def __init__(self, src, row_offset = 0, rows = None,
                             col_offset = 0, cols = None):
         """Creates a new submatrix from the source (sub)matrix
@@ -305,16 +303,16 @@ class SubMatrix(kaldi_matrix.SubMatrix, _MatrixBase):
 
 def vector_to_numpy(vector):
     """Converts a Vector to a numpy array."""
-    return kaldi_numpy.vector_to_numpy(vector)
+    return kaldi_matrix_ext.vector_to_numpy(vector)
 
 def numpy_to_vector(array):
     """Converts a numpy array to a SubVector."""
-    return SubVector(kaldi_numpy.numpy_to_vector(array))
+    return SubVector(kaldi_matrix_ext.numpy_to_vector(array))
 
 def matrix_to_numpy(matrix):
     """Converts a Matrix to a numpy array."""
-    return kaldi_numpy.matrix_to_numpy(matrix)
+    return kaldi_matrix_ext.matrix_to_numpy(matrix)
 
 def numpy_to_matrix(array):
     """Converts a numpy array to a SubMatrix."""
-    return SubMatrix(kaldi_numpy.numpy_to_matrix(array))
+    return SubMatrix(kaldi_matrix_ext.numpy_to_matrix(array))
