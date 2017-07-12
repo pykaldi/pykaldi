@@ -109,7 +109,6 @@ from "matrix/kaldi-matrix.h":
             # FIXME:
             # void AddRows(Real alpha, const Real *const *src);
             # void AddToRows(Real alpha, Real *const *dst) const;
-            #
 
             def ApplyFloor(self, floor_val: float)
 
@@ -177,8 +176,7 @@ from "matrix/kaldi-matrix.h":
 
             def GroupMax(self, src: MatrixBase)
 
-            # FIXME:
-            # def GroupMaxDeriv(self, input: MatrixBase) -> (output: MatrixBase)
+            def GroupMaxDeriv(self, input: MatrixBase, output: MatrixBase)
 
             def Tanh(self, src: MatrixBase)
 
@@ -199,8 +197,6 @@ from "matrix/kaldi-matrix.h":
 
             def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase)
 
-            # Note (VM):
-            # I'm skipping the templated function, assuming we only deal with float
             def AddVecToRows(self, alpha: float, v: VectorBase)
 
             def AddVecToCols(self, alpha: float, v: VectorBase)
@@ -244,7 +240,7 @@ from "matrix/kaldi-matrix.h":
 
             def OrthogonalizeRows(self)
 
-            # FIXME: How?!
+            # Note (VM): nothing to do here 
             # void Read(std::istream & in, bool binary, bool add = false);
             # void Write(std::ostream & out, bool binary) const;
 
@@ -261,14 +257,14 @@ from "matrix/kaldi-matrix.h":
         #     @add__init__
         #     def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
 
-            # Accessing of sub-parts of the matrix. #
-            def Row(self, i:int) -> SubVector
+        #     # Accessing of sub-parts of the matrix. #
+        #     def Row(self, i:int) -> SubVector
 
-            def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+        #     def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
 
-            def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
+        #     def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
 
-            def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
+        #     def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
 
         class `Matrix<float>` as Matrix(MatrixBase):
@@ -351,10 +347,7 @@ from "matrix/kaldi-matrix.h":
         # Cannot be implemented as it is because outputs are before inputs
         # def `SortSVD` as SortSVD(s: VectorBase, U: MatrixBase, Vt: MatrixBase, sort_on_absolute_value: bool = default)
 
-        # Note (VM):
-        # MatrixBase's constructor is protected, and thus one cannot instanciate D
-        # How to solve such problem?
-        # def `CreateEigenvalueMatrix` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase) -> (D:MatrixBase)
+        def `CreateEigenvalueMatrix` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase, D:MatrixBase)
 
         def `AttemptComplexPower` as AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
 

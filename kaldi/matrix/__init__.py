@@ -18,6 +18,8 @@ import kaldi.matrix.kaldi_matrix
 
 import kaldi.matrix.kaldi_matrix_ext
 
+from matrix_functions import *
+
 # For Python2/3 compatibility
 try:
     xrange
