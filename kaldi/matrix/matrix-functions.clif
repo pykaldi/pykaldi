@@ -1,6 +1,6 @@
-from "matrix/matrix-common_clifwrap.h" import *
-from "matrix/kaldi-vector_clifwrap.h" import *
-from "matrix/kaldi-matrix_clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
 
 from "matrix/matrix-functions.h":
     namespace `kaldi`:
@@ -18,7 +18,7 @@ from "matrix/matrix-functions.h":
         # Cannot be implemented as it is (outputs before inputs)
         # def RealFftInefficient(v:VectorBase, forward:bool)
 
-        # 
+        #
         # def ComputeDctMatrix(M:Matrix)
 
         # Cannot be implemented as b is both in/out
