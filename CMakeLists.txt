@@ -63,9 +63,8 @@ function(add_pyclif_library name pyclif_file)
 
     string(REPLACE "-" "_" module_name ${pyclif_file_basename})
 
-    add_custom_target(
-        ${name} ALL
-        BYPRODUCTS ${gen_cc} ${gen_h} ${gen_init}
+    add_custom_command(
+        OUTPUT ${gen_cc} ${gen_h} ${gen_init}
         COMMAND
             ${PYCLIF}
             --matcher_bin=${CLIF_MATCHER}
@@ -89,7 +88,12 @@ function(add_pyclif_library name pyclif_file)
                  ${CMAKE_CXX_FLAGS}"
             ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
         VERBATIM
-        DEPENDS ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file} ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}
+    )
+    add_custom_target(
+      ${name} ALL 
+      DEPENDS ${gen_cc} ${gen_h} ${gen_init}
+      VERBATIM
     )
 endfunction(add_pyclif_library)
 
