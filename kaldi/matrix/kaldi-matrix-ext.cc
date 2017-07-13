@@ -358,17 +358,8 @@ static ::kaldi::SubMatrix<float>* ThisPtr(PyObject*);
 // __init__(T:MatrixBase, ro:int, r:int, co:int, c:int)
 static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args, PyObject* kw) {
   PyObject* a[5];
-  char* names[] = {
-      C("T"),
-      C("ro"),
-      C("r"),
-      C("co"),
-      C("c"),
-      nullptr
-  };
+  char* names[] = { C("src"), C("row_offset"), C("rows"), C("col_offset"), C("cols"), nullptr };
   if (!PyArg_ParseTupleAndKeywords(args, kw, "OOOOO:__init__", names, &a[0], &a[1], &a[2], &a[3], &a[4])) return nullptr;
-  ::kaldi::MatrixBase<float>* arg1;
-  if (!Clif_PyObjAs(a[0], &arg1)) return ArgError("__init__", names[0], "::kaldi::MatrixBase<float>", a[0]);
   ::kaldi::MatrixIndexT arg2;
   if (!Clif_PyObjAs(a[1], &arg2)) return ArgError("__init__", names[1], "::kaldi::MatrixIndexT", a[1]);
   ::kaldi::MatrixIndexT arg3;
@@ -377,59 +368,110 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
   if (!Clif_PyObjAs(a[3], &arg4)) return ArgError("__init__", names[3], "::kaldi::MatrixIndexT", a[3]);
   ::kaldi::MatrixIndexT arg5;
   if (!Clif_PyObjAs(a[4], &arg5)) return ArgError("__init__", names[4], "::kaldi::MatrixIndexT", a[4]);
-  // Call actual C++ method.
-  PyObject* err_type = nullptr;
-  string err_msg{"C++ exception"};
-  try {
-    reinterpret_cast<wrapper*>(self)->cpp = ::clif::MakeShared<::kaldi::SubMatrix<float>>(*arg1, std::move(arg2), std::move(arg3), std::move(arg4), std::move(arg5));
-    // Reference count of a[0] will be decremented when self is deallocated.
-    Py_INCREF(a[0]);
-    reinterpret_cast<wrapper*>(self)->obj = a[0];
-  } catch(const std::exception& e) {
-    err_type = PyExc_RuntimeError;
-    err_msg += string(": ") + e.what();
-  } catch (...) {
-    err_type = PyExc_RuntimeError;
+  if (PyArray_Check(a[0])) {
+    if (PyArray_NDIM((PyArrayObject*)a[0]) != 2) {
+      PyErr_SetString(PyExc_RuntimeError, "Input ndarray is not 2-dimensional.");
+      return nullptr;
+    }
+    int dtype = PyArray_TYPE((PyArrayObject*)a[0]);
+    if (dtype == NPY_FLOAT) {
+      PyObject *array = PyArray_FromArray((PyArrayObject*)a[0], nullptr,
+                                          NPY_ARRAY_BEHAVED);
+      if (PyArray_STRIDE((PyArrayObject*)array, 0) < 0 ||
+          PyArray_STRIDE((PyArrayObject*)array, 1) < 0 ) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "Input ndarray has negative strides. ");
+        Py_DECREF(array);
+        return nullptr;
+      }
+      if (PyArray_STRIDE((PyArrayObject*)array, 1) != ((long)sizeof(float))) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "Input ndarray's stride in the second dimension is "
+                        "not equal to sizeof(float).");
+        Py_DECREF(array);
+        return nullptr;
+      }
+      PyObject* err_type = nullptr;
+      string err_msg{"C++ exception"};
+      try {
+        ::kaldi::MatrixIndexT stride = PyArray_STRIDE((PyArrayObject*)array, 0) / ((long)sizeof(float));
+        reinterpret_cast<wrapper*>(self)->cpp = ::clif::MakeShared<::kaldi::SubMatrix<float>>((float*)PyArray_DATA((PyArrayObject*)array) + arg2 * stride + arg4, std::move(arg3), std::move(arg5), std::move(stride));
+      } catch(const std::exception& e) {
+        err_type = PyExc_RuntimeError;
+        err_msg += string(": ") + e.what();
+      } catch (...) {
+        err_type = PyExc_RuntimeError;
+      }
+      Py_DECREF(array);
+      if (err_type) {
+        PyErr_SetString(err_type, err_msg.c_str());
+        return nullptr;
+      }
+    } else {
+      PyErr_SetString(PyExc_RuntimeError,
+                      "Cannot convert given ndarray to a SubMatrix since "
+                      "it has an invalid dtype. Supported dtypes: float.");
+      return nullptr;
+    }
+  } else {
+    ::kaldi::MatrixBase<float>* arg1;
+    if (!Clif_PyObjAs(a[0], &arg1))
+      return ArgError("__init__", names[0], "PyArray_Type or ::kaldi::MatrixBase<float>", a[0]);
+    // Call actual C++ method.
+    PyObject* err_type = nullptr;
+    string err_msg{"C++ exception"};
+    try {
+      reinterpret_cast<wrapper*>(self)->cpp = ::clif::MakeShared<::kaldi::SubMatrix<float>>(*arg1, std::move(arg2), std::move(arg3), std::move(arg4), std::move(arg5));
+    } catch(const std::exception& e) {
+      err_type = PyExc_RuntimeError;
+      err_msg += string(": ") + e.what();
+    } catch (...) {
+      err_type = PyExc_RuntimeError;
+    }
+    if (err_type) {
+      PyErr_SetString(err_type, err_msg.c_str());
+      return nullptr;
+    }
   }
-  if (err_type) {
-    PyErr_SetString(err_type, err_msg.c_str());
-    return nullptr;
-  }
+  // Reference count of a[0] will be decremented when self is deallocated.
+  Py_INCREF(a[0]);
+  reinterpret_cast<wrapper*>(self)->obj = a[0];
   Py_RETURN_NONE;
 }
 
-// @classmethod NewWithSubMatrix(other:SubMatrix) -> SubMatrix
-static PyObject* wrapSubMatrix_as_NewWithSubMatrix(PyObject* cls, PyObject* args, PyObject* kw) {
-  PyObject* a[1];
-  char* names[] = {
-      C("other"),
-      nullptr
-  };
-  if (!PyArg_ParseTupleAndKeywords(args, kw, "O:NewWithSubMatrix", names, &a[0])) return nullptr;
-  ::kaldi::SubMatrix<float>* arg1;
-  if (!Clif_PyObjAs(a[0], &arg1)) return ArgError("NewWithSubMatrix", names[0], "::kaldi::SubMatrix<float>", a[0]);
-  // Call actual C++ method.
-  std::unique_ptr<::kaldi::SubMatrix<float>> ret0;
-  PyObject* err_type = nullptr;
-  string err_msg{"C++ exception"};
-  try {
-    ret0 = ::gtl::MakeUnique<::kaldi::SubMatrix<float>>(*arg1);
-  } catch(const std::exception& e) {
-    err_type = PyExc_RuntimeError;
-    err_msg += string(": ") + e.what();
-  } catch (...) {
-    err_type = PyExc_RuntimeError;
-  }
-  if (err_type) {
-    PyErr_SetString(err_type, err_msg.c_str());
-    return nullptr;
-  }
-  PyObject* ret = Clif_PyObjFrom(std::move(ret0), {});
-  // Reference count of a[0] will be decremented when ret is deallocated.
-  Py_INCREF(a[0]);
-  reinterpret_cast<wrapper*>(ret)->obj = a[0];
-  return ret;
-}
+// NOTE: It is unlikely that this method will be useful in Python.
+// // @classmethod NewWithSubMatrix(other:SubMatrix) -> SubMatrix
+// static PyObject* wrapSubMatrix_as_NewWithSubMatrix(PyObject* cls, PyObject* args, PyObject* kw) {
+//   PyObject* a[1];
+//   char* names[] = {
+//       C("other"),
+//       nullptr
+//   };
+//   if (!PyArg_ParseTupleAndKeywords(args, kw, "O:NewWithSubMatrix", names, &a[0])) return nullptr;
+//   ::kaldi::SubMatrix<float>* arg1;
+//   if (!Clif_PyObjAs(a[0], &arg1)) return ArgError("NewWithSubMatrix", names[0], "::kaldi::SubMatrix<float>", a[0]);
+//   // Call actual C++ method.
+//   std::unique_ptr<::kaldi::SubMatrix<float>> ret0;
+//   PyObject* err_type = nullptr;
+//   string err_msg{"C++ exception"};
+//   try {
+//     ret0 = ::gtl::MakeUnique<::kaldi::SubMatrix<float>>(*arg1);
+//   } catch(const std::exception& e) {
+//     err_type = PyExc_RuntimeError;
+//     err_msg += string(": ") + e.what();
+//   } catch (...) {
+//     err_type = PyExc_RuntimeError;
+//   }
+//   if (err_type) {
+//     PyErr_SetString(err_type, err_msg.c_str());
+//     return nullptr;
+//   }
+//   PyObject* ret = Clif_PyObjFrom(std::move(ret0), {});
+//   // Reference count of a[0] will be decremented when ret is deallocated.
+//   Py_INCREF(a[0]);
+//   reinterpret_cast<wrapper*>(ret)->obj = a[0];
+//   return ret;
+// }
 
 // Implicit cast this as ::kaldi::MatrixBase<float>*
 static PyObject* as_kaldi_MatrixBase_float(PyObject* self) {
@@ -440,7 +482,7 @@ static PyObject* as_kaldi_MatrixBase_float(PyObject* self) {
 
 static PyMethodDef Methods[] = {
   {C("__init__"), (PyCFunction)wrapSubMatrix_float_as___init__, METH_VARARGS | METH_KEYWORDS, C("__init__(T:MatrixBase, ro:int, r:int, co:int, c:int)\n  Calls C++ function\n  void ::kaldi::SubMatrix<float>::SubMatrix(::kaldi::MatrixBase<float>, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
-  {C("NewWithSubMatrix"), (PyCFunction)wrapSubMatrix_as_NewWithSubMatrix, METH_VARARGS | METH_KEYWORDS | METH_CLASS, C("NewWithSubMatrix(other:SubMatrix) -> SubMatrix\n  Calls C++ function\n  std::unique_ptr<::kaldi::SubMatrix<float>> ::kaldi::SubMatrix<float>::SubMatrix(::kaldi::SubMatrix<float>)")},
+  // {C("NewWithSubMatrix"), (PyCFunction)wrapSubMatrix_as_NewWithSubMatrix, METH_VARARGS | METH_KEYWORDS | METH_CLASS, C("NewWithSubMatrix(other:SubMatrix) -> SubMatrix\n  Calls C++ function\n  std::unique_ptr<::kaldi::SubMatrix<float>> ::kaldi::SubMatrix<float>::SubMatrix(::kaldi::SubMatrix<float>)")},
   {C("as_kaldi_MatrixBase_float"), (PyCFunction)as_kaldi_MatrixBase_float, METH_NOARGS, C("Upcast to ::kaldi::MatrixBase<float>*")},
   {}
 };

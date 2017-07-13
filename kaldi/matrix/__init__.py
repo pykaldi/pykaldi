@@ -9,15 +9,16 @@ sys.path.append(os.path.dirname(__file__))
 import matrix_common
 from matrix_common import MatrixResizeType, MatrixTransposeType
 
-import kaldi.matrix.kaldi_vector
-from kaldi.matrix.kaldi_vector import ApproxEqualVector, AssertEqualVector
-from kaldi.matrix.kaldi_vector import VecVec
+import kaldi_vector
+from kaldi_vector import ApproxEqualVector, AssertEqualVector, VecVec
 
-import kaldi.matrix.kaldi_matrix
-# from kaldi.matrix.kaldi_matrix import *
+import kaldi_matrix
+# from kaldi_matrix import *
 
-import kaldi.matrix.kaldi_matrix_ext
+import kaldi_matrix_ext
+import numpy
 
+import matrix_functions
 from matrix_functions import *
 
 # For Python2/3 compatibility
@@ -25,6 +26,11 @@ try:
     xrange
 except NameError:
     xrange = range
+
+try:
+    long
+except NameError:
+    long = int
 
 ################################################################################
 # Define Vector and Matrix Classes
@@ -54,7 +60,7 @@ class _VectorBase(object):
 
     def numpy(self):
         """Returns this vector as a numpy ndarray."""
-        return vector_to_numpy(self)
+        return kaldi_matrix_ext.vector_to_numpy(self)
 
     def range(self, offset, length):
         """Returns a new subvector (a range of elements) of the vector."""
@@ -64,29 +70,38 @@ class _VectorBase(object):
 class Vector(kaldi_vector.Vector, _VectorBase):
     """Python wrapper for kaldi::Vector<float>"""
 
-    # Note (VM):
-    # Missing parameter check (e.g., v = Vector(-1) crashes hard)
     def __init__(self, size=None, src=None):
         """Creates a new vector.
 
         If no arguments are given, returns a new empty vector.
         If 'size' is given, returns a new vector of given size.
-        If 'src' is given, returns a copy of the source vector.
+        If 'src' is given, returns a new vector that is a copy of the source.
         Note: 'size' and 'src' cannot be given at the same time.
 
         Args:
             size (int): Size of the new vector.
-            src (Vector): Source vector to copy.
+            src (Vector or ndarray): Source vector or 1-D numpy array to copy.
         """
         if src is not None and size is not None:
             raise TypeError("Vector arguments 'size' and 'src' "
                             "cannot be given at the same time.")
         super(Vector, self).__init__()
         if size is not None:
-            self.resize_(size, MatrixResizeType.UNDEFINED)
+            if isinstance(size, int) and size >= 0:
+                self.resize_(size, MatrixResizeType.UNDEFINED)
+            else:
+                raise TypeError("Vector argument 'size' should be a "
+                                "non-negative integer (or long if Python 2).")
         elif src is not None:
-            self.resize_(len(src), MatrixResizeType.UNDEFINED)
-            self.CopyFromVec(src)
+            if isinstance(src, kaldi_vector.VectorBase):
+                self.resize_(len(src), MatrixResizeType.UNDEFINED)
+                self.CopyFromVec(src)
+            elif isinstance(src, numpy.ndarray) and src.ndim == 1:
+                self.resize_(len(src), MatrixResizeType.UNDEFINED)
+                self.CopyFromVec(SubMatrix(src))
+            else:
+                raise TypeError("Vector argument 'src' should be a vector "
+                                "or a 1-D numpy array.")
 
     def __getitem__(self, index):
         """Custom item indexing method.
@@ -113,13 +128,20 @@ class SubVector(kaldi_matrix_ext.SubVector, _VectorBase):
     def __init__(self, src, offset=0, length=None):
         """Creates a new subvector from the source (sub)vector.
 
+        Subvector and the source vector (or numpy array) share the same
+        underlying data storage. No data is copied.
+
         If 'length' is None, it defaults to len(src) - offset.
 
         Args:
-            src (VectorBase): Source (sub)vector.
+            src (VectorBase): Source (sub)vector or 1-D numpy array.
             offset (int): Start of the subvector.
             length (int): Length of the subvector.
         """
+        if not (isinstance(src, kaldi_vector.VectorBase) or
+                isinstance(src, numpy.ndarray) and src.ndim == 1):
+            raise TypeError("SubVector argument 'src' should be a vector "
+                            "or a 1-D numpy array.")
         src_len = len(src)
         if not (0 <= offset <= src_len):
             raise IndexError("Argument offset={} should be in the range "
@@ -155,20 +177,24 @@ class SubVector(kaldi_matrix_ext.SubVector, _VectorBase):
 
 class _MatrixBase(object):
     def shape(self):
-        """Returns dimensions of matrix."""
+        """Returns the dimensions as a tuple (rows, cols)."""
         return self.num_rows_, self.num_cols_
 
     def nrows(self):
-        """Returns number of rows."""
+        """Returns the number of rows."""
         return self.num_rows_
 
     def ncols(self):
-        """Returns number of columns."""
+        """Returns the number of columns."""
         return self.num_cols_
 
     def equal(self, other, tol=1e-16):
         """Checks if matrices have the same size and data within tolerance."""
         return self.ApproxEqual(other, tol)
+
+    def numpy(self):
+        """Returns this matrix as a numpy ndarray."""
+        return kaldi_matrix_ext.matrix_to_numpy(self)
 
     def range(self, row_offset, rows, col_offset, cols):
         """Returns a new submatrix of the matrix."""
@@ -179,52 +205,59 @@ class _MatrixBase(object):
 
         Returns:
             - the value at the given index if the index is an integer tuple
-            - a submatrix if at least one index is a slice with step = 1
+            - a submatrix if both indices are slices with step = 1
             - a list if at least one index is a slice with step > 1
         """
         if isinstance(index, tuple):
             if len(index) != 2:
-                raise IndexError("too many indices for {}".format(self.__class__.__name__))
+                raise IndexError("too many indices for {}"
+                                 .format(self.__class__.__name__))
+            r, c = index
 
             # Simple indexing with two integers
-            if isinstance(index[0], int) and isinstance(index[1], int):
-                if index[0] >= self.nrows() or index[1] >= self.ncols():
+            if isinstance(r, int) and isinstance(c, int):
+                if r >= self.nrows() or c >= self.ncols():
                     raise IndexError("indices out of bounds.")
 
-                if index[0] < 0 or index[1] < 0:
-                    raise NotImplementedError("negative indices not implemented.")
+                if r < 0 or c < 0:
+                    raise NotImplementedError("negative indices "
+                                              "not implemented.")
 
-                return self._getitem(index[0], index[1]) #Call C-impl
+                return self._getitem(r, c) #Call C-impl
 
             # Indexing with two slices
-            if isinstance(index[0], slice) and isinstance(index[1], slice):
-                row_start, row_end, row_step = index[0].indices(self.nrows())
-                col_start, col_end, col_step = index[0].indices(self.ncols())
+            if isinstance(r, slice) and isinstance(c, slice):
+                row_start, row_stop, row_step = r.indices(self.nrows())
+                col_start, col_stop, col_step = c.indices(self.ncols())
 
                 if row_step == 1 and col_step == 1:
-                    return self.range(row_start, row_end - row_start, col_start, col_end - col_start)
-                elif row_step == 1:
-                    return [self.__getitem__((index[0], j)) for j in xrange(col_start, col_end, col_step)]
-                elif col_step == 1:
-                    return [self.__getitem__((i, index[1])) for i in xrange(row_start, row_end, row_step)]
+                    rows, cols = row_stop - row_start, col_stop - col_start
+                    return self.range(row_start, rows, col_start, cols)
+                else:
+                    return [[self._getitem(i, j)
+                             for i in xrange(row_start, row_stop, row_step)
+                            ] for j in xrange(col_start, col_stop, col_step)]
 
             # Row is a slice, Col is an int
-            if isinstance(index[0], slice):
-                start, end, step = index[0].indices(self.nrows())
+            if isinstance(r, slice) and isinstance(c, int):
+                start, end, step = r.indices(self.nrows())
                 if step == 1:
-                    return self.range(start, end - start, index[1], 1)
+                    return self.range(start, end - start, c, 1)
                 else:
-                    return [self.__getitem__((i, index[1])) for i in xrange(start, end, step)]
+                    return [self.__getitem__((i, c))
+                            for i in xrange(start, end, step)]
 
             # Row is an int, Col is a slice
-            if isinstance(index[1], slice):
-                start, end, step = index[1].indices(self.ncols())
+            if isinstance(r, int) and isinstance(c, slice):
+                start, end, step = c.indices(self.ncols())
                 if step == 1:
-                    return self.range(index[0], 1, start, end - start)
+                    return self.range(r, 1, start, end - start)
                 else:
-                    return [self.__getitem__((index[0], j)) for j in xrange(start, end, step)]
+                    return [self.__getitem__((r, j))
+                            for j in xrange(start, end, step)]
 
-        raise IndexError("{} index must be a tuple".format(self.__class__.__name__))
+        raise IndexError("{} index must be a tuple"
+                         .format(self.__class__.__name__))
 
 
 class Matrix(kaldi_matrix.Matrix, _MatrixBase):
@@ -233,11 +266,10 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
         """Creates a new Matrix.
 
         If no arguments are given, returns a new empty matrix.
-        'size' is a tuple (or list) of matrix dimensions. If given,
-                return matrix with dimension size[0] x size[1].
+        If 'size' is given, returns a new matrix of given size.
 
         Args:
-            size (tuple or list): Matrix dimensions
+            size (tuple or list): Matrix dimensions (rows, cols)
         """
         super(Matrix, self).__init__()
 
@@ -262,17 +294,24 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
 class SubMatrix(kaldi_matrix_ext.SubMatrix, _MatrixBase):
     def __init__(self, src, row_offset = 0, rows = None,
                             col_offset = 0, cols = None):
-        """Creates a new submatrix from the source (sub)matrix
+        """Creates a new submatrix from the source (sub)matrix.
 
            If 'rows' is None, it defaults to src.num_rows_ - row_offset.
            If 'cols' is None, it defaults to src.num_cols_ - col_offset.
 
            Args:
-                src (MatrixBase): Source (sub)matrix.
+                src (MatrixBase): Source (sub)matrix or 2-D numpy array.
                 row_offset, col_offset: Start of the submatrix.
                 rows, cols: Dimensions of the submatrix.
         """
-        src_rows, src_cols = src.num_rows_, src.num_cols_
+        if isinstance(src, kaldi_matrix.MatrixBase):
+            src_rows, src_cols = src.num_rows_, src.num_cols_
+        elif isinstance(src, numpy.ndarray) and src.ndim == 2:
+            src_rows, src_cols = src.shape
+        else:
+            raise TypeError("SubMatrix argument 'src' should be a matrix "
+                            "or a 2-D numpy array.")
+
         if not (0 <= row_offset <= src_rows):
             raise IndexError("Argument row_offset={} should be in the range "
                              "[0,{}] when src.num_rows_={}."
@@ -302,19 +341,3 @@ class SubMatrix(kaldi_matrix_ext.SubMatrix, _MatrixBase):
 ################################################################################
 # Define Vector and Matrix Utility Functions
 ################################################################################
-
-def vector_to_numpy(vector):
-    """Converts a Vector to a numpy array."""
-    return kaldi_matrix_ext.vector_to_numpy(vector)
-
-def numpy_to_vector(array):
-    """Converts a numpy array to a SubVector."""
-    return SubVector(kaldi_matrix_ext.numpy_to_vector(array))
-
-def matrix_to_numpy(matrix):
-    """Converts a Matrix to a numpy array."""
-    return kaldi_matrix_ext.matrix_to_numpy(matrix)
-
-def numpy_to_matrix(array):
-    """Converts a numpy array to a SubMatrix."""
-    return SubMatrix(kaldi_matrix_ext.numpy_to_matrix(array))
