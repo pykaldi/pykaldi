@@ -60,8 +60,7 @@ from "matrix/kaldi-vector.h":
 
       def ApplyCeiling(self, ceiling: float) -> int
 
-      def `ApplyFloor` as ApplyFloorVector(self,
-                                           floor_vector: VectorBase) -> int
+      def `ApplyFloor` as ApplyFloorVector(self, floor: VectorBase) -> int
 
       def ApplySoftMax(self) -> float
 

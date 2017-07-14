@@ -250,8 +250,8 @@ class _MatrixBase(object):
                     return self.range(row_start, rows, col_start, cols)
                 else:
                     return [[self._getitem(i, j)
-                             for i in xrange(row_start, row_stop, row_step)
-                            ] for j in xrange(col_start, col_stop, col_step)]
+                             for j in xrange(col_start, col_stop, col_step)
+                            ] for i in xrange(row_start, row_stop, row_step)]
 
             # Row is a slice, Col is an int
             elif isinstance(r, slice) and isinstance(c, int):
