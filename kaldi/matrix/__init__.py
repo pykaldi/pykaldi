@@ -223,6 +223,26 @@ class _MatrixBase(object):
             - a submatrix if both indices are slices with step = 1
             - a list if at least one index is a slice with step > 1
         """
+
+        # Note (VM):
+        # This allows for two brackets item access. 
+        if isinstance(index, int):
+            # Check if self is a matrix with row-dim or col-dim equals to 1
+            
+            # If so, we're asking a pseudo-vector to return a value
+            if self.nrows() == 1:
+                index = (0, index)
+            
+            elif self.ncols() == 1:
+                index = (index, 0)
+            
+            # if not, we're actually asking for a row 
+            else:
+                index = (index, slice(0, self.ncols()))
+
+        if isinstance(index, slice):
+            index = (index, slice(0, self.ncols()))
+
         if isinstance(index, tuple):
             if len(index) != 2:
                 raise IndexError("{} index must be a pair of integers or slices"
@@ -271,7 +291,7 @@ class _MatrixBase(object):
                     return [self.__getitem__((r, j))
                             for j in xrange(start, end, step)]
 
-        raise TypeError("{} index must be a tuple of integers or slices"
+        raise TypeError("{} index must be an integer, slice, or tuple of integers or slices"
                         .format(self.__class__.__name__))
 
     def __setitem__(self, index, value):
@@ -338,7 +358,6 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
                                     "or both of them should be 0.")
 
             self.resize_(size[0], size[1], MatrixResizeType.UNDEFINED)
-
 
 class SubMatrix(kaldi_matrix_ext.SubMatrix, _MatrixBase):
     def __init__(self, src, row_offset = 0, rows = None,
