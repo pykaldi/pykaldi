@@ -17,7 +17,6 @@ using namespace clif;
 
 #define _0 py::postconv::PASS
 #define _1 UnicodeFromBytes
-#define _2 UnicodeFromBytes
 
 // Lifted this from pytorch
 // https://github.com/pytorch/pytorch/blob/master/torch/csrc/utils/object_ptr.h

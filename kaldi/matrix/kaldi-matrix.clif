@@ -22,10 +22,12 @@ from "matrix/kaldi-matrix.h":
             # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
 
             # Note (VM):
-            # __getitem__ takes only two arguments (self, index), but 
+            # __getitem__ takes only two arguments (self, index), but
             # here we need three (self, row, col).
             # We cannot use a perfect mapping
             def `operator()` as _getitem(self, r:int, c:int) -> float
+
+            def `Set` as _setitem(self, r:int, c:int, v:float)
 
             def SetZero(self)
 
@@ -240,7 +242,7 @@ from "matrix/kaldi-matrix.h":
 
             def OrthogonalizeRows(self)
 
-            # Note (VM): nothing to do here 
+            # Note (VM): nothing to do here
             # void Read(std::istream & in, bool binary, bool add = false);
             # void Write(std::ostream & out, bool binary) const;
 

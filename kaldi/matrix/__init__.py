@@ -4,6 +4,8 @@ import os
 # This is needed for extension libs to be able to load each other.
 sys.path.append(os.path.dirname(__file__))
 
+from . import _str
+
 # Absolute import of matrix_common does not work on Python 3 for some reason.
 # Symbols in matrix_common are assigned to module importlib._bootstrap ????
 import matrix_common
@@ -21,16 +23,11 @@ import numpy
 import matrix_functions
 from matrix_functions import *
 
-# For Python2/3 compatibility
+# For Python 2/3 compatibility
 try:
     xrange
 except NameError:
     xrange = range
-
-try:
-    long
-except NameError:
-    long = int
 
 ################################################################################
 # Define Vector and Matrix Classes
@@ -65,6 +62,24 @@ class _VectorBase(object):
     def range(self, offset, length):
         """Returns a new subvector (a range of elements) of the vector."""
         return SubVector(self, offset, length)
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        # All strings are unicode in Python 3, while we have to encode unicode
+        # strings in Python2. If we can't, let python decide the best
+        # characters to replace unicode characters with.
+        # Below implementation was taken from
+        # https://github.com/pytorch/pytorch/blob/master/torch/tensor.py
+        if sys.version_info > (3,):
+            return _str._vector_str(self)
+        else:
+            if hasattr(sys.stdout, 'encoding'):
+                return _str._vector_str(self).encode(
+                    sys.stdout.encoding or 'UTF-8', 'replace')
+            else:
+                return _str._vector_str(self).encode('UTF-8', 'replace')
 
 
 class Vector(kaldi_vector.Vector, _VectorBase):
@@ -176,8 +191,8 @@ class SubVector(kaldi_matrix_ext.SubVector, _VectorBase):
 
 
 class _MatrixBase(object):
-    def shape(self):
-        """Returns the dimensions as a tuple (rows, cols)."""
+    def size(self):
+        """Returns the size as a tuple (rows, cols)."""
         return self.num_rows_, self.num_cols_
 
     def nrows(self):
@@ -210,7 +225,7 @@ class _MatrixBase(object):
         """
         if isinstance(index, tuple):
             if len(index) != 2:
-                raise IndexError("too many indices for {}"
+                raise IndexError("{} index must be a pair of integers or slices"
                                  .format(self.__class__.__name__))
             r, c = index
 
@@ -226,7 +241,7 @@ class _MatrixBase(object):
                 return self._getitem(r, c) #Call C-impl
 
             # Indexing with two slices
-            if isinstance(r, slice) and isinstance(c, slice):
+            elif isinstance(r, slice) and isinstance(c, slice):
                 row_start, row_stop, row_step = r.indices(self.nrows())
                 col_start, col_stop, col_step = c.indices(self.ncols())
 
@@ -239,7 +254,7 @@ class _MatrixBase(object):
                             ] for j in xrange(col_start, col_stop, col_step)]
 
             # Row is a slice, Col is an int
-            if isinstance(r, slice) and isinstance(c, int):
+            elif isinstance(r, slice) and isinstance(c, int):
                 start, end, step = r.indices(self.nrows())
                 if step == 1:
                     return self.range(start, end - start, c, 1)
@@ -248,7 +263,7 @@ class _MatrixBase(object):
                             for i in xrange(start, end, step)]
 
             # Row is an int, Col is a slice
-            if isinstance(r, int) and isinstance(c, slice):
+            elif isinstance(r, int) and isinstance(c, slice):
                 start, end, step = c.indices(self.ncols())
                 if step == 1:
                     return self.range(r, 1, start, end - start)
@@ -256,8 +271,42 @@ class _MatrixBase(object):
                     return [self.__getitem__((r, j))
                             for j in xrange(start, end, step)]
 
-        raise IndexError("{} index must be a tuple"
+        raise TypeError("{} index must be a tuple of integers or slices"
+                        .format(self.__class__.__name__))
+
+    def __setitem__(self, index, value):
+        """Custom setitem method
+
+        """
+        if isinstance(index, tuple):
+            if len(index) != 2:
+                raise IndexError("{} index must be a pair of integers"
+                                 .format(self.__class__.__name__))
+            r, c = index
+            if isinstance(r, int) and isinstance(c, int):
+                if 0 <= r < self.nrows() and 0 <= c < self.ncols():
+                    return self._setitem(r, c, value)
+
+        raise TypeError("{} does not support given index type"
                          .format(self.__class__.__name__))
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        # All strings are unicode in Python 3, while we have to encode unicode
+        # strings in Python2. If we can't, let python decide the best
+        # characters to replace unicode characters with.
+        # Below implementation was taken from
+        # https://github.com/pytorch/pytorch/blob/master/torch/tensor.py
+        if sys.version_info > (3,):
+            return _str._matrix_str(self)
+        else:
+            if hasattr(sys.stdout, 'encoding'):
+                return _str._matrix_str(self).encode(
+                    sys.stdout.encoding or 'UTF-8', 'replace')
+            else:
+                return _str._matrix_str(self).encode('UTF-8', 'replace')
 
 
 class Matrix(kaldi_matrix.Matrix, _MatrixBase):
