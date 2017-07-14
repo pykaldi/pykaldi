@@ -1,0 +1,59 @@
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "util/kaldi-io.h":
+    namespace `kaldi`:
+        enum OutputType with:
+          `kNoOutput` as NO_OUTPUT
+          `kFileOutput` as FILEOUTPUT
+          `kStandardOutput` as STANDARDOUTPUT
+          `kPipeOutput` as PIPEOUTPUT
+
+        def ClassifyWxfilename(wxfilename:str) -> OutputType
+
+        enum InputType with:
+          `kNoInput` as NO_INPUT
+          `kFileInput` as FILEINPUT
+          `kStandardInput` as STANDARDINPUT
+          `kPipeInput` as PIPEINPUT
+
+        def ClassifyRxfilename(rxfilename:str) -> InputType
+
+        class Output:
+            @add__init__
+            def `Output` as OutputWithOptions(self, wxfilename:str, binary:bool, write_header:bool = default)
+
+            def Open(self, wxfilename:str, binary:bool, write_header:bool) -> bool
+
+            def IsOpen(self) -> bool 
+
+            def Close(self) -> bool 
+
+        class Input:
+            @add__init__
+            def `Input` as InputWithOptions(self, rxfilename:str, contents_binary:bool = default)
+
+            def Open(self, rxfilename:str, contents_binary:bool = default) -> bool
+
+            def OpenTextMode(self, rxfilename:str) -> bool
+
+            def IsOpen(self) -> bool 
+
+            def Close(self) -> int 
+
+        # Read/Write matrices #
+        
+        def `ReadKaldiObject` as ReadKaldiMatrix(filename:str, m:Matrix)        
+
+        def `WriteKaldiObject` as WriteKaldiMatrix(c:Matrix, filename:str, binary:bool)
+
+        # Read/Write vectors #
+
+        def `ReadKaldiObject` as ReadKaldiVector(filename:str, c:Vector)
+
+        def `WriteKaldiObject` as WriteKaldiVector(c:Vector, filename:str, binary:bool)
+
+
+        def PrintableRxfilename(rxfilename:str) -> str
+
+        def PrintableWxfilename(rxfilename:str) -> str

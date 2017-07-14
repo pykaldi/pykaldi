@@ -1,0 +1,259 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "util/kaldi-holder.h":
+	namespace `kaldi`:
+		############################################################################
+		# KaldiObjectHolders
+		############################################################################
+		class `KaldiObjectHolder<Vector<float>>` as KaldiVectorHolder:
+			T:Vector = property(`Value`)
+			
+			def Clear(self)
+
+			def `Swap` as Swap(self, other:KaldiVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:KaldiVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+
+		class `KaldiObjectHolder<Matrix<float>>` as KaldiMatrixHolder:
+			T:Matrix = property(`Value`)
+			
+			def Clear(self)
+
+			def `Swap` as Swap(self, other:KaldiMatrixHolder)
+			def `ExtractRange` as ExtractRange(self, other:KaldiMatrixHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		############################################################################
+		# BasicType holders
+		############################################################################
+		class `BasicHolder<bool>` as BoolHolder:
+			T:bool = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:BoolHolder)
+			def `ExtractRange` as ExtractRange(self, other:BoolHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicHolder<int>` as IntHolder:
+			T:int = property(`Value`)
+
+			def Clear(self)
+
+			# TODO (VM):
+			# Manage other cases in python
+			def `Swap` as Swap(self, other:IntHolder)
+			def `ExtractRange` as ExtractRange(self, other:IntHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicHolder<float>` as FloatHolder:
+			T:float = property(`Value`)
+
+			def Clear(self)
+
+			# TODO (VM):
+			# Manage other cases in python
+			def `Swap` as Swap(self, other:FloatHolder)
+			def `ExtractRange` as ExtractRange(self, other:FloatHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class TokenHolder:
+			T:str = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:TokenHolder)
+			def `ExtractRange` as ExtractRange(self, other:TokenHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		############################################################################
+		# Vector<Basic Type> Holders
+		############################################################################
+		class `BasicVectorHolder<bool>` as BoolVectorHolder:
+			T:`std::vector` as list<bool> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:BoolVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:BoolVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicVectorHolder<int>` as IntVectorHolder:
+			T:`std::vector` as list<int> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:IntVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:IntVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicVectorHolder<float>` as FloatVectorHolder:
+			T:`std::vector` as list<float> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:FloatVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:FloatVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class TokenVectorHolder:
+			T:`std::vector` as list<str> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:TokenVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:TokenVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		############################################################################
+		#  Vector<Vector<Basic Type>> Holders
+		############################################################################
+		class `BasicVectorVectorHolder<bool>` as BoolVectorVectorHolder:
+			T:`std::vector` as list<list<bool>> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:BoolVectorVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:BoolVectorVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicVectorVectorHolder<int>` as IntVectorVectorHolder:
+			T:`std::vector` as list<list<int>> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:IntVectorVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:IntVectorVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicVectorVectorHolder<float>` as FloatVectorVectorHolder:
+			T:`std::vector` as list<list<float>> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:FloatVectorVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:FloatVectorVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		# class `BasicVectorVectorHolder<string>` as StringVectorVectorHolder:
+		# 	T:`std::vector` as list<list<str>> = property(`Value`)
+
+		# 	def Clear(self)
+			
+		# 	def `Swap` as Swap(self, other:StringVectorVectorHolder)
+		# 	def `ExtractRange` as ExtractRange(self, other:StringVectorVectorHolder, range:str) -> bool
+
+		# 	@classmethod
+		# 	def IsReadInBinary(cls) -> bool
+
+		############################################################################
+		#  Vector<Pair<Basic Type>> Holders
+		############################################################################
+		class `BasicPairVectorHolder<bool>` as BoolPairVectorHolder:
+			T:`std::vector` as list<tuple<bool, bool>> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:BoolPairVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:BoolPairVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicPairVectorHolder<int>` as IntPairVectorHolder:
+			T:`std::vector` as list<tuple<int, int>> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:IntPairVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:IntPairVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		class `BasicPairVectorHolder<float>` as FloatPairVectorHolder:
+			T:`std::vector` as list<tuple<float, float>> = property(`Value`)
+
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:FloatPairVectorHolder)
+			def `ExtractRange` as ExtractRange(self, other:FloatPairVectorHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+
+		# class `BasicPairVectorHolder<string>` as StringPairVectorHolder:
+		# 	T:`std::vector` as list<tuple<str, str>> = property(`Value`)
+
+		# 	def Clear(self)
+			
+		# 	def `Swap` as Swap(self, other:StringPairVectorHolder)
+		# 	def `ExtractRange` as ExtractRange(self, other:StringPairVectorHolder, range:str) -> bool
+
+		# 	@classmethod
+		# 	def IsReadInBinary(cls) -> bool
+
+		############################################################################
+		# HtkMatrixHolder
+		############################################################################
+		class HtkMatrixHolder:
+			def Clear(self)
+			
+			def `Swap` as Swap(self, other:HtkMatrixHolder)
+			def `ExtractRange` as ExtractRange(self, other:HtkMatrixHolder, range:str) -> bool
+
+			@classmethod
+			def IsReadInBinary(cls) -> bool
+
+		############################################################################
+		# Sphinx matrices
+		############################################################################
+		# TODO (VM):
+		# class `SphinxMatrixHolder<int>` SphinxMatrixHolder:
+		# 	def Clear(self)
+			
+		# 	def `Swap` as Swap(self, other:SphinxMatrixHolder)
+		# 	def `ExtractRange` as ExtractRange(self, other:SphinxMatrixHolder, range:str) -> bool
+
+		# 	@classmethod
+		# 	def IsReadInBinary(cls) -> bool
+
+
+		# FIXME (VM):
+		# def `ExtractObjectRange` as ExtractObjectRangeMatrix(input:Matrix, range:str, Matrix:Matrix) -> bool
+		
+		# def `ExtractObjectRange` as ExtractObjectRangeVector(input:Vector, range:str, Vector:Vector) -> bool
+
+		def ExtractRangeSpecifier(rxfilename_with_range:str, data_rxfilename:str, range:str) -> bool
+
+		
+
