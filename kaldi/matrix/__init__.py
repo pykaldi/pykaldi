@@ -241,7 +241,16 @@ class _MatrixBase(object):
                 index = (index, slice(0, self.ncols()))
 
         if isinstance(index, slice):
-            index = (index, slice(0, self.ncols()))
+            
+            # Is this a column pseudo-vector?
+            if self.ncols() == 1:
+                index = (index, 0)
+
+            elif self.nrows() == 1:
+                index = (0, index)
+                
+            else:
+                index = (index, slice(0, self.ncols()))
 
         if isinstance(index, tuple):
             if len(index) != 2:
