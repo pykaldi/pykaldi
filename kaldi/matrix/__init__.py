@@ -225,18 +225,18 @@ class _MatrixBase(object):
         """
 
         # Note (VM):
-        # This allows for two brackets item access. 
+        # This allows for two brackets item access.
         if isinstance(index, int):
             # Check if self is a matrix with row-dim or col-dim equals to 1
-            
+
             # If so, we're asking a pseudo-vector to return a value
             if self.nrows() == 1:
                 index = (0, index)
-            
+
             elif self.ncols() == 1:
                 index = (index, 0)
-            
-            # if not, we're actually asking for a row 
+
+            # if not, we're actually asking for a row
             else:
                 index = (index, slice(0, self.ncols()))
 
@@ -253,21 +253,24 @@ class _MatrixBase(object):
                 index = (index, slice(0, self.ncols()))
 
         if isinstance(index, tuple):
-            if len(index) != 2:
-                raise IndexError("{} index must be a pair of integers or slices"
+            if len(index) > 2:
+                raise IndexError("too many indices for {}"
                                  .format(self.__class__.__name__))
+            if len(index) == 1:
+                index = (index, slice(0, self.ncols()))
+
             r, c = index
 
             # Simple indexing with two integers
             if isinstance(r, int) and isinstance(c, int):
                 if r >= self.nrows() or c >= self.ncols():
-                    raise IndexError("indices out of bounds.")
+                    raise IndexError("indices are out of bounds.")
 
                 if r < 0 or c < 0:
-                    raise NotImplementedError("negative indices "
-                                              "not implemented.")
+                    raise NotImplementedError("negative indices are"
+                                              "not supported.")
 
-                return self._getitem(r, c) #Call C-impl
+                return self._getitem(r, c)
 
             # Indexing with two slices
             elif isinstance(r, slice) and isinstance(c, slice):
@@ -300,7 +303,7 @@ class _MatrixBase(object):
                     return [self.__getitem__((r, j))
                             for j in xrange(start, end, step)]
 
-        raise TypeError("{} index must be an integer, slice, or tuple of integers or slices"
+        raise TypeError("{} indices must be integers or slices"
                         .format(self.__class__.__name__))
 
     def __setitem__(self, index, value):

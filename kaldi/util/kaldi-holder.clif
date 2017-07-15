@@ -8,7 +8,7 @@ from "util/kaldi-holder.h":
 		############################################################################
 		class `KaldiObjectHolder<Vector<float>>` as KaldiVectorHolder:
 			T:Vector = property(`Value`)
-			
+
 			def Clear(self)
 
 			def `Swap` as Swap(self, other:KaldiVectorHolder)
@@ -20,7 +20,7 @@ from "util/kaldi-holder.h":
 
 		class `KaldiObjectHolder<Matrix<float>>` as KaldiMatrixHolder:
 			T:Matrix = property(`Value`)
-			
+
 			def Clear(self)
 
 			def `Swap` as Swap(self, other:KaldiMatrixHolder)
@@ -36,7 +36,7 @@ from "util/kaldi-holder.h":
 			T:bool = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:BoolHolder)
 			def `ExtractRange` as ExtractRange(self, other:BoolHolder, range:str) -> bool
 
@@ -73,7 +73,7 @@ from "util/kaldi-holder.h":
 			T:str = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:TokenHolder)
 			def `ExtractRange` as ExtractRange(self, other:TokenHolder, range:str) -> bool
 
@@ -87,7 +87,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<bool> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:BoolVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:BoolVectorHolder, range:str) -> bool
 
@@ -98,7 +98,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<int> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:IntVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:IntVectorHolder, range:str) -> bool
 
@@ -109,7 +109,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<float> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:FloatVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:FloatVectorHolder, range:str) -> bool
 
@@ -120,7 +120,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<str> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:TokenVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:TokenVectorHolder, range:str) -> bool
 
@@ -134,7 +134,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<list<bool>> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:BoolVectorVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:BoolVectorVectorHolder, range:str) -> bool
 
@@ -145,7 +145,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<list<int>> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:IntVectorVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:IntVectorVectorHolder, range:str) -> bool
 
@@ -156,7 +156,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<list<float>> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:FloatVectorVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:FloatVectorVectorHolder, range:str) -> bool
 
@@ -167,7 +167,7 @@ from "util/kaldi-holder.h":
 		# 	T:`std::vector` as list<list<str>> = property(`Value`)
 
 		# 	def Clear(self)
-			
+
 		# 	def `Swap` as Swap(self, other:StringVectorVectorHolder)
 		# 	def `ExtractRange` as ExtractRange(self, other:StringVectorVectorHolder, range:str) -> bool
 
@@ -181,7 +181,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<tuple<bool, bool>> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:BoolPairVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:BoolPairVectorHolder, range:str) -> bool
 
@@ -192,7 +192,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<tuple<int, int>> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:IntPairVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:IntPairVectorHolder, range:str) -> bool
 
@@ -203,7 +203,7 @@ from "util/kaldi-holder.h":
 			T:`std::vector` as list<tuple<float, float>> = property(`Value`)
 
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:FloatPairVectorHolder)
 			def `ExtractRange` as ExtractRange(self, other:FloatPairVectorHolder, range:str) -> bool
 
@@ -215,7 +215,7 @@ from "util/kaldi-holder.h":
 		# 	T:`std::vector` as list<tuple<str, str>> = property(`Value`)
 
 		# 	def Clear(self)
-			
+
 		# 	def `Swap` as Swap(self, other:StringPairVectorHolder)
 		# 	def `ExtractRange` as ExtractRange(self, other:StringPairVectorHolder, range:str) -> bool
 
@@ -227,7 +227,7 @@ from "util/kaldi-holder.h":
 		############################################################################
 		class HtkMatrixHolder:
 			def Clear(self)
-			
+
 			def `Swap` as Swap(self, other:HtkMatrixHolder)
 			def `ExtractRange` as ExtractRange(self, other:HtkMatrixHolder, range:str) -> bool
 
@@ -240,7 +240,7 @@ from "util/kaldi-holder.h":
 		# TODO (VM):
 		# class `SphinxMatrixHolder<int>` SphinxMatrixHolder:
 		# 	def Clear(self)
-			
+
 		# 	def `Swap` as Swap(self, other:SphinxMatrixHolder)
 		# 	def `ExtractRange` as ExtractRange(self, other:SphinxMatrixHolder, range:str) -> bool
 
@@ -248,12 +248,8 @@ from "util/kaldi-holder.h":
 		# 	def IsReadInBinary(cls) -> bool
 
 
-		# FIXME (VM):
-		# def `ExtractObjectRange` as ExtractObjectRangeMatrix(input:Matrix, range:str, Matrix:Matrix) -> bool
-		
-		# def `ExtractObjectRange` as ExtractObjectRangeVector(input:Vector, range:str, Vector:Vector) -> bool
+		def `ExtractObjectRange` as ExtractMatrixRange(input:Matrix, range:str, Matrix:Matrix) -> bool
+
+		def `ExtractObjectRange` as ExtractVectorRange(input:Vector, range:str, Vector:Vector) -> bool
 
 		def ExtractRangeSpecifier(rxfilename_with_range:str, data_rxfilename:str, range:str) -> bool
-
-		
-
