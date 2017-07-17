@@ -6,6 +6,7 @@ from "util/kaldi-holder.h":
     ############################################################################
     # KaldiObjectHolders
     ############################################################################
+    
     class `KaldiObjectHolder<Vector<float>>` as KaldiVectorHolder:
       T:Vector = property(`Value`)
       
@@ -19,7 +20,7 @@ from "util/kaldi-holder.h":
       # This raises an issue when building, since vector was not  
       # defined in the current scope.
       # def `Swap` as Swap(self, other:KaldiVectorHolder)
-      
+
       # Note (VM):
       # But this works...
       def `ExtractRange` as ExtractRange(self, other:KaldiVectorHolder, range:str) -> bool
@@ -60,8 +61,6 @@ from "util/kaldi-holder.h":
 
       def Clear(self)
 
-      # TODO (VM):
-      # Manage other cases in python
       def `Swap` as Swap(self, other:IntHolder)
       def `ExtractRange` as ExtractRange(self, other:IntHolder, range:str) -> bool
 
@@ -73,8 +72,6 @@ from "util/kaldi-holder.h":
 
       def Clear(self)
 
-      # TODO (VM):
-      # Manage other cases in python
       def `Swap` as Swap(self, other:FloatHolder)
       def `ExtractRange` as ExtractRange(self, other:FloatHolder, range:str) -> bool
 
@@ -95,7 +92,145 @@ from "util/kaldi-holder.h":
     ############################################################################
     # Vector<Basic Type> Holders
     ############################################################################
-    # TODO (VM)
+    
+    # Note (VM):
+    # This fails due to std::vector<bool> not being like
+    #   the other vectors.
+    # Since you cannot get a reference via auto& for a vector<bool>,
+    #   clif produces an error.
+    # class `BasicVectorHolder<bool>` as BoolVectorHolder:
+    #   T:list<bool> = property(`Value`)
+
+    #   def Clear(self)
+
+    #   def `Swap` as Swap(self, other:BoolVectorHolder)
+
+    #   def `ExtractRange` as ExtractRange(self, other:BoolVectorHolder, range:str) -> bool
+
+    #   @classmethod
+    #   def IsReadInBinary(cls) -> bool
+
+    class `BasicVectorHolder<float>` as FloatVectorHolder:
+      T:list<float> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:FloatVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:FloatVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    class `BasicVectorHolder<int>` as IntVectorHolder:
+      T:list<int> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:IntVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:IntVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    class TokenVectorHolder:
+      T:list<str> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:TokenVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:TokenVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    ############################################################################
+    # VectorVector<Basic Type> Holders
+    ############################################################################
+    
+    # Note (VM):
+    # See previous note
+    # class `BasicVectorVectorHolder<bool>` as BoolVectorVectorHolder:
+    #   T:list<list<bool>> = property(`Value`)
+
+    #   def Clear(self)
+
+    #   def `Swap` as Swap(self, other:BoolVectorVectorHolder)
+
+    #   def `ExtractRange` as ExtractRange(self, other:BoolVectorVectorHolder, range:str) -> bool
+
+    #   @classmethod
+    #   def IsReadInBinary(cls) -> bool
+
+    class `BasicVectorVectorHolder<float>` as FloatVectorVectorHolder:
+      T:list<list<float>> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:FloatVectorVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:FloatVectorVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    class `BasicVectorVectorHolder<int>` as IntVectorVectorHolder:
+      T:list<list<int>> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:IntVectorVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:IntVectorVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    ############################################################################
+    # PairVector<Basic Type> Holders
+    ############################################################################
+    
+    # Note (VM):
+    # See previous note
+    # class `BasicPairVectorHolder<bool>` as BoolPairVectorHolder:
+    #   T:list<tuple<bool, bool>> = property(`Value`)
+
+    #   def Clear(self)
+
+    #   def `Swap` as Swap(self, other:BoolPairVectorHolder)
+
+    #   def `ExtractRange` as ExtractRange(self, other:BoolPairVectorHolder, range:str) -> bool
+
+    #   @classmethod
+    #   def IsReadInBinary(cls) -> bool
+
+    class `BasicPairVectorHolder<float>` as FloatPairVectorHolder:
+      T:list<tuple<float, float>> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:FloatPairVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:FloatPairVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    class `BasicPairVectorHolder<int>` as IntPairVectorHolder:
+      T:list<tuple<int, int>> = property(`Value`)
+
+      def Clear(self)
+
+      def `Swap` as Swap(self, other:IntPairVectorHolder)
+
+      def `ExtractRange` as ExtractRange(self, other:IntPairVectorHolder, range:str) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+    
 
 
     def `ExtractObjectRange` as ExtractMatrixRange(input:Matrix, range:str, m:Matrix) -> bool
