@@ -269,27 +269,29 @@ class _MatrixBase(object):
               dimension, it will not share its data with the source Matrix, i.e.
               a copy is made. However, once this new Matrix is deallocated, its
               contents will automatically be copied back into the source Matrix.
-              This mechanism is most useful when you want to index into a
-              Matrix for partial assignment. Consider the following assignment:
-                >>> m[:,:4:2] = m[:,4:8:2]
-              Under the hood, the assignment call will allocate two temporary
-              memory regions to hold the contents of the indexing operations,
-              and copy the contents of one region to the other. Since there are
-              no references to either temporary memory region after this call,
-              they will be deallocated as soon as the assignment call is
-              completed. During deallocation, contents of these two regions
-              will be copied back into the source Matrix. While this mechanism
-              provides a convenient workaround in the above situation, the user
-              should be careful when creating additional references to objects
-              returned from Matrix indexing operations. If an indexing operation
-              requires a copy of the data to be made, then any changes made on
-              the resulting object will not be copied back to the source Matrix
-              until its reference count drops to zero. Consider the following:
+              This mechanism is most useful when you want to call an in-place
+              method only on a subset of values in a Matrix. Consider the
+              following statement:
+                >>> m[:,:4:2].ApplyPowAbs(1)
+              Under the hood, this statement will allocate a new Matrix to hold
+              the contents of the indexing operation (since the stride for the
+              second dimension is double the size of a float), and apply the
+              absolute value operation on the newly allocated Matrix. Since
+              there are no references to the new Matrix after this statement, it
+              will be deallocated as soon as the statement is completed. During
+              deallocation, contents of the new Matrix will be copied back into
+              the source Matrix m. While this mechanism provides a convenient
+              workaround in the above situation, the user should be careful when
+              creating additional references to objects returned from Matrix
+              indexing operations. If an indexing operation requires a copy of
+              the data to be made, then any changes made on the resulting object
+              will not be copied back into the source Matrix until its reference
+              count drops to zero. Consider the following statements:
                 >>> s = m[:,:4:2]
-                >>> s[:,:] = m[:,4:8:2]
+                >>> s.ApplyPowAbs(1)
               Unlike the previous example, the contents of the first and third
-              columns of Matrix m will not be updated until s goes out of scope
-              or is explicitly deleted.
+              columns of the source Matrix m will not be updated until s goes
+              out of scope or is explicitly deleted.
         """
         ret = self.numpy().__getitem__(index)
         if isinstance(ret, numpy.ndarray):
