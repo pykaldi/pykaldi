@@ -119,20 +119,36 @@ class Vector(kaldi_vector.Vector, _VectorBase):
                                 "or a 1-D numpy array.")
 
     def __getitem__(self, index):
-        """Custom item indexing method.
+        """Custom getitem method.
 
         Returns:
             - the value at the given index if the index is an integer
-            - a subvector if the index is a slice with step = 1
-            - a list if the index is a slice with step > 1
+            - a SubVector if the index is a slice
+        Caveats:
+            - Kaldi Vector type does not support non-contiguous memory layouts,
+              i.e. the stride should always be the size of a float. If the
+              result of indexing operation is a Vector with an unsupported
+              stride value, it will not share its data with the source Vector,
+              i.e. a new copy is made. However, once this new Vector is
+              deallocated, its contents will automatically be copied back into
+              the source Vector. See __getitem__ method for Matrix type for
+              further details.
         """
         if isinstance(index, int):
             return super(Vector, self).__getitem__(index)
         elif isinstance(index, slice):
-            start, stop, step = index.indices(len(self))
-            if step == 1:
-                return self.range(start, stop - start)
-            return [self.__getitem__(i) for i in xrange(start, stop, step)]
+            return SubVector(self.numpy().__getitem__(index))
+        else:
+            raise TypeError("Vector index must be an integer or a slice.")
+
+    def __setitem__(self, index, value):
+        """Custom setitem method
+
+        """
+        if isinstance(index, int):
+            return super(Vector, self).__setitem__(index, value)
+        elif isinstance(index, slice):
+            return SubVector(self.numpy().__setitem__(index, value))
         else:
             raise TypeError("Vector index must be an integer or a slice.")
 
@@ -172,20 +188,38 @@ class SubVector(kaldi_matrix_ext.SubVector, _VectorBase):
         super(SubVector, self).__init__(src, offset, length)
 
     def __getitem__(self, index):
-        """Custom item indexing method.
+        """Custom getitem method.
 
+        Offloads the operation to numpy by converting kaldi types to ndarrays.
         Returns:
-            - the value at the given index if the index is an integer
-            - a subvector if the index is a slice with step = 1
-            - a list if the index is a slice with step > 1
+            - a float if the index is an integer
+            - a SubVector if the index is a slice
+        Caveats:
+            - Kaldi Vector type does not support non-contiguous memory layouts,
+              i.e. the stride should always be the size of a float. If the
+              result of indexing operation is a Vector with an unsupported
+              stride value, it will not share its data with the source Vector,
+              i.e. a new copy is made. However, once this new Vector is
+              deallocated, its contents will automatically be copied back into
+              the source Vector. See __getitem__ method for Matrix type for
+              further details.
         """
         if isinstance(index, int):
             return super(SubVector, self).__getitem__(index)
         elif isinstance(index, slice):
-            start, stop, step = index.indices(len(self))
-            if step == 1:
-                return self.range(start, stop - start)
-            return [self.__getitem__(i) for i in xrange(start, stop, step)]
+            return SubVector(self.numpy().__getitem__(index))
+        else:
+            raise TypeError("SubVector index must be an integer or a slice.")
+
+    def __setitem__(self, index, value):
+        """Custom setitem method
+
+        Offloads the operation to numpy by converting kaldi types to ndarrays.
+        """
+        if isinstance(index, int):
+            return super(SubVector, self).__setitem__(index, value)
+        elif isinstance(index, slice):
+            return SubVector(self.numpy().__setitem__(index, value))
         else:
             raise TypeError("SubVector index must be an integer or a slice.")
 
@@ -216,111 +250,68 @@ class _MatrixBase(object):
         return SubMatrix(self, row_offset, rows, col_offset, cols)
 
     def __getitem__(self, index):
-        """Custom indexing method
+        """Custom getitem method.
+
+        Offloads the operation to numpy by converting kaldi types to ndarrays.
+        If the return value is a SubVector or SubMatrix, it shares the data
+        with the source Matrix, i.e. no copy is made.
 
         Returns:
-            - the value at the given index if the index is an integer tuple
-            - a submatrix if both indices are slices with step = 1
-            - a list if at least one index is a slice with step > 1
+            - a float if both indices are integers
+            - a SubVector if only one of the indices is an integer
+            - a SubMatrix if both indices are slices
+
+        Caveats:
+            - Kaldi Matrix type does not support non-contiguous memory layouts
+              for the second dimension, i.e. the stride for the second dimension
+              should always be the size of a float. If the result of indexing
+              operation is a Matrix with an unsupported stride for the second
+              dimension, it will not share its data with the source Matrix, i.e.
+              a copy is made. However, once this new Matrix is deallocated, its
+              contents will automatically be copied back into the source Matrix.
+              This mechanism is most useful when you want to index into a
+              Matrix for partial assignment. Consider the following assignment:
+                >>> m[:,:4:2] = m[:,4:8:2]
+              Under the hood, the assignment call will allocate two temporary
+              memory regions to hold the contents of the indexing operations,
+              and copy the contents of one region to the other. Since there are
+              no references to either temporary memory region after this call,
+              they will be deallocated as soon as the assignment call is
+              completed. During deallocation, contents of these two regions
+              will be copied back into the source Matrix. While this mechanism
+              provides a convenient workaround in the above situation, the user
+              should be careful when creating additional references to objects
+              returned from Matrix indexing operations. If an indexing operation
+              requires a copy of the data to be made, then any changes made on
+              the resulting object will not be copied back to the source Matrix
+              until its reference count drops to zero. Consider the following:
+                >>> s = m[:,:4:2]
+                >>> s[:,:] = m[:,4:8:2]
+              Unlike the previous example, the contents of the first and third
+              columns of Matrix m will not be updated until s goes out of scope
+              or is explicitly deleted.
         """
-
-        # Note (VM):
-        # This allows for two brackets item access.
-        if isinstance(index, int):
-            # Check if self is a matrix with row-dim or col-dim equals to 1
-
-            # If so, we're asking a pseudo-vector to return a value
-            if self.nrows() == 1:
-                index = (0, index)
-
-            elif self.ncols() == 1:
-                index = (index, 0)
-
-            # if not, we're actually asking for a row
-            else:
-                index = (index, slice(0, self.ncols()))
-
-        if isinstance(index, slice):
-            
-            # Is this a column pseudo-vector?
-            if self.ncols() == 1:
-                index = (index, 0)
-
-            elif self.nrows() == 1:
-                index = (0, index)
-                
-            else:
-                index = (index, slice(0, self.ncols()))
-
-        if isinstance(index, tuple):
-            if len(index) > 2:
-                raise IndexError("too many indices for {}"
-                                 .format(self.__class__.__name__))
-            if len(index) == 1:
-                index = (index, slice(0, self.ncols()))
-
-            r, c = index
-
-            # Simple indexing with two integers
-            if isinstance(r, int) and isinstance(c, int):
-                if r >= self.nrows() or c >= self.ncols():
-                    raise IndexError("indices are out of bounds.")
-
-                if r < 0 or c < 0:
-                    raise NotImplementedError("negative indices are"
-                                              "not supported.")
-
-                return self._getitem(r, c)
-
-            # Indexing with two slices
-            elif isinstance(r, slice) and isinstance(c, slice):
-                row_start, row_stop, row_step = r.indices(self.nrows())
-                col_start, col_stop, col_step = c.indices(self.ncols())
-
-                if row_step == 1 and col_step == 1:
-                    rows, cols = row_stop - row_start, col_stop - col_start
-                    return self.range(row_start, rows, col_start, cols)
-                else:
-                    return [[self._getitem(i, j)
-                             for j in xrange(col_start, col_stop, col_step)
-                            ] for i in xrange(row_start, row_stop, row_step)]
-
-            # Row is a slice, Col is an int
-            elif isinstance(r, slice) and isinstance(c, int):
-                start, end, step = r.indices(self.nrows())
-                if step == 1:
-                    return self.range(start, end - start, c, 1)
-                else:
-                    return [self.__getitem__((i, c))
-                            for i in xrange(start, end, step)]
-
-            # Row is an int, Col is a slice
-            elif isinstance(r, int) and isinstance(c, slice):
-                start, end, step = c.indices(self.ncols())
-                if step == 1:
-                    return self.range(r, 1, start, end - start)
-                else:
-                    return [self.__getitem__((r, j))
-                            for j in xrange(start, end, step)]
-
-        raise TypeError("{} indices must be integers or slices"
-                        .format(self.__class__.__name__))
+        ret = self.numpy().__getitem__(index)
+        if isinstance(ret, numpy.ndarray):
+            if ret.ndim == 2:
+                return SubMatrix(ret)
+            elif ret.ndim == 1:
+                return SubVector(ret)
+        elif isinstance(ret, numpy.float32):
+            return float(ret)
+        else:
+            raise TypeError("Matrix indexing operation returned an invalid "
+                            "type {}".format(type(ret)))
 
     def __setitem__(self, index, value):
-        """Custom setitem method
+        """Custom setitem method.
 
+        Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(index, tuple):
-            if len(index) != 2:
-                raise IndexError("{} index must be a pair of integers"
-                                 .format(self.__class__.__name__))
-            r, c = index
-            if isinstance(r, int) and isinstance(c, int):
-                if 0 <= r < self.nrows() and 0 <= c < self.ncols():
-                    return self._setitem(r, c, value)
-
-        raise TypeError("{} does not support given index type"
-                         .format(self.__class__.__name__))
+        if isinstance(value, (SubMatrix, SubVector)):
+            self.numpy().__setitem__(index, value.numpy())
+        else:
+            self.numpy().__setitem__(index, value)
 
     def __repr__(self):
         return str(self)
@@ -370,6 +361,7 @@ class Matrix(kaldi_matrix.Matrix, _MatrixBase):
                                     "or both of them should be 0.")
 
             self.resize_(size[0], size[1], MatrixResizeType.UNDEFINED)
+
 
 class SubMatrix(kaldi_matrix_ext.SubMatrix, _MatrixBase):
     def __init__(self, src, row_offset = 0, rows = None,

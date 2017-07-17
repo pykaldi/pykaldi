@@ -71,7 +71,7 @@ namespace pySubVector {
 struct wrapper {
   PyObject_HEAD
   ::clif::SharedPtr<::kaldi::SubVector<float>> cpp;
-  PyObject* obj;
+  PyObject* base;
 };
 static ::kaldi::SubVector<float>* ThisPtr(PyObject*);
 
@@ -96,8 +96,10 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
     }
     int dtype = PyArray_TYPE((PyArrayObject*)a[0]);
     if (dtype == NPY_FLOAT) {
+      // This will allocate a new array if the input array does not satisfy the
+      // requirements of constructing a SubVector.
       PyObject *array = PyArray_FromArray((PyArrayObject*)a[0], nullptr,
-                                          NPY_ARRAY_CARRAY);
+                                          NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
       PyObject* err_type = nullptr;
       string err_msg{"C++ exception"};
       try {
@@ -108,15 +110,17 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
       } catch (...) {
         err_type = PyExc_RuntimeError;
       }
-      Py_DECREF(array);
       if (err_type) {
+        Py_DECREF(array);
         PyErr_SetString(err_type, err_msg.c_str());
         return nullptr;
       }
+      // Reference count of array will be decremented when self is deallocated.
+      reinterpret_cast<wrapper*>(self)->base = array;
     } else {
       PyErr_SetString(PyExc_RuntimeError,
                       "Cannot convert given ndarray to a SubVector since "
-                      "it has an invalid dtype. Supported dtypes: float.");
+                      "it has an invalid dtype. Supported dtypes: np.float32.");
       return nullptr;
     }
   } else {
@@ -138,10 +142,10 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
       PyErr_SetString(err_type, err_msg.c_str());
       return nullptr;
     }
+    // Reference count of a[0] will be decremented when self is deallocated.
+    Py_INCREF(a[0]);
+    reinterpret_cast<wrapper*>(self)->base = a[0];
   }
-  // Reference count of a[0] will be decremented when self is deallocated.
-  Py_INCREF(a[0]);
-  reinterpret_cast<wrapper*>(self)->obj = a[0];
   Py_RETURN_NONE;
 }
 
@@ -180,7 +184,7 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
 //   PyObject* ret = Clif_PyObjFrom(std::move(ret0), {});
 //   // Reference count of a[0] will be decremented when ret is deallocated.
 //   Py_INCREF(a[0]);
-//   reinterpret_cast<wrapper*>(ret)->obj = a[0];
+//   reinterpret_cast<wrapper*>(ret)->base = a[0];
 //   return ret;
 // }
 
@@ -221,7 +225,7 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
 //   PyObject* ret = Clif_PyObjFrom(std::move(ret0.value()), {});
 //   // Reference count of self will be decremented when ret is deallocated.
 //   Py_INCREF(self);
-//   reinterpret_cast<wrapper*>(ret)->obj = self;
+//   reinterpret_cast<wrapper*>(ret)->base = self;
 //   return ret;
 // }
 
@@ -245,8 +249,12 @@ static PyObject* _allocator(PyTypeObject* type, Py_ssize_t nitems);
 // SubVector __init__
 static int _ctor(PyObject* self, PyObject* args, PyObject* kw);
 
+static void _deallocator(PyObject* self) {
+  Py_DECREF(reinterpret_cast<wrapper*>(self)->base);
+  Py_TYPE(self)->tp_free(self);
+}
+
 static void _dtor(void* self) {
-  Py_XDECREF(reinterpret_cast<wrapper*>(self)->obj);
   delete reinterpret_cast<wrapper*>(self);
 }
 
@@ -255,7 +263,7 @@ PyTypeObject wrapper_Type = {
   "kaldi_matrix_ext.SubVector",        // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
-  Clif_PyType_GenericFree,             // tp_dealloc
+  _deallocator,                        // tp_dealloc
   nullptr,                             // tp_print
   nullptr,                             // tp_getattr
   nullptr,                             // tp_setattr
@@ -350,7 +358,7 @@ namespace pySubMatrix {
 struct wrapper {
   PyObject_HEAD
   ::clif::SharedPtr<::kaldi::SubMatrix<float>> cpp;
-  PyObject* obj;
+  PyObject* base;
 };
 static ::kaldi::SubMatrix<float>* ThisPtr(PyObject*);
 
@@ -374,8 +382,10 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
     }
     int dtype = PyArray_TYPE((PyArrayObject*)a[0]);
     if (dtype == NPY_FLOAT) {
+      // This will allocate a new array if the input array does not satisfy the
+      // requirements of constructing a SubMatrix.
       PyObject *array = PyArray_FromArray((PyArrayObject*)a[0], nullptr,
-                                          NPY_ARRAY_BEHAVED);
+                                          NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
       if (PyArray_STRIDE((PyArrayObject*)array, 0) < 0 ||
           PyArray_STRIDE((PyArrayObject*)array, 1) < 0 ) {
         PyErr_SetString(PyExc_RuntimeError,
@@ -401,11 +411,13 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
       } catch (...) {
         err_type = PyExc_RuntimeError;
       }
-      Py_DECREF(array);
       if (err_type) {
+        Py_DECREF(array);
         PyErr_SetString(err_type, err_msg.c_str());
         return nullptr;
       }
+      // Reference count of array will be decremented when self is deallocated.
+      reinterpret_cast<wrapper*>(self)->base = array;
     } else {
       PyErr_SetString(PyExc_RuntimeError,
                       "Cannot convert given ndarray to a SubMatrix since "
@@ -431,10 +443,10 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
       PyErr_SetString(err_type, err_msg.c_str());
       return nullptr;
     }
+    // Reference count of a[0] will be decremented when self is deallocated.
+    Py_INCREF(a[0]);
+    reinterpret_cast<wrapper*>(self)->base = a[0];
   }
-  // Reference count of a[0] will be decremented when self is deallocated.
-  Py_INCREF(a[0]);
-  reinterpret_cast<wrapper*>(self)->obj = a[0];
   Py_RETURN_NONE;
 }
 
@@ -468,7 +480,7 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
 //   PyObject* ret = Clif_PyObjFrom(std::move(ret0), {});
 //   // Reference count of a[0] will be decremented when ret is deallocated.
 //   Py_INCREF(a[0]);
-//   reinterpret_cast<wrapper*>(ret)->obj = a[0];
+//   reinterpret_cast<wrapper*>(ret)->base = a[0];
 //   return ret;
 // }
 
@@ -491,8 +503,12 @@ static PyObject* _allocator(PyTypeObject* type, Py_ssize_t nitems);
 // SubMatrix __init__
 static int _ctor(PyObject* self, PyObject* args, PyObject* kw);
 
+static void _deallocator(PyObject* self) {
+  Py_DECREF(reinterpret_cast<wrapper*>(self)->base);
+  Py_TYPE(self)->tp_free(self);
+}
+
 static void _dtor(void* self) {
-  Py_XDECREF(reinterpret_cast<wrapper*>(self)->obj);
   delete reinterpret_cast<wrapper*>(self);
 }
 
@@ -501,7 +517,7 @@ PyTypeObject wrapper_Type = {
   "kaldi_matrix.SubMatrix",            // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
-  Clif_PyType_GenericFree,             // tp_dealloc
+  _deallocator,                        // tp_dealloc
   nullptr,                             // tp_print
   nullptr,                             // tp_getattr
   nullptr,                             // tp_setattr
@@ -621,8 +637,7 @@ static PyObject* VectorToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   // reference to obj and sets it as the base property of array.
   Py_INCREF(obj);
   if (PyArray_SetBaseObject((PyArrayObject*)(array), obj) == -1) {
-    Py_DECREF(obj);
-    if (array) Py_DECREF(array);
+    Py_DECREF(array);
     PyErr_SetString(PyExc_RuntimeError, "Cannot convert to ndarray.");
     return nullptr;
   }
@@ -647,8 +662,10 @@ static PyObject* NumpyToVector(PyObject* self, PyObject* args, PyObject* kw) {
   }
   int dtype = PyArray_TYPE((PyArrayObject*)obj);
   if (dtype == NPY_FLOAT) {
+    // This will allocate a new array if the input array does not satisfy the
+    // requirements of constructing a SubVector.
     PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
-                                        NPY_ARRAY_CARRAY);
+                                        NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
     std::unique_ptr<::kaldi::SubVector<float>> subvector;
     PyObject* err_type = nullptr;
     string err_msg{"C++ exception"};
@@ -662,15 +679,18 @@ static PyObject* NumpyToVector(PyObject* self, PyObject* args, PyObject* kw) {
     } catch (...) {
       err_type = PyExc_RuntimeError;
     }
-    Py_DECREF(array);
     if (err_type) {
+      Py_DECREF(array);
       PyErr_SetString(err_type, err_msg.c_str());
       return nullptr;
     }
-    PyObject* ret = Clif_PyObjFrom(std::move(subvector), {});
-    // Reference count of obj will be decremented when ret is deallocated.
-    Py_INCREF(obj);
-    reinterpret_cast<pySubVector::wrapper*>(ret)->obj = obj;
+    PyObject* ret;
+    if ((ret=Clif_PyObjFrom(std::move(subvector), {})) == nullptr) {
+      Py_DECREF(array);
+      return nullptr;
+    }
+    // Reference count of array will be decremented when ret is deallocated.
+    reinterpret_cast<pySubVector::wrapper*>(ret)->base = array;
     return ret;
   }
   PyErr_SetString(PyExc_RuntimeError,
@@ -713,8 +733,7 @@ static PyObject* MatrixToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   // reference to obj and sets it as the base property of array.
   Py_INCREF(obj);
   if (PyArray_SetBaseObject((PyArrayObject*)(array), obj) == -1) {
-    Py_DECREF(obj);
-    if (array) Py_DECREF(array);
+    Py_DECREF(array);
     PyErr_SetString(PyExc_RuntimeError, "Cannot convert to ndarray.");
     return nullptr;
   }
@@ -739,8 +758,10 @@ static PyObject* NumpyToMatrix(PyObject* self, PyObject* args, PyObject* kw) {
   }
   int dtype = PyArray_TYPE((PyArrayObject*)obj);
   if (dtype == NPY_FLOAT) {
+    // This will allocate a new array if the input array does not satisfy the
+    // requirements of constructing a SubMatrix.
     PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
-                                        NPY_ARRAY_BEHAVED);
+                                        NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
     if (PyArray_STRIDE((PyArrayObject*)array, 0) < 0 ||
         PyArray_STRIDE((PyArrayObject*)array, 1) < 0 ) {
       PyErr_SetString(PyExc_RuntimeError,
@@ -770,15 +791,18 @@ static PyObject* NumpyToMatrix(PyObject* self, PyObject* args, PyObject* kw) {
     } catch (...) {
       err_type = PyExc_RuntimeError;
     }
-    Py_DECREF(array);
     if (err_type) {
+      Py_DECREF(array);
       PyErr_SetString(err_type, err_msg.c_str());
       return nullptr;
     }
-    PyObject* ret = Clif_PyObjFrom(std::move(submatrix), {});
-    // Reference count of obj will be decremented when ret is deallocated.
-    Py_INCREF(obj);
-    reinterpret_cast<pySubVector::wrapper*>(ret)->obj = obj;
+    PyObject* ret;
+    if ((ret=Clif_PyObjFrom(std::move(submatrix), {})) == nullptr) {
+      Py_DECREF(array);
+      return nullptr;
+    }
+    // Reference count of array will be decremented when ret is deallocated.
+    reinterpret_cast<pySubVector::wrapper*>(ret)->base = array;
     return ret;
   }
   PyErr_SetString(PyExc_RuntimeError,
