@@ -262,9 +262,42 @@ kaldi_io = Extension(
     include_dirs=include_dirs,
     library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
     runtime_library_dirs=runtime_library_dirs,
-    libraries=[':kaldi_matrix.so', ':kaldi_vector.so'] + libraries,
+    libraries=[':kaldi_matrix.so', ':kaldi_vector.so', ':matrix_common.so',
+               'kaldi-util', 'kaldi-matrix', 'kaldi-base'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_io)
+
+kaldi_holder = Extension(
+    "kaldi.util.kaldi_holder",
+    sources = [
+        "build/kaldi/util/kaldi-holder-clifwrap.cc",
+        "build/kaldi/util/kaldi-holder-clifwrap-init.cc"
+    ],
+    language = "c++",
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix', 'build/lib/kaldi/util'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':kaldi_io.so', ':kaldi_matrix.so', ':kaldi_vector.so', ':matrix_common.so',
+               'kaldi-util', 'kaldi-matrix', 'kaldi-base'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(kaldi_holder)
+
+# kaldi_table = Extension(
+#     "kaldi.util.kaldi_table",
+#     sources = [
+#         "build/kaldi/util/kaldi-table-clifwrap.cc",
+#         "build/kaldi/util/kaldi-table-clifwrap-init.cc"
+#     ],
+#     language = "c++",
+#     extra_compile_args=extra_compile_args,
+#     include_dirs=include_dirs,
+#     library_dirs=library_dirs + ['build/lib/kaldi/matrix', 'build/lib/kaldi/util'],
+#     runtime_library_dirs=runtime_library_dirs,
+#     libraries=[':kaldi_holder.so', ':kaldi_io.so', ':kaldi_matrix.so', ':kaldi_vector.so', ':matrix_common.so',
+#                'kaldi-util', 'kaldi-matrix', 'kaldi-base'] + libraries,
+#     extra_link_args=extra_link_args)
+# extensions.append(kaldi_table)
 
 packages = find_packages()
 
