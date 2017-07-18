@@ -252,18 +252,9 @@ from "matrix/kaldi-vector.h":
       # implement the Range method in Python by constructing a SubVector.
       # def Range(self, offset: int, length: int) -> SubVector
 
-      def `Resize` as resize_(self, length: int,
-                              resize_type: MatrixResizeType = default)
+      def Resize(self, length: int, resize_type: MatrixResizeType = default)
 
-      # NOTE:
-      # Since CLIF combines setitem and delitem into a single wrapper,
-      # we need to expose setitem in Vector as well. Otherwise setitem raises
-      # NotImplementedError at runtime. This is probably a bug in CLIF.
-      @sequential
-      def `Set` as __setitem__(self, index: int, value: float)
-
-      @sequential
-      def `RemoveElement` as __delitem__(self, index: int)
+      def RemoveElement(self, index: int)
 
     # TODO(Dogan): Wrap iostream and look into wrapping stream ops in Python.
     # def `operator<<` as Write(out: ostream, v: VectorBase) -> ostream

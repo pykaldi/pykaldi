@@ -302,7 +302,9 @@ from "matrix/kaldi-matrix.h":
 
             def Transpose(self)
 
-            def `Resize` as resize_(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def Resize(self, r:int, c:int,
+                       resize_type:MatrixResizeType = default,
+                       stride_type:MatrixStrideType = default)
 
             # Todo (VM):
             # <strikethrough>Check if this actually works</strikethrough>

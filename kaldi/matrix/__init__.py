@@ -9,7 +9,7 @@ from . import _str
 # Absolute import of matrix_common does not work on Python 3 for some reason.
 # Symbols in matrix_common are assigned to module importlib._bootstrap ????
 import matrix_common
-from matrix_common import MatrixResizeType, MatrixTransposeType
+from matrix_common import MatrixResizeType, MatrixStrideType
 
 import kaldi_vector
 from kaldi_vector import ApproxEqualVector, AssertEqualVector, VecVec
@@ -34,34 +34,52 @@ except NameError:
 ################################################################################
 
 class _VectorBase(object):
-    """Base class defining the common additional Python API for vectors."""
+    """Base class defining the additional Python API for Vector."""
 
     def clone(self):
-        """Returns a copy of the vector."""
-        return Vector(src=self)
+        """Returns a copy of the Vector."""
+        copy = Vector(length=len(self))
+        copy.CopyFromVec(self)
+        return copy
 
     def copy_(self, src):
-        """Copies data from src into this vector and returns this vector.
+        """Copies data from src into this Vector and returns this Vector.
 
-        Note: Source vector should have the same size as this vector.
+        Note: Source should have the same size as this vector.
 
         Args:
-            src (Vector): Source vector to copy
+            src (Vector): Source Vector to copy
         """
         self.CopyFromVec(src)
         return self
 
     def equal(self, other, tol=1e-16):
-        """Checks if vectors have the same size and data within tolerance."""
+        """Checks if Vectors have the same length and data."""
         return self.ApproxEqual(other, tol)
 
     def numpy(self):
-        """Returns this vector as a numpy ndarray."""
+        """Returns a new numpy ndarray sharing the data with this Vector."""
         return kaldi_matrix_ext.vector_to_numpy(self)
 
-    def range(self, offset, length):
-        """Returns a new subvector (a range of elements) of the vector."""
-        return SubVector(self, offset, length)
+    def range(self, start, length):
+        """Returns a range of elements as a new Vector."""
+        return Vector(src=self, start=start, length=length)
+
+    def resize_(self, length, resize_type=MatrixResizeType.SET_ZERO):
+        """Resizes the Vector to desired length."""
+        if self.own_data:
+            self.Resize(length, resize_type)
+        else:
+            raise ValueError("resize_ method should not be called on Vector "
+                             "objects that do not own their data.")
+
+    def swap_(self, other):
+        """Swaps the contents of Vectors. Shallow swap."""
+        if self.own_data and other.own_data:
+            self.Swap(other)
+        else:
+            raise ValueError("swap_ method should not be called on Vector "
+                             "objects that do not own their data.")
 
     def __repr__(self):
         return str(self)
@@ -82,62 +100,80 @@ class _VectorBase(object):
                 return _str._vector_str(self).encode('UTF-8', 'replace')
 
 
-class Vector(kaldi_vector.Vector, _VectorBase):
-    """Python wrapper for kaldi::Vector<float>"""
+class Vector(kaldi_vector.Vector, kaldi_matrix_ext.SubVector, _VectorBase):
+    """Python wrapper for kaldi::Vector<float> and kaldi::SubVector<float>.
 
-    def __init__(self, size=None, src=None):
-        """Creates a new vector.
+    Attributes:
+        own_data (bool): True if Vector owns its data, False otherwise.
+    """
 
-        If no arguments are given, returns a new empty vector.
-        If 'size' is given, returns a new vector of given size.
-        If 'src' is given, returns a new vector that is a copy of the source.
-        Note: 'size' and 'src' cannot be given at the same time.
+    def __init__(self, length=None, src=None, start=0):
+        """Initializes a new Vector.
+
+        If src is None, ignores the start and initializes the Vector to the
+        given length. If length is None as well, initializes an empty Vector.
+
+        If src is a Vector or a 1-D numpy array, initializes the Vector to share
+        the data of the src. If length is None, it defaults to len(src) - start.
 
         Args:
-            size (int): Size of the new vector.
-            src (Vector or ndarray): Source vector or 1-D numpy array to copy.
+            src (Vector or ndarray): Source Vector or 1-D numpy array.
+            start (int): Start of the new Vector.
+            length (int): Length of the new Vector.
         """
-        if src is not None and size is not None:
-            raise TypeError("Vector arguments 'size' and 'src' "
-                            "cannot be given at the same time.")
-        super(Vector, self).__init__()
-        if size is not None:
-            if isinstance(size, int) and size >= 0:
-                self.resize_(size, MatrixResizeType.UNDEFINED)
-            else:
-                raise TypeError("Vector argument 'size' should be a "
-                                "non-negative integer (or long if Python 2).")
-        elif src is not None:
-            if isinstance(src, kaldi_vector.VectorBase):
-                self.resize_(len(src), MatrixResizeType.UNDEFINED)
-                self.CopyFromVec(src)
-            elif isinstance(src, numpy.ndarray) and src.ndim == 1:
-                self.resize_(len(src), MatrixResizeType.UNDEFINED)
-                self.CopyFromVec(SubMatrix(src))
-            else:
-                raise TypeError("Vector argument 'src' should be a vector "
-                                "or a 1-D numpy array.")
+        if src is None:
+            kaldi_vector.Vector.__init__(self)
+            self.own_data = True
+            if length is not None:
+                if isinstance(length, int) and length >= 0:
+                    self.resize_(length, MatrixResizeType.UNDEFINED)
+                else:
+                    raise ValueError("length should be a non-negative integer.")
+        else:
+            if not (isinstance(src, kaldi_vector.VectorBase) or
+                    isinstance(src, numpy.ndarray) and src.ndim == 1):
+                raise TypeError("src should be a Vector or a 1-D numpy array.")
+            src_len = len(src)
+            if not (0 <= start <= src_len):
+                raise IndexError("start={0} should be in the range [0,{1}] "
+                                 "when len(src)={1}.".format(start, src_len))
+            max_len = src_len - start
+            if length is None:
+                length = max_len
+            if not (0 <= length <= max_len):
+                raise IndexError("length={} should be in the range [0,{}] when "
+                                 "start={} and len(src)={}."
+                                 .format(length, max_len, start, src_len))
+            kaldi_matrix_ext.SubVector.__init__(self, src, start, length)
+            self.own_data = False
 
     def __getitem__(self, index):
         """Custom getitem method.
 
+        Offloads the operation to numpy by converting the Vector to an ndarray.
+        If the return value is a Vector, it shares the data with the source
+        Vector, i.e. no copy is made.
+
         Returns:
-            - the value at the given index if the index is an integer
-            - a SubVector if the index is a slice
+            - a float if the index is an integer
+            - a Vector if the index is a slice
         Caveats:
             - Kaldi Vector type does not support non-contiguous memory layouts,
               i.e. the stride should always be the size of a float. If the
-              result of indexing operation is a Vector with an unsupported
-              stride value, it will not share its data with the source Vector,
-              i.e. a new copy is made. However, once this new Vector is
-              deallocated, its contents will automatically be copied back into
-              the source Vector. See __getitem__ method for Matrix type for
-              further details.
+              result of indexing operation requires an unsupported stride value,
+              this will be handled by copying the result to a new contiguos
+              memory region and setting the internal data pointer of the
+              returned Vector to this region. Once the returned Vector is
+              deallocated, its contents will be automatically copied back into
+              the source Vector. While the returned Vector technically does not
+              share its data with the source Vector, it is still considered to
+              not own its data due to this link. See __getitem__ method for the
+              Matrix type for further details.
         """
         if isinstance(index, int):
             return super(Vector, self).__getitem__(index)
         elif isinstance(index, slice):
-            return SubVector(self.numpy().__getitem__(index))
+            return Vector(src=self.numpy().__getitem__(index))
         else:
             raise TypeError("Vector index must be an integer or a slice.")
 
@@ -148,85 +184,22 @@ class Vector(kaldi_vector.Vector, _VectorBase):
         if isinstance(index, int):
             return super(Vector, self).__setitem__(index, value)
         elif isinstance(index, slice):
-            return SubVector(self.numpy().__setitem__(index, value))
+            return Vector(src=self.numpy().__setitem__(index, value))
         else:
             raise TypeError("Vector index must be an integer or a slice.")
 
-
-class SubVector(kaldi_matrix_ext.SubVector, _VectorBase):
-    """Python wrapper for kaldi::SubVector<float>"""
-
-    def __init__(self, src, offset=0, length=None):
-        """Creates a new subvector from the source (sub)vector.
-
-        Subvector and the source vector (or numpy array) share the same
-        underlying data storage. No data is copied.
-
-        If 'length' is None, it defaults to len(src) - offset.
-
-        Args:
-            src (VectorBase): Source (sub)vector or 1-D numpy array.
-            offset (int): Start of the subvector.
-            length (int): Length of the subvector.
-        """
-        if not (isinstance(src, kaldi_vector.VectorBase) or
-                isinstance(src, numpy.ndarray) and src.ndim == 1):
-            raise TypeError("SubVector argument 'src' should be a vector "
-                            "or a 1-D numpy array.")
-        src_len = len(src)
-        if not (0 <= offset <= src_len):
-            raise IndexError("Argument offset={} should be in the range "
-                             "[0,{}] when len(src)={}."
-                             .format(offset, src_len, src_len))
-        max_len = src_len - offset
-        if length is None:
-            length = max_len
-        if not (0 <= length <= max_len):
-            raise IndexError("Argument length={} should be in the range "
-                             "[0,{}] when offset={} and len(src)={}."
-                             .format(length, max_len, offset, src_len))
-        super(SubVector, self).__init__(src, offset, length)
-
-    def __getitem__(self, index):
-        """Custom getitem method.
-
-        Offloads the operation to numpy by converting kaldi types to ndarrays.
-        Returns:
-            - a float if the index is an integer
-            - a SubVector if the index is a slice
-        Caveats:
-            - Kaldi Vector type does not support non-contiguous memory layouts,
-              i.e. the stride should always be the size of a float. If the
-              result of indexing operation is a Vector with an unsupported
-              stride value, it will not share its data with the source Vector,
-              i.e. a new copy is made. However, once this new Vector is
-              deallocated, its contents will automatically be copied back into
-              the source Vector. See __getitem__ method for Matrix type for
-              further details.
-        """
-        if isinstance(index, int):
-            return super(SubVector, self).__getitem__(index)
-        elif isinstance(index, slice):
-            return SubVector(self.numpy().__getitem__(index))
+    def __delitem__(self, index):
+        """Removes an element from the Vector without reallocating."""
+        if self.own_data:
+            self.RemoveElement(index)
         else:
-            raise TypeError("SubVector index must be an integer or a slice.")
-
-    def __setitem__(self, index, value):
-        """Custom setitem method
-
-        Offloads the operation to numpy by converting kaldi types to ndarrays.
-        """
-        if isinstance(index, int):
-            return super(SubVector, self).__setitem__(index, value)
-        elif isinstance(index, slice):
-            return SubVector(self.numpy().__setitem__(index, value))
-        else:
-            raise TypeError("SubVector index must be an integer or a slice.")
+            raise ValueError("__delitem__ method should not be called on Vector "
+                             "objects that do not own their data.")
 
 
 class _MatrixBase(object):
     def size(self):
-        """Returns the size as a tuple (rows, cols)."""
+        """Returns the size as a tuple (num_rows, num_cols)."""
         return self.num_rows_, self.num_cols_
 
     def nrows(self):
@@ -238,28 +211,56 @@ class _MatrixBase(object):
         return self.num_cols_
 
     def equal(self, other, tol=1e-16):
-        """Checks if matrices have the same size and data within tolerance."""
+        """Checks if Matrices have the same size and data."""
         return self.ApproxEqual(other, tol)
 
     def numpy(self):
-        """Returns this matrix as a numpy ndarray."""
+        """Returns a new numpy ndarray sharing the data with this Matrix."""
         return kaldi_matrix_ext.matrix_to_numpy(self)
 
-    def range(self, row_offset, rows, col_offset, cols):
-        """Returns a new submatrix of the matrix."""
-        return SubMatrix(self, row_offset, rows, col_offset, cols)
+    def range(self, row_start, num_rows, col_start, num_cols):
+        """Returns a range of elements as a new Matrix."""
+        return Matrix(src=self,
+                      row_start=row_start, num_rows=num_rows,
+                      col_start=col_start, num_cols=num_cols)
+
+    def resize_(self, num_rows, num_cols,
+                resize_type=MatrixResizeType.SET_ZERO,
+                stride_type=MatrixStrideType.DEFAULT):
+        """Sets Matrix to the specified size."""
+        if self.own_data:
+            self.Resize(num_rows, num_cols, resize_type, stride_type)
+        else:
+            raise ValueError("resize_ method should not be called on "
+                             "Matrix objects that do not own their data.")
+
+    def swap_(self, other):
+        """Swaps the contents of Matrices. Shallow swap."""
+        if self.own_data and other.own_data:
+            self.Swap(other)
+        else:
+            raise ValueError("swap_ method should not be called on "
+                             "Matrix objects that do not own their data.")
+
+    def transpose_(self):
+        """Transpose the Matrix."""
+        if self.own_data:
+            self.Transpose()
+        else:
+            raise ValueError("transpose_ method should not be called on "
+                             "Matrix objects that do not own their data.")
 
     def __getitem__(self, index):
         """Custom getitem method.
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
-        If the return value is a SubVector or SubMatrix, it shares the data
-        with the source Matrix, i.e. no copy is made.
+        If the return value is a Vector or Matrix, it shares the data with the
+        source Matrix, i.e. no copy is made.
 
         Returns:
             - a float if both indices are integers
-            - a SubVector if only one of the indices is an integer
-            - a SubMatrix if both indices are slices
+            - a Vector if only one of the indices is an integer
+            - a Matrix if both indices are slices
 
         Caveats:
             - Kaldi Matrix type does not support non-contiguous memory layouts
@@ -268,10 +269,12 @@ class _MatrixBase(object):
               operation is a Matrix with an unsupported stride for the second
               dimension, it will not share its data with the source Matrix, i.e.
               a copy is made. However, once this new Matrix is deallocated, its
-              contents will automatically be copied back into the source Matrix.
-              This mechanism is most useful when you want to call an in-place
-              method only on a subset of values in a Matrix. Consider the
-              following statement:
+              contents will be automatically copied back into the source Matrix.
+              While the returned Matrix technically does not share its data with
+              the source Matrix, it is still considered to not own its data due
+              to this link. This mechanism is most useful when you want to call
+              an in-place method only on a subset of values in a Matrix.
+              Consider the following statement:
                 >>> m[:,:4:2].ApplyPowAbs(1)
               Under the hood, this statement will allocate a new Matrix to hold
               the contents of the indexing operation (since the stride for the
@@ -296,24 +299,32 @@ class _MatrixBase(object):
         ret = self.numpy().__getitem__(index)
         if isinstance(ret, numpy.ndarray):
             if ret.ndim == 2:
-                return SubMatrix(ret)
+                return Matrix(src=ret)
             elif ret.ndim == 1:
-                return SubVector(ret)
+                return Vector(src=ret)
         elif isinstance(ret, numpy.float32):
             return float(ret)
         else:
-            raise TypeError("Matrix indexing operation returned an invalid "
-                            "type {}".format(type(ret)))
+            raise TypeError("indexing operation returned an invalid type {}."
+                            .format(type(ret)))
 
     def __setitem__(self, index, value):
         """Custom setitem method.
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(value, (SubMatrix, SubVector)):
+        if isinstance(value, (Matrix, Vector)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)
+
+    def __delitem__(self, index):
+        """Removes a row from the Matrix without reallocating."""
+        if self.own_data:
+            self.RemoveRow(index)
+        else:
+            raise ValueError("__delitem__ method should not be called on "
+                             "Matrix objects that do not own their data.")
 
     def __repr__(self):
         return str(self)
@@ -334,83 +345,77 @@ class _MatrixBase(object):
                 return _str._matrix_str(self).encode('UTF-8', 'replace')
 
 
-class Matrix(kaldi_matrix.Matrix, _MatrixBase):
-    """Python wrapper for kaldi::Matrix<float>"""
-    def __init__(self, size=None, **kwargs):
-        """Creates a new Matrix.
+class Matrix(kaldi_matrix.Matrix, kaldi_matrix_ext.SubMatrix, _MatrixBase):
+    """Python wrapper for kaldi::Matrix<float> and kaldi::SubMatrix<float>."""
 
-        If no arguments are given, returns a new empty matrix.
-        If 'size' is given, returns a new matrix of given size.
+    def __init__(self, num_rows=None, num_cols=None, src=None,
+                 row_start=0, col_start=0):
+        """Initializes a new Matrix.
+
+        If src is None, ignores the row/col starts and initializes the Matrix to
+        the given size. If num_rows and num_cols are None as well, initializes
+        an empty Matrix.
+
+        If src is a Matrix or a 2-D numpy array, initializes the Matrix to share
+        the data of the src. If num_rows is None, it defaults to src.num_rows -
+        row_start. If num_cols is None, it defaults to src.num_cols - col_start.
 
         Args:
-            size (tuple or list): Matrix dimensions (rows, cols)
+            src (Matrix or ndarray): Source Matrix or 2-D numpy array.
+            num_rows (int): Number of rows of the new Matrix.
+            num_cols (int): Number of cols of the new Matrix.
+            row_start (int): Start row of the new Matrix.
+            col_start (int): Start col of the new Matrix.
         """
-        super(Matrix, self).__init__()
-
-        if size is not None:
-            if not (isinstance(size, tuple) or isinstance(size, list)):
-                raise TypeError("Matrix size argument must be a tuple or list.")
-
-            if len(size) != 2:
-                raise TypeError("Matrix size argument must be of length 2.")
-
-            if not (isinstance(size[0], int) and isinstance(size[1], int)):
-                raise TypeError("Matrix dimensions must be integer.")
-
-            if not (size[0] > 0 and size[1] > 0):
-                if not (size[0] == 0 and size[1] == 0):
-                    raise TypeError("Both Matrix dimensions must be positive "
-                                    "or both of them should be 0.")
-
-            self.resize_(size[0], size[1], MatrixResizeType.UNDEFINED)
-
-
-class SubMatrix(kaldi_matrix_ext.SubMatrix, _MatrixBase):
-    def __init__(self, src, row_offset = 0, rows = None,
-                            col_offset = 0, cols = None):
-        """Creates a new submatrix from the source (sub)matrix.
-
-           If 'rows' is None, it defaults to src.num_rows_ - row_offset.
-           If 'cols' is None, it defaults to src.num_cols_ - col_offset.
-
-           Args:
-                src (MatrixBase): Source (sub)matrix or 2-D numpy array.
-                row_offset, col_offset: Start of the submatrix.
-                rows, cols: Dimensions of the submatrix.
-        """
-        if isinstance(src, kaldi_matrix.MatrixBase):
-            src_rows, src_cols = src.num_rows_, src.num_cols_
-        elif isinstance(src, numpy.ndarray) and src.ndim == 2:
-            src_rows, src_cols = src.shape
+        if src is None:
+            kaldi_matrix.Matrix.__init__(self)
+            self.own_data = True
+            if num_rows is not None or num_cols is not None:
+                if num_rows is None or num_cols is None:
+                    raise ValueError("num_rows and num_cols should be given "
+                                     "together.")
+                if not (isinstance(num_rows, int) and
+                        isinstance(num_cols, int)):
+                    raise TypeError("num_rows and num_cols should be integers.")
+                if not (num_rows > 0 and num_cols > 0):
+                    if not (num_rows == 0 and num_cols == 0):
+                        raise TypeError("num_rows and num_cols should both be "
+                                        "positive or they should both be 0.")
+                self.resize_(num_rows, num_cols, MatrixResizeType.UNDEFINED)
         else:
-            raise TypeError("SubMatrix argument 'src' should be a matrix "
-                            "or a 2-D numpy array.")
-
-        if not (0 <= row_offset <= src_rows):
-            raise IndexError("Argument row_offset={} should be in the range "
-                             "[0,{}] when src.num_rows_={}."
-                             .format(row_offset, src_rows, src_rows))
-        if not (0 <= col_offset <= src_cols):
-            raise IndexError("Argument col_offset={} should be in the range "
-                             "[0,{}] when src.num_cols_={}."
-                             .format(col_offset, src_cols, src_cols))
-
-        max_rows, max_cols = src_rows - row_offset, src_cols - col_offset
-        if rows is None:
-            rows = max_rows
-        if cols is None:
-            cols = max_cols
-
-        if not (0 <= rows <= max_rows):
-            raise IndexError("Argument rows={} should be in the range "
-                             "[0,{}] when offset={} and src.num_rows_={}."
-                             .format(rows, max_rows, row_offset, src_rows))
-        if not (0 <= cols <= max_cols):
-            raise IndexError("Argument cols={} should be in the range "
-                             "[0,{}] when offset={} and src.num_cols_={}."
-                             .format(cols, max_cols, col_offset, src_cols))
-
-        super(SubMatrix, self).__init__(src, row_offset, rows, col_offset, cols)
+            if isinstance(src, kaldi_matrix.MatrixBase):
+                src_rows, src_cols = src.num_rows_, src.num_cols_
+            elif isinstance(src, numpy.ndarray) and src.ndim == 2:
+                src_rows, src_cols = src.shape
+            else:
+                raise TypeError("src should be a Matrix or a 2-D numpy array.")
+            if not (0 <= row_start <= src_rows):
+                raise IndexError("row_start={0} should be in the range [0,{1}] "
+                                 "when src.num_rows_={1}."
+                                 .format(row_start, src_rows))
+            if not (0 <= col_start <= src_cols):
+                raise IndexError("col_start={0} should be in the range [0,{1}] "
+                                 "when src.num_cols_={1}."
+                                 .format(col_offset, src_cols))
+            max_rows, max_cols = src_rows - row_start, src_cols - col_start
+            if num_rows is None:
+                num_rows = max_rows
+            if num_cols is None:
+                num_cols = max_cols
+            if not (0 <= num_rows <= max_rows):
+                raise IndexError("num_rows={} should be in the range [0,{}] "
+                                 "when row_start={} and src.num_rows_={}."
+                                 .format(num_rows, max_rows,
+                                         row_start, src_rows))
+            if not (0 <= num_cols <= max_cols):
+                raise IndexError("num_cols={} should be in the range [0,{}] "
+                                 "when col_start={} and src.num_cols_={}."
+                                 .format(num_cols, max_cols,
+                                         col_start, src_cols))
+            kaldi_matrix_ext.SubMatrix.__init__(self, src,
+                                                row_start, num_rows,
+                                                col_start, num_cols)
+            self.own_data = False
 
 ################################################################################
 # Define Vector and Matrix Utility Functions
