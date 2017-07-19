@@ -193,11 +193,13 @@ class Vector(kaldi_vector.Vector, kaldi_matrix_ext.SubVector, _VectorBase):
         if self.own_data:
             self.RemoveElement(index)
         else:
-            raise ValueError("__delitem__ method should not be called on Vector "
-                             "objects that do not own their data.")
+            raise ValueError("__delitem__ method should not be called on "
+                             "Vector objects that do not own their data.")
 
 
 class _MatrixBase(object):
+    """Base class defining the additional Python API for Matrix."""
+
     def size(self):
         """Returns the size as a tuple (num_rows, num_cols)."""
         return self.num_rows_, self.num_cols_
