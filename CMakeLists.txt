@@ -74,6 +74,7 @@ function(add_pyclif_library name pyclif_file)
             "-f-I${PYTHON_INCLUDE_DIRS} \
                -I${CLIF_DIR}/.. \
                -I${KALDI_SRC_DIR} \
+               -I${CMAKE_SOURCE_DIR}/kaldi \
                -I.. \
                -I${OPENFST_INC_DIR} \
                -DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION} \
@@ -91,7 +92,7 @@ function(add_pyclif_library name pyclif_file)
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file} ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}
     )
     add_custom_target(
-      ${name} ALL 
+      ${name} ALL
       DEPENDS ${gen_cc} ${gen_h} ${gen_init}
       VERBATIM
     )

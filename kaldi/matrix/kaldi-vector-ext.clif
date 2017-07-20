@@ -1,0 +1,38 @@
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "matrix/kaldi-vector-ext.h":
+  namespace `kaldi`:
+    def AddMatVec(self: VectorBase, alpha: float, M: MatrixBase,
+                  trans: MatrixTransposeType, v: VectorBase, beta: float)
+
+    def AddMatSvec(self: VectorBase, alpha: float, M: MatrixBase,
+                   trans: MatrixTransposeType, v: VectorBase, beta: float)
+
+    def CopyRowsFromMat(self: VectorBase, M: MatrixBase)
+
+    def CopyColsFromMat(self: VectorBase, M: MatrixBase)
+
+    def CopyRowFromMat(self: VectorBase, M: MatrixBase, row: int)
+
+    def CopyColFromMat(self: VectorBase, M: MatrixBase, col: int)
+
+    def CopyDiagFromMat(self: VectorBase, M: MatrixBase)
+
+    def AddRowSumMat(self: VectorBase, alpha: float, M: MatrixBase,
+                     beta: float = default)
+
+    def AddColSumMat(self: VectorBase, alpha: float, M: MatrixBase,
+                     beta: float = default)
+
+    def AddDiagMat2(self: VectorBase, alpha: float,
+                    M: MatrixBase, trans: MatrixTransposeType = default,
+                    beta: float = default)
+
+    def AddDiagMatMat(self: VectorBase, alpha: float,
+                      M: MatrixBase, transM: MatrixTransposeType,
+                      N: MatrixBase, transN: MatrixTransposeType,
+                      beta: float = default)
+
+    def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float

@@ -220,10 +220,10 @@ kaldi_matrix = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_matrix)
 
-kaldi_matrix_ext = Extension(
-    "kaldi.matrix.kaldi_matrix_ext",
+matrix_ext = Extension(
+    "kaldi.matrix.matrix_ext",
     sources=[
-        'kaldi/matrix/kaldi-matrix-ext.cc',
+        'kaldi/matrix/matrix-ext.cc',
         ],
     language='c++',
     extra_compile_args=extra_compile_args,
@@ -233,7 +233,23 @@ kaldi_matrix_ext = Extension(
     libraries=[':kaldi_matrix.so', ':kaldi_vector.so', ':matrix_common.so',
                'kaldi-matrix', 'kaldi-base'] + libraries,
     extra_link_args=extra_link_args)
-extensions.append(kaldi_matrix_ext)
+extensions.append(matrix_ext)
+
+kaldi_vector_ext = Extension(
+    "kaldi.matrix.kaldi_vector_ext",
+    sources = [
+        "build/kaldi/matrix/kaldi-vector-ext-clifwrap.cc",
+        "build/kaldi/matrix/kaldi-vector-ext-clifwrap-init.cc",
+    ],
+    language="c++",
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':kaldi_matrix.so', ':kaldi_vector.so', ':matrix_common.so',
+               'kaldi-matrix', 'kaldi-base'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(kaldi_vector_ext)
 
 matrix_functions = Extension(
     "kaldi.matrix.matrix_functions",

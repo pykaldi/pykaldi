@@ -8,11 +8,11 @@
 #include <numpy/arrayobject.h>
 #include "matrix/kaldi-vector-clifwrap.h"
 #include "matrix/kaldi-matrix-clifwrap.h"
-#include "matrix/kaldi-matrix-ext.h"
+#include "matrix/matrix-ext.h"
 #include "clif/python/stltypes.h"
 #include "clif/python/slots.h"
 
-namespace kaldi__matrix__ext {
+namespace matrix__ext {
 using namespace clif;
 
 #define _0 py::postconv::PASS
@@ -75,12 +75,12 @@ struct wrapper {
 };
 static ::kaldi::SubVector<float>* ThisPtr(PyObject*);
 
-// __init__(t:VectorBase, offset:int, length:int)
+// __init__(t:VectorBase, start:int, length:int)
 static PyObject* wrapSubVector_float_as___init__(PyObject* self,
                                                  PyObject* args,
                                                  PyObject* kw) {
   PyObject* a[3];
-  char* names[] = { C("src"), C("offset"), C("length"), nullptr };
+  char* names[] = { C("src"), C("start"), C("length"), nullptr };
   if (!PyArg_ParseTupleAndKeywords(args, kw, "OOO:__init__", names, &a[0], &a[1], &a[2]))
     return nullptr;
   ::kaldi::MatrixIndexT arg2;
@@ -157,7 +157,7 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
 //                                                    PyObject* kw) {
 //   PyObject* a[1];
 //   char* names[] = {
-//       C("s"),
+//       C("src"),
 //       nullptr
 //   };
 //   if (!PyArg_ParseTupleAndKeywords(args, kw, "O:NewWithSubVector", names, &a[0]))
@@ -190,13 +190,13 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
 // }
 
 // NOTE: It is better to implement the Range method by initializing a new
-// kaldi.matrix.SubVector object in Python since the user facing SubVector
-// class (kaldi.matrix.SubVector) is defined in Python and is a child class
-// of the SubVector type provided by this wrapper.
-// // Range(offset:int, length:int) -> SubVector
+// kaldi.matrix.Vector object in Python since the user facing Vector class
+// (kaldi.matrix.Vector) is defined in Python and is a child class of the
+// SubVector type provided by this wrapper.
+// // Range(start:int, length:int) -> SubVector
 // static PyObject* wrapRange(PyObject* self, PyObject* args, PyObject* kw) {
 //   PyObject* a[2];
-//   char* names[] = { C("offset"), C("length"), nullptr };
+//   char* names[] = { C("start"), C("length"), nullptr };
 //   if (!PyArg_ParseTupleAndKeywords(args, kw, "OO:Range", names, &a[0], &a[1]))
 //     return nullptr;
 //   ::kaldi::MatrixIndexT arg1;
@@ -238,7 +238,7 @@ static PyObject* as_kaldi_VectorBase_float(PyObject* self) {
 }
 
 static PyMethodDef Methods[] = {
-  {C("__init__"), (PyCFunction)wrapSubVector_float_as___init__, METH_VARARGS | METH_KEYWORDS, C("__init__(t:VectorBase, offset:int, length:int)\n  Calls C++ function\n  void ::kaldi::SubVector<float>::SubVector(::kaldi::VectorBase<float>, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
+  {C("__init__"), (PyCFunction)wrapSubVector_float_as___init__, METH_VARARGS | METH_KEYWORDS, C("__init__(t:VectorBase, start:int, length:int)\n  Calls C++ function\n  void ::kaldi::SubVector<float>::SubVector(::kaldi::VectorBase<float>, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
   // {C("NewWithSubVector"), (PyCFunction)wrapSubVector_as_NewWithSubVector, METH_VARARGS | METH_KEYWORDS | METH_CLASS, C("NewWithSubVector(s:SubVector) -> SubVector\n  Calls C++ function\n  std::unique_ptr<::kaldi::SubVector<float>> ::kaldi::SubVector<float>::SubVector(::kaldi::SubVector<float>)")},
   // {C("Range"), (PyCFunction)wrapRange, METH_VARARGS | METH_KEYWORDS, C("Range(offset:int, length:int) -> SubVector\n  Calls C++ function\n  ::kaldi::SubVector<float> ::kaldi::VectorBase<float>::Range(::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
   {C("as_kaldi_VectorBase_float"), (PyCFunction)as_kaldi_VectorBase_float, METH_NOARGS, C("Upcast to ::kaldi::VectorBase<float>*")},
@@ -261,7 +261,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "kaldi_matrix_ext.SubVector",        // tp_name
+  "matrix_ext.SubVector",              // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -366,7 +366,7 @@ static ::kaldi::SubMatrix<float>* ThisPtr(PyObject*);
 // __init__(T:MatrixBase, ro:int, r:int, co:int, c:int)
 static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args, PyObject* kw) {
   PyObject* a[5];
-  char* names[] = { C("src"), C("row_offset"), C("rows"), C("col_offset"), C("cols"), nullptr };
+  char* names[] = { C("src"), C("row_start"), C("num_rows"), C("col_start"), C("num_cols"), nullptr };
   if (!PyArg_ParseTupleAndKeywords(args, kw, "OOOOO:__init__", names, &a[0], &a[1], &a[2], &a[3], &a[4])) return nullptr;
   ::kaldi::MatrixIndexT arg2;
   if (!Clif_PyObjAs(a[1], &arg2)) return ArgError("__init__", names[1], "::kaldi::MatrixIndexT", a[1]);
@@ -387,15 +387,14 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
       // memory. There can be gaps between rows but no gaps are allowed between
       // items in a row. Also, the stride for the first matrix dimension can
       // not be smaller than the size of a row. If any of these requirements
-      // is not satisfied by the input array, a new array will be allocated.
+      // are not satisfied by the input array, a new array will be allocated.
       int requirements = NPY_ARRAY_BEHAVED;  // aligned and writeable
       npy_intp dim1 = PyArray_DIM((PyArrayObject*)a[0], 1);
       npy_intp stride0 = PyArray_STRIDE((PyArrayObject*)a[0], 0);
       npy_intp stride1 = PyArray_STRIDE((PyArrayObject*)a[0], 1);
       long item_size = ((long)sizeof(float));
       // We do not ask for a contiguous memory region, if we can do without one.
-      if (((dim1 > 1) and (stride1 != item_size)) ||
-          (stride0 < item_size * dim1)) {
+      if (((dim1 > 1) and (stride1 != item_size)) || (stride0 < item_size * dim1)) {
         requirements |= NPY_ARRAY_C_CONTIGUOUS;
       }
       PyObject *array = PyArray_FromArray((PyArrayObject*)a[0], nullptr,
@@ -514,7 +513,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "kaldi_matrix.SubMatrix",            // tp_name
+  "matrix_ext.SubMatrix",              // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -770,8 +769,7 @@ static PyObject* NumpyToMatrix(PyObject* self, PyObject* args, PyObject* kw) {
     npy_intp stride1 = PyArray_STRIDE((PyArrayObject*)obj, 1);
     long item_size = ((long)sizeof(float));
     // We do not ask for a contiguous memory region, if we can do without one.
-    if (((dim1 > 1) and (stride1 != item_size)) ||
-        (stride0 < item_size * dim1)) {
+    if (((dim1 > 1) and (stride1 != item_size)) || (stride0 < item_size * dim1)) {
       requirements |= NPY_ARRAY_C_CONTIGUOUS;
     }
     PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
@@ -843,11 +841,11 @@ bool Ready() {
 
 #if PY_MAJOR_VERSION == 2
 PyObject* Init() {
-  PyObject* module = Py_InitModule3("kaldi_matrix_ext", Methods,
+  PyObject* module = Py_InitModule3("matrix_ext", Methods,
                                     "kaldi matrix extension module");
   if (!module) {
     PyErr_SetString(PyExc_ImportError,
-                    "Cannot initialize kaldi_matrix_ext module.");
+                    "Cannot initialize matrix_ext module.");
     return nullptr;
   }
   if (PyObject* m = PyImport_ImportModule("matrix_common")) Py_DECREF(m);
@@ -869,7 +867,7 @@ PyObject* Init() {
 #else
 static struct PyModuleDef Module = {
   PyModuleDef_HEAD_INIT,
-  "kaldi_matrix_ext",
+  "matrix_ext",
   "kaldi matrix extension module",
   -1,  // module keeps state in global variables
   Methods
@@ -899,19 +897,19 @@ err:
 }
 #endif
 
-}  // namespace kaldi__matrix__ext
+}  // namespace matrix__ext
 
 // Initialize module
 
 #if PY_MAJOR_VERSION == 2
-PyMODINIT_FUNC initkaldi_matrix_ext(void) {
-  kaldi__matrix__ext::Ready() &&
-  kaldi__matrix__ext::Init();
+PyMODINIT_FUNC initmatrix_ext(void) {
+  matrix__ext::Ready() &&
+  matrix__ext::Init();
 }
 #else
-PyMODINIT_FUNC PyInit_kaldi_matrix_ext(void) {
-  if (!kaldi__matrix__ext::Ready()) return nullptr;
-  return kaldi__matrix__ext::Init();
+PyMODINIT_FUNC PyInit_matrix_ext(void) {
+  if (!matrix__ext::Ready()) return nullptr;
+  return matrix__ext::Init();
 }
 #endif
 
@@ -928,7 +926,7 @@ bool Clif_PyObjAs(PyObject* py, ::kaldi::SubVector<float>** c) {
     *c = nullptr;
     return true;
   }
-  ::kaldi::SubVector<float>* cpp = kaldi__matrix__ext::pySubVector::ThisPtr(py);
+  ::kaldi::SubVector<float>* cpp = matrix__ext::pySubVector::ThisPtr(py);
   if (cpp == nullptr) return false;
   *c = cpp;
   return true;
@@ -936,17 +934,17 @@ bool Clif_PyObjAs(PyObject* py, ::kaldi::SubVector<float>** c) {
 
 bool Clif_PyObjAs(PyObject* py, std::shared_ptr<::kaldi::SubVector<float>>* c) {
   assert(c != nullptr);
-  ::kaldi::SubVector<float>* cpp = kaldi__matrix__ext::pySubVector::ThisPtr(py);
+  ::kaldi::SubVector<float>* cpp = matrix__ext::pySubVector::ThisPtr(py);
   if (cpp == nullptr) return false;
-  *c = ::clif::MakeStdShared(reinterpret_cast<kaldi__matrix__ext::pySubVector::wrapper*>(py)->cpp, cpp);
+  *c = ::clif::MakeStdShared(reinterpret_cast<matrix__ext::pySubVector::wrapper*>(py)->cpp, cpp);
   return true;
 }
 
 bool Clif_PyObjAs(PyObject* py, std::unique_ptr<::kaldi::SubVector<float>>* c) {
   assert(c != nullptr);
-  ::kaldi::SubVector<float>* cpp = kaldi__matrix__ext::pySubVector::ThisPtr(py);
+  ::kaldi::SubVector<float>* cpp = matrix__ext::pySubVector::ThisPtr(py);
   if (cpp == nullptr) return false;
-  if (!reinterpret_cast<kaldi__matrix__ext::pySubVector::wrapper*>(py)->cpp.Detach()) {
+  if (!reinterpret_cast<matrix__ext::pySubVector::wrapper*>(py)->cpp.Detach()) {
     PyErr_SetString(PyExc_ValueError,
                     "Cannot convert SubVector instance to std::unique_ptr.");
     return false;
@@ -957,7 +955,7 @@ bool Clif_PyObjAs(PyObject* py, std::unique_ptr<::kaldi::SubVector<float>>* c) {
 
 bool Clif_PyObjAs(PyObject* py, ::kaldi::SubVector<float>* c) {
   assert(c != nullptr);
-  ::kaldi::SubVector<float>* cpp = kaldi__matrix__ext::pySubVector::ThisPtr(py);
+  ::kaldi::SubVector<float>* cpp = matrix__ext::pySubVector::ThisPtr(py);
   if (cpp == nullptr) return false;
   *c = *cpp;
   return true;
@@ -965,7 +963,7 @@ bool Clif_PyObjAs(PyObject* py, ::kaldi::SubVector<float>* c) {
 
 bool Clif_PyObjAs(PyObject* py, ::gtl::optional<::kaldi::SubVector<float>>* c) {
   assert(c != nullptr);
-  ::kaldi::SubVector<float>* cpp = kaldi__matrix__ext::pySubVector::ThisPtr(py);
+  ::kaldi::SubVector<float>* cpp = matrix__ext::pySubVector::ThisPtr(py);
   if (cpp == nullptr) return false;
   *c = *cpp;
   return true;
@@ -973,28 +971,28 @@ bool Clif_PyObjAs(PyObject* py, ::gtl::optional<::kaldi::SubVector<float>>* c) {
 
 PyObject* Clif_PyObjFrom(::kaldi::SubVector<float>* c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(c, ::clif::UnOwnedResource());
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(c, ::clif::UnOwnedResource());
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubVector<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(std::move(c));
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(std::move(c));
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubVector<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(c);
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(c);
   return py;
 }
 
 PyObject* Clif_PyObjFrom(const ::kaldi::SubVector<float>& c, py::PostConv unused) {
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::MakeShared<::kaldi::SubVector<float>>(c);
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::MakeShared<::kaldi::SubVector<float>>(c);
   return py;
 }
 
@@ -1006,7 +1004,7 @@ bool Clif_PyObjAs(PyObject* py, ::kaldi::SubMatrix<float>** c) {
     *c = nullptr;
     return true;
   }
-  ::kaldi::SubMatrix<float>* cpp = kaldi__matrix__ext::pySubMatrix::ThisPtr(py);
+  ::kaldi::SubMatrix<float>* cpp = matrix__ext::pySubMatrix::ThisPtr(py);
   if (cpp == nullptr) return false;
   *c = cpp;
   return true;
@@ -1014,17 +1012,17 @@ bool Clif_PyObjAs(PyObject* py, ::kaldi::SubMatrix<float>** c) {
 
 bool Clif_PyObjAs(PyObject* py, std::shared_ptr<::kaldi::SubMatrix<float>>* c) {
   assert(c != nullptr);
-  ::kaldi::SubMatrix<float>* cpp = kaldi__matrix__ext::pySubMatrix::ThisPtr(py);
+  ::kaldi::SubMatrix<float>* cpp = matrix__ext::pySubMatrix::ThisPtr(py);
   if (cpp == nullptr) return false;
-  *c = ::clif::MakeStdShared(reinterpret_cast<kaldi__matrix__ext::pySubMatrix::wrapper*>(py)->cpp, cpp);
+  *c = ::clif::MakeStdShared(reinterpret_cast<matrix__ext::pySubMatrix::wrapper*>(py)->cpp, cpp);
   return true;
 }
 
 bool Clif_PyObjAs(PyObject* py, std::unique_ptr<::kaldi::SubMatrix<float>>* c) {
   assert(c != nullptr);
-  ::kaldi::SubMatrix<float>* cpp = kaldi__matrix__ext::pySubMatrix::ThisPtr(py);
+  ::kaldi::SubMatrix<float>* cpp = matrix__ext::pySubMatrix::ThisPtr(py);
   if (cpp == nullptr) return false;
-  if (!reinterpret_cast<kaldi__matrix__ext::pySubMatrix::wrapper*>(py)->cpp.Detach()) {
+  if (!reinterpret_cast<matrix__ext::pySubMatrix::wrapper*>(py)->cpp.Detach()) {
     PyErr_SetString(PyExc_ValueError, "Cannot convert SubMatrix instance to std::unique_ptr.");
     return false;
   }
@@ -1034,7 +1032,7 @@ bool Clif_PyObjAs(PyObject* py, std::unique_ptr<::kaldi::SubMatrix<float>>* c) {
 
 bool Clif_PyObjAs(PyObject* py, ::kaldi::SubMatrix<float>* c) {
   assert(c != nullptr);
-  ::kaldi::SubMatrix<float>* cpp = kaldi__matrix__ext::pySubMatrix::ThisPtr(py);
+  ::kaldi::SubMatrix<float>* cpp = matrix__ext::pySubMatrix::ThisPtr(py);
   if (cpp == nullptr) return false;
   *c = *cpp;
   return true;
@@ -1042,7 +1040,7 @@ bool Clif_PyObjAs(PyObject* py, ::kaldi::SubMatrix<float>* c) {
 
 bool Clif_PyObjAs(PyObject* py, ::gtl::optional<::kaldi::SubMatrix<float>>* c) {
   assert(c != nullptr);
-  ::kaldi::SubMatrix<float>* cpp = kaldi__matrix__ext::pySubMatrix::ThisPtr(py);
+  ::kaldi::SubMatrix<float>* cpp = matrix__ext::pySubMatrix::ThisPtr(py);
   if (cpp == nullptr) return false;
   *c = *cpp;
   return true;
@@ -1050,28 +1048,28 @@ bool Clif_PyObjAs(PyObject* py, ::gtl::optional<::kaldi::SubMatrix<float>>* c) {
 
 PyObject* Clif_PyObjFrom(::kaldi::SubMatrix<float>* c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(c, ::clif::UnOwnedResource());
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(c, ::clif::UnOwnedResource());
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubMatrix<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(std::move(c));
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(std::move(c));
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubMatrix<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(c);
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(c);
   return py;
 }
 
 PyObject* Clif_PyObjFrom(const ::kaldi::SubMatrix<float>& c, py::PostConv unused) {
-  PyObject* py = PyType_GenericNew(&kaldi__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<kaldi__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::MakeShared<::kaldi::SubMatrix<float>>(c);
+  PyObject* py = PyType_GenericNew(&matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
+  reinterpret_cast<matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::MakeShared<::kaldi::SubMatrix<float>>(c);
   return py;
 }
 

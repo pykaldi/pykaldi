@@ -39,7 +39,7 @@ from "matrix/kaldi-vector.h":
       def `Set` as __setitem__(self, index: int, value: float)
 
       # NOTE:
-      # We cannot wrap this here since SubVector is not defined yet.
+      # We wrap this in Python by constructing a new SubVector.
       # def Range(self, o: int, l: int) -> SubVector
 
       def CopyFromVec(self, v: VectorBase)
