@@ -1,0 +1,28 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "util/kaldi-holder-clifwrap.h" import *
+
+from "kaldi-table-spec.h":
+  namespace `kaldi`:
+
+    class `SequentialKaldiVectorTableReader<float>` as SequentialKaldiVectorTableReader:
+
+      # FIXME (VM):
+      # @add__init__
+      # def SequentialKaldiVectorTableReader(self, rspecifier:str)
+
+      def Open(self, rspecifier:str) -> bool 
+
+      def Done(self) -> bool 
+
+      def Key(self) -> str 
+
+      def FreeCurrent(self)
+
+      def Value(self) -> Vector
+
+      def Next(self)
+
+      def IsOpen(self) -> bool 
+
+      def Close(self) -> bool 

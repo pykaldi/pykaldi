@@ -283,6 +283,21 @@ kaldi_holder = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_holder)
 
+kaldi_table_spec = Extension(
+    "kaldi.util.kaldi_table_spec_",
+    sources = [
+        "build/kaldi/util/kaldi-table-spec-clifwrap.cc",
+        "build/kaldi/util/kaldi-table-spec-clifwrap-init.cc",
+    ],
+    language = "c++",
+    extra_compile_args = extra_compile_args,
+    include_dirs = ['kaldi/util/'] + include_dirs,
+    library_dirs = library_dirs + ['build/lib/kaldi/util'],
+    runtime_library_dirs = runtime_library_dirs,
+    libraries = [':kaldi_io.so', 'kaldi-util'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(kaldi_table_spec)
+
 # kaldi_table = Extension(
 #     "kaldi.util.kaldi_table",
 #     sources = [
