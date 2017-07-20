@@ -49,4 +49,4 @@ from "matrix/matrix-functions.h":
         # Cannot be implemented as plus, minus is both in/out
         # def AddOuterProductPlusMinus(alpha:float, a:VectorBase, b:VectorBase, plus:MatrixBase, minus:MatrixBase)
 
-        def `AssertSameDim` as AssertSameDim(mat1:MatrixBase, mat2:MatrixBase)
+        def `AssertSameDim` as AssertSameDimMatrix(mat1:MatrixBase, mat2:MatrixBase)

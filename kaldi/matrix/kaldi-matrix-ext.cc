@@ -2,7 +2,7 @@
 #include <Python.h>
 #include "clif/python/ptr_util.h"
 #include "clif/python/optional.h"
-#include "/home/dogan/anaconda2/envs/clif/python/types.h"
+#include "clif/python/types.h"
 #define PY_ARRAY_UNIQUE_SYMBOL __numpy_array_api
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
@@ -96,10 +96,11 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
     }
     int dtype = PyArray_TYPE((PyArrayObject*)a[0]);
     if (dtype == NPY_FLOAT) {
-      // This will allocate a new array if the input array does not satisfy the
-      // requirements of constructing a SubVector.
+      // Kaldi requires each vector to be a contiguous chunk of well behaved
+      // memory. No gaps are allowed between the items. If this requirement is
+      // not satisfied by the input array, a new array will be allocated.
       PyObject *array = PyArray_FromArray((PyArrayObject*)a[0], nullptr,
-                                          NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
+                                          NPY_ARRAY_DEFAULT);
       PyObject* err_type = nullptr;
       string err_msg{"C++ exception"};
       try {
@@ -377,29 +378,28 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
   if (!Clif_PyObjAs(a[4], &arg5)) return ArgError("__init__", names[4], "::kaldi::MatrixIndexT", a[4]);
   if (PyArray_Check(a[0])) {
     if (PyArray_NDIM((PyArrayObject*)a[0]) != 2) {
-      PyErr_SetString(PyExc_RuntimeError, "Input ndarray is not 2-dimensional.");
+      PyErr_SetString(PyExc_RuntimeError, "Input ndarray should be 2-dimensional.");
       return nullptr;
     }
     int dtype = PyArray_TYPE((PyArrayObject*)a[0]);
     if (dtype == NPY_FLOAT) {
-      // This will allocate a new array if the input array does not satisfy the
-      // requirements of constructing a SubMatrix.
+      // Kaldi requires each row to be a contiguous chunk of well behaved
+      // memory. There can be gaps between rows but no gaps are allowed between
+      // items in a row. Also, the stride for the first matrix dimension can
+      // not be smaller than the size of a row. If any of these requirements
+      // is not satisfied by the input array, a new array will be allocated.
+      int requirements = NPY_ARRAY_BEHAVED;  // aligned and writeable
+      npy_intp dim1 = PyArray_DIM((PyArrayObject*)a[0], 1);
+      npy_intp stride0 = PyArray_STRIDE((PyArrayObject*)a[0], 0);
+      npy_intp stride1 = PyArray_STRIDE((PyArrayObject*)a[0], 1);
+      long item_size = ((long)sizeof(float));
+      // We do not ask for a contiguous memory region, if we can do without one.
+      if (((dim1 > 1) and (stride1 != item_size)) ||
+          (stride0 < item_size * dim1)) {
+        requirements |= NPY_ARRAY_C_CONTIGUOUS;
+      }
       PyObject *array = PyArray_FromArray((PyArrayObject*)a[0], nullptr,
-                                          NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
-      if (PyArray_STRIDE((PyArrayObject*)array, 0) < 0 ||
-          PyArray_STRIDE((PyArrayObject*)array, 1) < 0 ) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "Input ndarray has negative strides. ");
-        Py_DECREF(array);
-        return nullptr;
-      }
-      if (PyArray_STRIDE((PyArrayObject*)array, 1) != ((long)sizeof(float))) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "Input ndarray's stride in the second dimension is "
-                        "not equal to sizeof(float).");
-        Py_DECREF(array);
-        return nullptr;
-      }
+                                          requirements);
       PyObject* err_type = nullptr;
       string err_msg{"C++ exception"};
       try {
@@ -662,10 +662,11 @@ static PyObject* NumpyToVector(PyObject* self, PyObject* args, PyObject* kw) {
   }
   int dtype = PyArray_TYPE((PyArrayObject*)obj);
   if (dtype == NPY_FLOAT) {
-    // This will allocate a new array if the input array does not satisfy the
-    // requirements of constructing a SubVector.
+    // Kaldi requires each vector to be a contiguous chunk of well behaved
+    // memory. No gaps are allowed between the items. If this requirement is
+    // not satisfied by the input array, a new array will be allocated.
     PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
-                                        NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
+                                        NPY_ARRAY_DEFAULT);
     std::unique_ptr<::kaldi::SubVector<float>> subvector;
     PyObject* err_type = nullptr;
     string err_msg{"C++ exception"};
@@ -758,24 +759,23 @@ static PyObject* NumpyToMatrix(PyObject* self, PyObject* args, PyObject* kw) {
   }
   int dtype = PyArray_TYPE((PyArrayObject*)obj);
   if (dtype == NPY_FLOAT) {
-    // This will allocate a new array if the input array does not satisfy the
-    // requirements of constructing a SubMatrix.
+    // Kaldi requires each matrix row to be a contiguous chunk of well behaved
+    // memory. There can be gaps between rows but no gaps are allowed between
+    // items in a row. Also, the stride for the first matrix dimension can
+    // not be smaller than the size of a row. If any of these requirements
+    // are not satisfied by the input array, a new array will be allocated.
+    int requirements = NPY_ARRAY_BEHAVED;  // aligned and writeable
+    npy_intp dim1 = PyArray_DIM((PyArrayObject*)obj, 1);
+    npy_intp stride0 = PyArray_STRIDE((PyArrayObject*)obj, 0);
+    npy_intp stride1 = PyArray_STRIDE((PyArrayObject*)obj, 1);
+    long item_size = ((long)sizeof(float));
+    // We do not ask for a contiguous memory region, if we can do without one.
+    if (((dim1 > 1) and (stride1 != item_size)) ||
+        (stride0 < item_size * dim1)) {
+      requirements |= NPY_ARRAY_C_CONTIGUOUS;
+    }
     PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
-                                        NPY_ARRAY_DEFAULT | NPY_ARRAY_UPDATEIFCOPY);
-    if (PyArray_STRIDE((PyArrayObject*)array, 0) < 0 ||
-        PyArray_STRIDE((PyArrayObject*)array, 1) < 0 ) {
-      PyErr_SetString(PyExc_RuntimeError,
-                      "Input ndarray has negative strides. ");
-      Py_DECREF(array);
-      return nullptr;
-    }
-    if (PyArray_STRIDE((PyArrayObject*)array, 1) != ((long)sizeof(float))) {
-      PyErr_SetString(PyExc_RuntimeError,
-                      "Input ndarray's stride in the second dimension is "
-                      "not equal to sizeof(float).");
-      Py_DECREF(array);
-      return nullptr;
-    }
+                                        requirements);
     std::unique_ptr<::kaldi::SubMatrix<float>> submatrix;
     PyObject* err_type = nullptr;
     string err_msg{"C++ exception"};

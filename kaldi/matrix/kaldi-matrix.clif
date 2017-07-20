@@ -360,7 +360,7 @@ from "matrix/kaldi-matrix.h":
         # def `operator>>` as Write(in: istream, M: MatrixBase) -> istream
         # def `operator>>` as Write(in: istream, M: Matrix) -> istream
 
-        def `SameDim` as AssertSameDim(M: MatrixBase, N: MatrixBase) -> bool
+        def `SameDim` as SameDimMatrix(M: MatrixBase, N: MatrixBase) -> bool
 
 
         class HtkHeader:
