@@ -71,6 +71,7 @@ function(add_pyclif_library name pyclif_file)
             --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
             --modname=${module_name}
             -I${CMAKE_BINARY_DIR}/kaldi
+            -I${CMAKE_SOURCE_DIR}/kaldi
             "-f-I${PYTHON_INCLUDE_DIRS} \
                -I${CLIF_DIR}/.. \
                -I${KALDI_SRC_DIR} \
