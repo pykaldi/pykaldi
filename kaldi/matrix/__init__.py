@@ -4,12 +4,14 @@ import numpy
 
 # Absolute import of matrix_common does not work on Python 3 for some reason.
 # Symbols in matrix_common are assigned to module importlib._bootstrap ????
-from .matrix_common import MatrixResizeType, MatrixStrideType
+from .matrix_common import (MatrixResizeType, MatrixStrideType,
+                            MatrixTransposeType)
 from .kaldi_vector import ApproxEqualVector, AssertEqualVector, VecVec
+from .kaldi_vector_ext import VecMatVec
 from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
                            AttemptComplexPower, CreateEigenvalueMatrix,
                            TraceMat, TraceMatMatMat, TraceMatMatMatMat)
-from .kaldi_matrix_ext import SubVector, SubMatrix
+from .matrix_ext import vector_to_numpy, matrix_to_numpy
 from .matrix_functions import MatrixExponential, AssertSameDimMatrix
 
 from ._str import set_printoptions
@@ -18,7 +20,7 @@ from ._str import set_printoptions
 # Define Vector and Matrix Classes
 ################################################################################
 
-class Vector(kaldi_vector.Vector, SubVector):
+class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
     """Python wrapper for kaldi::Vector<float> and kaldi::SubVector<float>.
 
     This class defines the user facing API for Kaldi Vector and SubVector types.
@@ -66,7 +68,7 @@ class Vector(kaldi_vector.Vector, SubVector):
                 raise IndexError("length={} should be in the range [0,{}] when "
                                  "start={} and len(src)={}."
                                  .format(length, max_len, start, src_len))
-            SubVector.__init__(self, src, start, length)
+            matrix_ext.SubVector.__init__(self, src, start, length)
             self.own_data = False
 
     def clone(self):
@@ -92,7 +94,7 @@ class Vector(kaldi_vector.Vector, SubVector):
 
     def numpy(self):
         """Returns a new numpy ndarray sharing the data with this vector."""
-        return kaldi_matrix_ext.vector_to_numpy(self)
+        return vector_to_numpy(self)
 
     def range(self, start, length):
         """Returns a range of elements as a new vector."""
@@ -113,6 +115,64 @@ class Vector(kaldi_vector.Vector, SubVector):
         else:
             raise ValueError("swap_ method cannot be called on vectors "
                              "that do not own their data.")
+
+    def add_mat_vec(self, alpha, M, trans, v, beta):
+        """Add matrix times vector : self <-- beta*self + alpha*M*v"""
+        kaldi_vector_ext.AddMatVec(self, alpha, M, trans, v, beta)
+
+    def add_mat_svec(self, alpha, M, trans, v, beta):
+        """Add matrix times vector : self <-- beta*self + alpha*M*v
+
+        Like add_mat_vec, except optimized for sparse v.
+        """
+        kaldi_vector_ext.AddMatSvec(self, alpha, M, trans, v, beta)
+
+    def copy_rows_from_mat(self, M):
+        """Performs a row stack of the matrix M."""
+        kaldi_vector_ext.CopyRowsFromMat(self, M)
+
+    def copy_cols_from_mat(self, M):
+        """Performs a column stack of the matrix M."""
+        kaldi_vector_ext.CopyColsFromMat(self, M)
+
+    def copy_row_from_mat(self, M, row):
+        """Extracts a row of the matrix M."""
+        kaldi_vector_ext.CopyRowFromMat(self, M, row)
+
+    def copy_col_from_mat(self, M, col):
+        """Extracts a column of the matrix M."""
+        kaldi_vector_ext.CopyColFromMat(self, M, col)
+
+    def copy_diag_from_mat(self, M):
+        """Extracts the diagonal of the matrix M."""
+        kaldi_vector_ext.CopyDiagFromMat(self, M)
+
+    def add_row_sum_mat(self, alpha, M, beta=1.0):
+        """Does self = alpha * (sum of rows of M) + beta * self."""
+        kaldi_vector_ext.AddRowSumMat(self, alpha, M, beta)
+
+    def add_col_sum_mat(self, alpha, M, beta=1.0):
+        """Does self = alpha * (sum of cols of M) + beta * self."""
+        kaldi_vector_ext.AddColSumMat(self, alpha, M, beta)
+
+    def add_diag_mat2(self, alpha, M,
+                      trans=MatrixTransposeType.NO_TRANS, beta=1.0):
+        """Add the diagonal of a matrix times itself.
+
+        If trans == MatrixTransposeType.NO_TRANS:
+            self = diag(M M^T) +  beta * self
+        If trans == MatrixTransposeType.TRANS:
+            self = diag(M^T M) +  beta * self
+        """
+        kaldi_vector_ext.AddDiagMat2(self, alpha, M, trans, beta)
+
+    def add_diag_mat_mat(self, alpha, M, transM, N, transN, beta=1.0):
+        """Add the diagonal of a matrix product.
+
+        If transM and transN are both MatrixTransposeType.NO_TRANS:
+            self = diag(M N) +  beta * self
+        """
+        kaldi_vector_ext.AddDiagMatMat(self, alpha, M, transM, N, transN, beta)
 
     def __repr__(self):
         return str(self)
@@ -182,7 +242,7 @@ class Vector(kaldi_vector.Vector, SubVector):
                              "that do not own their data.")
 
 
-class Matrix(kaldi_matrix.Matrix, SubMatrix):
+class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
     """Python wrapper for kaldi::Matrix<float> and kaldi::SubMatrix<float>.
 
     This class defines the user facing API for Kaldi Matrix and SubMatrix types.
@@ -257,9 +317,9 @@ class Matrix(kaldi_matrix.Matrix, SubMatrix):
                                  "when col_start={} and src.num_cols_={}."
                                  .format(num_cols, max_cols,
                                          col_start, src_cols))
-            SubMatrix.__init__(self, src,
-                               row_start, num_rows,
-                               col_start, num_cols)
+            matrix_ext.SubMatrix.__init__(self, src,
+                                                row_start, num_rows,
+                                                col_start, num_cols)
             self.own_data = False
 
     def size(self):
@@ -280,7 +340,7 @@ class Matrix(kaldi_matrix.Matrix, SubMatrix):
 
     def numpy(self):
         """Returns a new numpy ndarray sharing the data with this matrix."""
-        return kaldi_matrix_ext.matrix_to_numpy(self)
+        return matrix_to_numpy(self)
 
     def range(self, row_start, num_rows, col_start, num_cols):
         """Returns a range of elements as a new matrix."""

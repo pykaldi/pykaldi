@@ -47,5 +47,5 @@ PyObject* Clif_PyObjFrom(const ::kaldi::SubMatrix<float>&, py::PostConv);
 
 }  // namespace kaldi
 
-// CLIF init_module if (PyObject* m = PyImport_ImportModule("kaldi_matrix_ext")) Py_DECREF(m);
+// CLIF init_module if (PyObject* m = PyImport_ImportModule("matrix_ext")) Py_DECREF(m);
 // CLIF init_module else goto err;
