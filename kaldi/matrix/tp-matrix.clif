@@ -1,0 +1,16 @@
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/packed-matrix-clifwrap.h" import *
+from "matrix/matrix-ext.h" import *
+
+from "matrix/tp-matrix.h":
+  namespace `kaldi`:
+    class `TpMatrix<float>` as TpMatrix:
+      def Invert(self)
+
+      def InvertDouble(self)
+
+      def Swap(self, other: TpMatrix)
+
+      def Determinant(self) -> float

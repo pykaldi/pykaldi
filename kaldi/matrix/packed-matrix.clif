@@ -1,0 +1,15 @@
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/matrix-ext.h" import *
+
+from "matrix/packed-matrix.h":
+  namespace `kaldi`:
+    class `PackedMatrix<float>` as PackedMatrix:
+      def SetZero(self)
+
+      def SetUnit(self)
+
+      def SetRandn(self)
+
+      def Trace(self) -> float

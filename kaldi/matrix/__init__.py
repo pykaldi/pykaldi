@@ -13,6 +13,9 @@ from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
                            TraceMat, TraceMatMatMat, TraceMatMatMatMat)
 from .matrix_ext import vector_to_numpy, matrix_to_numpy
 from .matrix_functions import MatrixExponential, AssertSameDimMatrix
+from .packed_matrix import PackedMatrix
+from .sp_matrix import SpMatrix
+from .tp_matrix import TpMatrix
 
 from ._str import set_printoptions
 
@@ -127,6 +130,28 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         """
         kaldi_vector_ext.AddMatSvec(self, alpha, M, trans, v, beta)
 
+    def add_sp_vec(self, alpha, M, v, beta):
+        """Add matrix times vector : self <-- beta*self + alpha*M*v"""
+        kaldi_vector_ext.AddSpVec(self, alpha, M, v, beta)
+
+    def add_tp_vec(self, alpha, M, trans, v, beta):
+        """Add matrix times vector : self <-- beta*self + alpha*M*v"""
+        kaldi_vector_ext.AddTpVec(self, alpha, M, trans, v, beta)
+
+    def mul_tp(self, M, trans):
+        """Multiplies self by lower-triangular matrix: self <-- self * M"""
+        kaldi_vector_ext.MulTp(self, M, trans)
+
+    def solve(self, M, trans):
+        """ Solves linear system.
+
+        If trans == kNoTrans, solves M x = b, where b is the value of self
+        at input and x is the value of *this at output.
+        If trans == kTrans, solves M' x = b.
+        Does not test for M being singular or near-singular.
+        """
+        kaldi_vector_ext.Solve(self, M, trans)
+
     def copy_rows_from_mat(self, M):
         """Performs a row stack of the matrix M."""
         kaldi_vector_ext.CopyRowsFromMat(self, M)
@@ -146,6 +171,22 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
     def copy_diag_from_mat(self, M):
         """Extracts the diagonal of the matrix M."""
         kaldi_vector_ext.CopyDiagFromMat(self, M)
+
+    def copy_from_packed(self, M):
+        """Copy data from a SpMatrix or TpMatrix (must match own size)."""
+        kaldi_vector_ext.CopyFromPacked(self, M)
+
+    def copy_diag_from_packed(self, M):
+        """Extracts the diagonal of the packed matrix M."""
+        kaldi_vector_ext.CopyDiagFromPacked(self, M)
+
+    def copy_diag_from_sp(self, M):
+        """Extracts the diagonal of the symmetric matrix M."""
+        kaldi_vector_ext.CopyDiagFromSp(self, M)
+
+    def copy_diag_from_tp(self, M):
+        """Extracts the diagonal of the triangular matrix M."""
+        kaldi_vector_ext.CopyDiagFromTp(self, M)
 
     def add_row_sum_mat(self, alpha, M, beta=1.0):
         """Does self = alpha * (sum of rows of M) + beta * self."""

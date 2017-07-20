@@ -3,6 +3,9 @@
 
 #include "matrix/kaldi-vector.h"
 
+/// Proxy functions for kaldi::Vector<float> methods that we cannot wrap in
+/// matrix/kaldi-vector.clif since they refer to Matrix types.
+
 namespace kaldi {
 
 void AddMatVec(VectorBase<float> *self, const float alpha,
@@ -15,6 +18,29 @@ void AddMatSvec(VectorBase<float> *self, const float alpha,
                 const MatrixBase<float> &M, const MatrixTransposeType trans,
                 const VectorBase<float> &v, const float beta) {
   self->AddMatSvec(alpha, M, trans, v, beta);
+}
+
+void AddSpVec(VectorBase<float> *self, const float alpha,
+              const SpMatrix<float> &M,
+              const VectorBase<float> &v, const float beta) {
+  self->AddSpVec(alpha, M, v, beta);
+}
+
+void AddTpVec(VectorBase<float> *self, const float alpha,
+              const TpMatrix<float> &M,
+              const MatrixTransposeType trans,
+              const VectorBase<float> &v, const float beta) {
+  self->AddTpVec(alpha, M, trans, v, beta);
+}
+
+void MulTp(VectorBase<float> *self, const TpMatrix<float> &M,
+           const MatrixTransposeType trans) {
+  self->MulTp(M, trans);
+}
+
+void Solve(VectorBase<float> *self, const TpMatrix<float> &M,
+           const MatrixTransposeType trans) {
+  self->Solve(M, trans);
 }
 
 void CopyRowsFromMat(VectorBase<float> *self, const MatrixBase<float> &M) {
@@ -37,6 +63,22 @@ void CopyColFromMat(VectorBase<float> *self, const MatrixBase<float> &M,
 
 void CopyDiagFromMat(VectorBase<float> *self, const MatrixBase<float> &M) {
   self->CopyDiagFromMat(M);
+}
+
+void CopyFromPacked(VectorBase<float> *self, const PackedMatrix<float> &M) {
+  self->CopyFromPacked(M);
+}
+
+void CopyDiagFromPacked(VectorBase<float> *self, const PackedMatrix<float> &M) {
+  self->CopyDiagFromPacked(M);
+}
+
+inline void CopyDiagFromSp(VectorBase<float> *self, const SpMatrix<float> &M) {
+  self->CopyDiagFromPacked(M);
+}
+
+inline void CopyDiagFromTp(VectorBase<float> *self, const TpMatrix<float> &M) {
+  self->CopyDiagFromPacked(M);
 }
 
 void AddRowSumMat(VectorBase<float> *self, float alpha,

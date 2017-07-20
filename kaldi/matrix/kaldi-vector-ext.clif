@@ -1,6 +1,9 @@
 from "matrix/matrix-common-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/packed-matrix-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "matrix/tp-matrix-clifwrap.h" import *
 
 from "matrix/kaldi-vector-ext.h":
   namespace `kaldi`:
@@ -9,6 +12,16 @@ from "matrix/kaldi-vector-ext.h":
 
     def AddMatSvec(self: VectorBase, alpha: float, M: MatrixBase,
                    trans: MatrixTransposeType, v: VectorBase, beta: float)
+
+    def AddSpVec(self: VectorBase, alpha: float, M: SpMatrix,
+                 v: VectorBase, beta: float)
+
+    def AddTpVec(self: VectorBase, alpha: float, M: TpMatrix,
+                 trans: MatrixTransposeType, v: VectorBase, beta: float)
+
+    def MulTp(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType)
+
+    def Solve(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType)
 
     def CopyRowsFromMat(self: VectorBase, M: MatrixBase)
 
@@ -19,6 +32,14 @@ from "matrix/kaldi-vector-ext.h":
     def CopyColFromMat(self: VectorBase, M: MatrixBase, col: int)
 
     def CopyDiagFromMat(self: VectorBase, M: MatrixBase)
+
+    def CopyFromPacked(self: VectorBase, M: PackedMatrix)
+
+    def CopyDiagFromPacked(self: VectorBase, M: PackedMatrix)
+
+    def CopyDiagFromSp(self: VectorBase, M: SpMatrix)
+
+    def CopyDiagFromTp(self: VectorBase, M: TpMatrix)
 
     def AddRowSumMat(self: VectorBase, alpha: float, M: MatrixBase,
                      beta: float = default)

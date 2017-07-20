@@ -8,8 +8,20 @@ add_pyclif_library("kaldi_matrix" kaldi-matrix.clif
   CLIF_DEPS kaldi_vector matrix_common
 )
 
-add_pyclif_library("kaldi_vector_ext" kaldi-vector-ext.clif
+add_pyclif_library("packed_matrix" packed-matrix.clif
   CLIF_DEPS kaldi_matrix kaldi_vector matrix_common
+)
+
+add_pyclif_library("sp_matrix" sp-matrix.clif
+  CLIF_DEPS packed_matrix kaldi_matrix kaldi_vector matrix_common
+)
+
+add_pyclif_library("tp_matrix" tp-matrix.clif
+  CLIF_DEPS packed_matrix kaldi_matrix kaldi_vector matrix_common
+)
+
+add_pyclif_library("kaldi_vector_ext" kaldi-vector-ext.clif
+  CLIF_DEPS tp_matrix sp_matrix packed_matrix kaldi_matrix kaldi_vector matrix_common
 )
 
 add_pyclif_library("matrix_functions" matrix-functions.clif
