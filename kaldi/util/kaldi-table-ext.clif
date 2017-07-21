@@ -1,5 +1,5 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
-# from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
 # from "util/kaldi-holder-clifwrap.h" import *
 
 from "util/kaldi-table-ext.h":
@@ -17,6 +17,26 @@ from "util/kaldi-table-ext.h":
       def FreeCurrent(self)
 
       def Value(self) -> Vector
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialMatrixReader:
+      @add__init__
+      def `SequentialMatrixReader` as New(self, rspecifier:str)
+
+      def Open(self, rspecifier:str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> Matrix
 
       def Next(self)
 

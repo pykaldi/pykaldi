@@ -359,7 +359,7 @@ kaldi_table_ext = Extension(
     include_dirs = ['kaldi/util/'] + include_dirs,
     library_dirs = library_dirs + ['build/lib/kaldi/util'] + ['build/lib/kaldi/matrix'],
     runtime_library_dirs = ['$ORIGIN/../matrix'] + runtime_library_dirs,
-    libraries = [':kaldi_vector.so',
+    libraries = [':kaldi_matrix.so', ':kaldi_vector.so',
                  'kaldi-util', 'kaldi-matrix'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_table_ext)
