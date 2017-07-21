@@ -348,20 +348,21 @@ kaldi_holder = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_holder)
 
-kaldi_table_spec = Extension(
-    "kaldi.util.kaldi_table_spec_",
+kaldi_table_ext = Extension(
+    "kaldi.util.kaldi_table_ext",
     sources = [
-        "build/kaldi/util/kaldi-table-spec-clifwrap.cc",
-        "build/kaldi/util/kaldi-table-spec-clifwrap-init.cc",
+        "build/kaldi/util/kaldi-table-ext-clifwrap.cc",
+        "build/kaldi/util/kaldi-table-ext-clifwrap-init.cc",
     ],
     language = "c++",
     extra_compile_args = extra_compile_args,
     include_dirs = ['kaldi/util/'] + include_dirs,
-    library_dirs = library_dirs + ['build/lib/kaldi/util'],
-    runtime_library_dirs = runtime_library_dirs,
-    libraries = [':kaldi_io.so', 'kaldi-util'] + libraries,
+    library_dirs = library_dirs + ['build/lib/kaldi/util'] + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs = ['$ORIGIN/../matrix'] + runtime_library_dirs,
+    libraries = [':kaldi_vector.so',
+                 'kaldi-util', 'kaldi-matrix'] + libraries,
     extra_link_args=extra_link_args)
-extensions.append(kaldi_table_spec)
+extensions.append(kaldi_table_ext)
 
 # kaldi_table = Extension(
 #     "kaldi.util.kaldi_table",
