@@ -4,7 +4,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 
 from "util/kaldi-table-ext.h":
   namespace `kaldi`:
-    class `SequentialVectorReader<float>` as SequentialVectorReader:
+    class SequentialVectorReader:
       @add__init__
       def `SequentialVectorReader` as New(self, rspecifier:str)
 

@@ -3,22 +3,20 @@
 
 namespace kaldi {
 
-  template<typename Real>
   class SequentialVectorReader
-      : public SequentialTableReader<KaldiObjectHolder<Vector<Real>>> {
+      : public SequentialTableReader<KaldiObjectHolder<Vector<float>>> {
   public:
     SequentialVectorReader()
-        : SequentialTableReader<KaldiObjectHolder<Vector<Real>>>() {}
+        : SequentialTableReader<KaldiObjectHolder<Vector<float>>>() {}
 
     explicit SequentialVectorReader(const std::string &rspecifier)
-        : SequentialTableReader<KaldiObjectHolder<Vector<Real>>>(rspecifier) {}
+        : SequentialTableReader<KaldiObjectHolder<Vector<float>>>(rspecifier) {}
 
-    const Vector<Real> &Value() {
-        return SequentialTableReader<KaldiObjectHolder<Vector<Real>>>::Value();
+    const Vector<float> &Value() {
+        return SequentialTableReader<KaldiObjectHolder<Vector<float>>>::Value();
     }
 
-    SequentialVectorReader<Real> &operator = (
-        const SequentialVectorReader<Real> &&other) {
+    SequentialVectorReader &operator = (SequentialVectorReader &&other) {
       this->Close();
       this->impl_ = other.impl_;
       other.impl_ = NULL;
