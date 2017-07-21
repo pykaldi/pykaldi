@@ -1,0 +1,65 @@
+
+from "util/kaldi-table.h":
+  namespace `kaldi`:
+    def ReadScriptFile(rxfilename: str, print_warnings:bool)
+        -> (success: bool, script_out: list<tuple<str,str>>)
+
+    def WriteScriptFile(wxfilename: str, script: list<tuple<str,str>>) -> bool
+
+    # Writers
+
+    class `TableWriter<BasicHolder<int32>>` as IntWriter:
+      @add__init__
+      def `TableWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: int)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class `TableWriter<BasicHolder<float>>` as FloatWriter:
+      @add__init__
+      def `TableWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: float)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class `TableWriter<BasicHolder<double>>` as DoubleWriter:
+      @add__init__
+      def `TableWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: float)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class `TableWriter<BasicHolder<bool>>` as BoolWriter:
+      @add__init__
+      def `TableWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: bool)
+
+      def Flush(self)
+
+      def Close(self) -> bool

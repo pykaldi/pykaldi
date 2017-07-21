@@ -1,0 +1,51 @@
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "matrix/compressed-matrix.h":
+  namespace `kaldi`:
+    enum CompressionMethod with:
+      `kAutomaticMethod` as AUTO
+      `kSpeechFeature` as SPEECH_FEATURE
+      `kTwoByteAuto` as TWO_BYTE_AUTO
+      `kTwoByteSignedInteger` as TWO_BYTE_SIGNED_INTEGER
+      `kOneByteAuto` as ONE_BYTE_AUTO
+      `kOneByteUnsignedInteger` as ONE_BYTE_UNSIGNED_INTEGER
+      `kOneByteZeroOne` as TWO_BYTE_ZERO_ONE
+
+    class CompressedMatrix:
+      @add__init__
+      def `CompressedMatrix` as New(self, mat: MatrixBase,
+                                    method: CompressionMethod = default)
+
+      @add__init__
+      def `CompressedMatrix` as NewWithRange(self, mat: CompressedMatrix,
+                                             row_offset: int, num_rows: int,
+                                             col_offset: int, num_cols:int,
+                                             allow_padding: bool = default)
+
+      @add__init__
+      def `CompressedMatrix` as NewWithOther(self, mat: CompressedMatrix)
+
+      def CopyFromMat(self, mat: MatrixBase,
+                      method: CompressionMethod = default)
+
+      def CopyToMat(self, mat: MatrixBase,
+                    method: MatrixTransposeType = default)
+
+      def NumRows(self) -> int
+
+      def NumCols(self) -> int
+
+      def CopyRowToVec(self, row: int, v: VectorBase)
+
+      def CopyColToVec(self, col: int, v: VectorBase)
+
+      def `CopyToMat` as CopyToMatOffset(self, row_offset: int,
+                                         col_offset: int, dest: MatrixBase)
+
+      def Swap(self, other: CompressedMatrix)
+
+      def Clear(self)
+
+      def Scale(self, alpha: float)

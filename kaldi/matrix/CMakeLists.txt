@@ -8,6 +8,10 @@ add_pyclif_library("kaldi_matrix" kaldi-matrix.clif
   CLIF_DEPS kaldi_vector matrix_common
 )
 
+add_pyclif_library("compressed_matrix" compressed-matrix.clif
+  CLIF_DEPS kaldi_matrix kaldi_vector matrix_common
+)
+
 add_pyclif_library("packed_matrix" packed-matrix.clif
   CLIF_DEPS kaldi_matrix kaldi_vector matrix_common
 )

@@ -77,7 +77,6 @@ function(add_pyclif_library name pyclif_file)
                -I${KALDI_SRC_DIR} \
                -I${CMAKE_SOURCE_DIR}/kaldi \
                -I.. \
-               -I${CMAKE_CURRENT_SOURCE_DIR} \
                -I${OPENFST_INC_DIR} \
                -DKALDI_DOUBLEPRECISION=${DOUBLE_PRECISION} \
                -DHAVE_EXECINFO_H=1 \

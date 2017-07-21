@@ -1,13 +1,17 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/compressed-matrix-clifwrap.h" import *
 
 from "util/kaldi-table-ext.h":
   namespace `kaldi`:
+
+    # Sequential Readers
+
     class SequentialVectorReader:
       @add__init__
-      def `SequentialVectorReader` as New(self, rspecifier:str)
+      def `SequentialVectorReader` as New(self, rspecifier: str)
 
-      def Open(self, rspecifier:str) -> bool
+      def Open(self, rspecifier: str) -> bool
 
       def Done(self) -> bool
 
@@ -25,9 +29,9 @@ from "util/kaldi-table-ext.h":
 
     class SequentialMatrixReader:
       @add__init__
-      def `SequentialMatrixReader` as New(self, rspecifier:str)
+      def `SequentialMatrixReader` as New(self, rspecifier: str)
 
-      def Open(self, rspecifier:str) -> bool
+      def Open(self, rspecifier: str) -> bool
 
       def Done(self) -> bool
 
@@ -43,15 +47,177 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
+    class SequentialIntReader:
+      @add__init__
+      def `SequentialIntReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> int
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialFloatReader:
+      @add__init__
+      def `SequentialFloatReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> float
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialDoubleReader:
+      @add__init__
+      def `SequentialDoubleReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> float
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialBoolReader:
+      @add__init__
+      def `SequentialBoolReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> bool
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialIntVectorReader:
+      @add__init__
+      def `SequentialIntVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> list<int>
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialIntVectorVectorReader:
+      @add__init__
+      def `SequentialIntVectorVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> list<list<int>>
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialIntPairVectorReader:
+      @add__init__
+      def `SequentialIntPairVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> list<tuple<int, int>>
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class SequentialFloatPairVectorReader:
+      @add__init__
+      def `SequentialFloatPairVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> list<tuple<float, float>>
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    # Random Access Readers
+
     class RandomAccessVectorReader:
       @add__init__
-      def `RandomAccessVectorReader` as New(self, rspecifier:str)
+      def `RandomAccessVectorReader` as New(self, rspecifier: str)
 
-      def Open(self, rspecifier:str) -> bool
+      def Open(self, rspecifier: str) -> bool
 
-      def HasKey(self, key:str) -> bool
+      def HasKey(self, key: str) -> bool
 
-      def Value(self, key:str) -> Vector
+      def Value(self, key: str) -> Vector
 
       def IsOpen(self) -> bool
 
@@ -59,44 +225,226 @@ from "util/kaldi-table-ext.h":
 
     class RandomAccessMatrixReader:
       @add__init__
-      def `RandomAccessMatrixReader` as New(self, rspecifier:str)
+      def `RandomAccessMatrixReader` as New(self, rspecifier: str)
 
-      def Open(self, rspecifier:str) -> bool
+      def Open(self, rspecifier: str) -> bool
 
-      def HasKey(self, key:str) -> bool
+      def HasKey(self, key: str) -> bool
 
-      def Value(self, key:str) -> Matrix
+      def Value(self, key: str) -> Matrix
 
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
 
-    class VectorWriter:
+    class RandomAccessIntReader:
       @add__init__
-      def `VectorWriter` as New(self, wspecifier:str)
+      def `RandomAccessIntReader` as New(self, rspecifier: str)
 
-      def Open(self, wspecifier:str) -> bool 
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> int
 
       def IsOpen(self) -> bool
 
-      def Write(self, key:str, value:Vector)
+      def Close(self) -> bool
+
+    class RandomAccessFloatReader:
+      @add__init__
+      def `RandomAccessFloatReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> float
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessDoubleReader:
+      @add__init__
+      def `RandomAccessDoubleReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> float
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessBoolReader:
+      @add__init__
+      def `RandomAccessBoolReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessIntVectorReader:
+      @add__init__
+      def `RandomAccessIntVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> list<int>
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessIntVectorVectorReader:
+      @add__init__
+      def `RandomAccessIntVectorVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> list<list<int>>
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessIntPairVectorReader:
+      @add__init__
+      def `RandomAccessIntPairVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> list<tuple<int, int>>
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessFloatPairVectorReader:
+      @add__init__
+      def `RandomAccessFloatPairVectorReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> list<tuple<float, float>>
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    # Writers
+
+    class VectorWriter:
+      @add__init__
+      def `VectorWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: Vector)
 
       def Flush(self)
 
-      def Close(self) -> bool 
+      def Close(self) -> bool
 
     class MatrixWriter:
       @add__init__
-      def `MatrixWriter` as New(self, wspecifier:str)
+      def `MatrixWriter` as New(self, wspecifier: str)
 
-      def Open(self, wspecifier:str) -> bool 
+      def Open(self, wspecifier: str) -> bool
 
-      def IsOpen(self) -> bool 
+      def IsOpen(self) -> bool
 
-      def Write(self, key:str, value:Matrix)
+      def Write(self, key: str, value: Matrix)
 
       def Flush(self)
 
-      def Close(self) -> bool 
+      def Close(self) -> bool
 
-      
+    class CompressedMatrixWriter:
+      @add__init__
+      def `CompressedMatrixWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: CompressedMatrix)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class IntVectorWriter:
+      @add__init__
+      def `IntVectorWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: list<int>)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class IntVectorVectorWriter:
+      @add__init__
+      def `IntVectorVectorWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: list<list<int>>)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class IntPairVectorWriter:
+      @add__init__
+      def `IntPairVectorWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: list<tuple<int, int>>)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+    class FloatPairVectorWriter:
+      @add__init__
+      def `FloatPairVectorWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: list<tuple<float, float>>)
+
+      def Flush(self)
+
+      def Close(self) -> bool
