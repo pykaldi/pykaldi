@@ -1,6 +1,5 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
-# from "util/kaldi-holder-clifwrap.h" import *
 
 from "util/kaldi-table-ext.h":
   namespace `kaldi`:
@@ -43,3 +42,61 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
+
+    class RandomAccessVectorReader:
+      @add__init__
+      def `RandomAccessVectorReader` as New(self, rspecifier:str)
+
+      def Open(self, rspecifier:str) -> bool
+
+      def HasKey(self, key:str) -> bool
+
+      def Value(self, key:str) -> Vector
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class RandomAccessMatrixReader:
+      @add__init__
+      def `RandomAccessMatrixReader` as New(self, rspecifier:str)
+
+      def Open(self, rspecifier:str) -> bool
+
+      def HasKey(self, key:str) -> bool
+
+      def Value(self, key:str) -> Matrix
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+    class VectorWriter:
+      @add__init__
+      def `VectorWriter` as New(self, wspecifier:str)
+
+      def Open(self, wspecifier:str) -> bool 
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key:str, value:Vector)
+
+      def Flush(self)
+
+      def Close(self) -> bool 
+
+    class MatrixWriter:
+      @add__init__
+      def `MatrixWriter` as New(self, wspecifier:str)
+
+      def Open(self, wspecifier:str) -> bool 
+
+      def IsOpen(self) -> bool 
+
+      def Write(self, key:str, value:Matrix)
+
+      def Flush(self)
+
+      def Close(self) -> bool 
+
+      

@@ -52,6 +52,91 @@ namespace kaldi {
 
   };
 
+  class RandomAccessVectorReader
+      : public RandomAccessTableReader<KaldiObjectHolder<Vector<float>>> {
+
+  public:
+    RandomAccessVectorReader()
+        : RandomAccessTableReader<KaldiObjectHolder<Vector<float>>>() {}
+
+    explicit RandomAccessVectorReader(const std::string &rspecifier)
+        : RandomAccessTableReader<KaldiObjectHolder<Vector<float>>>(rspecifier) {}
+
+    const Vector<float> &Value(const std::string &key) {
+      return RandomAccessTableReader<KaldiObjectHolder<Vector<float>>>::Value(key);
+    }
+
+    RandomAccessVectorReader &operator = (RandomAccessVectorReader &&other) {
+      this->Close();
+      this->impl_ = other.impl_;
+      other.impl_ = NULL;
+      return *this;
+    }
+
+  };
+
+  class RandomAccessMatrixReader
+      : public RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>> {
+
+  public:
+    RandomAccessMatrixReader()
+        : RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>() {}
+
+    explicit RandomAccessMatrixReader(const std::string &rspecifier)
+        : RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>(rspecifier) {}
+
+    const Matrix<float> &Value(const std::string &key) {
+      return RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>::Value(key);
+    }
+
+    RandomAccessMatrixReader &operator = (RandomAccessMatrixReader &&other) {
+      this->Close();
+      this->impl_ = other.impl_;
+      other.impl_ = NULL;
+      return *this;
+    }
+
+  };
+
+  class VectorWriter : public TableWriter<KaldiObjectHolder<Vector<float>>> {
+  public:
+    VectorWriter() : TableWriter<KaldiObjectHolder<Vector<float>>>() {}
+
+    explicit VectorWriter(const std::string &wspecifier) : TableWriter<KaldiObjectHolder<Vector<float>>>(wspecifier) {}
+
+    inline void Write(const std::string &key, const T &value) const{
+      TableWriter<KaldiObjectHolder<Vector<float>>>::Write(key, value);
+    } 
+
+    VectorWriter &operator = (VectorWriter &&other) {
+      this->Close();
+      this->impl_ = other.impl_;
+      other.impl_ = NULL;
+      return *this;
+    }
+
+  };
+
+  class MatrixWriter : public TableWriter<KaldiObjectHolder<Matrix<float>>> {
+  public:
+    MatrixWriter() : TableWriter<KaldiObjectHolder<Matrix<float>>>() {}
+
+    explicit MatrixWriter(const std::string &wspecifier) : TableWriter<KaldiObjectHolder<Matrix<float>>>(wspecifier) {}
+
+    inline void Write(const std::string &key, const T &value) const {
+      TableWriter<KaldiObjectHolder<Matrix<float>>>::Write(key, value);
+    } 
+
+    MatrixWriter &operator = (MatrixWriter &&other) {
+      this->Close();
+      this->impl_ = other.impl_;
+      other.impl_ = NULL;
+      return *this;
+    }
+
+  };
+
+
 }
 
 #endif
