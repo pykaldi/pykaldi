@@ -1,5 +1,5 @@
-#ifndef PYKALDI_KALDI_TABLE_EXT_H_
-#define PYKALDI_KALDI_TABLE_EXT_H_ 1
+#ifndef PYKALDI_UTIL_KALDI_TABLE_EXT_H_
+#define PYKALDI_UTIL_KALDI_TABLE_EXT_H_ 1
 
 #include "util/kaldi-table.h"
 #include "matrix/kaldi-vector.h"
@@ -21,13 +21,6 @@ namespace kaldi {
         return SequentialTableReader<KaldiObjectHolder<Vector<float>>>::Value();
     }
 
-    SequentialVectorReader &operator = (SequentialVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class SequentialMatrixReader
@@ -42,13 +35,6 @@ namespace kaldi {
 
     const Matrix<float> &Value() {
       return SequentialTableReader<KaldiObjectHolder<Matrix<float>>>::Value();
-    }
-
-    SequentialMatrixReader &operator = (SequentialMatrixReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -66,13 +52,6 @@ namespace kaldi {
         return SequentialTableReader<BasicHolder<int32>>::Value();
     }
 
-    SequentialIntReader &operator = (SequentialIntReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class SequentialFloatReader
@@ -86,13 +65,6 @@ namespace kaldi {
 
     const float &Value() {
         return SequentialTableReader<BasicHolder<float>>::Value();
-    }
-
-    SequentialFloatReader &operator = (SequentialFloatReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -110,13 +82,6 @@ namespace kaldi {
         return SequentialTableReader<BasicHolder<double>>::Value();
     }
 
-    SequentialDoubleReader &operator = (SequentialDoubleReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class SequentialBoolReader
@@ -130,13 +95,6 @@ namespace kaldi {
 
     const bool &Value() {
         return SequentialTableReader<BasicHolder<bool>>::Value();
-    }
-
-    SequentialBoolReader &operator = (SequentialBoolReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -154,13 +112,6 @@ namespace kaldi {
         return SequentialTableReader<BasicVectorHolder<int32>>::Value();
     }
 
-    SequentialIntVectorReader &operator = (SequentialIntVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class SequentialIntVectorVectorReader
@@ -174,14 +125,6 @@ namespace kaldi {
 
     const std::vector<std::vector<int32>> &Value() {
         return SequentialTableReader<BasicVectorVectorHolder<int32>>::Value();
-    }
-
-    SequentialIntVectorVectorReader &operator = (
-        SequentialIntVectorVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -199,14 +142,6 @@ namespace kaldi {
         return SequentialTableReader<BasicPairVectorHolder<int32>>::Value();
     }
 
-    SequentialIntPairVectorReader &operator = (
-        SequentialIntPairVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class SequentialFloatPairVectorReader
@@ -220,14 +155,6 @@ namespace kaldi {
 
     const std::vector<std::pair<float, float>> &Value() {
         return SequentialTableReader<BasicPairVectorHolder<float>>::Value();
-    }
-
-    SequentialFloatPairVectorReader &operator = (
-        SequentialFloatPairVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -248,13 +175,6 @@ namespace kaldi {
       return RandomAccessTableReader<KaldiObjectHolder<Vector<float>>>::Value(key);
     }
 
-    RandomAccessVectorReader &operator = (RandomAccessVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class RandomAccessMatrixReader
@@ -269,13 +189,6 @@ namespace kaldi {
 
     const Matrix<float> &Value(const std::string &key) {
       return RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>::Value(key);
-    }
-
-    RandomAccessMatrixReader &operator = (RandomAccessMatrixReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -293,13 +206,6 @@ namespace kaldi {
         return RandomAccessTableReader<BasicHolder<int32>>::Value(key);
     }
 
-    RandomAccessIntReader &operator = (RandomAccessIntReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class RandomAccessFloatReader
@@ -313,13 +219,6 @@ namespace kaldi {
 
     const float &Value(const std::string &key) {
         return RandomAccessTableReader<BasicHolder<float>>::Value(key);
-    }
-
-    RandomAccessFloatReader &operator = (RandomAccessFloatReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -337,13 +236,6 @@ namespace kaldi {
         return RandomAccessTableReader<BasicHolder<double>>::Value(key);
     }
 
-    RandomAccessDoubleReader &operator = (RandomAccessDoubleReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class RandomAccessBoolReader
@@ -357,13 +249,6 @@ namespace kaldi {
 
     const bool &Value(const std::string &key) {
         return RandomAccessTableReader<BasicHolder<bool>>::Value(key);
-    }
-
-    RandomAccessBoolReader &operator = (RandomAccessBoolReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -381,14 +266,6 @@ namespace kaldi {
         return RandomAccessTableReader<BasicVectorHolder<int32>>::Value(key);
     }
 
-    RandomAccessIntVectorReader &operator = (
-        RandomAccessIntVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class RandomAccessIntVectorVectorReader
@@ -402,14 +279,6 @@ namespace kaldi {
 
     const std::vector<std::vector<int32>> &Value(const std::string &key) {
         return RandomAccessTableReader<BasicVectorVectorHolder<int32>>::Value(key);
-    }
-
-    RandomAccessIntVectorVectorReader &operator = (
-        RandomAccessIntVectorVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -427,14 +296,6 @@ namespace kaldi {
         return RandomAccessTableReader<BasicPairVectorHolder<int32>>::Value(key);
     }
 
-    RandomAccessIntPairVectorReader &operator = (
-        RandomAccessIntPairVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class RandomAccessFloatPairVectorReader
@@ -448,14 +309,6 @@ namespace kaldi {
 
     const std::vector<std::pair<float, float>> &Value(const std::string &key) {
         return RandomAccessTableReader<BasicPairVectorHolder<float>>::Value(key);
-    }
-
-    RandomAccessFloatPairVectorReader &operator = (
-        RandomAccessFloatPairVectorReader &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -473,13 +326,6 @@ namespace kaldi {
       TableWriter<KaldiObjectHolder<Vector<float>>>::Write(key, value);
     }
 
-    VectorWriter &operator = (VectorWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class MatrixWriter : public TableWriter<KaldiObjectHolder<Matrix<float>>> {
@@ -491,13 +337,6 @@ namespace kaldi {
 
     inline void Write(const std::string &key, const T &value) const {
       TableWriter<KaldiObjectHolder<Matrix<float>>>::Write(key, value);
-    }
-
-    MatrixWriter &operator = (MatrixWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -515,13 +354,6 @@ namespace kaldi {
       TableWriter<KaldiObjectHolder<CompressedMatrix>>::Write(key, value);
     }
 
-    CompressedMatrixWriter &operator = (CompressedMatrixWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class IntVectorWriter : public TableWriter<BasicVectorHolder<int32>> {
@@ -534,13 +366,6 @@ namespace kaldi {
     inline void Write(const std::string &key,
                       const std::vector<int32> &value) const {
       TableWriter<BasicVectorHolder<int32>>::Write(key, value);
-    }
-
-    IntVectorWriter &operator = (IntVectorWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -558,13 +383,6 @@ namespace kaldi {
       TableWriter<BasicVectorVectorHolder<int32>>::Write(key, value);
     }
 
-    IntVectorVectorWriter &operator = (IntVectorVectorWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
   class IntPairVectorWriter
@@ -578,13 +396,6 @@ namespace kaldi {
     inline void Write(const std::string &key,
                       const std::vector<std::pair<int32, int32>> &value) const {
       TableWriter<BasicPairVectorHolder<int32>>::Write(key, value);
-    }
-
-    IntPairVectorWriter &operator = (IntPairVectorWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
     }
 
   };
@@ -602,15 +413,8 @@ namespace kaldi {
       TableWriter<BasicPairVectorHolder<float>>::Write(key, value);
     }
 
-    FloatPairVectorWriter &operator = (FloatPairVectorWriter &&other) {
-      this->Close();
-      this->impl_ = other.impl_;
-      other.impl_ = NULL;
-      return *this;
-    }
-
   };
 
-}
+}  // namespace kaldi
 
-#endif
+#endif  // PYKALDI_UTIL_KALDI_TABLE_EXT_H_

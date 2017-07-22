@@ -110,4 +110,4 @@ Real VecMatVec(const VectorBase<Real> &v1, const MatrixBase<Real> &M,
 
 }  // namespace kaldi
 
-#endif  // KALDI_MATRIX_KALDI_VECTOR_EXT_H_
+#endif  // PYKALDI_MATRIX_KALDI_VECTOR_EXT_H_
