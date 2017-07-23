@@ -27,9 +27,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -52,9 +49,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -79,9 +73,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -104,9 +95,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -131,9 +119,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -156,9 +141,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -183,9 +165,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -208,9 +187,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -235,9 +211,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -261,9 +234,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -283,9 +253,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -302,9 +269,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -323,9 +287,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -342,9 +303,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -363,9 +321,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -382,9 +337,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -403,9 +355,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -422,9 +371,6 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -443,9 +389,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -463,8 +406,61 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
+      @__exit__
+      def Close(self) -> bool
+
+    # Random Access Mapped Readers
+
+    class RandomAccessVectorReaderMapped:
+      @add__init__
+      def `RandomAccessVectorReaderMapped` as New(self, table_rspecifier: str,
+                                                  map_rspecifier: str)
+
+      def Open(self, table_rspecifier: str, map_rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> Vector
+
       def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class RandomAccessMatrixReaderMapped:
+      @add__init__
+      def `RandomAccessMatrixReaderMapped` as New(self, table_rspecifier: str,
+                                                  map_rspecifier: str)
+
+      def Open(self, table_rspecifier: str, map_rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> Matrix
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class RandomAccessFloatReaderMapped:
+      @add__init__
+      def `RandomAccessFloatReaderMapped` as New(self, table_rspecifier: str,
+                                                 map_rspecifier: str)
+
+      def Open(self, table_rspecifier: str, map_rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> float
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -485,9 +481,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -504,9 +497,6 @@ from "util/kaldi-table-ext.h":
       def Flush(self)
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -525,9 +515,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -544,9 +531,6 @@ from "util/kaldi-table-ext.h":
       def Flush(self)
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -565,9 +549,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -585,9 +566,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -604,9 +582,6 @@ from "util/kaldi-table-ext.h":
       def Flush(self)
 
       def Close(self) -> bool
-
-      @__enter__
-      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool

@@ -22,6 +22,9 @@ from "util/kaldi-table.h":
 
       def Close(self) -> bool
 
+      @__exit__
+      def Close(self) -> bool
+
     class `TableWriter<BasicHolder<float>>` as FloatWriter:
       @add__init__
       def `TableWriter` as New(self, wspecifier: str)
@@ -34,6 +37,9 @@ from "util/kaldi-table.h":
 
       def Flush(self)
 
+      def Close(self) -> bool
+
+      @__exit__
       def Close(self) -> bool
 
     class `TableWriter<BasicHolder<double>>` as DoubleWriter:
@@ -50,6 +56,9 @@ from "util/kaldi-table.h":
 
       def Close(self) -> bool
 
+      @__exit__
+      def Close(self) -> bool
+
     class `TableWriter<BasicHolder<bool>>` as BoolWriter:
       @add__init__
       def `TableWriter` as New(self, wspecifier: str)
@@ -62,4 +71,7 @@ from "util/kaldi-table.h":
 
       def Flush(self)
 
+      def Close(self) -> bool
+
+      @__exit__
       def Close(self) -> bool

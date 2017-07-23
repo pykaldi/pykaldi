@@ -313,6 +313,63 @@ namespace kaldi {
 
   };
 
+  // Random Access Mapped Readers
+
+  class RandomAccessVectorReaderMapped
+      : public RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<float>>> {
+
+  public:
+    RandomAccessVectorReaderMapped()
+        : RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<float>>>() {}
+
+    explicit RandomAccessVectorReaderMapped(const std::string &table_rspecifier,
+                                            const std::string &map_rspecifier)
+        : RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<float>>>(
+              table_rspecifier,
+              map_rspecifier) {}
+
+    const Vector<float> &Value(const std::string &key) {
+      return RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<float>>>::Value(key);
+    }
+
+  };
+
+  class RandomAccessMatrixReaderMapped
+      : public RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<float>>> {
+
+  public:
+    RandomAccessMatrixReaderMapped()
+        : RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<float>>>() {}
+
+    explicit RandomAccessMatrixReaderMapped(const std::string &table_rspecifier,
+                                            const std::string &map_rspecifier)
+        : RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<float>>>(
+              table_rspecifier,
+              map_rspecifier) {}
+
+    const Matrix<float> &Value(const std::string &key) {
+      return RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<float>>>::Value(key);
+    }
+
+  };
+
+  class RandomAccessFloatReaderMapped
+      : public RandomAccessTableReaderMapped<BasicHolder<float>> {
+   public:
+    RandomAccessFloatReaderMapped()
+        : RandomAccessTableReaderMapped<BasicHolder<float>>() {}
+
+    explicit RandomAccessFloatReaderMapped(const std::string &table_rspecifier,
+                                           const std::string &map_rspecifier)
+        : RandomAccessTableReaderMapped<BasicHolder<float>>(table_rspecifier,
+                                                            map_rspecifier) {}
+
+    const float &Value(const std::string &key) {
+        return RandomAccessTableReaderMapped<BasicHolder<float>>::Value(key);
+    }
+
+  };
+
   // Writers
 
   class VectorWriter : public TableWriter<KaldiObjectHolder<Vector<float>>> {
