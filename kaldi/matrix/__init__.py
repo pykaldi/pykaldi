@@ -292,7 +292,7 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
     def __delitem__(self, index):
         """Removes an element from the vector without reallocating."""
         if self.own_data:
-            self.RemoveElement(index)
+            super(Vector, self).__delitem__(index)
         else:
             raise ValueError("__delitem__ method cannot be called on vectors "
                              "that do not own their data.")
@@ -483,13 +483,15 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
               the data to be made, then any changes made on the resulting matrix
               will not be copied back into the source matrix. Consider the
               following assignment operations:
-                >>> s = m[:,:4:2]
+                >>> m = Matrix(3, 5)
+                >>> s = m[:,0:4:2]
                 >>> s = m[:,1:4:2]
               Since the indexing operation requires a copy of the data to be
               made, the source matrix m will not be updated. On the other hand,
-              the following assignment operation will not create any copies and
-              work as expected:
-                >>> m[:,:4:2] = m[:,1:4:2]
+              the following assignment operation will work as expected since
+              __setitem__ method does not create a new matrix for representing
+              the left side of the assignment:
+                >>> m[:,0:4:2] = m[:,1:4:2]
         """
         ret = self.numpy().__getitem__(index)
         if isinstance(ret, numpy.ndarray):
@@ -516,7 +518,10 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
     def __delitem__(self, index):
         """Removes a row from the matrix without reallocating."""
         if self.own_data:
-            self.RemoveRow(index)
+            if 0 <= index < self.num_rows_:
+                self.RemoveRow(index)
+            else:
+                raise IndexError
         else:
             raise ValueError("__delitem__ method cannot be called on "
                              "matrices that do not own their data.")
