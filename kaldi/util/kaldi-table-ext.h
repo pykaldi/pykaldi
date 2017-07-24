@@ -5,6 +5,8 @@
 #include "matrix/kaldi-vector.h"
 #include "matrix/kaldi-matrix.h"
 #include "matrix/compressed-matrix.h"
+#include "feat/wave-reader.h"
+
 
 namespace kaldi {
 
@@ -39,6 +41,22 @@ namespace kaldi {
 
   };
 
+  class SequentialWaveReader
+      : public SequentialTableReader<WaveHolder> {
+
+   public:
+    SequentialWaveReader()
+        : SequentialTableReader<WaveHolder>() {}
+
+    explicit SequentialWaveReader(const std::string &rspecifier)
+        : SequentialTableReader<WaveHolder>(rspecifier) {}
+
+    const WaveData &Value() {
+      return SequentialTableReader<WaveHolder>::Value();
+    }
+
+  };
+  
   class SequentialIntReader
       : public SequentialTableReader<BasicHolder<int32>> {
    public:
@@ -409,6 +427,22 @@ namespace kaldi {
 
     inline void Write(const std::string &key, const T &value) const {
       TableWriter<KaldiObjectHolder<CompressedMatrix>>::Write(key, value);
+    }
+
+  };
+
+
+  class WaveWriter
+      : public TableWriter<WaveHolder> {
+  public:
+    WaveWriter()
+        : TableWriter<WaveHolder>() {}
+
+    explicit WaveWriter(const std::string &wspecifier)
+        : TableWriter<WaveHolder>(wspecifier) {}
+
+    inline void Write(const std::string &key, const T &value) const {
+      TableWriter<WaveHolder>::Write(key, value);
     }
 
   };

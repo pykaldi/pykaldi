@@ -1,6 +1,7 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/compressed-matrix-clifwrap.h" import *
+from "feat/wave-reader-clifwrap.h" import *
 
 from "util/kaldi-table-ext.h":
   namespace `kaldi`:
@@ -49,6 +50,32 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class SequentialWaveReader:
+      @add__init__
+      def `SequentialWaveReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> WaveData
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+      @__enter__
+      def IsOpen(self) -> bool
 
       @__exit__
       def Close(self) -> bool
@@ -510,6 +537,23 @@ from "util/kaldi-table-ext.h":
       def IsOpen(self) -> bool
 
       def Write(self, key: str, value: CompressedMatrix)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class WaveWriter:
+      @add__init__
+      def `WaveWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: WaveData)
 
       def Flush(self)
 

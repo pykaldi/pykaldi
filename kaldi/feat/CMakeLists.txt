@@ -1,0 +1,1 @@
+add_pyclif_library("wave_reader" wave-reader.clif CLIF_DEPS kaldi_matrix)
