@@ -1,0 +1,53 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "feat/feature-window.h":
+  namespace `kaldi`:
+    class FrameExtractionOptions:
+      samp_freq: float
+      frame_shift_ms: float
+      frame_length_ms: float
+      dither: float
+      preemph_coeff: float
+      remove_dc_offset: bool
+      window_type: str
+      round_to_power_of_two: bool
+      blackman_coeff: float
+      snip_edges: bool
+
+      def WindowShift(self) -> int
+
+      def WindowSize(self) -> int
+
+      def PaddedWindowSize(self) -> int
+
+    class FeatureWindowFunction:
+      @add__init__
+      def `FeatureWindowFunction` as from_options(self,
+                                                  opts: FrameExtractionOptions)
+      @add__init__
+      def `FeatureWindowFunction` as from_other(self,
+                                                other: FeatureWindowFunction)
+      window: Vector
+
+    def NumFrames(num_samples: int, opts: FrameExtractionOptions,
+                  flush: bool = default) -> int
+
+    def FirstSampleOfFrame(frame: int, opts: FrameExtractionOptions) -> int
+
+    def Dither(waveform: VectorBase, dither_value: float)
+
+    def Preemphasize(waveform: VectorBase, preemph_coeff: float)
+
+    # FIXME(Dogan): Write helper functions in C++ to wrap these.
+    # def ProcessWindow(opts: FrameExtractionOptions,
+    #                   window_function: FeatureWindowFunction,
+    #                   window: VectorBase) -> float
+    #
+    # def ExtractWindow(sample_offset: int, wave: VectorBase, f: int,
+    #                   opts: FrameExtractionOptions,
+    #                   window_function: FeatureWindowFunction) ->
+    #                   (window: Vector, log_energy_pre_window: float)
+
+    def ExtractWaveformRemainder(wave: VectorBase,
+                                 opts: FrameExtractionOptions,
+                                 wave_remainder: Vector)

@@ -1,0 +1,30 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "feat/feature-window-clifwrap.h" import *
+from "feat/mel-computations-clifwrap.h" import *
+
+from "feat/feature-mfcc.h":
+  namespace `kaldi`:
+    class MfccOptions:
+      frame_opts: FrameExtractionOptions
+      mel_opts: MelBanksOptions
+      num_ceps: int
+      use_energy: bool
+      energy_floor: float
+      raw_energy: bool
+      cepstral_lifter: float
+      htk_compat: bool
+
+    class MfccComputer:
+      def __init__(self, opts: MfccOptions)
+
+      @add__init__
+      def `MfccComputer` as from_other(self, other: MfccComputer)
+
+      def GetFrameOptions(self) -> FrameExtractionOptions
+
+      def Dim(self) -> int
+
+      def NeedRawLogEnergy(self) -> bool
+
+      def Compute(self, signal_log_energy: float, vtln_warp: float,
+                  signal_frame: VectorBase, feature: VectorBase)
