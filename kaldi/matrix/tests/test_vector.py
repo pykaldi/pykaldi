@@ -70,7 +70,7 @@ class TestPyKaldi(unittest.TestCase):
         self.assertAlmostEqual(75075.0, v[:10].numpy().prod())
 
         with self.assertRaises(ValueError):
-            v[0:10] = np.array([3, 5, 7, 11, 13])
+            v[0:3] = np.array([3, 5, 7, 11, 13])
 
         v[0:5] = np.array([3, 5, 7, 11, 13])
         self.assertAlmostEqual(15015.0, v.numpy().prod())
