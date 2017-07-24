@@ -379,6 +379,21 @@ kaldi_table = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_table)
 
+wave_reader = Extension(
+    "kaldi.feat.wave_reader",
+    sources = [
+        "build/kaldi/feat/wave-reader-clifwrap.cc",
+        "build/kaldi/feat/wave-reader-clifwrap-init.cc"
+    ],
+    language = "c++",
+    extra_compile_args = extra_compile_args,
+    include_dirs = include_dirs,
+    library_dirs = library_dirs + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs = ['$ORIGIN/../matrix'] + runtime_library_dirs,
+    libraries = [':kaldi_matrix.so', 'kaldi-matrix', 'kaldi-feat'] + libraries,
+    extra_link_args = extra_link_args)
+extensions.append(wave_reader)
+
 kaldi_table_ext = Extension(
     "kaldi.util.kaldi_table_ext",
     sources = [
@@ -388,9 +403,9 @@ kaldi_table_ext = Extension(
     language = "c++",
     extra_compile_args = extra_compile_args,
     include_dirs = ['kaldi/util/'] + include_dirs,
-    library_dirs = library_dirs + ['build/lib/kaldi/util'] + ['build/lib/kaldi/matrix'],
-    runtime_library_dirs = ['$ORIGIN/../matrix'] + runtime_library_dirs,
-    libraries = [':compressed_matrix.so', ':kaldi_matrix.so', ':kaldi_vector.so',
+    library_dirs = library_dirs + ['build/lib/kaldi/util', 'build/lib/kaldi/matrix', 'build/lib/kaldi/feat'],
+    runtime_library_dirs = ['$ORIGIN/../feat'] + ['$ORIGIN/../matrix'] + runtime_library_dirs,
+    libraries = [':compressed_matrix.so', ':kaldi_matrix.so', ':kaldi_vector.so', ':wave_reader.so', 
                  'kaldi-util', 'kaldi-matrix'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_table_ext)

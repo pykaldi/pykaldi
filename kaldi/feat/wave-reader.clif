@@ -1,0 +1,21 @@
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "feat/wave-reader.h":
+  namespace `kaldi`:
+
+    class WaveData:
+
+      @add__init__
+      def `WaveData` as New(self, samp_freq:float, data:Matrix)
+
+      def Data(self) -> Matrix
+
+      def SampFreq(self) -> float 
+
+      def Duration(self) -> float
+
+      def CopyFrom(self, other:WaveData)
+
+      def Clear(self)
+
+      def Swap(self, other:WaveData)
