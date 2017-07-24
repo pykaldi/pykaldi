@@ -393,7 +393,8 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
 
     def clone(self):
         """Returns a copy of the matrix."""
-        clone = Matrix(len(self))
+        rows, cols = self.size()
+        clone = Matrix(rows, cols)
         clone.CopyFromMat(self)
         return clone
 
