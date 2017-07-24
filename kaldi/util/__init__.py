@@ -49,7 +49,7 @@ class SequentialVectorReader(_SequentialReaderBase,
     """
     def next(self):
         key, value = super(SequentialVectorReader, self).next()
-        return key, Vector(src=value)
+        return key, Vector.new(value)
 
 
 class SequentialMatrixReader(_SequentialReaderBase,
@@ -61,8 +61,8 @@ class SequentialMatrixReader(_SequentialReaderBase,
     It provides a more Pythonic API by implementing the iterator protocol.
     """
     def next(self):
-        key, value = super(SequentialVectorReader, self).next()
-        return key, Matrix(src=value)
+        key, value = super(SequentialMatrixReader, self).next()
+        return key, Matrix.new(value)
 
 
 class SequentialIntReader(_SequentialReaderBase,
@@ -122,7 +122,8 @@ class SequentialIntVectorVectorReader(
     """Python wrapper for
     kaldi::SequentialTableReader<BasicVectorVectorHolder<int32>>.
 
-    This is a wrapper around the C extension type SequentialIntVectorVectorReader.
+    This is a wrapper around the C extension type
+    SequentialIntVectorVectorReader.
     It provides a more Pythonic API by implementing the iterator protocol.
     """
     pass
@@ -194,7 +195,7 @@ class RandomAccessVectorReader(_RandomAccessReaderBase,
     """
     def __getitem__(self, key):
         value = super(RandomAccessVectorReader, self).__getitem__(key)
-        return Vector(src=value)
+        return Vector.new(value)
 
 
 class RandomAccessMatrixReader(_RandomAccessReaderBase,
@@ -207,8 +208,8 @@ class RandomAccessMatrixReader(_RandomAccessReaderBase,
     __getitem__ methods.
     """
     def __getitem__(self, key):
-        value = super(RandomAccessVectorReader, self).__getitem__(key)
-        return Matrix(src=value)
+        value = super(RandomAccessMatrixReader, self).__getitem__(key)
+        return Matrix.new(value)
 
 
 class RandomAccessIntReader(_RandomAccessReaderBase,
@@ -354,7 +355,7 @@ class RandomAccessVectorReaderMapped(
     """
     def __getitem__(self, key):
         value = super(RandomAccessVectorReaderMapped, self).__getitem__(key)
-        return Vector(src=value)
+        return Vector.new(value)
 
 
 class RandomAccessMatrixReaderMapped(
@@ -370,7 +371,7 @@ class RandomAccessMatrixReaderMapped(
     """
     def __getitem__(self, key):
         value = super(RandomAccessMatrixReaderMapped, self).__getitem__(key)
-        return Matrix(src=value)
+        return Matrix.new(value)
 
 class RandomAccessFloatReaderMapped(
         _RandomAccessReaderMappedBase,
