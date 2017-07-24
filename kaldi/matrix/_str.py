@@ -148,6 +148,8 @@ def __repr_row(row, indent, fmt, scale, sz, truncate=None):
 def _matrix_str(self, indent='', formatter=None, force_truncate=False):
     type_str = self.__module__ + '.' + self.__class__.__name__
     self = self.numpy()
+    if self.size == 0:
+        return '[{} with no elements]\n'.format(type_str)
     n = PRINT_OPTS.edgeitems
     has_hdots = self.shape[1] > 2 * n
     has_vdots = self.shape[0] > 2 * n
@@ -214,6 +216,8 @@ def _matrix_str(self, indent='', formatter=None, force_truncate=False):
 def _vector_str(self):
     type_str = self.__module__ + '.' + self.__class__.__name__
     self = self.numpy()
+    if self.size == 0:
+        return '[{} with no elements]\n'.format(type_str)
     fmt, scale, sz = _number_format(self)
     strt = ''
     ident = ''
