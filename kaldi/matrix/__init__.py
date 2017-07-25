@@ -51,7 +51,7 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
             if isinstance(length, int) and length >= 0:
                 self.resize_(length, MatrixResizeType.UNDEFINED)
             else:
-                raise ValueError("length should be a non-negative integer.")
+                raise IndexError("length should be a non-negative integer.")
 
     @classmethod
     def new(cls, obj, start=0, length=None):
@@ -329,8 +329,8 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
                 raise TypeError("num_rows and num_cols should be integers.")
             if not (num_rows > 0 and num_cols > 0):
                 if not (num_rows == 0 and num_cols == 0):
-                    raise TypeError("num_rows and num_cols should both be "
-                                    "positive or they should both be 0.")
+                    raise IndexError("num_rows and num_cols should both be "
+                                     "positive or they should both be 0.")
             self.resize_(num_rows, num_cols, MatrixResizeType.UNDEFINED)
 
     @classmethod
@@ -385,6 +385,10 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
                              "when col_start={} and obj.num_cols_={}."
                              .format(num_cols, max_cols,
                                      col_start, obj_cols))
+        if not (num_rows > 0 and num_cols > 0):
+            if not (num_rows == 0 and num_cols == 0):
+                raise IndexError("num_rows and num_cols should both be "
+                                 "positive or they should both be 0.")
         instance = cls.__new__(cls)
         matrix_ext.SubMatrix.__init__(instance, obj,
                                       row_start, num_rows, col_start, num_cols)
