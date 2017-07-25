@@ -13,6 +13,6 @@ from "feat/feature-common-ext.h":
       @add__init__
       def `MfccOfflineFeatureTpl` as from_other(self, other: Mfcc)
 
-      def Compute(self, wave: VectorBase, vtnl_warp: float, output: Matrix)
+      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
 
       def Dim(self) -> int

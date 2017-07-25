@@ -1,6 +1,7 @@
 from .kaldi_table import ReadScriptFile, WriteScriptFile
 from . import kaldi_table_ext
 from ..matrix import Vector, Matrix
+from ..feat import WaveData
 
 ################################################################################
 # Sequential Readers
@@ -72,7 +73,11 @@ class SequentialWaveReader(_SequentialReaderBase,
     This is a wrapper around the C extension type SequentialWaveReader.
     It provides a more Pythonic API by implementing the iterator protocol.
     """
-    pass
+    def next(self):
+        key, value = super(SequentialWaveReader, self).next()
+        wave = WaveData()
+        wave.Swap(value)
+        return key, wave
 
 
 class SequentialIntReader(_SequentialReaderBase,
@@ -230,7 +235,11 @@ class RandomAccessWaveReader(_RandomAccessReaderBase,
     It provides a more Pythonic API by implementing the __contains__ and
     __getitem__ methods.
     """
-    pass
+    def __getitem__(self, key):
+        value = super(RandomAccessMatrixReader, self).__getitem__(key)
+        wave = WaveData()
+        wave.Swap(value)
+        return wave
 
 
 class RandomAccessIntReader(_RandomAccessReaderBase,
