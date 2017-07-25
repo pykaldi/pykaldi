@@ -19,10 +19,16 @@ class TestKaldiMatrix(unittest.TestCase):
         self.assertTupleEqual((0, 0), m.size())
         self._test_str(m)
 
-        m = Matrix.new([])
+        m = Matrix.new([[]])
         self.assertIsNotNone(m)
         self.assertFalse(m.own_data)
-        self.assertTupleEqual((0, 0), m.size())
+        self.assertTupleEqual((1, 0), m.size())
+        self._test_str(m)
+
+        m = Matrix.new([[], []])
+        self.assertIsNotNone(m)
+        self.assertFalse(m.own_data)
+        self.assertTupleEqual((2, 0), m.size())
         self._test_str(m)
 
     def test_nonempty(self):
@@ -90,9 +96,9 @@ class TestKaldiMatrix(unittest.TestCase):
         m = Matrix.new([[3, 5], [7, 11]])
         m[0, 0] = 13.0
 
-        self.assertAlmostEqual(91.0, m[0, :].numpy().prod())
+        self.assertAlmostEqual(65.0, m[0, :].numpy().prod())
         self.assertAlmostEqual(77.0, m[1, :].numpy().prod())
-        self.assertAlmostEqual(143.0, m[:, 0].numpy().prod())
+        self.assertAlmostEqual(91.0, m[:, 0].numpy().prod())
         self.assertAlmostEqual(55.0, m[:, 1].numpy().prod())
 
 
@@ -119,12 +125,12 @@ class TestKaldiMatrix(unittest.TestCase):
 
         m = Matrix.new([[3, 5], [7, 11]])
 
-        with self.assertRaises(ValueError)
+        with self.assertRaises(ValueError):
             del m[0]
 
         m = m.clone()
         del m[0]
-        self.assertTupleEqual((1, 1), m.size())
+        self.assertTupleEqual((1, 2), m.size())
         self.assertAlmostEqual(7, m[0,0])
         self.assertAlmostEqual(11, m[0,1])
 
