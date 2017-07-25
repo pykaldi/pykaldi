@@ -13,7 +13,6 @@ import shutil
 import sys
 import os
 
-
 ################################################################################
 # https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
 ################################################################################
@@ -42,22 +41,24 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 if not PYCLIF:
   PYCLIF = os.getenv("PYCLIF")
   if not PYCLIF:
-      print("We could not find PYCLIF. Forgot to activate venv?")
-      sys.exit(1)
+    # Check for pyclif by running pyclif
+    try:
+        PYCLIF = subprocess.check_output(['which', 'pyclif'])
+    except OSError:
+        raise RuntimeError("PYCLIF was not found. Please set environment variable PYCLIF.")
 
 if "KALDI_DIR" not in os.environ:
-  print("KALDI_DIR environment variable is not set.")
-  sys.exit(1)
+  raise RuntimeError("KALDI_DIR environment variable is not set.")
+
 KALDI_DIR = os.environ['KALDI_DIR']
 KALDI_SRC_DIR = os.path.join(KALDI_DIR, 'src')
 KALDI_LIB_DIR = os.path.join(KALDI_DIR, 'src/lib')
 
-CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
-if "CLIF_DIR" not in os.environ:
+CLIF_DIR = os.getenv('CLIF_DIR', None)
+if not CLIF_DIR:
+    CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
     print("CLIF_DIR environment variable is not set.")
     print("Defaulting to {}".format(CLIF_DIR))
-else:
-    CLIF_DIR = os.environ['CLIF_DIR']
 
 import numpy as np
 NUMPY_INC_DIR = np.get_include()
@@ -81,8 +82,9 @@ for key, value in cfg_vars.items():
     if type(value) == str:
         cfg_vars[key] = value.replace("-Wstrict-prototypes", "")
 
+
 ################################################################################
-# Custom build commands
+# Build dependencies
 ################################################################################
 class build_deps(Command):
     user_options = []
@@ -94,15 +96,57 @@ class build_deps(Command):
         pass
 
     def run(self):
-        build_all_cmd = ['bash', 'build_all.sh', KALDI_DIR, PYCLIF, CLIF_DIR]
-        if subprocess.call(build_all_cmd) != 0:
-            sys.exit(1)
+        cmake_args = ['-DKALDI_DIR='+KALDI_DIR,
+                      '-DPYCLIF='+PYCLIF,
+                      '-DCLIF_DIR='+CLIF_DIR]
 
+        if DEBUG:
+            cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
-class build_ext(setuptools.command.build_ext.build_ext):
+        env = os.environ.copy()
+        env['CXX_FLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXX_FLAGS', ''),
+                                                              self.distribution.get_version())
+        if not os.path.exists(self.build_temp):
+            os.mkdirs(self.build_temp)
+
+        subprocess.check_call(['cmake', '..'] + cmake_args, cwd=self.build_temp, env = env)
+        print()
+
+################################################################################
+# Use CMake to build stuff on parallel
+# Code from: http://www.benjack.io/2017/06/12/python-cpp-tests.html
+################################################################################
+class CMakeExtension(Extension):
+    def __init__(self, name, sourcedir = ''):
+        super(Extension, self).__init__(name, sources = [])
+        self.sourcedir = os.path.abspath(sourcedir)
+
+class CMakeBuild(setuptools.command.build_ext.build_ext):
     def run(self):
         self.run_command("build_deps")
-        return setuptools.command.build_ext.build_ext.run(self)
+        for ext in self.extensions:
+            self.build_extension(ext)
+
+    def build_extension(self, ext):
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY='+ extdir,
+                      '-DPYTHON_EXECUTABLE=' + sys.executable]
+
+        cfg = 'Debug' if DEBUG else 'Release'
+        build_args = ['--config', cfg]
+
+        cmake_args += ['--DCMAKE_BUILD_TYPE='+cfg]
+        build_args += ['--', '-j2']
+
+        env = os.environ.copy()
+        env['CXX_FLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXX_FLAGS', ''),
+                                                              self.distribution.get_version())
+        if not os.path.exists(self.build_temp):
+            os.mkdirs(self.build_temp)
+
+        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
+        print() # Add an empty line for cleaner output
 
     def get_ext_filename(self, fullname):
         """Convert the name of an extension (eg. "foo.bar") into the name
@@ -112,7 +156,6 @@ class build_ext(setuptools.command.build_ext.build_ext):
         ext_path = fullname.split('.')
         ext_suffix = '.so'
         return os.path.join(*ext_path) + ext_suffix
-
 
 class build(distutils.command.build.build):
     def finalize_options(self):
@@ -637,7 +680,7 @@ setup(name = 'pykaldi',
       ext_modules=extensions,
       cmdclass= {
           'build_deps': build_deps,
-          'build_ext': build_ext,
+          'build_ext': CMakeBuild,
           'build': build,
           },
       packages=packages,
