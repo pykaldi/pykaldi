@@ -74,9 +74,6 @@ from "util/kaldi-table-ext.h":
 
       def Close(self) -> bool
 
-      @__enter__
-      def IsOpen(self) -> bool
-
       @__exit__
       def Close(self) -> bool
 
@@ -292,6 +289,23 @@ from "util/kaldi-table-ext.h":
       def HasKey(self, key: str) -> bool
 
       def Value(self, key: str) -> Matrix
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class RandomAccessWaveReader:
+      @add__init__
+      def `RandomAccessWaveReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> WaveData
 
       def IsOpen(self) -> bool
 

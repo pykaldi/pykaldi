@@ -56,7 +56,7 @@ namespace kaldi {
     }
 
   };
-  
+
   class SequentialIntReader
       : public SequentialTableReader<BasicHolder<int32>> {
    public:
@@ -207,6 +207,22 @@ namespace kaldi {
 
     const Matrix<float> &Value(const std::string &key) {
       return RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>::Value(key);
+    }
+
+  };
+
+  class RandomAccessWaveReader
+      : public RandomAccessTableReader<WaveHolder> {
+
+   public:
+    RandomAccessWaveReader()
+        : RandomAccessTableReader<WaveHolder>() {}
+
+    explicit RandomAccessWaveReader(const std::string &rspecifier)
+        : RandomAccessTableReader<WaveHolder>(rspecifier) {}
+
+    const WaveData &Value(const std::string &key) {
+      return RandomAccessTableReader<WaveHolder>::Value(key);
     }
 
   };

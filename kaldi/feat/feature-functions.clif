@@ -1,0 +1,54 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "feat/feature-functions.h":
+  namespace `kaldi`:
+    def ComputePowerSpectrum(complex_fft: VectorBase)
+
+    class DeltaFeaturesOptions:
+      order: int
+      window: int
+
+      def __init__(self, order: int = default, window: int = default)
+
+    class DeltaFeatures:
+      def __init__(self, opts: DeltaFeaturesOptions)
+
+      def Process(self, input_feats: MatrixBase, frame: int,
+                  output_frame: VectorBase)
+
+    class ShiftedDeltaFeaturesOptions:
+      window: int
+      num_blocks: int
+      block_shift: int
+
+    class ShiftedDeltaFeatures:
+      def __init__(self, opts: ShiftedDeltaFeaturesOptions)
+
+      def Process(self, input_feats: MatrixBase, frame: int,
+                  output_frame: VectorBase)
+
+    def ComputeDeltas(delta_opts: DeltaFeaturesOptions,
+                      input_features: MatrixBase, output_features: Matrix)
+
+    def ComputeShiftedDeltas(delta_opts: ShiftedDeltaFeaturesOptions,
+                             input_features: MatrixBase,
+                             output_features: Matrix)
+
+    def SpliceFrames(input_features: MatrixBase, left_context: int,
+                     right_context: int, output_features: Matrix)
+
+    def ReverseFrames(input_features: MatrixBase, output_features: Matrix)
+
+    def InitIdftBases(n_bases: int, dimension: int, mat_out: Matrix)
+
+    class SlidingWindowCmnOptions:
+      cmn_window: int
+      min_window: int
+      normalize_variance: bool
+      center: bool
+
+      def Check(self)
+
+    def SlidingWindowCmn(opts: SlidingWindowCmnOptions,
+                         input: MatrixBase, output: Matrix)

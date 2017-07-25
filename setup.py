@@ -405,7 +405,7 @@ kaldi_table_ext = Extension(
     include_dirs = ['kaldi/util/'] + include_dirs,
     library_dirs = library_dirs + ['build/lib/kaldi/util', 'build/lib/kaldi/matrix', 'build/lib/kaldi/feat'],
     runtime_library_dirs = ['$ORIGIN/../feat'] + ['$ORIGIN/../matrix'] + runtime_library_dirs,
-    libraries = [':compressed_matrix.so', ':kaldi_matrix.so', ':kaldi_vector.so', ':wave_reader.so', 
+    libraries = [':compressed_matrix.so', ':kaldi_matrix.so', ':kaldi_vector.so', ':wave_reader.so',
                  'kaldi-util', 'kaldi-matrix'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_table_ext)
@@ -425,6 +425,22 @@ feature_window = Extension(
                'kaldi-feat'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(feature_window)
+
+feature_functions = Extension(
+    "kaldi.feat.feature_functions",
+    sources=[
+        'build/kaldi/feat/feature-functions-clifwrap.cc',
+        'build/kaldi/feat/feature-functions-clifwrap-init.cc',
+    ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix'],
+    runtime_library_dirs=['$ORIGIN/../matrix'] + runtime_library_dirs,
+    libraries=[':kaldi_matrix.so', ':kaldi_vector.so',
+               'kaldi-feat'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(feature_functions)
 
 mel_computations = Extension(
     "kaldi.feat.mel_computations",
@@ -460,22 +476,22 @@ feature_mfcc = Extension(
     extra_link_args=extra_link_args)
 extensions.append(feature_mfcc)
 
-# feature_common = Extension(
-#     "kaldi.feat.feature_common",
-#     sources=[
-#         'build/kaldi/feat/feature-mfcc-clifwrap.cc',
-#         'build/kaldi/feat/feature-mfcc-clifwrap-init.cc',
-#     ],
-#     language='c++',
-#     extra_compile_args=extra_compile_args,
-#     include_dirs=include_dirs,
-#     library_dirs=library_dirs + ['build/lib/kaldi/matrix',
-#                                  'build/lib/kaldi/feat'],
-#     runtime_library_dirs=['$ORIGIN/../matrix'] + runtime_library_dirs,
-#     libraries=[':feature_mfcc.so', ':kaldi_matrix.so', ':kaldi_vector.so',
-#                'kaldi-feat'] + libraries,
-#     extra_link_args=extra_link_args)
-# extensions.append(feature_common)
+feature_common_ext = Extension(
+    "kaldi.feat.feature_common_ext",
+    sources=[
+        'build/kaldi/feat/feature-common-ext-clifwrap.cc',
+        'build/kaldi/feat/feature-common-ext-clifwrap-init.cc',
+    ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix',
+                                 'build/lib/kaldi/feat'],
+    runtime_library_dirs=['$ORIGIN/../matrix'] + runtime_library_dirs,
+    libraries=[':feature_mfcc.so', ':kaldi_matrix.so', ':kaldi_vector.so',
+               'kaldi-feat'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(feature_common_ext)
 
 packages = find_packages()
 

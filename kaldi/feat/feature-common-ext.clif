@@ -1,0 +1,18 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "feat/feature-mfcc-clifwrap.h" import *
+
+from "feat/feature-common-ext.h":
+  namespace `kaldi`:
+    class `MfccOfflineFeatureTpl` as Mfcc:
+      # Additional dummy argument was added for resolving the difficulty CLIF
+      # was having with matching this method signature. We won't expose it in
+      # the Python class wrapping Mfcc C extension type.
+      def __init__(self, opts: MfccOptions, dummy: bool = default)
+
+      @add__init__
+      def `MfccOfflineFeatureTpl` as from_other(self, other: Mfcc)
+
+      def Compute(self, wave: VectorBase, vtnl_warp: float, output: Matrix)
+
+      def Dim(self) -> int

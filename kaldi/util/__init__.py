@@ -65,6 +65,16 @@ class SequentialMatrixReader(_SequentialReaderBase,
         return key, Matrix.new(value)
 
 
+class SequentialWaveReader(_SequentialReaderBase,
+                          kaldi_table_ext.SequentialWaveReader):
+    """Python wrapper for kaldi::SequentialTableReader<WaveHolder>.
+
+    This is a wrapper around the C extension type SequentialWaveReader.
+    It provides a more Pythonic API by implementing the iterator protocol.
+    """
+    pass
+
+
 class SequentialIntReader(_SequentialReaderBase,
                           kaldi_table_ext.SequentialIntReader):
     """Python wrapper for kaldi::SequentialTableReader<BasicHolder<int32>>.
@@ -210,6 +220,17 @@ class RandomAccessMatrixReader(_RandomAccessReaderBase,
     def __getitem__(self, key):
         value = super(RandomAccessMatrixReader, self).__getitem__(key)
         return Matrix.new(value)
+
+
+class RandomAccessWaveReader(_RandomAccessReaderBase,
+                             kaldi_table_ext.RandomAccessWaveReader):
+    """Python wrapper for kaldi::RandomAccessTableReader<WaveHolder>.
+
+    This is a wrapper around the C extension type RandomAccessWaveReader.
+    It provides a more Pythonic API by implementing the __contains__ and
+    __getitem__ methods.
+    """
+    pass
 
 
 class RandomAccessIntReader(_RandomAccessReaderBase,
@@ -423,6 +444,15 @@ class MatrixWriter(_WriterBase, kaldi_table_ext.MatrixWriter):
     """Python wrapper for kaldi::TableWriter<KaldiObjectHolder<Matrix<float>>>.
 
     This is a wrapper around the C extension type MatrixWriter.
+    It provides a more Pythonic API by implementing the __setitem__ method.
+    """
+    pass
+
+
+class WaveWriter(_WriterBase, kaldi_table_ext.WaveWriter):
+    """Python wrapper for kaldi::TableWriter<WaveHolder>.
+
+    This is a wrapper around the C extension type WaveWriter.
     It provides a more Pythonic API by implementing the __setitem__ method.
     """
     pass
