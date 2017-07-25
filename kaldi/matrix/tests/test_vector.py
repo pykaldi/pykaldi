@@ -3,14 +3,14 @@ import unittest
 import numpy as np 
 from kaldi.matrix import Vector
 
-class TestPyKaldi(unittest.TestCase):
+class TestKaldiVector(unittest.TestCase):
 
     def _test_str(self, v):
-        # Test __str__ of empty kaldi.Vector
+        # Test __str__ of kaldi.Vector
         try:
             v.__str__()
         except:
-            raise AssertionError("__str__ of empty Vector failed")
+            raise AssertionError("__str__ of Vector failed")
 
     def test_empty(self):
 
@@ -23,7 +23,7 @@ class TestPyKaldi(unittest.TestCase):
 
         v = Vector.new([])
         self.assertIsNotNone(v)
-        self.assertFalse(v.own_data) #whyyyy???
+        self.assertFalse(v.own_data)
         self.assertEqual(0, v.size())
         self._test_str(v)
 
@@ -52,6 +52,10 @@ class TestPyKaldi(unittest.TestCase):
         self.assertTrue(v2.equal(v))
 
     def test__getitem__(self):
+        v = Vector()
+        with self.assertRaises(IndexError):
+            v[0]
+
         v = Vector.new([3, 5, 7, 11, 13])
         self.assertAlmostEqual(3.0, v[0])
         self.assertAlmostEqual(7.0, v[2])
@@ -65,6 +69,10 @@ class TestPyKaldi(unittest.TestCase):
         self.assertAlmostEqual(1001.0, v[2:5].numpy().prod())
 
     def test__setitem__(self):
+        v = Vector()
+        with self.assertRaises(IndexError):
+            v[0] = 1.0
+
         v = Vector.new([3, 5, 7, 11, 13])
         v[0] = 15.0
         self.assertAlmostEqual(75075.0, v[:10].numpy().prod())
@@ -76,6 +84,10 @@ class TestPyKaldi(unittest.TestCase):
         self.assertAlmostEqual(15015.0, v.numpy().prod())
 
     def test__delitem__(self):
+        v = Vector()
+        with self.assertRaises(IndexError):
+            del v[0]
+
         v = Vector.new([3, 5, 7, 11, 13])
 
         # v does not own its data 
