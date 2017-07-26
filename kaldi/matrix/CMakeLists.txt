@@ -24,12 +24,12 @@ add_pyclif_library("packed_matrix" packed-matrix.clif
 
 add_pyclif_library("sp_matrix" sp-matrix.clif
   CLIF_DEPS packed_matrix
-  LIBRARIES kaldi-matrix kaldi-base packed_matrix
+  LIBRARIES kaldi-matrix kaldi-base
 )
 
 add_pyclif_library("tp_matrix" tp-matrix.clif
   CLIF_DEPS packed_matrix
-  LIBRARIES kaldi-matrix kaldi-base packed_matrix 
+  LIBRARIES kaldi-matrix kaldi-base 
 )
 
 add_pyclif_library("kaldi_vector_ext" kaldi-vector-ext.clif

@@ -5,6 +5,7 @@ from setuptools import setup, find_packages
 import setuptools.command.build_ext
 import setuptools.command.install_lib
 import distutils.command.build
+import setuptools.extension
 
 import platform
 import subprocess
@@ -37,8 +38,7 @@ DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = which("pyclif")
 CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')
-# CWD = os.path.dirname(os.path.abspath(__file__))
-CWD = "."
+CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 
 if not PYCLIF:
@@ -87,6 +87,11 @@ for key, value in cfg_vars.items():
 ################################################################################
 # Use CMake to build stuff on parallel
 ################################################################################
+class KaldiExtension(setuptools.extension.Extension):
+    """Dummy class that only holds the name of the extension"""
+    def __init__(self, name):
+        setuptools.extension.Extension.__init__(self, name, [])
+
 class CMakeBuild(setuptools.command.build_ext.build_ext):
     def run(self):
         old_inplace, self.inplace = self.inplace, 0
@@ -108,6 +113,16 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         if old_inplace:
             self.copy_extensions_to_source()
 
+    def get_ext_filename(self, fullname):
+        """Convert the name of an extension (eg. "foo.bar") into the name
+        of the file from which it will be loaded (eg. "foo/bar.so"). This
+        patch overrides platform specific extension suffix with ".so".
+        """
+        from distutils.sysconfig import get_config_var
+        ext_path = fullname.split('.')
+        ext_suffix = '.so'
+        return os.path.join(*ext_path) + ext_suffix
+
 class build(distutils.command.build.build):
     def finalize_options(self):
         self.build_base = 'build'
@@ -119,6 +134,16 @@ class install_lib(setuptools.command.install_lib.install_lib):
         self.build_dir = 'build/lib'
         outfiles = setuptools.command.install_lib.install_lib.install(self)
         print(outfiles)
+
+################################################################################
+#
+################################################################################
+extensions = [
+                KaldiExtension("kaldi._clif"),
+                KaldiExtension("kaldi.matrix.matrix_common"),
+                KaldiExtension("kaldi.matrix.kaldi_vector"),
+                KaldiExtension("kaldi.matrix.kaldi_matrix")
+             ]
 
 ################################################################################
 # Setup pykaldi
@@ -598,6 +623,7 @@ setup(name = 'pykaldi',
       version = '0.0.1',
       description = 'Kaldi Python Wrapper',
       author = 'SAIL',
+      ext_modules=extensions,
       cmdclass = {
           'build_ext': CMakeBuild,
           'build': build,

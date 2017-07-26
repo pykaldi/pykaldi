@@ -8,7 +8,8 @@ if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
 endif()
 
 # Additional files used by cmake
-set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# TODO: Add scripts FindNumPy and FindKaldi
+# set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 set(DOUBLE_PRECISION 0)
 
@@ -55,6 +56,36 @@ set(KALDI_TOOLS_DIR "${KALDI_DIR}/tools")
 set(KALDI_LIBRARIES_DIR "${KALDI_SRC_DIR}/lib")
 set(ATLAS_INC_DIR ${KALDI_TOOLS_DIR}/ATLAS/include)
 set(OPENFST_INC_DIR ${KALDI_TOOLS_DIR}/openfst/include)
+
+####################################################################################################
+# Find kaldi libraries
+# Code from: https://github.com/usc-sail/barista/blob/master/cmake/FindKaldi.cmake
+####################################################################################################
+if(KALDI_SRC_DIR)
+  find_library(KALDI_BASE_LIBRARY      NAMES base/kaldi-base.a 
+                 PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_DECODER_LIBRARY   NAMES decoder/kaldi-decoder.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_FEAT_LIBRARY      NAMES feat/kaldi-feat.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_GMM_LIBRARY       NAMES gmm/kaldi-gmm.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_HMM_LIBRARY       NAMES hmm/kaldi-hmm.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_LAT_LIBRARY       NAMES lat/kaldi-lat.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_MATRIX_LIBRARY    NAMES matrix/kaldi-matrix.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_ONLINE_LIBRARY    NAMES online/kaldi-online.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_TRANSFORM_LIBRARY NAMES transform/kaldi-transform.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_TREE_LIBRARY      NAMES tree/kaldi-tree.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+  find_library(KALDI_UTIL_LIBRARY      NAMES util/kaldi-util.a
+               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
+endif(KALDI_SRC_DIR)
+
 
 ####################################################################################################
 # From: https://github.com/usc-sail/barista/blob/master/CMakeLists.txt
@@ -185,8 +216,11 @@ function(add_pyclif_library name pyclif_file)
   endforeach(DEP)
 
   # Add link libraries
+  message("Libraries for: ${extname}")
+  message("${CLIF_LIBRARIES}")
   target_link_libraries(${extname} ${CLIF_LIBRARIES})
-  foreach(LIB ${LIBRARIES})
+  foreach(LIB ${PYCLIF_LIBRARY_LIBRARIES})
+    message("${LIB}")
     target_link_libraries(${extname} ${LIB})
   endforeach(LIB)
 
