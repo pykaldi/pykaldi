@@ -19,17 +19,19 @@ class TestKaldiMatrix(unittest.TestCase):
         self.assertTupleEqual((0, 0), m.size())
         self._test_str(m)
 
-        m = Matrix.new([[]])
-        self.assertIsNotNone(m)
-        self.assertFalse(m.own_data)
-        self.assertTupleEqual((1, 0), m.size())
-        self._test_str(m)
+        with self.raises(IndexError):
+            m = Matrix.new([[]])
+        # self.assertIsNotNone(m)
+        # self.assertFalse(m.own_data)
+        # self.assertTupleEqual((1, 0), m.size())
+        # self._test_str(m)
 
-        m = Matrix.new([[], []])
-        self.assertIsNotNone(m)
-        self.assertFalse(m.own_data)
-        self.assertTupleEqual((2, 0), m.size())
-        self._test_str(m)
+        with self.raises(IndexError):
+            m = Matrix.new([[], []])
+        # self.assertIsNotNone(m)
+        # self.assertFalse(m.own_data)
+        # self.assertTupleEqual((2, 0), m.size())
+        # self._test_str(m)
 
     def test_nonempty(self):
         m = Matrix(100, 100)
