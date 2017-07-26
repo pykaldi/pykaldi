@@ -36,7 +36,10 @@ def which(program):
 ################################################################################
 DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = which("pyclif")
+CLIF_DIR = os.getenv('CLIF_DIR')
+KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
+BUILD_DIR = os.path.join(CWD, 'build')
 
 if not PYCLIF:
   PYCLIF = os.getenv("PYCLIF")
@@ -47,14 +50,12 @@ if not PYCLIF:
     except OSError:
         raise RuntimeError("PYCLIF was not found. Please set environment variable PYCLIF.")
 
-if "KALDI_DIR" not in os.environ:
+if not KALDI_DIR:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
 
-KALDI_DIR = os.environ['KALDI_DIR']
 KALDI_SRC_DIR = os.path.join(KALDI_DIR, 'src')
 KALDI_LIB_DIR = os.path.join(KALDI_DIR, 'src/lib')
 
-CLIF_DIR = os.getenv('CLIF_DIR', None)
 if not CLIF_DIR:
     CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
     print("CLIF_DIR environment variable is not set.")
@@ -70,6 +71,7 @@ if DEBUG:
     print("KALDI_DIR: {}".format(KALDI_DIR))
     print("CLIF_DIR: {}".format(CLIF_DIR))
     print("CXX_FLAGS: {}".format(os.getenv("CXX_FLAGS")))
+    print("BUILD_DIR: {}".format(BUILD_DIR))
     print("#"*50)
 
 ################################################################################
@@ -106,10 +108,11 @@ class build_deps(Command):
         env = os.environ.copy()
         env['CXX_FLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXX_FLAGS', ''),
                                                               self.distribution.get_version())
-        if not os.path.exists(self.build_temp):
-            os.mkdirs(self.build_temp)
+        if not os.path.exists(BUILD_DIR):
+            os.makedirs(BUILD_DIR)
 
-        subprocess.check_call(['cmake', '..'] + cmake_args, cwd=self.build_temp, env = env)
+        subprocess.check_call(['cmake', '..'] + cmake_args, cwd=BUILD_DIR, env = env)
+        subprocess.check_call(['make'], cwd=BUILD_DIR, env = env)
         print()
 
 ################################################################################
@@ -141,11 +144,11 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         env = os.environ.copy()
         env['CXX_FLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXX_FLAGS', ''),
                                                               self.distribution.get_version())
-        if not os.path.exists(self.build_temp):
-            os.mkdirs(self.build_temp)
+        if not os.path.exists(BUILD_DIR):
+            os.makedirs(BUILD_DIR)
 
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
+        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=BUILD_DIR, env=env)
+        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=BUILD_DIR)
         print() # Add an empty line for cleaner output
 
     def get_ext_filename(self, fullname):
