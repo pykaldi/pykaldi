@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 """Setup configuration."""
 
-from setuptools import setup, Extension, distutils, Command, find_packages
-import distutils.command.build
+from setuptools import setup, find_packages
 import setuptools.command.build_ext
-import setuptools.command.install
-import setuptools.command.develop
-import setuptools.command.build_py
+import setuptools.command.install_lib
+import distutils.command.build
+
 import platform
 import subprocess
 import shutil
@@ -38,7 +37,8 @@ DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = which("pyclif")
 CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')
-CWD = os.path.dirname(os.path.abspath(__file__))
+# CWD = os.path.dirname(os.path.abspath(__file__))
+CWD = "."
 BUILD_DIR = os.path.join(CWD, 'build')
 
 if not PYCLIF:
@@ -84,81 +84,29 @@ for key, value in cfg_vars.items():
     if type(value) == str:
         cfg_vars[key] = value.replace("-Wstrict-prototypes", "")
 
-
 ################################################################################
-# Build dependencies
+# Use CMake to build stuff on parallel
 ################################################################################
-class build_deps(Command):
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
+class CMakeBuild(setuptools.command.build_ext.build_ext):
     def run(self):
-        cmake_args = ['-DKALDI_DIR='+KALDI_DIR,
-                      '-DPYCLIF='+PYCLIF,
-                      '-DCLIF_DIR='+CLIF_DIR]
+        old_inplace, self.inplace = self.inplace, 0
 
+        cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
+                      '-DPYCLIF=' + PYCLIF,
+                      '-DCLIF_DIR=' + CLIF_DIR]
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
-        env = os.environ.copy()
-        env['CXX_FLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXX_FLAGS', ''),
-                                                              self.distribution.get_version())
         if not os.path.exists(BUILD_DIR):
             os.makedirs(BUILD_DIR)
 
-        subprocess.check_call(['cmake', '..'] + cmake_args, cwd=BUILD_DIR, env = env)
-        subprocess.check_call(['make'], cwd=BUILD_DIR, env = env)
-        print()
-
-################################################################################
-# Use CMake to build stuff on parallel
-# Code from: http://www.benjack.io/2017/06/12/python-cpp-tests.html
-################################################################################
-class CMakeExtension(Extension):
-    def __init__(self, name, sourcedir = ''):
-        super(Extension, self).__init__(name, sources = [])
-        self.sourcedir = os.path.abspath(sourcedir)
-
-class CMakeBuild(setuptools.command.build_ext.build_ext):
-    def run(self):
-        self.run_command("build_deps")
-        for ext in self.extensions:
-            self.build_extension(ext)
-
-    def build_extension(self, ext):
-        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY='+ extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable]
-
-        cfg = 'Debug' if DEBUG else 'Release'
-        build_args = ['--config', cfg]
-
-        cmake_args += ['--DCMAKE_BUILD_TYPE='+cfg]
-        build_args += ['--', '-j2']
-
-        env = os.environ.copy()
-        env['CXX_FLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXX_FLAGS', ''),
-                                                              self.distribution.get_version())
-        if not os.path.exists(BUILD_DIR):
-            os.makedirs(BUILD_DIR)
-
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=BUILD_DIR, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=BUILD_DIR)
+        subprocess.check_call(['cmake', '..'] + cmake_args, cwd = BUILD_DIR)
+        subprocess.check_call(['make', '-j'], cwd = BUILD_DIR)
         print() # Add an empty line for cleaner output
 
-    def get_ext_filename(self, fullname):
-        """Convert the name of an extension (eg. "foo.bar") into the name
-        of the file from which it will be loaded (eg. "foo/bar.so"). This
-        patch overrides platform specific extension suffix with ".so".
-        """
-        ext_path = fullname.split('.')
-        ext_suffix = '.so'
-        return os.path.join(*ext_path) + ext_suffix
+        self.inplace = old_inplace
+        if old_inplace:
+            self.copy_extensions_to_source()
 
 class build(distutils.command.build.build):
     def finalize_options(self):
@@ -166,44 +114,14 @@ class build(distutils.command.build.build):
         self.build_lib = 'build/lib'
         distutils.command.build.build.finalize_options(self)
 
-################################################################################
-# Configure compile flags
-################################################################################
-library_dirs = ['build/lib/kaldi', KALDI_LIB_DIR]
-
-runtime_library_dirs = ['$ORIGIN/..', '$ORIGIN', KALDI_LIB_DIR]
-
-include_dirs = [
-    CWD,
-    os.path.join(CWD, 'build/kaldi'),  # Path to wrappers generated by clif
-    os.path.join(CWD, 'kaldi'),  # Path to hand written wrappers
-    os.path.join(CLIF_DIR, '..'),  # Path to clif install dir
-    KALDI_SRC_DIR,
-    os.path.join(KALDI_DIR, 'tools/openfst/include'),
-    os.path.join(KALDI_DIR, 'tools/ATLAS/include'),
-    NUMPY_INC_DIR,
-]
-
-extra_compile_args = [
-    '-std=c++11',
-    '-Wno-write-strings',
-    '-DKALDI_DOUBLEPRECISION=0',
-    '-DHAVE_EXECINFO_H=1',
-    '-DHAVE_CXXABI_H',
-    '-DHAVE_ATLAS',
-    '-DKALDI_PARANOID'
-]
-
-extra_link_args = []
-
-libraries = [':_clif.so']
-
-if DEBUG:
-    extra_compile_args += ['-O0', '-g', '-UNDEBUG']
-    extra_link_args += ['-O0', '-g']
+class install_lib(setuptools.command.install_lib.install_lib):
+    def install(self):
+        self.build_dir = 'build/lib'
+        outfiles = setuptools.command.install_lib.install_lib.install(self)
+        print(outfiles)
 
 ################################################################################
-# Declare extensions and packages
+# Setup pykaldi
 ################################################################################
 extensions = []
 
@@ -678,14 +596,13 @@ packages = find_packages()
 
 setup(name = 'pykaldi',
       version = '0.0.1',
-      description='Kaldi Python Wrapper',
-      author='SAIL',
-      ext_modules=extensions,
-      cmdclass= {
-          'build_deps': build_deps,
+      description = 'Kaldi Python Wrapper',
+      author = 'SAIL',
+      cmdclass = {
           'build_ext': CMakeBuild,
           'build': build,
+          'install_lib': install_lib
           },
-      packages=packages,
-      package_data={},
-      install_requires=['enum34;python_version<"3.4"', 'numpy'])
+      packages = packages,
+      package_data = {},
+      install_requires = ['enum34;python_version<"3.4"', 'numpy'])
