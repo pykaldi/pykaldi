@@ -210,8 +210,8 @@ function(add_pyclif_library name pyclif_file)
     # Add dependency to pyclif
     add_dependencies(${name}-pyclif ${DEP})
 
-    # Add dependency to python extension
-    add_dependencies(${extname} ${DEP})
+    # Link with the python extension
+    target_link_libraries(${extname} ${DEP})
 
   endforeach(DEP)
 
