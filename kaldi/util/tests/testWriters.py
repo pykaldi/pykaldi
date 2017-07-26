@@ -29,9 +29,7 @@ class _TestWriters:
         self.assertTrue(writer.IsOpen())
         self.assertTrue(writer.Close())
 
-        # TODO (VM): What should this exception be?
-        # Right now it is a RuntimeException in C++
-        with self.assertRaises(Exception): 
+        with self.assertRaises(RuntimeError): 
             writer.Close()
         
         # Check that the file exists after closing the writer

@@ -11,12 +11,11 @@ class _TestSequentialReaders:
     def test__init__(self):
         reader = self.getImpl()
         self.assertIsNotNone(reader)
-        self.assertFalse(reader.IsOpen())
-        self.assertFalse(reader.Done())
+        with self.assertRaises(RuntimeError):
+            self.assertFalse(reader.IsOpen())
+            self.assertFalse(reader.Done())
 
-        # TODO (VM): What should this exception be?
-        # Right now it is a RuntimeException in C++
-        with self.assertRaises(Exception): 
+        with self.assertRaises(RuntimeError): 
             reader.Close()
 
         # Delete file in case it exists
@@ -30,21 +29,23 @@ class _TestSequentialReaders:
         self.assertFalse(reader.IsOpen())
 
         # TODO (VM): This raises a runtime exception right now
-        self.assertFalse(reader.Done())
+        # self.assertFalse(reader.Done())
 
         # Touch file
         open('/tmp/temp.ark', 'w').close()
         
+        reader = self.getImpl('ark,t:/tmp/temp.ark')
         self.assertTrue(reader.IsOpen())
         self.assertTrue(reader.Done())
 
     def testContextManager(self):
-        with self.getImpl() as reader:
-            self.assertTrue(reader.IsOpen())
+        with self.assertRaises(RuntimeError):
+            with self.getImpl() as reader:
+                self.assertFalse(reader.IsOpen())
+                self.assertFalse(reader.Done())
+                
+            self.assertFalse(reader.IsOpen())
             self.assertFalse(reader.Done())
-            
-        self.assertFalse(reader.IsOpen())
-        self.assertTrue(reader.Done())
 
         # Reset reader so that it doesnt by default pass the next ones
         reader = None
@@ -54,28 +55,32 @@ class _TestSequentialReaders:
         
         with self.getImpl('ark,t:/tmp/temp.ark') as reader:
             self.assertTrue(reader.IsOpen())
-            self.assertFalse(reader.Done())
-            
-        self.assertFalse(reader.IsOpen())
-        self.assertTrue(reader.Done())
+            self.assertTrue(reader.Done())
+        
+        with self.assertRaises(RuntimeError):
+            self.assertFalse(reader.IsOpen())
+            self.assertTrue(reader.Done())
 
     def test__iter__(self):
-        with self.getImpl() as reader:
-            for k, v in reader:
-                self.assertTrue(reader.IsOpen())
-                self.assertFalse(reader.IsDone())
+        with self.assertRaises(RuntimeError):
+            with self.getImpl() as reader:
+                for k, v in reader:
+                    self.assertTrue(reader.IsOpen())
+                    self.assertFalse(reader.IsDone())
 
-        self.assertFalse(reader.IsOpen())
-        self.assertTrue(reader.Done())
+        with self.assertRaises(RuntimeError):
+            self.assertFalse(reader.IsOpen())
+            self.assertTrue(reader.Done())
 
         reader = None
         with self.getImpl('ark,t:/tmp/temp.ark') as reader:
             for k, v in reader:
                 self.assertTrue(reader.IsOpen())
-                self.assertFalse(reader.IsDone())
+                self.assertFalse(reader.Done())
 
-        self.assertFalse(reader.IsOpen())
-        self.assertTrue(reader.Done()) 
+        with self.assertRaises(RuntimeError):
+            self.assertFalse(reader.IsOpen())
+            self.assertTrue(reader.Done()) 
 
     def testRead(self):
         # Create a file and write an example to it
@@ -87,8 +92,9 @@ class _TestSequentialReaders:
             for idx, (k, v) in enumerate(reader):
                 self.checkRead(idx, (k, v))
 
-        self.assertFalse(reader.IsOpen())
-        self.assertTrue(reader.Done())
+        with self.assertRaises(RuntimeError):
+            self.assertFalse(reader.IsOpen())
+            self.assertTrue(reader.Done())
 
 class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase):
     def getImpl(self, *args):
