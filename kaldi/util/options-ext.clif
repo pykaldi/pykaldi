@@ -1,0 +1,76 @@
+
+from "util/options-ext.h":
+  namespace `kaldi`:
+    class OptionsItf:
+      def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
+      def `Register` as register_int(self, name: str, ptr: `int32` as int, doc: str)
+      def `Register` as register_uint(self, name: str, ptr: `uint32` as int, doc: str)
+      def `Register` as register_float(self, name: str, ptr: `float` as float, doc: str)
+      def `Register` as register_double(self, name: str, ptr: `double` as float, doc: str)
+      def `Register` as register_str(self, name: str, ptr: str, doc: str)
+
+    class `SimpleOptionsExt` as SimpleOptions(OptionsItf):
+      def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
+      def `Register` as register_int(self, name: str, ptr: `int32` as int, doc: str)
+      def `Register` as register_uint(self, name: str, ptr: `uint32` as int, doc: str)
+      def `Register` as register_float(self, name: str, ptr: `float` as float, doc: str)
+      def `Register` as register_double(self, name: str, ptr: `double` as float, doc: str)
+      def `Register` as register_str(self, name: str, ptr: str, doc: str)
+
+      def `SetOption` as set_option_bool(self, key: str, value: bool) -> bool
+      def `SetOptionInt` as set_option_int(self, key: str, value: int) -> bool
+      def `SetOptionUInt` as set_option_uint(self, key: str, value: int) -> bool
+      def `SetOptionFloat` as set_option_float(self, key: str, value: float) -> bool
+      def `SetOptionDouble` as set_option_double(self, key: str, value: float) -> bool
+      def `SetOption` as set_option_str(self, key: str, value: str) -> bool
+
+      def `GetOption` as get_option_bool(self, key: str, value: bool) -> bool
+      def `GetOption` as get_option_int(self, key: str, value: int) -> bool
+      def `GetOption` as get_option_uint(self, key: str, value: int) -> bool
+      def `GetOption` as get_option_float(self, key: str, value: float) -> bool
+      def `GetOption` as get_option_double(self, key: str, value: float) -> bool
+      def `GetOption` as get_option_str(self, key: str, value: str) -> bool
+
+      enum OptionType with:
+        `kBool` as BOOL
+        `kInt32` as INT
+        `kUint32` as UINT
+        `kFloat` as FLOAT
+        `kDouble` as DOUBLE
+        `kString` as STRING
+
+      class OptionInfo:
+        doc: str
+        type: OptionType
+        def __init__(self, doc: str, type: OptionType)
+
+      def GetOptionInfoList(self) -> list<tuple<str, OptionInfo>>
+
+      def GetOptionType(self, key: str) -> (success: bool, type: OptionType)
+
+    class `ParseOptionsExt` as ParseOptions(OptionsItf):
+      def __init__(self, usage: str)
+
+      @add__init__
+      def `ParseOptionsExt` as from_other(self, prefix: str, other: OptionsItf)
+
+      def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
+      def `Register` as register_int(self, name: str, ptr: `int32` as int, doc: str)
+      def `Register` as register_uint(self, name: str, ptr: `uint32` as int, doc: str)
+      def `Register` as register_float(self, name: str, ptr: `float` as float, doc: str)
+      def `Register` as register_double(self, name: str, ptr: `double` as float, doc: str)
+      def `Register` as register_str(self, name: str, ptr: str, doc: str)
+
+      def DisableOption(self, name: str)
+      def Read(self, argv: list<str>) -> int
+      def PrintUsage(self, print_command_line: bool = default)
+
+      def PrintConfig(self)
+      def ReadConfigFile(self, filename: str)
+
+      def NumArgs(self) -> int
+      def GetArg(self, param: int) -> str
+      def GetOptArg(self, param: int) -> str
+
+      @classmethod
+      def Escape(cls, str: str) -> str

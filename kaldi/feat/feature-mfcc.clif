@@ -1,4 +1,5 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "util/options-ext-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
 from "feat/mel-computations-clifwrap.h" import *
 
@@ -13,6 +14,8 @@ from "feat/feature-mfcc.h":
       raw_energy: bool
       cepstral_lifter: float
       htk_compat: bool
+
+      def Register(self, opts: OptionsItf)
 
     class MfccComputer:
       def __init__(self, opts: MfccOptions)

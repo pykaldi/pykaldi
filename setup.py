@@ -410,6 +410,21 @@ kaldi_table_ext = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_table_ext)
 
+options_ext = Extension(
+    "kaldi.util.options_ext",
+    sources = [
+        "build/kaldi/util/options-ext-clifwrap.cc",
+        "build/kaldi/util/options-ext-clifwrap-init.cc",
+    ],
+    language = "c++",
+    extra_compile_args = extra_compile_args,
+    include_dirs = ['kaldi/util/'] + include_dirs,
+    library_dirs = library_dirs,
+    runtime_library_dirs = runtime_library_dirs,
+    libraries = ['kaldi-util'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(options_ext)
+
 feature_window = Extension(
     "kaldi.feat.feature_window",
     sources=[
@@ -468,10 +483,10 @@ feature_mfcc = Extension(
     language='c++',
     extra_compile_args=extra_compile_args,
     include_dirs=include_dirs,
-    library_dirs=library_dirs + ['build/lib/kaldi/matrix',
+    library_dirs=library_dirs + ['build/lib/kaldi/matrix', 'build/lib/kaldi/util',
                                  'build/lib/kaldi/feat'],
-    runtime_library_dirs=['$ORIGIN/../matrix'] + runtime_library_dirs,
-    libraries=[':mel_computations.so', ':feature_window.so', ':kaldi_vector.so',
+    runtime_library_dirs=['$ORIGIN/../matrix', '$ORIGIN/../util'] + runtime_library_dirs,
+    libraries=[':mel_computations.so', ':feature_window.so', ':options_ext.so', ':kaldi_vector.so',
                'kaldi-feat'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(feature_mfcc)

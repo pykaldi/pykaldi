@@ -1,3 +1,4 @@
+from .options_ext import SimpleOptions, ParseOptions
 from .kaldi_table import ReadScriptFile, WriteScriptFile
 from . import kaldi_table_ext
 from ..matrix import Vector, Matrix
