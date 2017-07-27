@@ -57,35 +57,11 @@ set(KALDI_LIBRARIES_DIR "${KALDI_SRC_DIR}/lib")
 set(ATLAS_INC_DIR ${KALDI_TOOLS_DIR}/ATLAS/include)
 set(OPENFST_INC_DIR ${KALDI_TOOLS_DIR}/openfst/include)
 
-####################################################################################################
-# Find kaldi libraries
-# Code from: https://github.com/usc-sail/barista/blob/master/cmake/FindKaldi.cmake
-####################################################################################################
-if(KALDI_SRC_DIR)
-  find_library(KALDI_BASE_LIBRARY      NAMES base/kaldi-base.a 
-                 PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_DECODER_LIBRARY   NAMES decoder/kaldi-decoder.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_FEAT_LIBRARY      NAMES feat/kaldi-feat.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_GMM_LIBRARY       NAMES gmm/kaldi-gmm.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_HMM_LIBRARY       NAMES hmm/kaldi-hmm.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_LAT_LIBRARY       NAMES lat/kaldi-lat.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_MATRIX_LIBRARY    NAMES matrix/kaldi-matrix.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_ONLINE_LIBRARY    NAMES online/kaldi-online.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_TRANSFORM_LIBRARY NAMES transform/kaldi-transform.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_TREE_LIBRARY      NAMES tree/kaldi-tree.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-  find_library(KALDI_UTIL_LIBRARY      NAMES util/kaldi-util.a
-               PATHS ${KALDI_SRC_DIR} NO_DEFAULT_PATH)
-endif(KALDI_SRC_DIR)
 
+# Find Numpy
+if(NOT NUMPY_INC_DIR)
+  message(FATAL_ERROR "You need to specify Numpy include directory. Set -DNUMPY_INC_DIR option.")
+endif(NOT NUMPY_INC_DIR)
 
 ####################################################################################################
 # From: https://github.com/usc-sail/barista/blob/master/CMakeLists.txt
@@ -106,6 +82,7 @@ include_directories(
   ${OPENFST_INC_DIR}
   ${ATLAS_INC_DIR}
   ${PYTHON_INCLUDE_DIRS}
+  ${NUMPY_INC_DIR}
 )
 
 ####################################################################################################
@@ -141,11 +118,17 @@ set_target_properties(${CLIF_LIBRARIES}
 # Function to set up rules to invoke pyclif on a .clif file
 # and generate the wrapper .cc and .h files.
 # It also adds a custom target to build the python extension
+#
+# arguments:
+#   name - Name of the extension
+#   pyclif_file - Name of the pyclif file to compile
+#
+# options:
+#
 ####################################################################################################
 function(add_pyclif_library name pyclif_file)
   set(multiValueArgs LIBRARIES LIBRARY_DIRS INCLUDE_DIRS CLIF_DEPS NAMESPACES)
-  set(oneValueArgs EXTENSION_PREFIX EXTENSION_SUFIX)
-  cmake_parse_arguments(PYCLIF_LIBRARY "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+  cmake_parse_arguments(PYCLIF_LIBRARY "" "" "${multiValueArgs}" ${ARGN})
 
   # PYCLIF configuration
   string(REPLACE ".clif" "" pyclif_file_basename ${pyclif_file})
@@ -153,11 +136,6 @@ function(add_pyclif_library name pyclif_file)
   set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.h")
   set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
   string(REPLACE "-" "_" module_name ${pyclif_file_basename})
-
-  # PYTHON configuration
-  set(extname "${module_name}")
-  string(REPLACE "pykaldi" "pykaldi/build/lib" output_location ${CMAKE_CURRENT_SOURCE_DIR})
-  # message(${output_location})
 
   # This defines the call to pyclif
   add_custom_command(
@@ -192,30 +170,69 @@ function(add_pyclif_library name pyclif_file)
     VERBATIM
   )
 
-  ######################################################
-  # Begin python extension build
-  ######################################################
+  # Add dependencies on the other pyclif targets
+  foreach(DEP ${PYCLIF_LIBRARY_CLIF_DEPS})
+    add_dependencies(${name}-pyclif ${DEP})
+  endforeach(DEP)
+
+  # Manage CC files through the correct function
+  # PYCLIFDEP flag adds a dependency on ${name}-pyclif target
+  # Pass along any arguments sent to this
+  add_CC_library(${module_name}
+                 ${gen_cc}
+                 gen_init ${gen_init}
+                 gen_h ${gen_h}
+                 PYCLIFDEP
+                 ${ARGN})
+
+endfunction(add_pyclif_library)
+
+####################################################################################################
+# This function handles the case of .cc files that do not come from pyclif
+# It adds a custom target to build the python extension
+#
+# arguments:
+#   extname - Name of the library to build
+#   gen_cc - CCP file to compile
+#
+# options:
+#   PYCLIFDEP - (flag) to add a dependency on ${extname}-pyclif target. Should be set for files generated with pyclif
+#   LIBRARIES - (multi-value) libraries (e.g. kaldi-matrix, kaldi-base) to link against
+#   LIBRARY_DIRS - (multi-value) Currently not used
+#   INCLUDE_DIRS - (multi-value) Currently not used
+#   EXTENSION_PREFIX - (value) Currently not used
+#   EXTENSION_SUFIX - (value) Currently not used
+#   gen_h, gen_init - H and init.CPP files
+####################################################################################################
+function(add_CC_library extname gen_cc)
+  set(options PYCLIFDEP)
+  set(multiValueArgs LIBRARIES LIBRARY_DIRS INCLUDE_DIRS CLIF_DEPS)
+  set(oneValueArgs gen_h gen_init EXTENSION_PREFIX EXTENSION_SUFIX)
+  cmake_parse_arguments(PYCLIF_LIBRARY "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  # TODO (VM):
+  # This might not work in all cases...
+  string(REPLACE "pykaldi" "pykaldi/build/lib" output_location ${CMAKE_CURRENT_SOURCE_DIR})
+
   # Create extension
   add_library(${extname} SHARED ${gen_cc} ${gen_init})
 
-  message("Dependencies for: ${extname}")
-  message("${name}-pyclif")
-
   # Add dependencies
-  add_dependencies(${extname} ${name}-pyclif)
+  message("Dependencies for: ${extname}")
+
+  # If PYCLIFDEP is set, add dependency on ${extname}-pyclif
+  if(PYCLIF_LIBRARY_PYCLIFDEP)
+    message("${name}-pyclif")
+    add_dependencies(${extname} ${extname}-pyclif)
+  endif(PYCLIF_LIBRARY_PYCLIFDEP)
+
+  # Add a dependency from CLIF_DEPS
   foreach(DEP ${PYCLIF_LIBRARY_CLIF_DEPS})
-
     message("${DEP}")
-
-    # Add dependency to pyclif
-    add_dependencies(${name}-pyclif ${DEP})
-
-    # Link with the python extension
     target_link_libraries(${extname} ${DEP})
-
   endforeach(DEP)
 
-  # Add link libraries
+  # Link against CLIF_LIBRARIES
   message("Libraries for: ${extname}")
   message("${CLIF_LIBRARIES}")
   target_link_libraries(${extname} ${CLIF_LIBRARIES})
@@ -234,7 +251,8 @@ function(add_pyclif_library name pyclif_file)
     LIBRARY_OUTPUT_DIRECTORY ${output_location}
     RUNTIME_OUTPUT_DIRECTORY ${output_location})
 
-endfunction(add_pyclif_library)
+endfunction(add_CC_library)
+
 
 include_directories(${CLIF_DIR}/..)
 add_subdirectory("kaldi")

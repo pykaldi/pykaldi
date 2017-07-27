@@ -41,3 +41,8 @@ add_pyclif_library("matrix_functions" matrix-functions.clif
   CLIF_DEPS kaldi_matrix
   LIBRARIES kaldi-matrix kaldi-base
 )
+
+add_CC_library("matrix_ext" matrix-ext.cc
+  CLIF_DEPS kaldi_matrix
+  LIBRARIES kaldi-matrix kaldi-base
+)
