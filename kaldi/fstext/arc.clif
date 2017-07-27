@@ -1,0 +1,29 @@
+from "fstext/float-weight-clifwrap.h" import *
+
+from "fst/arc.h":
+  namespace `fst`:
+    class `ArcTpl<TropicalWeight>` as StdArc:
+      ilabel: int
+      olabel: int
+      weight: TropicalWeight
+      nextstate: int
+
+      @add__init__
+      def `ArcTpl` as new(self, ilabel: int, olabel:int,
+                          weight: TropicalWeight, nextstate: int)
+
+      @classmethod
+      def Type(cls) -> str
+
+    class `ArcTpl<LogWeight>` as LogArc:
+      ilabel: int
+      olabel: int
+      weight: LogWeight
+      nextstate: int
+
+      @add__init__
+      def `ArcTpl` as new(self, ilabel: int, olabel:int,
+                          weight: LogWeight, nextstate: int)
+
+      @classmethod
+      def Type(cls) -> str

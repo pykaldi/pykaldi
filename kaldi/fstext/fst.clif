@@ -1,0 +1,180 @@
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+
+# from "fstext/vector-fst.h":
+from "fst/vector-fst.h":
+  namespace `fst`:
+    # StdArc
+
+    class `Fst<StdArc>` as StdFst:
+      def Type(self) -> str
+
+    class `MutableFst<StdArc>` as StdMutableFst(StdFst):
+      def Type(self) -> str
+
+    # class `VectorState<StdArc, allocator<StdArc>>` as StdVectorState:
+    #   def Reset(self)
+    #   def Final(self) -> TropicalWeight
+    #   def NumInputEpsilons(self) -> int
+    #   def NumOutputEpsilons(self) -> int
+    #   def NumArcs(self) -> int
+    #   def GetArc(self, n: int) -> StdArc
+    #   def ReserveArcs(self, n: int)
+    #   def SetFinal(self, weight: TropicalWeight)
+    #   def SetNumInputEpsilons(self, n: int)
+    #   def SetNumOutputEpsilons(self, n: int)
+    #   def AddArc(self, arc: StdArc)
+    #   def SetArc(self, arc: StdArc, n: int)
+    #   def DeleteArcs(self)
+    #   def `DeleteArcs` as DeleteNArcs(self, n: int)
+
+    class `VectorFst<StdArc>` as StdVectorFst(StdMutableFst):
+      @add__init__
+      def `VectorFst` as from_fst(self, fst: StdFst)
+      @add__init__
+      def `VectorFst` as from_other(self, fst: StdVectorFst,
+                                    safe: bool = default)
+
+      def Start(self) -> int
+      def Final(self, state: int) -> TropicalWeight
+      def NumStates(self) -> int
+      def NumArcs(self, state: int) -> int
+      def NumInputEpsilons(self, state: int) -> int
+      def NumOutputEpsilons(self, state: int) -> int
+      def SetStart(self, state: int)
+      def SetFinal(self, state: int, weight: TropicalWeight)
+      def AddState(self) -> int
+      def AddArc(self, state: int, arc: StdArc)
+      def DeleteStates(self, dstates: list<int>)
+      def `DeleteStates` as DeleteAllStates(self)
+      def DeleteArcs(self, state: int, n: int)
+      def `DeleteArcs` as DeleteAllArcs(self, state: int)
+      def ReserveStates(self, n: int)
+      def ReserveArcs(self, state: int, n: int)
+
+      def Copy(self, safe: bool = default) -> StdVectorFst
+
+      @classmethod
+      def Read(cls, filename: str) -> StdVectorFst
+      def Write(self, filename: str) -> bool
+
+      def InputSymbols(self) -> SymbolTable
+      def OutputSymbols(self) -> SymbolTable
+      def MutableInputSymbols(self) -> SymbolTable
+      def MutableOutputSymbols(self) -> SymbolTable
+      def SetInputSymbols(self, isyms: SymbolTable)
+      def SetOutputSymbols(self, osyms: SymbolTable)
+
+      def Properties(self, mask: int, test: bool) -> int
+      def SetProperties(self, props: int, mask: int)
+      def Type(self) -> str
+
+    class `StateIterator<VectorFst<StdArc>>` as StdStateIterator:
+      def __init__(self, fst: StdVectorFst)
+      def Done(self) -> bool
+      def Value(self) -> int
+      def Next(self)
+      def Reset(self)
+
+    class `ArcIterator<VectorFst<StdArc>>` as StdArcIterator:
+      def __init__(self, fst: StdVectorFst, s: int)
+      def Done(self) -> bool
+      def Value(self) -> StdArc
+      def Next(self)
+      def Reset(self)
+      def Seek(self, a: int)
+      def Position(self) -> int
+      def Flags(self) -> int
+      def SetFlags(self, flags: int, mask: int)
+
+    class `MutableArcIterator<VectorFst<StdArc>>` as StdMutableArcIterator:
+      def __init__(self, fst: StdVectorFst, s: int)
+      def Done(self) -> bool
+      def Value(self) -> StdArc
+      def SetValue(self, arc: StdArc)
+      def Next(self)
+      def Reset(self)
+      def Seek(self, a: int)
+      def Position(self) -> int
+      def Flags(self) -> int
+      def SetFlags(self, flags: int, mask: int)
+
+    # LogArc
+
+    class `Fst<LogArc>` as LogFst:
+      def Type(self) -> str
+
+    class `MutableFst<LogArc>` as LogMutableFst(LogFst):
+      def Type(self) -> str
+
+    class `VectorFst<LogArc>` as LogVectorFst(LogMutableFst):
+      @add__init__
+      def `VectorFst` as from_fst(self, fst: LogFst)
+      @add__init__
+      def `VectorFst` as from_other(self, fst: LogVectorFst,
+                                    safe: bool = default)
+
+      def Start(self) -> int
+      def Final(self, state: int) -> LogWeight
+      def NumStates(self) -> int
+      def NumArcs(self, state: int) -> int
+      def NumInputEpsilons(self, state: int) -> int
+      def NumOutputEpsilons(self, state: int) -> int
+      def SetStart(self, state: int)
+      def SetFinal(self, state: int, weight: LogWeight)
+      def AddState(self) -> int
+      def AddArc(self, state: int, arc: LogArc)
+      def DeleteStates(self, dstates: list<int>)
+      def `DeleteStates` as DeleteAllStates(self)
+      def DeleteArcs(self, state: int, n: int)
+      def `DeleteArcs` as DeleteAllArcs(self, state: int)
+      def ReserveStates(self, n: int)
+      def ReserveArcs(self, state: int, n: int)
+
+      def Copy(self, safe: bool = default) -> LogVectorFst
+
+      @classmethod
+      def Read(cls, filename: str) -> LogVectorFst
+      def Write(self, filename: str) -> bool
+
+      def InputSymbols(self) -> SymbolTable
+      def OutputSymbols(self) -> SymbolTable
+      def MutableInputSymbols(self) -> SymbolTable
+      def MutableOutputSymbols(self) -> SymbolTable
+      def SetInputSymbols(self, isyms: SymbolTable)
+      def SetOutputSymbols(self, osyms: SymbolTable)
+
+      def Properties(self, mask: int, test: bool) -> int
+      def SetProperties(self, props: int, mask: int)
+      def Type(self) -> str
+
+    class `StateIterator<VectorFst<LogArc>>` as LogStateIterator:
+      def __init__(self, fst: LogVectorFst)
+      def Done(self) -> bool
+      def Value(self) -> int
+      def Next(self)
+      def Reset(self)
+
+    class `ArcIterator<VectorFst<LogArc>>` as LogArcIterator:
+      def __init__(self, fst: LogVectorFst, s: int)
+      def Done(self) -> bool
+      def Value(self) -> LogArc
+      def Next(self)
+      def Reset(self)
+      def Seek(self, a: int)
+      def Position(self) -> int
+      def Flags(self) -> int
+      def SetFlags(self, flags: int, mask: int)
+
+    class `MutableArcIterator<VectorFst<LogArc>>` as LogMutableArcIterator:
+      def __init__(self, fst: LogVectorFst, s: int)
+      def Done(self) -> bool
+      def Value(self) -> LogArc
+      def SetValue(self, arc: LogArc)
+      def Next(self)
+      def Reset(self)
+      def Seek(self, a: int)
+      def Position(self) -> int
+      def Flags(self) -> int
+      def SetFlags(self, flags: int, mask: int)

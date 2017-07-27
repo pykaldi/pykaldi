@@ -1,0 +1,93 @@
+from "fstext/weight-clifwrap.h" import *
+
+from "fstext/float-weight.h":
+  namespace `fst`:
+    class `FloatLimits<float>` as FloatLimits:
+      @classmethod
+      def PosInfinity(cls) -> float
+      @classmethod
+      def NegInfinity(cls) -> float
+      @classmethod
+      def NumberBad(cls) -> float
+
+    class `FloatWeightTpl<float>` as FloatWeight:
+      @add__init__
+      def `FloatWeightTpl` as new(self, f: float)
+      @add__init__
+      def `FloatWeightTpl` as from_other(self, weight: FloatWeight)
+
+      def Hash(self) -> int
+      def Value(self) -> `float` as float
+
+      def __eq__(self, other: FloatWeight) -> bool
+      def __ne__(self, other: FloatWeight) -> bool
+
+    def ApproxEqual(w1: FloatWeight, w2: FloatWeight,
+                    delta: float = default) -> bool
+
+    class `TropicalWeightTpl<float>` as TropicalWeight(FloatWeight):
+      @add__init__
+      def `TropicalWeightTpl` as new(self, f: float)
+      @add__init__
+      def `TropicalWeightTpl` as from_other(self, weight: TropicalWeight)
+
+      @classmethod
+      def `Zero` as zero(cls) -> TropicalWeight
+      @classmethod
+      def `One` as one(cls) -> TropicalWeight
+      @classmethod
+      def `NoWeight` as noweight(cls) -> TropicalWeight
+      @classmethod
+      def `Type` as type(cls) -> str
+      @classmethod
+      def Properties(cls) -> int
+
+      def Member(self) -> bool
+      def Quantize(self, delta: float = default) -> TropicalWeight
+      def Reverse(self) -> TropicalWeight
+
+    def `Plus` as TropicalPlus(w1: TropicalWeight,
+                               w2: TropicalWeight) -> TropicalWeight
+    def `Times` as TropicalTimes(w1: TropicalWeight,
+                                 w2: TropicalWeight) -> TropicalWeight
+    def `Divide` as TropicalDivide(w1: TropicalWeight, w2: TropicalWeight,
+                                   typ: DivideType = default) -> TropicalWeight
+    def `Power` as TropicalPower(weight: TropicalWeight,
+                                 scalar: `float` as float) -> TropicalWeight
+
+    class `LogWeightTpl<float>` as LogWeight(FloatWeight):
+      @add__init__
+      def `LogWeightTpl` as new(self, f: float)
+      @add__init__
+      def `LogWeightTpl` as from_other(self, weight: LogWeight)
+
+      @classmethod
+      def `Zero` as zero(cls) -> LogWeight
+      @classmethod
+      def `One` as one(cls) -> LogWeight
+      @classmethod
+      def `NoWeight` as noweight(cls) -> LogWeight
+      @classmethod
+      def `Type` as type(cls) -> str
+      @classmethod
+      def Properties(cls) -> int
+
+      def Member(self) -> bool
+      def Quantize(self, delta: float = default) -> LogWeight
+      def Reverse(self) -> LogWeight
+
+    def `Plus` as LogPlus(w1: LogWeight, w2: LogWeight) -> LogWeight
+    def `Times` as LogTimes(w1: LogWeight, w2: LogWeight) -> LogWeight
+    def `Divide` as LogDivide(w1: LogWeight, w2: LogWeight,
+                              typ: DivideType = default) -> LogWeight
+    def `Power` as LogPower(weight: LogWeight,
+                            scalar: `float` as float) -> LogWeight
+
+    def GetLogToTropicalConverter() -> (w: LogWeight) -> TropicalWeight
+    def GetTropicalToLogConverter() -> (w: TropicalWeight) -> LogWeight
+
+    # class `WeightConvert<LogWeight, TropicalWeight>` as ConvertLogToTropical:
+    #   def __call__(self, w: LogWeight) -> TropicalWeight
+
+    # class `WeightConvert<TropicalWeight, LogWeight>` as ConvertTropicalToLog:
+    #   def __call__(self, w: TropicalWeight) -> LogWeight

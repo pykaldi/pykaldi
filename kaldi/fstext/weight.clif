@@ -1,0 +1,13 @@
+
+from "fst/weight.h":
+  namespace `fst`:
+    const `kDelta` as DELTA : float
+    const `kLeftSemiring` as LEFT_SEMIRING : int
+    const `kRightSemiring` as RIGHT_SEMIRING : int
+    const `kSemiring` as SEMIRING : int
+    const `kCommutative` as COMMUTATIVE : int
+    const `kIdempotent` as IDEMPOTENT : int
+    const `kPath` as PATH : int
+    const `kNumRandomWeights` as NUM_RANDOM_WEIGHTS : int
+
+    enum DivideType

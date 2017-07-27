@@ -173,6 +173,96 @@ clif = Extension(
     include_dirs=include_dirs)
 extensions.append(clif)
 
+symbol_table = Extension(
+    "kaldi.fstext.symbol_table",
+    sources=[
+        'build/kaldi/fstext/symbol-table-clifwrap.cc',
+        'build/kaldi/fstext/symbol-table-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs,
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=['kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(symbol_table)
+
+weight = Extension(
+    "kaldi.fstext.weight",
+    sources=[
+        'build/kaldi/fstext/weight-clifwrap.cc',
+        'build/kaldi/fstext/weight-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs,
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=['kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(weight)
+
+float_weight = Extension(
+    "kaldi.fstext.float_weight",
+    sources=[
+        'build/kaldi/fstext/float-weight-clifwrap.cc',
+        'build/kaldi/fstext/float-weight-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':weight.so', 'kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(float_weight)
+
+arc = Extension(
+    "kaldi.fstext.arc",
+    sources=[
+        'build/kaldi/fstext/arc-clifwrap.cc',
+        'build/kaldi/fstext/arc-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':float_weight.so', 'kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(arc)
+
+fst = Extension(
+    "kaldi.fstext.fst",
+    sources=[
+        'build/kaldi/fstext/fst-clifwrap.cc',
+        'build/kaldi/fstext/fst-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':arc.so', ':symbol_table.so', 'kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(fst)
+
+fst_ext = Extension(
+    "kaldi.fstext.fst_ext",
+    sources=[
+        'build/kaldi/fstext/fst-ext-clifwrap.cc',
+        'build/kaldi/fstext/fst-ext-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':fst.so', 'kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(fst_ext)
+
 matrix_common = Extension(
     "kaldi.matrix.matrix_common",
     sources=[

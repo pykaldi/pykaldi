@@ -1,0 +1,25 @@
+from "fstext/fst-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+
+from "fstext/fst-ext.h":
+  namespace `fst`:
+    def `FstToString` as StdFstToString(fst: StdFst,
+                                        isyms: SymbolTable = default,
+                                        osyms: SymbolTable = default,
+                                        ssyms: SymbolTable = default) -> str
+    def `FstToString` as LogFstToString(fst: LogFst,
+                                        isyms: SymbolTable = default,
+                                        osyms: SymbolTable = default,
+                                        ssyms: SymbolTable = default) -> str
+
+    def `FstToBytes` as StdFstToBytes(fst: StdFst) -> bytes
+    def `FstToBytes` as LogFstToBytes(fst: LogFst) -> bytes
+
+    def BytesToStdFst(s: bytes) -> StdFst
+    def BytesToLogFst(s: bytes) -> LogFst
+
+    def BytesToStdVectorFst(s: bytes) -> StdVectorFst
+    def BytesToLogVectorFst(s: bytes) -> LogVectorFst
+
+    def CastStdToLog(ifst: StdVectorFst) -> LogVectorFst
+    def CastLogToStd(ifst: LogVectorFst) -> StdVectorFst

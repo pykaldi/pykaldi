@@ -1,0 +1,45 @@
+
+from "fst/symbol-table.h":
+  namespace `fst`:
+    class SymbolTable:
+      const `kNoSymbol` as NO_SYMBOL: int
+
+      @add__init__
+      def `SymbolTable` as with_name(self, name: str)
+
+      @classmethod
+      def Read(cls, filename: str) -> SymbolTable
+      def Copy(self) -> SymbolTable
+
+      def `AddSymbol` as AddSymbolKey(self, symbol: str, key: int) -> int
+      def AddSymbol(self, symbol: str) -> int
+      def AddTable(self, table: SymbolTable)
+      def RemoveSymbol(self, key: int)
+      def Name(self) -> str
+      def SetName(self, new_name: str)
+      def CheckSum(self) -> str
+      def LabeledCheckSum(self) -> str
+      def Write(self, filename: str) -> bool
+      def WriteText(self, filename: str) -> bool
+      def `Find` as FindSymbol(self, key: int) -> str
+      def Find(self, symbol: str) -> int
+      def `Member` as MemberKey(self, key: int) -> bool
+      def Member(self, symbol: str) -> bool
+      def AvailableKey(self) -> int
+      def NumSymbols(self) -> int
+      def GetNthKey(self, pos: int) -> int
+
+    class SymbolTableIterator:
+      def __init__(self, table: SymbolTable)
+      def Done(self) -> bool
+      def Value(self) -> int
+      def Symbol(self) -> str
+      def Next(self)
+      def Reset(self)
+
+    def RelabelSymbolTable(table: SymbolTable,
+                           pairs: list<tuple<int, int>>) -> SymbolTable
+    def CompatSymbols(syms1: SymbolTable, syms2: SymbolTable,
+                      warning: bool = default) -> bool
+    def SymbolTableToString(table: SymbolTable) -> str
+    def StringToSymbolTable(str: str) -> SymbolTable
