@@ -124,7 +124,10 @@ set_target_properties(${CLIF_LIBRARIES}
 #   pyclif_file - Name of the pyclif file to compile
 #
 # options:
-#
+#   LIBRARIES - (multi-value) libraries (e.g. kaldi-matrix, kaldi-base) to link against
+#   LIBRARY_DIRS - (multi-value) Currently not used
+#   INCLUDE_DIRS - (multi-value) Currently not used
+#   CLIF_DEPS - (multi-value) Dependencies on clif targets to add to this target
 ####################################################################################################
 function(add_pyclif_library name pyclif_file)
   set(multiValueArgs LIBRARIES LIBRARY_DIRS INCLUDE_DIRS CLIF_DEPS NAMESPACES)
@@ -202,6 +205,7 @@ endfunction(add_pyclif_library)
 #   INCLUDE_DIRS - (multi-value) Currently not used
 #   EXTENSION_PREFIX - (value) Currently not used
 #   EXTENSION_SUFIX - (value) Currently not used
+#   CLIF_DEPS - (multi-value) Dependencies on clif targets to add to this target
 #   gen_h, gen_init - H and init.CPP files
 ####################################################################################################
 function(add_CC_library extname gen_cc)
@@ -226,7 +230,7 @@ function(add_CC_library extname gen_cc)
     add_dependencies(${extname} ${extname}-pyclif)
   endif(PYCLIF_LIBRARY_PYCLIFDEP)
 
-  # Add a dependency from CLIF_DEPS
+  # Add dependencies from CLIF_DEPS
   foreach(DEP ${PYCLIF_LIBRARY_CLIF_DEPS})
     message("${DEP}")
     target_link_libraries(${extname} ${DEP})
