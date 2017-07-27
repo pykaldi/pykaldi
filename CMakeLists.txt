@@ -54,7 +54,7 @@ set(OPENFST_INC_DIR ${KALDI_TOOLS_DIR}/openfst/include)
 # Function to set up rules to invoke pyclif on a .clif file and generate the wrapper .cc and .h files
 ####################################################################################################
 function(add_pyclif_library name pyclif_file)
-    cmake_parse_arguments(PYCLIF_LIBRARY "" "" "CC_DEPS;CLIF_DEPS;CXX_FLAGS" ${ARGN})
+    cmake_parse_arguments(PYCLIF_LIBRARY "" "" "CC_DEPS;CLIF_DEPS;CXX_FLAGS;NAMESPACES" ${ARGN})
 
     string(REPLACE ".clif" "" pyclif_file_basename ${pyclif_file})
     set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.cc")
@@ -89,6 +89,8 @@ function(add_pyclif_library name pyclif_file)
                -std=c++11 \
                  ${CMAKE_CXX_FLAGS}"
             ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
+        COMMAND
+            ${CMAKE_SOURCE_DIR}/add_namespace.sh ${gen_cc} ${PYCLIF_LIBRARY_NAMESPACES}
         VERBATIM
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file} ${PYCLIF_LIBRARY_CC_DEPS} ${PYCLIF_LIBRARY_CLIF_DEPS}
     )

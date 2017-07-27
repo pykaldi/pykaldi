@@ -109,7 +109,6 @@ class build_ext(setuptools.command.build_ext.build_ext):
         of the file from which it will be loaded (eg. "foo/bar.so"). This
         patch overrides platform specific extension suffix with ".so".
         """
-        from distutils.sysconfig import get_config_var
         ext_path = fullname.split('.')
         ext_suffix = '.so'
         return os.path.join(*ext_path) + ext_suffix
@@ -364,21 +363,6 @@ kaldi_holder = Extension(
     extra_link_args=extra_link_args)
 extensions.append(kaldi_holder)
 
-kaldi_table = Extension(
-    "kaldi.util.kaldi_table",
-    sources = [
-        "build/kaldi/util/kaldi-table-clifwrap.cc",
-        "build/kaldi/util/kaldi-table-clifwrap-init.cc"
-    ],
-    language = "c++",
-    extra_compile_args=extra_compile_args,
-    include_dirs=include_dirs,
-    library_dirs=library_dirs,
-    runtime_library_dirs=runtime_library_dirs,
-    libraries=['kaldi-util'] + libraries,
-    extra_link_args=extra_link_args)
-extensions.append(kaldi_table)
-
 wave_reader = Extension(
     "kaldi.feat.wave_reader",
     sources = [
@@ -394,11 +378,11 @@ wave_reader = Extension(
     extra_link_args = extra_link_args)
 extensions.append(wave_reader)
 
-kaldi_table_ext = Extension(
-    "kaldi.util.kaldi_table_ext",
+kaldi_table = Extension(
+    "kaldi.util.kaldi_table",
     sources = [
-        "build/kaldi/util/kaldi-table-ext-clifwrap.cc",
-        "build/kaldi/util/kaldi-table-ext-clifwrap-init.cc",
+        "build/kaldi/util/kaldi-table-clifwrap.cc",
+        "build/kaldi/util/kaldi-table-clifwrap-init.cc",
     ],
     language = "c++",
     extra_compile_args = extra_compile_args,
@@ -408,7 +392,7 @@ kaldi_table_ext = Extension(
     libraries = [':compressed_matrix.so', ':kaldi_matrix.so', ':kaldi_vector.so', ':wave_reader.so',
                  'kaldi-util', 'kaldi-matrix'] + libraries,
     extra_link_args=extra_link_args)
-extensions.append(kaldi_table_ext)
+extensions.append(kaldi_table)
 
 options_ext = Extension(
     "kaldi.util.options_ext",

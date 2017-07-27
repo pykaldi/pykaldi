@@ -1,6 +1,5 @@
 from .options_ext import SimpleOptions, ParseOptions
 from .kaldi_table import ReadScriptFile, WriteScriptFile
-from . import kaldi_table_ext
 from ..matrix import Vector, Matrix
 from ..feat import WaveData
 
@@ -42,7 +41,7 @@ class _SequentialReaderBase(object):
 
 
 class SequentialVectorReader(_SequentialReaderBase,
-                             kaldi_table_ext.SequentialVectorReader):
+                             kaldi_table.SequentialVectorReader):
     """Python wrapper for
     kaldi::SequentialTableReader<KaldiObjectHolder<Vector<float>>>.
 
@@ -55,7 +54,7 @@ class SequentialVectorReader(_SequentialReaderBase,
 
 
 class SequentialMatrixReader(_SequentialReaderBase,
-                             kaldi_table_ext.SequentialMatrixReader):
+                             kaldi_table.SequentialMatrixReader):
     """Python wrapper for
     kaldi::SequentialTableReader<KaldiObjectHolder<Matrix<float>>>.
 
@@ -68,7 +67,7 @@ class SequentialMatrixReader(_SequentialReaderBase,
 
 
 class SequentialWaveReader(_SequentialReaderBase,
-                          kaldi_table_ext.SequentialWaveReader):
+                          kaldi_table.SequentialWaveReader):
     """Python wrapper for kaldi::SequentialTableReader<WaveHolder>.
 
     This is a wrapper around the C extension type SequentialWaveReader.
@@ -82,7 +81,7 @@ class SequentialWaveReader(_SequentialReaderBase,
 
 
 class SequentialIntReader(_SequentialReaderBase,
-                          kaldi_table_ext.SequentialIntReader):
+                          kaldi_table.SequentialIntReader):
     """Python wrapper for kaldi::SequentialTableReader<BasicHolder<int32>>.
 
     This is a wrapper around the C extension type SequentialIntReader.
@@ -92,7 +91,7 @@ class SequentialIntReader(_SequentialReaderBase,
 
 
 class SequentialFloatReader(_SequentialReaderBase,
-                            kaldi_table_ext.SequentialFloatReader):
+                            kaldi_table.SequentialFloatReader):
     """Python wrapper for kaldi::SequentialTableReader<BasicHolder<float>>.
 
     This is a wrapper around the C extension type SequentialFloatReader.
@@ -102,7 +101,7 @@ class SequentialFloatReader(_SequentialReaderBase,
 
 
 class SequentialDoubleReader(_SequentialReaderBase,
-                             kaldi_table_ext.SequentialDoubleReader):
+                             kaldi_table.SequentialDoubleReader):
     """Python wrapper for kaldi::SequentialTableReader<BasicHolder<double>>.
 
     This is a wrapper around the C extension type SequentialDoubleReader.
@@ -112,7 +111,7 @@ class SequentialDoubleReader(_SequentialReaderBase,
 
 
 class SequentialBoolReader(_SequentialReaderBase,
-                          kaldi_table_ext.SequentialBoolReader):
+                          kaldi_table.SequentialBoolReader):
     """Python wrapper for kaldi::SequentialTableReader<BasicHolder<bool>>.
 
     This is a wrapper around the C extension type SequentialBoolReader.
@@ -122,7 +121,7 @@ class SequentialBoolReader(_SequentialReaderBase,
 
 
 class SequentialIntVectorReader(_SequentialReaderBase,
-                                kaldi_table_ext.SequentialIntVectorReader):
+                                kaldi_table.SequentialIntVectorReader):
     """Python wrapper for
     kaldi::SequentialTableReader<BasicVectorHolder<int32>>.
 
@@ -134,7 +133,7 @@ class SequentialIntVectorReader(_SequentialReaderBase,
 
 class SequentialIntVectorVectorReader(
         _SequentialReaderBase,
-        kaldi_table_ext.SequentialIntVectorVectorReader):
+        kaldi_table.SequentialIntVectorVectorReader):
     """Python wrapper for
     kaldi::SequentialTableReader<BasicVectorVectorHolder<int32>>.
 
@@ -147,7 +146,7 @@ class SequentialIntVectorVectorReader(
 
 class SequentialIntPairVectorReader(
         _SequentialReaderBase,
-        kaldi_table_ext.SequentialIntPairVectorReader):
+        kaldi_table.SequentialIntPairVectorReader):
     """Python wrapper for
     kaldi::SequentialTableReader<BasicPairVectorHolder<int32>>.
 
@@ -159,7 +158,7 @@ class SequentialIntPairVectorReader(
 
 class SequentialFloatPairVectorReader(
         _SequentialReaderBase,
-        kaldi_table_ext.SequentialFloatPairVectorReader):
+        kaldi_table.SequentialFloatPairVectorReader):
     """Python wrapper for
     kaldi::SequentialTableReader<BasicPairVectorHolder<float>>.
 
@@ -201,7 +200,7 @@ class _RandomAccessReaderBase(object):
 
 
 class RandomAccessVectorReader(_RandomAccessReaderBase,
-                               kaldi_table_ext.RandomAccessVectorReader):
+                               kaldi_table.RandomAccessVectorReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<KaldiObjectHolder<Vector<float>>>.
 
@@ -215,7 +214,7 @@ class RandomAccessVectorReader(_RandomAccessReaderBase,
 
 
 class RandomAccessMatrixReader(_RandomAccessReaderBase,
-                               kaldi_table_ext.RandomAccessMatrixReader):
+                               kaldi_table.RandomAccessMatrixReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>.
 
@@ -229,7 +228,7 @@ class RandomAccessMatrixReader(_RandomAccessReaderBase,
 
 
 class RandomAccessWaveReader(_RandomAccessReaderBase,
-                             kaldi_table_ext.RandomAccessWaveReader):
+                             kaldi_table.RandomAccessWaveReader):
     """Python wrapper for kaldi::RandomAccessTableReader<WaveHolder>.
 
     This is a wrapper around the C extension type RandomAccessWaveReader.
@@ -244,7 +243,7 @@ class RandomAccessWaveReader(_RandomAccessReaderBase,
 
 
 class RandomAccessIntReader(_RandomAccessReaderBase,
-                            kaldi_table_ext.RandomAccessIntReader):
+                            kaldi_table.RandomAccessIntReader):
     """Python wrapper for kaldi::RandomAccessTableReader<BasicHolder<int32>>.
 
     This is a wrapper around the C extension type RandomAccessIntReader.
@@ -255,7 +254,7 @@ class RandomAccessIntReader(_RandomAccessReaderBase,
 
 
 class RandomAccessFloatReader(_RandomAccessReaderBase,
-                              kaldi_table_ext.RandomAccessFloatReader):
+                              kaldi_table.RandomAccessFloatReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<BasicHolder<float>>.
 
@@ -267,7 +266,7 @@ class RandomAccessFloatReader(_RandomAccessReaderBase,
 
 
 class RandomAccessDoubleReader(_RandomAccessReaderBase,
-                               kaldi_table_ext.RandomAccessDoubleReader):
+                               kaldi_table.RandomAccessDoubleReader):
     """Python wrapper for kaldi::RandomAccessTableReader<BasicHolder<double>>.
 
     This is a wrapper around the C extension type RandomAccessDoubleReader.
@@ -278,7 +277,7 @@ class RandomAccessDoubleReader(_RandomAccessReaderBase,
 
 
 class RandomAccessBoolReader(_RandomAccessReaderBase,
-                             kaldi_table_ext.RandomAccessBoolReader):
+                             kaldi_table.RandomAccessBoolReader):
     """Python wrapper for kaldi::RandomAccessTableReader<BasicHolder<bool>>.
 
     This is a wrapper around the C extension type RandomAccessBoolReader.
@@ -289,7 +288,7 @@ class RandomAccessBoolReader(_RandomAccessReaderBase,
 
 
 class RandomAccessIntVectorReader(_RandomAccessReaderBase,
-                                  kaldi_table_ext.RandomAccessIntVectorReader):
+                                  kaldi_table.RandomAccessIntVectorReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<BasicVectorHolder<int32>>.
 
@@ -302,7 +301,7 @@ class RandomAccessIntVectorReader(_RandomAccessReaderBase,
 
 class RandomAccessIntVectorVectorReader(
         _RandomAccessReaderBase,
-        kaldi_table_ext.RandomAccessIntVectorVectorReader):
+        kaldi_table.RandomAccessIntVectorVectorReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<BasicVectorVectorHolder<int32>>.
 
@@ -316,7 +315,7 @@ class RandomAccessIntVectorVectorReader(
 
 class RandomAccessIntPairVectorReader(
         _RandomAccessReaderBase,
-        kaldi_table_ext.RandomAccessIntPairVectorReader):
+        kaldi_table.RandomAccessIntPairVectorReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<BasicPairVectorHolder<int32>>.
 
@@ -330,7 +329,7 @@ class RandomAccessIntPairVectorReader(
 
 class RandomAccessFloatPairVectorReader(
         _RandomAccessReaderBase,
-        kaldi_table_ext.RandomAccessFloatPairVectorReader):
+        kaldi_table.RandomAccessFloatPairVectorReader):
     """Python wrapper for
     kaldi::RandomAccessTableReader<BasicPairVectorHolder<float>>.
 
@@ -375,7 +374,7 @@ class _RandomAccessReaderMappedBase(object):
 
 class RandomAccessVectorReaderMapped(
         _RandomAccessReaderMappedBase,
-        kaldi_table_ext.RandomAccessVectorReaderMapped):
+        kaldi_table.RandomAccessVectorReaderMapped):
     """Python wrapper for
     kaldi::RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<float>>>.
 
@@ -391,7 +390,7 @@ class RandomAccessVectorReaderMapped(
 
 class RandomAccessMatrixReaderMapped(
         _RandomAccessReaderMappedBase,
-        kaldi_table_ext.RandomAccessMatrixReaderMapped):
+        kaldi_table.RandomAccessMatrixReaderMapped):
     """Python wrapper for
     kaldi::RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<float>>>.
 
@@ -406,7 +405,7 @@ class RandomAccessMatrixReaderMapped(
 
 class RandomAccessFloatReaderMapped(
         _RandomAccessReaderMappedBase,
-        kaldi_table_ext.RandomAccessFloatReaderMapped):
+        kaldi_table.RandomAccessFloatReaderMapped):
     """Python wrapper for
     kaldi::RandomAccessTableReaderMapped<BasicHolder<float>>.
 
@@ -441,7 +440,7 @@ class _WriterBase(object):
         self.Write(key, value)
 
 
-class VectorWriter(_WriterBase, kaldi_table_ext.VectorWriter):
+class VectorWriter(_WriterBase, kaldi_table.VectorWriter):
     """Python wrapper for kaldi::TableWriter<KaldiObjectHolder<Vector<float>>>.
 
     This is a wrapper around the C extension type VectorWriter.
@@ -450,7 +449,7 @@ class VectorWriter(_WriterBase, kaldi_table_ext.VectorWriter):
     pass
 
 
-class MatrixWriter(_WriterBase, kaldi_table_ext.MatrixWriter):
+class MatrixWriter(_WriterBase, kaldi_table.MatrixWriter):
     """Python wrapper for kaldi::TableWriter<KaldiObjectHolder<Matrix<float>>>.
 
     This is a wrapper around the C extension type MatrixWriter.
@@ -459,7 +458,7 @@ class MatrixWriter(_WriterBase, kaldi_table_ext.MatrixWriter):
     pass
 
 
-class WaveWriter(_WriterBase, kaldi_table_ext.WaveWriter):
+class WaveWriter(_WriterBase, kaldi_table.WaveWriter):
     """Python wrapper for kaldi::TableWriter<WaveHolder>.
 
     This is a wrapper around the C extension type WaveWriter.
@@ -504,7 +503,7 @@ class BoolWriter(_WriterBase, kaldi_table.BoolWriter):
     pass
 
 
-class IntVectorWriter(_WriterBase, kaldi_table_ext.IntVectorWriter):
+class IntVectorWriter(_WriterBase, kaldi_table.IntVectorWriter):
     """Python wrapper for kaldi::TableWriter<BasicVectorHolder<int32>>.
 
     This is a wrapper around the C extension type IntVectorWriter.
@@ -513,7 +512,7 @@ class IntVectorWriter(_WriterBase, kaldi_table_ext.IntVectorWriter):
     pass
 
 
-class IntVectorVectorWriter(_WriterBase, kaldi_table_ext.IntVectorVectorWriter):
+class IntVectorVectorWriter(_WriterBase, kaldi_table.IntVectorVectorWriter):
     """Python wrapper for kaldi::TableWriter<BasicVectorVectorHolder<int32>>.
 
     This is a wrapper around the C extension type IntVectorVectorWriter.
@@ -522,7 +521,7 @@ class IntVectorVectorWriter(_WriterBase, kaldi_table_ext.IntVectorVectorWriter):
     pass
 
 
-class IntPairVectorWriter(_WriterBase, kaldi_table_ext.IntPairVectorWriter):
+class IntPairVectorWriter(_WriterBase, kaldi_table.IntPairVectorWriter):
     """Python wrapper for kaldi::TableWriter<BasicPairVectorHolder<int32>>.
 
     This is a wrapper around the C extension type IntPairVectorWriter.
@@ -531,7 +530,7 @@ class IntPairVectorWriter(_WriterBase, kaldi_table_ext.IntPairVectorWriter):
     pass
 
 
-class FloatPairVectorWriter(_WriterBase, kaldi_table_ext.FloatPairVectorWriter):
+class FloatPairVectorWriter(_WriterBase, kaldi_table.FloatPairVectorWriter):
     """Python wrapper for kaldi::TableWriter<BasicPairVectorHolder<float>>.
 
     This is a wrapper around the C extension type FloatPairVectorWriter.
