@@ -5,6 +5,7 @@
 #include "fst/vector-fst.h"
 #include "fst/script/print.h"
 #include "fstext/lattice-weight.h"
+#include "fstext/lattice-utils.h"
 #include "fstext/kaldi-fst-io.h"
 
 namespace fst {
@@ -76,10 +77,59 @@ void CastLogToStd(const VectorFst<LogArc> &ifst, VectorFst<StdArc> *ofst) {
   Cast<VectorFst<LogArc>, VectorFst<StdArc>>(ifst, ofst);
 }
 
-// Kaldi
+// Kaldi FST I/O
 
 VectorFst<StdArc> *ReadFstKaldiExt(std::string rxfilename) {
   return ReadFstKaldi(rxfilename);
+}
+
+// Kaldi Lattice Utility Functions
+
+void ConvertLatticeToCompactLattice(
+    const ExpandedFst<ArcTpl<LatticeWeightTpl<float>> > &ifst,
+    MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32> > > *ofst,
+    bool invert = true) {
+  return ConvertLattice(ifst, ofst, invert);
+}
+
+void ConvertCompactLatticeToLattice(
+    const ExpandedFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32> > > &ifst,
+    MutableFst<ArcTpl<LatticeWeightTpl<float>> > *ofst,
+    bool invert = true) {
+  return ConvertLattice(ifst, ofst, invert);
+}
+
+void ConvertLatticeToStd(
+    const ExpandedFst<ArcTpl<LatticeWeightTpl<float>> > &ifst,
+    MutableFst<StdArc> *ofst) {
+  return ConvertLattice(ifst, ofst);
+}
+
+void ConvertStdToLattice(
+    const ExpandedFst<StdArc> &ifst,
+    MutableFst<ArcTpl<LatticeWeightTpl<float>>> *ofst) {
+  return ConvertFstToLattice(ifst, ofst);
+}
+
+void ScaleKaldiLattice(const vector<vector<double> > &scale,
+                       MutableFst<ArcTpl<LatticeWeightTpl<float>> > *fst) {
+  ScaleLattice(scale, fst);
+}
+
+void ScaleCompactLattice(
+    const vector<vector<double> > &scale,
+    MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32>> > *fst) {
+  ScaleLattice(scale, fst);
+}
+
+void RemoveAlignmentsFromCompactLatticeExt(
+    MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32> > > *fst) {
+  RemoveAlignmentsFromCompactLattice(fst);
+}
+
+bool CompactLatticeHasAlignmentExt(
+    const ExpandedFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32> > > &fst) {
+  return CompactLatticeHasAlignment(fst);
 }
 
 }  // namespace fst

@@ -45,3 +45,21 @@ from "fstext/fst-ext.h":
     def CastLogToStd(ifst: LogVectorFst) -> StdVectorFst
 
     def `ReadFstKaldiExt` as ReadFstKaldi(rxfilename: str) -> StdVectorFst
+
+    def ConvertLatticeToCompactLattice(ifst: LatticeExpandedFst,
+                                       ofst: CompactLatticeMutableFst,
+                                       invert: bool = default)
+    def ConvertCompactLatticeToLattice(ifst: CompactLatticeExpandedFst,
+                                       ofst: LatticeMutableFst,
+                                       invert: bool = default)
+    def ConvertLatticeToStd(ifst: LatticeExpandedFst, ofst: StdMutableFst)
+    def ConvertStdToLattice(ifst: StdExpandedFst, ofst: LatticeMutableFst)
+
+    def `ScaleKaldiLattice` as ScaleLattice(scale: list<list<float>>,
+                                            fst: LatticeMutableFst)
+    def ScaleCompactLattice(scale: list<list<float>>,
+                            fst: CompactLatticeMutableFst)
+    def `RemoveAlignmentsFromCompactLatticeExt`
+        as RemoveAlignmentsFromCompactLattice(fst: CompactLatticeMutableFst)
+    def `CompactLatticeHasAlignmentExt`
+        as CompactLatticeHasAlignment(fst: CompactLatticeExpandedFst) -> bool

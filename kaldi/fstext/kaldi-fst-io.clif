@@ -1,3 +1,4 @@
+from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 
 from "fstext/kaldi-fst-io.h":

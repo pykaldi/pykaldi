@@ -233,6 +233,21 @@ lattice_weight = Extension(
     extra_link_args=extra_link_args)
 extensions.append(lattice_weight)
 
+lattice_utils = Extension(
+    "kaldi.fstext.lattice_utils",
+    sources=[
+        'build/kaldi/fstext/lattice-utils-clifwrap.cc',
+        'build/kaldi/fstext/lattice-utils-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs,
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=libraries,
+    extra_link_args=extra_link_args)
+extensions.append(lattice_utils)
+
 arc = Extension(
     "kaldi.fstext.arc",
     sources=[
@@ -292,6 +307,7 @@ kaldi_fst_io = Extension(
     libraries=[':fst.so', 'kaldi-fstext'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(kaldi_fst_io)
+
 
 matrix_common = Extension(
     "kaldi.matrix.matrix_common",

@@ -10,7 +10,10 @@ from "fst/vector-fst.h":
     class `Fst<StdArc>` as StdFst:
       def Type(self) -> str
 
-    class `MutableFst<StdArc>` as StdMutableFst(StdFst):
+    class `ExpandedFst<StdArc>` as StdExpandedFst(StdFst):
+      def Type(self) -> str
+
+    class `MutableFst<StdArc>` as StdMutableFst(StdExpandedFst):
       def Type(self) -> str
 
     class `VectorFst<StdArc>` as StdVectorFst(StdMutableFst):
@@ -89,7 +92,10 @@ from "fst/vector-fst.h":
     class `Fst<LogArc>` as LogFst:
       def Type(self) -> str
 
-    class `MutableFst<LogArc>` as LogMutableFst(LogFst):
+    class `ExpandedFst<LogArc>` as LogExpandedFst(LogFst):
+      def Type(self) -> str
+
+    class `MutableFst<LogArc>` as LogMutableFst(LogExpandedFst):
       def Type(self) -> str
 
     class `VectorFst<LogArc>` as LogVectorFst(LogMutableFst):
@@ -168,8 +174,12 @@ from "fst/vector-fst.h":
     class `Fst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFst:
       def Type(self) -> str
 
+    class `ExpandedFst<ArcTpl<LatticeWeightTpl<float>>>`
+        as LatticeExpandedFst(LatticeFst):
+      def Type(self) -> str
+
     class `MutableFst<ArcTpl<LatticeWeightTpl<float>>>`
-        as LatticeMutableFst(LatticeFst):
+        as LatticeMutableFst(LatticeExpandedFst):
       def Type(self) -> str
 
     class `VectorFst<ArcTpl<LatticeWeightTpl<float>>>`
@@ -253,8 +263,12 @@ from "fst/vector-fst.h":
         as CompactLatticeFst:
       def Type(self) -> str
 
+    class `ExpandedFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
+        as CompactLatticeExpandedFst(CompactLatticeFst):
+      def Type(self) -> str
+
     class `MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
-        as CompactLatticeMutableFst(CompactLatticeFst):
+        as CompactLatticeMutableFst(CompactLatticeExpandedFst):
       def Type(self) -> str
 
     class `VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
