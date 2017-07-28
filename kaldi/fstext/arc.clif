@@ -1,4 +1,5 @@
 from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
 
 from "fst/arc.h":
   namespace `fst`:
@@ -24,6 +25,33 @@ from "fst/arc.h":
       @add__init__
       def `ArcTpl` as new(self, ilabel: int, olabel:int,
                           weight: LogWeight, nextstate: int)
+
+      @classmethod
+      def Type(cls) -> str
+
+    class `ArcTpl<LatticeWeightTpl<float>>` as LatticeArc:
+      ilabel: int
+      olabel: int
+      weight: LatticeWeight
+      nextstate: int
+
+      @add__init__
+      def `ArcTpl` as new(self, ilabel: int, olabel:int,
+                          weight: LatticeWeight, nextstate: int)
+
+      @classmethod
+      def Type(cls) -> str
+
+    class `ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>`
+        as CompactLatticeArc:
+      ilabel: int
+      olabel: int
+      weight: CompactLatticeWeight
+      nextstate: int
+
+      @add__init__
+      def `ArcTpl` as new(self, ilabel: int, olabel:int,
+                          weight: CompactLatticeWeight, nextstate: int)
 
       @classmethod
       def Type(cls) -> str

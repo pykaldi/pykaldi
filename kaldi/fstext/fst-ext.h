@@ -2,9 +2,9 @@
 #define PYKALDI_FSTEXT_FST_EXT_H_ 1
 
 #include "fst/fst.h"
-// #include "fst/mutable-fst.h"
 #include "fst/vector-fst.h"
 #include "fst/script/print.h"
+#include "fstext/lattice-weight.h"
 #include "fstext/kaldi-fst-io.h"
 
 namespace fst {
@@ -36,6 +36,15 @@ Fst<LogArc> *BytesToLogFst(const string &s) {
   return StringToFst<LogArc>(s);
 }
 
+Fst<ArcTpl<LatticeWeightTpl<float>>> *BytesToLatticeFst(const string &s) {
+  return StringToFst<ArcTpl<LatticeWeightTpl<float>>>(s);
+}
+
+Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>> *
+BytesToCompactLatticeFst(const string &s) {
+  return StringToFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>(s);
+}
+
 VectorFst<StdArc> *BytesToStdVectorFst(const string &s) {
   std::istringstream istrm(s);
   return VectorFst<StdArc>::Read(istrm, FstReadOptions("StringToFst"));
@@ -44,6 +53,17 @@ VectorFst<StdArc> *BytesToStdVectorFst(const string &s) {
 VectorFst<LogArc> *BytesToLogVectorFst(const string &s) {
   std::istringstream istrm(s);
   return VectorFst<LogArc>::Read(istrm, FstReadOptions("StringToFst"));
+}
+
+VectorFst<ArcTpl<LatticeWeightTpl<float>>> *BytesToLatticeVectorFst(const string &s) {
+  std::istringstream istrm(s);
+  return VectorFst<ArcTpl<LatticeWeightTpl<float>>>::Read(istrm, FstReadOptions("StringToFst"));
+}
+
+VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>> *
+BytesToCompactLatticeVectorFst(const string &s) {
+  std::istringstream istrm(s);
+  return VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>::Read(istrm, FstReadOptions("StringToFst"));
 }
 
 // Casting

@@ -244,7 +244,7 @@ arc = Extension(
     include_dirs=include_dirs,
     library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
     runtime_library_dirs=runtime_library_dirs,
-    libraries=[':float_weight.so', 'kaldi-fstext'] + libraries,
+    libraries=[':lattice_weight.so', 'kaldi-fstext'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(arc)
 

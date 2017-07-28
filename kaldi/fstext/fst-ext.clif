@@ -1,3 +1,5 @@
+# lattice-weight-clifwrap header is needed whenever fst-clifwrap is included.
+from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 
@@ -11,15 +13,33 @@ from "fstext/fst-ext.h":
                                         isyms: SymbolTable = default,
                                         osyms: SymbolTable = default,
                                         ssyms: SymbolTable = default) -> str
+    def `FstToString` as LatticeFstToString(
+        fst: LatticeFst,
+        isyms: SymbolTable = default,
+        osyms: SymbolTable = default,
+        ssyms: SymbolTable = default) -> str
+
+    def `FstToString` as CompactLatticeFstToString(
+        fst: CompactLatticeFst,
+        isyms: SymbolTable = default,
+        osyms: SymbolTable = default,
+        ssyms: SymbolTable = default) -> str
 
     def `FstToBytes` as StdFstToBytes(fst: StdFst) -> bytes
     def `FstToBytes` as LogFstToBytes(fst: LogFst) -> bytes
+    def `FstToBytes` as LatticeFstToBytes(fst: LatticeFst) -> bytes
+    def `FstToBytes` as CompactLatticeFstToBytes(fst: CompactLatticeFst
+                                                ) -> bytes
 
     def BytesToStdFst(s: bytes) -> StdFst
     def BytesToLogFst(s: bytes) -> LogFst
+    def BytesToLatticeFst(s: bytes) -> LatticeFst
+    def BytesToCompactLatticeFst(s: bytes) -> CompactLatticeFst
 
     def BytesToStdVectorFst(s: bytes) -> StdVectorFst
     def BytesToLogVectorFst(s: bytes) -> LogVectorFst
+    def BytesToLatticeVectorFst(s: bytes) -> LatticeVectorFst
+    def BytesToCompactLatticeVectorFst(s: bytes) -> CompactLatticeVectorFst
 
     def CastStdToLog(ifst: StdVectorFst) -> LogVectorFst
     def CastLogToStd(ifst: LogVectorFst) -> StdVectorFst

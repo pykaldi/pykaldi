@@ -124,12 +124,3 @@ from "fstext/lattice-weight.h":
     def `ConvertToCost` as CompactLatticeWeightToCost(w: CompactLatticeWeight
                                                      ) -> float
     def `ConvertToCost` as TropicalWeightToCost(w: TropicalWeight) -> float
-
-    # def GetLogToTropicalConverter() -> (w: LogWeight) -> TropicalWeight
-    # def GetTropicalToLogConverter() -> (w: TropicalWeight) -> LogWeight
-
-    # class `WeightConvert<LogWeight, TropicalWeight>` as ConvertLogToTropical:
-    #   def __call__(self, w: LogWeight) -> TropicalWeight
-
-    # class `WeightConvert<TropicalWeight, LogWeight>` as ConvertTropicalToLog:
-    #   def __call__(self, w: TropicalWeight) -> LogWeight
