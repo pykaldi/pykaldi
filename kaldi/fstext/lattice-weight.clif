@@ -1,0 +1,135 @@
+from "fstext/weight-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+
+from "fstext/lattice-weight.h":
+  namespace `fst`:
+    class `LatticeWeightTpl<float>` as LatticeWeight:
+      @add__init__
+      def `LatticeWeightTpl` as new(self, a: float, b: float)
+      @add__init__
+      def `LatticeWeightTpl` as from_other(self, other: LatticeWeight)
+
+      def Hash(self) -> int
+      def Value1(self) -> `float` as float
+      def Value2(self) -> `float` as float
+      def SetValue1(self, f: float)
+      def SetValue2(self, f: float)
+
+      def __eq__(self, other: LatticeWeight) -> bool
+      def __ne__(self, other: LatticeWeight) -> bool
+
+      @classmethod
+      def `Zero` as zero(cls) -> LatticeWeight
+      @classmethod
+      def `One` as one(cls) -> LatticeWeight
+      @classmethod
+      def `NoWeight` as noweight(cls) -> LatticeWeight
+      @classmethod
+      def `Type` as type(cls) -> str
+      @classmethod
+      def Properties(cls) -> int
+
+      def Member(self) -> bool
+      def Quantize(self, delta: float = default) -> LatticeWeight
+      def Reverse(self) -> LatticeWeight
+
+    def `ScaleTupleWeight` as ScaleLatticeWeight(w: LatticeWeight,
+                                                 scale: list<list<float>>
+                                                ) -> LatticeWeight
+
+    def `Compare` as LatticeCompare(w1: LatticeWeight,
+                                    w2: LatticeWeight) -> int
+
+    class `NaturalLess<LatticeWeightTpl<float>>` as LatticeNaturalLess:
+      def __call__(self, w1: LatticeWeight, w2: LatticeWeight) -> bool
+
+    def `Plus` as LatticePlus(w1: LatticeWeight,
+                              w2: LatticeWeight) -> LatticeWeight
+    def `Times` as LatticeTimes(w1: LatticeWeight,
+                                w2: LatticeWeight) -> LatticeWeight
+    def `Divide` as LatticeDivide(w1: LatticeWeight, w2: LatticeWeight,
+                                  typ: DivideType = default) -> LatticeWeight
+
+    def `ApproxEqual` as LatticeApproxEqual(w1: LatticeWeight,
+                                            w2: LatticeWeight,
+                                            delta: float = default) -> bool
+
+    class `CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>`
+        as CompactLatticeWeight:
+      @add__init__
+      def `CompactLatticeWeightTpl` as new(self, w: LatticeWeight,
+                                           s: list<int>)
+      @add__init__
+      def `CompactLatticeWeightTpl` as from_other(self,
+                                                  other: CompactLatticeWeight)
+
+      def Hash(self) -> int
+      def Weight(self) -> LatticeWeight
+      def String(self) -> list<int>
+      def SetWeight(self, w: LatticeWeight)
+      def SetString(self, s: list<int>)
+
+      def __eq__(self, other: CompactLatticeWeight) -> bool
+      def __ne__(self, other: CompactLatticeWeight) -> bool
+
+      @classmethod
+      def `Zero` as zero(cls) -> CompactLatticeWeight
+      @classmethod
+      def `One` as one(cls) -> CompactLatticeWeight
+      @classmethod
+      def `NoWeight` as noweight(cls) -> CompactLatticeWeight
+      @classmethod
+      def `Type` as type(cls) -> str
+      @classmethod
+      def Properties(cls) -> int
+      @classmethod
+      def GetIntSizeString(cls) -> str
+
+      def Member(self) -> bool
+      def Quantize(self, delta: float = default) -> CompactLatticeWeight
+      def Reverse(self) -> CompactLatticeWeight
+
+    def `ScaleTupleWeight` as ScaleCompactLatticeWeight(
+        w: CompactLatticeWeight,
+        scale: list<list<float>>) -> CompactLatticeWeight
+
+    def `Compare` as CompactLatticeCompare(w1: CompactLatticeWeight,
+                                           w2: CompactLatticeWeight) -> int
+
+    class `NaturalLess<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>`
+        as CompactLatticeNaturalLess:
+      def __call__(self, w1: CompactLatticeWeight,
+                   w2: CompactLatticeWeight) -> bool
+
+    def `Plus` as CompactLatticePlus(w1: CompactLatticeWeight,
+                                     w2: CompactLatticeWeight
+                                    ) -> CompactLatticeWeight
+    def `Times` as CompactLatticeTimes(w1: CompactLatticeWeight,
+                                       w2: CompactLatticeWeight
+                                      ) -> CompactLatticeWeight
+    def `Divide` as CompactLatticeDivide(w1: CompactLatticeWeight,
+                                         w2: CompactLatticeWeight,
+                                         typ: DivideType = default
+                                        ) -> CompactLatticeWeight
+
+    def `ApproxEqual` as CompactLatticeApproxEqual(w1: CompactLatticeWeight,
+                                                   w2: CompactLatticeWeight,
+                                                   delta: float = default
+                                                  ) -> bool
+
+    def `ConvertLatticeWeight` as ConvertLatticeToTropical(w_in: LatticeWeight
+                                                          ) -> TropicalWeight
+
+    def `ConvertToCost` as LatticeWeightToCost(w: LatticeWeight) -> float
+    def `ConvertToCost` as CompactLatticeWeightToCost(w: CompactLatticeWeight
+                                                     ) -> float
+    def `ConvertToCost` as TropicalWeightToCost(w: TropicalWeight) -> float
+
+    # def GetLogToTropicalConverter() -> (w: LogWeight) -> TropicalWeight
+    # def GetTropicalToLogConverter() -> (w: TropicalWeight) -> LogWeight
+
+    # class `WeightConvert<LogWeight, TropicalWeight>` as ConvertLogToTropical:
+    #   def __call__(self, w: LogWeight) -> TropicalWeight
+
+    # class `WeightConvert<TropicalWeight, LogWeight>` as ConvertTropicalToLog:
+    #   def __call__(self, w: TropicalWeight) -> LogWeight

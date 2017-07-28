@@ -218,6 +218,21 @@ float_weight = Extension(
     extra_link_args=extra_link_args)
 extensions.append(float_weight)
 
+lattice_weight = Extension(
+    "kaldi.fstext.lattice_weight",
+    sources=[
+        'build/kaldi/fstext/lattice-weight-clifwrap.cc',
+        'build/kaldi/fstext/lattice-weight-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':float_weight.so', 'kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(lattice_weight)
+
 arc = Extension(
     "kaldi.fstext.arc",
     sources=[
@@ -262,6 +277,21 @@ fst_ext = Extension(
     libraries=[':fst.so', 'kaldi-fstext'] + libraries,
     extra_link_args=extra_link_args)
 extensions.append(fst_ext)
+
+kaldi_fst_io = Extension(
+    "kaldi.fstext.kaldi_fst_io",
+    sources=[
+        'build/kaldi/fstext/kaldi-fst-io-clifwrap.cc',
+        'build/kaldi/fstext/kaldi-fst-io-clifwrap-init.cc',
+        ],
+    language='c++',
+    extra_compile_args=extra_compile_args,
+    include_dirs=include_dirs,
+    library_dirs=library_dirs + ['build/lib/kaldi/fstext'],
+    runtime_library_dirs=runtime_library_dirs,
+    libraries=[':fst.so', 'kaldi-fstext'] + libraries,
+    extra_link_args=extra_link_args)
+extensions.append(kaldi_fst_io)
 
 matrix_common = Extension(
     "kaldi.matrix.matrix_common",

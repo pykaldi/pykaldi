@@ -5,6 +5,7 @@
 // #include "fst/mutable-fst.h"
 #include "fst/vector-fst.h"
 #include "fst/script/print.h"
+#include "fstext/kaldi-fst-io.h"
 
 namespace fst {
 
@@ -53,6 +54,12 @@ void CastStdToLog(const VectorFst<StdArc> &ifst, VectorFst<LogArc> *ofst) {
 
 void CastLogToStd(const VectorFst<LogArc> &ifst, VectorFst<StdArc> *ofst) {
   Cast<VectorFst<LogArc>, VectorFst<StdArc>>(ifst, ofst);
+}
+
+// Kaldi
+
+VectorFst<StdArc> *ReadFstKaldiExt(std::string rxfilename) {
+  return ReadFstKaldi(rxfilename);
 }
 
 }  // namespace fst

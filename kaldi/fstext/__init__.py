@@ -3,7 +3,9 @@
 # 3. For some reason, enums are assigned to the module importlib._bootstrap ???
 from weight import *
 from .float_weight import *
+from .lattice_weight import *
 from .arc import *
 from .symbol_table import *
 from .fst import *
 from .fst_ext import *
+from .kaldi_fst_io import *

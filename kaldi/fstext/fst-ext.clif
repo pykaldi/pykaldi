@@ -23,3 +23,5 @@ from "fstext/fst-ext.h":
 
     def CastStdToLog(ifst: StdVectorFst) -> LogVectorFst
     def CastLogToStd(ifst: LogVectorFst) -> StdVectorFst
+
+    def `ReadFstKaldiExt` as ReadFstKaldi(rxfilename: str) -> StdVectorFst
