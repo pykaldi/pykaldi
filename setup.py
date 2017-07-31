@@ -71,7 +71,7 @@ if DEBUG:
     print("KALDI_DIR: {}".format(KALDI_DIR))
     print("CLIF_DIR: {}".format(CLIF_DIR))
     print("NUMPY_INC_DIR: {}".format(NUMPY_INC_DIR))
-    print("CXX_FLAGS: {}".format(os.getenv("CXX_FLAGS")))
+    print("CLIF_CXX_FLAGS: {}".format(os.getenv("CLIF_CXX_FLAGS")))
     print("BUILD_DIR: {}".format(BUILD_DIR))
     print("#"*50)
 
@@ -100,6 +100,7 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
                       '-DCLIF_DIR=' + CLIF_DIR,
+                      '-DCLIF_CXX_FLAGS=' + os.getenv("CLIF_CXX_FLAGS"),
                       '-DNUMPY_INC_DIR='+NUMPY_INC_DIR]
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
@@ -151,7 +152,17 @@ extensions = [
                 KaldiExtension("kaldi.matrix.sp_matrix"),
                 KaldiExtension("kaldi.matrix.tp_matrix"),
                 KaldiExtension("kaldi.matrix.kaldi_vector_ext"),
-                KaldiExtension("kaldi.matrix.matrix_functions")
+                KaldiExtension("kaldi.matrix.matrix_functions"),
+                KaldiExtension("kaldi.feat.feature_window"),
+                KaldiExtension("kaldi.feat.feature_functions"),
+                KaldiExtension("kaldi.feat.mel_computations"),
+                KaldiExtension("kaldi.feat.feature_mfcc"),
+                KaldiExtension("kaldi.feat.feature_common_ext"),
+                KaldiExtension("kaldi.feat.wave_reader"),
+                KaldiExtension("kaldi.util.kaldi_io"),
+                KaldiExtension("kaldi.util.kaldi_holder"),
+                KaldiExtension("kaldi.util.kaldi_table"),
+                KaldiExtension("kaldi.util.kaldi_table_ext"),
              ]
 
 ################################################################################
