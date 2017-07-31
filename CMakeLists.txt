@@ -67,16 +67,18 @@ endif(NOT NUMPY_INC_DIR)
 #  Set compiler and linker flags
 ####################################################################################################
 set (CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -msse -msse2 -fPIC -Wall -DKALDI_DOUBLEPRECISION=0 -DHAVE_POSIX_MEMALIGN -DHAVE_EXECINFO_H=1 -DHAVE_CXXABI_H -DHAVE_ATLAS -DKALDI_PARANOID -Wno-unused-local-typedefs -Wno-write-strings -Wno-sign-compare -flax-vector-conversions -fpermissive -g -std=c++11")
+"${CMAKE_CXX_FLAGS} -std=c++11 -msse -msse2 -pthread -fwrapv -Wall -Wno-sign-compare -Wno-write-strings -Wno-unused-local-typedefs -Wno-deprecated-declarations -Winit-self -DKALDI_DOUBLEPRECISION=0 -DHAVE_EXECINFO_H=1 -DHAVE_CXXABI_H -DHAVE_ATLAS -DKALDI_PARANOID -g -O0")
+
+set(CMAKE_INSTALL_RPATH "${KALDI_LIBRARIES_DIR}:$ORIGIN/..:$ORIGIN")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 ####################################################################################################
 # Add include directories
 ####################################################################################################
 include_directories(
   ${CMAKE_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}/kaldi
   ${CMAKE_SOURCE_DIR}/kaldi
-  ${CLIF_DIR}/..
+  ${CMAKE_BINARY_DIR}/kaldi
   ${KALDI_SRC_DIR}
   ${OPENFST_INC_DIR}
   ${ATLAS_INC_DIR}
@@ -88,7 +90,6 @@ include_directories(
 # Add libraries directories
 ####################################################################################################
 link_directories(
-  ${CMAKE_BINARY_DIR}/lib/kaldi
   ${KALDI_LIBRARIES_DIR}
 )
 
@@ -116,7 +117,7 @@ function(add_pyclif_library name pyclif_file)
   set(gen_cc "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.cc")
   set(gen_h "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap.h")
   set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
-  string(REPLACE "-" "_" module_name ${pyclif_file_basename})
+  string(REPLACE "-" "_" module_name ${name})
 
   # This defines the call to pyclif
   add_custom_command(
@@ -126,15 +127,16 @@ function(add_pyclif_library name pyclif_file)
           --matcher_bin=${CLIF_MATCHER}
           --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
           --modname=${module_name}
-          -I${CMAKE_BINARY_DIR}/kaldi
           -I${CMAKE_SOURCE_DIR}/kaldi
+          -I${CMAKE_BINARY_DIR}/kaldi
           "-f-I${PYTHON_INCLUDE_DIRS} \
-             -I${CLIF_DIR}/.. \
-             -I${KALDI_SRC_DIR} \
+             -I${CMAKE_SOURCE_DIR} \
              -I${CMAKE_SOURCE_DIR}/kaldi \
-             -I.. \
+             -I${CMAKE_BINARY_DIR}/kaldi \
+             -I${KALDI_SRC_DIR} \
              -I${OPENFST_INC_DIR} \
              -I${ATLAS_INC_DIR} \
+             ${CLIF_CXX_FLAGS} \
              ${CMAKE_CXX_FLAGS}"
           ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
       COMMAND
@@ -145,7 +147,7 @@ function(add_pyclif_library name pyclif_file)
 
   # Create a custom target to run pyclif whenever the file changes
   add_custom_target(
-    ${name}-pyclif
+    ${module_name}_pyclif
     ALL
     DEPENDS ${gen_cc} ${gen_h} ${gen_init}
     VERBATIM
@@ -153,11 +155,11 @@ function(add_pyclif_library name pyclif_file)
 
   # Add dependencies on the other pyclif targets
   foreach(DEP ${PYCLIF_LIBRARY_CLIF_DEPS})
-    add_dependencies(${name}-pyclif ${DEP})
+    add_dependencies(${module_name}_pyclif ${DEP})
   endforeach(DEP)
 
   # Manage CC files through the correct function
-  # PYCLIFDEP flag adds a dependency on ${name}-pyclif target
+  # PYCLIFDEP flag adds a dependency on ${module_name}_pyclif target
   # Pass along any arguments sent to this
   add_CC_library(${module_name}
                  "${gen_cc};${gen_init};${gen_h}"
@@ -171,98 +173,76 @@ endfunction(add_pyclif_library)
 # It adds a custom target to build the python extension
 #
 # arguments:
-#   extname - Name of the library to build
+#   module_name - Name of the library to build
 #   gen_cc - CCP file to compile, optional (replaced with SOURCES)
 #   SOURCES - (multi-value) Instead of gen_cc, list of sources to compile.
 #
 # options:
 #   OUTPUTDIR - Override where to put the libraries .so
-#   PYCLIFDEP - (flag) to add a dependency on ${extname}-pyclif target. Should be set for files generated with pyclif
+#   PYCLIFDEP - (flag) to add a dependency on ${module_name}_pyclif target. Should be set for files generated with pyclif
 #   LIBRARIES - (multi-value) libraries (e.g. kaldi-matrix, kaldi-base) to link against
 #   CLIF_DEPS - (multi-value) Dependencies on clif targets to add to this target
 #   gen_h, gen_init - H and init.CPP files
 ####################################################################################################
-function(add_CC_library extname SOURCES)
+function(add_CC_library module_name SOURCES)
   set(options PYCLIFDEP)
   set(multiValueArgs LIBRARIES CLIF_DEPS)
-  set(oneValueArgs OUTPUTDIR)
+  set(oneValueArgs RPATH OUTPUTDIR)
   cmake_parse_arguments(PYCLIF_LIBRARY "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-  message("Sources for: ${extname}")
+  string(REPLACE "-" "_" module_name ${module_name})
+  string(REPLACE "build" "build/lib" output_location ${CMAKE_CURRENT_BINARY_DIR})
+
+  message("Sources for: ${module_name}")
   foreach(source ${SOURCES})
     message(${source})
   endforeach()
 
   # Create extension
-  add_library(${extname} SHARED ${SOURCES})
+  add_library(${module_name} SHARED ${SOURCES})
 
   # Add dependencies
-  message("Dependencies for: ${extname}")
+  message("Dependencies for: ${module_name}")
 
-  # If PYCLIFDEP is set, add dependency on ${extname}-pyclif
+  # If PYCLIFDEP is set, add dependency on ${module_name}_pyclif
   if(PYCLIF_LIBRARY_PYCLIFDEP)
-    message("${name}-pyclif")
-    add_dependencies(${extname} ${extname}-pyclif)
+    message("${module_name}_pyclif")
+    add_dependencies(${module_name} ${module_name}_pyclif)
   endif(PYCLIF_LIBRARY_PYCLIFDEP)
 
   # Add dependencies from CLIF_DEPS
   foreach(DEP ${PYCLIF_LIBRARY_CLIF_DEPS})
     message("${DEP}")
-    target_link_libraries(${extname} ${DEP})
+    target_link_libraries(${module_name} ${DEP})
   endforeach(DEP)
 
   # Link against CLIF_LIBRARIES
-  message("Libraries for: ${extname}")
-  if(NOT "${extname}" STREQUAL "${CLIF_LIBRARIES}")
+  message("Libraries for: ${module_name}")
+  if(NOT "${module_name}" STREQUAL "${CLIF_LIBRARIES}")
     message("${CLIF_LIBRARIES}")
-    target_link_libraries(${extname} ${CLIF_LIBRARIES})
+    target_link_libraries(${module_name} ${CLIF_LIBRARIES})
   endif()
   foreach(LIB ${PYCLIF_LIBRARY_LIBRARIES})
     message("${LIB}")
-    target_link_libraries(${extname} ${LIB})
+    target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 
   if("${PYCLIF_LIBRARY_OUTPUTDIR}" STREQUAL "")
       string(REPLACE "/build" "/build/lib" PYCLIF_LIBRARY_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
   endif()
-  message("Installing ${extname} into ${PYCLIF_LIBRARY_OUTPUTDIR}")
+  message("Installing ${module_name} into ${PYCLIF_LIBRARY_OUTPUTDIR}")
 
   # don't prepend wrapper library name with lib
-  set_target_properties(${extname} PROPERTIES PREFIX "")
+  set_target_properties(${module_name} PROPERTIES PREFIX "")
 
   # Create the file in the correct location
-  set_target_properties(${extname}
+  set_target_properties(${module_name}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
     LIBRARY_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
-    RUNTIME_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR})
+    RUNTIME_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
+    INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${PYCLIF_LIBRARY_RPATH}")
 
-  # Manage RPATH
-  # use, i.e. don't skip the full RPATH for the build tree
-  set(CMAKE_SKIP_BUILD_RPATH FALSE)
-
-  # when building, don't use the install RPATH already
-  # (but later on when installing)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-
-  set(CMAKE_INSTALL_RPATH "${LIBRARY_OUTPUT_PATH}")
-
-  # add the automatically determined parts of the RPATH
-  # which point to directories outside the build tree to the install RPATH
-  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-  # the RPATH to be used when installing, but only if it's not a system directory
-  list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${LIBRARY_OUTPUT_PATH}" isSystemDir)
-  if("${isSystemDir}" STREQUAL "-1")
-     set(CMAKE_INSTALL_RPATH "${LIBRARY_OUTPUT_PATH}")
-  endif("${isSystemDir}" STREQUAL "-1")
-
-  # Install
-  install(TARGETS ${extname}
-          LIBRARY DESTINATION ${PYCLIF_LIBRARY_OUTPUTDIR}
-          ARCHIVE DESTINATION ${PYCLIF_LIBRARY_OUTPUTDIR})
-
-  message("")
   message("")
 
 endfunction(add_CC_library)
@@ -278,5 +258,4 @@ add_CC_library(${CLIF_LIBRARIES}
   OUTPUTDIR ${CLIF_LIB_LOCATION}
 )
 
-include_directories(${CLIF_DIR}/..)
 add_subdirectory("kaldi")
