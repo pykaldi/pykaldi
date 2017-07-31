@@ -179,7 +179,7 @@ endfunction(add_pyclif_library)
 #
 # options:
 #   OUTPUTDIR - Override where to put the libraries .so
-#   PYCLIFDEP - (flag) to add a dependency on ${module_name}_pyclif target. Should be set for files generated with pyclif
+#   PYCLIFDEP - (flag) to add a dependency on ${module_name}-pyclif target. Should be set for files generated with pyclif
 #   LIBRARIES - (multi-value) libraries (e.g. kaldi-matrix, kaldi-base) to link against
 #   CLIF_DEPS - (multi-value) Dependencies on clif targets to add to this target
 #   gen_h, gen_init - H and init.CPP files
