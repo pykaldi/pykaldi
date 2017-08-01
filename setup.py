@@ -7,8 +7,7 @@ import setuptools.command.install_lib
 import distutils.command.build
 import setuptools.extension
 
-import subprocess #Needed for line 78
-from subprocess import check_output
+from subprocess import check_output, check_call
 import os
 
 import numpy
@@ -68,7 +67,7 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
                       '-DCLIF_DIR=' + CLIF_DIR,
-                      '-DCLIF_CXX_FLAGS=' + os.getenv("CLIF_CXX_FLAGS", ""), #CLIF_CXX_FLAGS might not be set
+                      '-DCLIF_CXX_FLAGS=' + os.getenv("CLIF_CXX_FLAGS", ""),
                       '-DNUMPY_INC_DIR='+NUMPY_INC_DIR]
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
@@ -76,8 +75,8 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         if not os.path.exists(BUILD_DIR):
             os.makedirs(BUILD_DIR)
 
-        subprocess.check_call(['cmake', '..'] + cmake_args, cwd = BUILD_DIR)
-        subprocess.check_call(['make', '-j'], cwd = BUILD_DIR)
+        check_call(['cmake', '..'] + cmake_args, cwd = BUILD_DIR)
+        check_call(['make', '-j'], cwd = BUILD_DIR)
         print() # Add an empty line for cleaner output
 
         self.inplace = old_inplace
@@ -135,10 +134,10 @@ extensions = [
                 KaldiExtension("kaldi.feat.feature_mfcc"),
                 KaldiExtension("kaldi.feat.feature_common_ext"),
                 KaldiExtension("kaldi.feat.wave_reader"),
+                KaldiExtension("kaldi.util.options_ext"),
                 KaldiExtension("kaldi.util.kaldi_io"),
                 KaldiExtension("kaldi.util.kaldi_holder"),
                 KaldiExtension("kaldi.util.kaldi_table"),
-                # KaldiExtension("kaldi.util.kaldi_table_ext"), #There is no kaldi_table_ext.cc?
              ]
 
 packages = find_packages()
