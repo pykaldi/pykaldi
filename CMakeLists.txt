@@ -56,6 +56,7 @@ set(KALDI_TOOLS_DIR "${KALDI_DIR}/tools")
 set(KALDI_LIBRARIES_DIR "${KALDI_SRC_DIR}/lib")
 set(ATLAS_INC_DIR ${KALDI_TOOLS_DIR}/ATLAS/include)
 set(OPENFST_INC_DIR ${KALDI_TOOLS_DIR}/openfst/include)
+set(OPENFST_LIB_DIR ${KALDI_TOOLS_DIR}/openfst/lib)
 
 # Find Numpy
 if(NOT NUMPY_INC_DIR)
@@ -69,7 +70,7 @@ endif(NOT NUMPY_INC_DIR)
 set (CMAKE_CXX_FLAGS
 "${CMAKE_CXX_FLAGS} -std=c++11 -msse -msse2 -pthread -fwrapv -Wall -Wno-sign-compare -Wno-write-strings -Wno-unused-local-typedefs -Wno-deprecated-declarations -Winit-self -DKALDI_DOUBLEPRECISION=0 -DHAVE_EXECINFO_H=1 -DHAVE_CXXABI_H -DHAVE_ATLAS -DKALDI_PARANOID -g -O0")
 
-set(CMAKE_INSTALL_RPATH "${KALDI_LIBRARIES_DIR}:$ORIGIN/..:$ORIGIN")
+set(CMAKE_INSTALL_RPATH "${KALDI_LIBRARIES_DIR}:${OPENFST_LIB_DIR}:$ORIGIN/..:$ORIGIN")
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 ####################################################################################################
@@ -91,6 +92,7 @@ include_directories(
 ####################################################################################################
 link_directories(
   ${KALDI_LIBRARIES_DIR}
+  ${OPENFST_LIB_DIR}
 )
 
 ####################################################################################################
@@ -191,7 +193,9 @@ function(add_CC_library module_name SOURCES)
   cmake_parse_arguments(PYCLIF_LIBRARY "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   string(REPLACE "-" "_" module_name ${module_name})
-  string(REPLACE "build" "build/lib" output_location ${CMAKE_CURRENT_BINARY_DIR})
+  if("${PYCLIF_LIBRARY_OUTPUTDIR}" STREQUAL "")
+      string(REPLACE "/build" "/build/lib" PYCLIF_LIBRARY_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
+  endif()
 
   message("Sources for: ${module_name}")
   foreach(source ${SOURCES})
@@ -227,9 +231,6 @@ function(add_CC_library module_name SOURCES)
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 
-  if("${PYCLIF_LIBRARY_OUTPUTDIR}" STREQUAL "")
-      string(REPLACE "/build" "/build/lib" PYCLIF_LIBRARY_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
-  endif()
   message("Installing ${module_name} into ${PYCLIF_LIBRARY_OUTPUTDIR}")
 
   # don't prepend wrapper library name with lib

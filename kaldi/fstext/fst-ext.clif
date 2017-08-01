@@ -1,6 +1,6 @@
 # lattice-weight-clifwrap header is needed whenever fst-clifwrap is included.
 from "fstext/lattice-weight-clifwrap.h" import *
-from "fstext/fst-clifwrap.h" import *
+from "fstext/fst-types-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 
 from "fstext/fst-ext.h":
