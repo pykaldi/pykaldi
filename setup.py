@@ -7,6 +7,7 @@ import setuptools.command.install_lib
 import distutils.command.build
 import setuptools.extension
 
+import subprocess #Needed for line 78
 from subprocess import check_output
 import os
 
@@ -67,7 +68,7 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
                       '-DCLIF_DIR=' + CLIF_DIR,
-                      '-DCLIF_CXX_FLAGS=' + os.getenv("CLIF_CXX_FLAGS"),
+                      '-DCLIF_CXX_FLAGS=' + os.getenv("CLIF_CXX_FLAGS", ""), #CLIF_CXX_FLAGS might not be set
                       '-DNUMPY_INC_DIR='+NUMPY_INC_DIR]
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
