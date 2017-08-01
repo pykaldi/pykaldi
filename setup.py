@@ -138,7 +138,7 @@ extensions = [
                 KaldiExtension("kaldi.util.kaldi_io"),
                 KaldiExtension("kaldi.util.kaldi_holder"),
                 KaldiExtension("kaldi.util.kaldi_table"),
-                KaldiExtension("kaldi.util.kaldi_table_ext"),
+                # KaldiExtension("kaldi.util.kaldi_table_ext"), #There is no kaldi_table_ext.cc?
              ]
 
 packages = find_packages()
