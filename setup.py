@@ -7,8 +7,8 @@ import setuptools.command.install_lib
 import distutils.command.build
 import setuptools.extension
 
-from subprocess import check_output, check_call
 import os
+from subprocess import check_output, check_call
 
 import numpy
 
@@ -22,13 +22,14 @@ CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
+CLIF_CXX_FLAGS = os.getenv("CLIF_CXX_FLAGS", "")
 
 if not PYCLIF:
     try:
         PYCLIF = check_output(['which', 'pyclif']).decode("utf-8").strip()
     except OSError:
-        raise RuntimeError("Could not find pyclif. Please add pyclif binary to "
-                           "your PATH or set PYCLIF environment variable.")
+        raise RuntimeError("Could not find pyclif. Please add pyclif binary to"
+                           " your PATH or set PYCLIF environment variable.")
 
 if not KALDI_DIR:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
@@ -47,7 +48,7 @@ if DEBUG:
     print("KALDI_DIR: {}".format(KALDI_DIR))
     print("CLIF_DIR: {}".format(CLIF_DIR))
     print("NUMPY_INC_DIR: {}".format(NUMPY_INC_DIR))
-    print("CLIF_CXX_FLAGS: {}".format(os.getenv("CLIF_CXX_FLAGS")))
+    print("CLIF_CXX_FLAGS: {}".format(CLIF_CXX_FLAGS))
     print("BUILD_DIR: {}".format(BUILD_DIR))
     print("#"*50)
 
@@ -67,8 +68,8 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
                       '-DCLIF_DIR=' + CLIF_DIR,
-                      '-DCLIF_CXX_FLAGS=' + os.getenv("CLIF_CXX_FLAGS", ""),
-                      '-DNUMPY_INC_DIR='+NUMPY_INC_DIR]
+                      '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
+                      '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR]
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
@@ -154,4 +155,5 @@ setup(name = 'pykaldi',
           },
       packages = packages,
       package_data = {},
-      install_requires = ['enum34;python_version<"3.4"', 'numpy'])
+      install_requires = ['enum34;python_version<"3.4"', 'numpy'],
+      zip_safe = False)

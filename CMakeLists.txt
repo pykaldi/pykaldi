@@ -98,17 +98,17 @@ link_directories(
 ####################################################################################################
 # Function to set up rules to invoke pyclif on a .clif file
 # and generate the wrapper .cc and .h files.
-# It also adds a custom target to build the python extension
+# It also adds a custom target for building the python extension.
 #
-# arguments:
-#   name - Name of the extension
-#   pyclif_file - Name of the pyclif file to compile
+# Arguments:
+#   name - name of the extension
+#   pyclif_file - pyclif file to compile into a python extension
 #
-# options:
+# Options:
 #   LIBRARIES - (multi-value) libraries (e.g. kaldi-matrix, kaldi-base) to link against
-#   LIBRARY_DIRS - (multi-value) Currently not used
-#   INCLUDE_DIRS - (multi-value) Currently not used
-#   CLIF_DEPS - (multi-value) Dependencies on clif targets to add to this target
+#   NAMESPACES - (multi-value) additional namespaces to make visible in the generated .cc files
+#   RPATH - colon separated list of additional runtime paths
+#   CLIF_DEPS - (multi-value) other clif targets that this target depends on
 ####################################################################################################
 function(add_pyclif_library name pyclif_file)
   set(multiValueArgs LIBRARIES LIBRARY_DIRS INCLUDE_DIRS CLIF_DEPS NAMESPACES)
@@ -164,27 +164,25 @@ function(add_pyclif_library name pyclif_file)
   # PYCLIFDEP flag adds a dependency on ${module_name}_pyclif target
   # Pass along any arguments sent to this
   add_CC_library(${module_name}
-                 "${gen_cc};${gen_init};${gen_h}"
+                 "${gen_cc};${gen_init}"
                  PYCLIFDEP
                  ${ARGN})
 
 endfunction(add_pyclif_library)
 
 ####################################################################################################
-# This function handles the case of .cc files that do not come from pyclif
-# It adds a custom target to build the python extension
+# This function handles the compilation of python extension modules.
 #
 # arguments:
-#   module_name - Name of the library to build
-#   gen_cc - CCP file to compile, optional (replaced with SOURCES)
-#   SOURCES - (multi-value) Instead of gen_cc, list of sources to compile.
+#   module_name - name of the python extension module
+#   SOURCES - (multi-value) list of source files to compile into a shared library
 #
 # options:
-#   OUTPUTDIR - Override where to put the libraries .so
-#   PYCLIFDEP - (flag) to add a dependency on ${module_name}-pyclif target. Should be set for files generated with pyclif
+#   OUTPUTDIR - Overrides the output directory for shared libraries
+#   PYCLIFDEP - (flag) add a dependency on ${module_name}-pyclif target. Should be set for files generated with pyclif
 #   LIBRARIES - (multi-value) libraries (e.g. kaldi-matrix, kaldi-base) to link against
-#   CLIF_DEPS - (multi-value) Dependencies on clif targets to add to this target
-#   gen_h, gen_init - H and init.CPP files
+#   RPATH - colon separated list of additional runtime paths
+#   CLIF_DEPS - (multi-value) other clif targets that this target depends on
 ####################################################################################################
 function(add_CC_library module_name SOURCES)
   set(options PYCLIFDEP)
@@ -198,34 +196,37 @@ function(add_CC_library module_name SOURCES)
   endif()
 
   message("Sources for: ${module_name}")
+
   foreach(source ${SOURCES})
     message(${source})
   endforeach()
 
-  # Create extension
+  # Create extension module
   add_library(${module_name} SHARED ${SOURCES})
 
-  # Add dependencies
   message("Dependencies for: ${module_name}")
 
-  # If PYCLIFDEP is set, add dependency on ${module_name}_pyclif
+  # If PYCLIFDEP is set, add a dependency on ${module_name}_pyclif
   if(PYCLIF_LIBRARY_PYCLIFDEP)
     message("${module_name}_pyclif")
     add_dependencies(${module_name} ${module_name}_pyclif)
   endif(PYCLIF_LIBRARY_PYCLIFDEP)
 
-  # Add dependencies from CLIF_DEPS
-  foreach(DEP ${PYCLIF_LIBRARY_CLIF_DEPS})
-    message("${DEP}")
-    target_link_libraries(${module_name} ${DEP})
-  endforeach(DEP)
+  # Link with other extension modules
+  foreach(LIB ${PYCLIF_LIBRARY_CLIF_DEPS})
+    message("${LIB}")
+    target_link_libraries(${module_name} ${LIB})
+  endforeach(LIB)
 
-  # Link against CLIF_LIBRARIES
   message("Libraries for: ${module_name}")
-  if(NOT "${module_name}" STREQUAL "${CLIF_LIBRARIES}")
-    message("${CLIF_LIBRARIES}")
-    target_link_libraries(${module_name} ${CLIF_LIBRARIES})
+
+  # Link with clif library
+  if(NOT "${module_name}" STREQUAL "${CLIF_LIBRARY}")
+    message("${CLIF_LIBRARY}")
+    target_link_libraries(${module_name} ${CLIF_LIBRARY})
   endif()
+
+  # Link with other libraries
   foreach(LIB ${PYCLIF_LIBRARY_LIBRARIES})
     message("${LIB}")
     target_link_libraries(${module_name} ${LIB})
@@ -233,10 +234,10 @@ function(add_CC_library module_name SOURCES)
 
   message("Installing ${module_name} into ${PYCLIF_LIBRARY_OUTPUTDIR}")
 
-  # don't prepend wrapper library name with lib
+  # Do not prepend extension modules with "lib"
   set_target_properties(${module_name} PROPERTIES PREFIX "")
 
-  # Create the file in the correct location
+  # Set the output directory for the extension module
   set_target_properties(${module_name}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
@@ -250,12 +251,12 @@ endfunction(add_CC_library)
 
 
 ####################################################################################################
-# Add target for clif libraries
+# Add target for clif library
 ####################################################################################################
-set(CLIF_LIBRARIES "_clif")
+set(CLIF_LIBRARY "_clif")
 string(REPLACE "/build" "/build/lib/kaldi" CLIF_LIB_LOCATION ${CMAKE_CURRENT_BINARY_DIR})
-add_CC_library(${CLIF_LIBRARIES}
-  "${CLIF_DIR}/python/runtime.cc;${CLIF_DIR}/python/slots.cc;${CLIF_DIR}/python/types.cc"
+add_CC_library(${CLIF_LIBRARY}
+  "${CLIF_DIR}/python/optional.cc;${CLIF_DIR}/python/runtime.cc;${CLIF_DIR}/python/slots.cc;${CLIF_DIR}/python/types.cc"
   OUTPUTDIR ${CLIF_LIB_LOCATION}
 )
 
