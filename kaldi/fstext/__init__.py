@@ -6,6 +6,6 @@ from .float_weight import *
 from .lattice_weight import *
 from .arc import *
 from .symbol_table import *
-from .fst import *
+from .fst_types import *
 from .fst_ext import *
 from .kaldi_fst_io import *
