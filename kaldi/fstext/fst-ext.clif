@@ -1,7 +1,11 @@
 # lattice-weight-clifwrap header is needed whenever fst-clifwrap is included.
 from "fstext/lattice-weight-clifwrap.h" import *
-from "fstext/fst-types-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/expanded-fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
 
 from "fstext/fst-ext.h":
   namespace `fst`:
@@ -24,6 +28,8 @@ from "fstext/fst-ext.h":
         isyms: SymbolTable = default,
         osyms: SymbolTable = default,
         ssyms: SymbolTable = default) -> str
+
+    def WriteString(s: str, strm: iostream)
 
     def `FstToBytes` as StdFstToBytes(fst: StdFst) -> bytes
     def `FstToBytes` as LogFstToBytes(fst: LogFst) -> bytes

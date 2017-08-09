@@ -1,3 +1,12 @@
+add_pyclif_library("iostream" iostream.clif)
+add_pyclif_library("fstream" fstream.clif
+  CLIF_DEPS iostream
+  BASETYPES iostream_clifwrap::pyistream iostream_clifwrap::pyostream
+)
+add_pyclif_library("sstream" sstream.clif
+  CLIF_DEPS iostream
+  BASETYPES iostream_clifwrap::pyistream iostream_clifwrap::pyostream iostream_clifwrap::pyiostream
+)
 add_pyclif_library("options_ext" options-ext.clif
   LIBRARIES kaldi-util
 )

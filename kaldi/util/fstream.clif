@@ -1,0 +1,11 @@
+from "util/iostream-clifwrap.h" import *
+
+from "fstream":
+  namespace `::std`:
+    class ifstream(istream):
+      @add__init__
+      def `ifstream` as from_file(self, filename: str)
+
+    class ofstream(ostream):
+      @add__init__
+      def `ofstream` as to_file(self, filename: str)

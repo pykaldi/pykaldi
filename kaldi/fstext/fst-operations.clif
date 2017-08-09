@@ -1,0 +1,152 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-operations.h":
+  namespace `fst`:
+
+# Constant Ops
+
+    def `VerifyExt` as StdVerify(fst: StdFst) -> bool
+
+# In-place Mutation Ops
+
+    def `ArcSort` as StdArcSort(fst: StdMutableFst, sort_type: ArcSortType)
+
+    def `ClosureExt` as StdClosure(fst: StdMutableFst,
+                                   closure_type: ClosureType)
+
+    def `ConnectExt` as StdConnect(fst: StdMutableFst)
+
+    def `InvertExt` as StdInvert(fst: StdMutableFst)
+
+    def `MinimizeExt` as StdMinimize(fst: StdMutableFst,
+                                     sfst: StdMutableFst = default,
+                                     delta: float = default,
+                                     allow_nondet: bool = default)
+
+    def `ProjectExt` as StdProject(fst: StdMutableFst,
+                                   project_type: ProjectType)
+
+    def `PruneExt` as StdPrune(fst: StdMutableFst,
+                               weight_threshold: TropicalWeight,
+                               state_threshold: int = default,
+                               delta: float = default)
+
+    def `PushExt` as StdPush(fst: StdMutableFst, type: ReweightType,
+                             delta: float = default,
+                             remove_total_weight: bool = default)
+
+    def `RelabelExt` as StdRelabel(fst: StdMutableFst,
+                                   ipairs: list<tuple<int, int>>,
+                                   opairs: list<tuple<int, int>>)
+
+    def `RelabelTables` as StdRelabelTables(
+        fst: StdMutableFst,
+        old_isymbols: SymbolTable, new_isymbols: SymbolTable,
+        unknown_isymbol: str, attach_new_isymbols: bool,
+        old_osymbols: SymbolTable, new_osymbols: SymbolTable,
+        unknown_osymbol: str, attach_new_osymbols: bool)
+
+    def `ReweightExt` as StdReweight(fst: StdMutableFst,
+                                     potential: list<TropicalWeight>,
+                                     type: ReweightType)
+
+    def `RmEpsilonExt` as StdRmEpsilon(
+        fst: StdMutableFst, connect: bool = default,
+        weight_threshold: TropicalWeight = default,
+        state_threshold: int = default, delta: float = default)
+
+    def `TopSortExt` as StdTopSort(fst: StdMutableFst) -> bool
+
+    def `UnionExt` as StdUnion(fst1: StdMutableFst, fst2: StdFst)
+
+# Constructive Ops
+
+    def `Map` as StdMap(ifst: StdFst, ofst: StdMutableFst, map_type: MapType,
+                        delta: float, weight: TropicalWeight)
+
+    def `Compose` as StdCompose(ifst1: StdFst, ifst2: StdFst,
+                                ofst: StdMutableFst, connect: bool,
+                                compose_filter: ComposeFilter)
+
+    def `DeterminizeExt` as StdDeterminize(
+        ifst: StdFst, ofst: StdMutableFst, delta: float = default,
+        weight_threshold: TropicalWeight = default,
+        state_threshold: int = default, subsequential_label: int = default,
+        type: DeterminizeType = default,
+        increment_subsequential_label: bool = default)
+
+    def `Difference` as StdDifference(ifst1: StdFst, ifst2: StdFst,
+                                      ofst: StdMutableFst, connect: bool,
+                                      compose_filter: ComposeFilter)
+
+    def `DisambiguateExt` as StdDisambiguate(
+        ifst: StdFst, ofst: StdMutableFst, delta: float = default,
+        weight_threshold: TropicalWeight = default,
+        state_threshold: int = default, subsequential_label: int = default)
+
+    def `EpsNormalizeExt` as StdEpsNormalize(ifst: StdFst, ofst: StdMutableFst,
+                                             type: EpsNormalizeType = default)
+
+    def `EqualExt` as StdEqual(ifst1: StdFst, ifst2: StdFst,
+                               delta: float = default) -> bool
+
+    def `EquivalentExt` as StdEquivalent(ifst1: StdFst, ifst2: StdFst,
+                                         delta: float)
+        -> (result: bool, error: bool)
+
+    def `Intersect` as StdIntersect(ifst1: StdFst, ifst2: StdFst,
+                                    ofst: StdMutableFst, connect: bool,
+                                    compose_filter: ComposeFilter)
+
+    def `IsomorphicExt` as StdIsomorphic(ifst1: StdFst, ifst2: StdFst,
+                                         delta: float = default) -> bool
+
+    def `PruneExt` as StdPruneCons(ifst: StdFst, ofst: StdMutableFst,
+                                   weight_threshold: TropicalWeight,
+                                   state_threshold: int = default,
+                                   delta: float = default)
+
+    def `PushExt` as StdPushCons(ifst: StdFst, ofst: StdMutableFst,
+                                 flags: int, type: ReweightType, delta: float)
+
+    def `RandEquivalent` as StdRandEquivalent(
+        ifst1: StdFst, ifst2: StdFst, seed: int, num_paths: int,
+        delta: float, selector_type: RandArcSelection, max_length: int)
+        -> (result: bool, error: bool)
+
+    def `RandGen` as StdRandGen(ifst: StdFst, ofst: StdMutableFst,
+                                seed: int, selector_type: RandArcSelection,
+                                max_length: int, num_paths: int,
+                                weighted: bool, remove_total_weight: bool)
+
+    def StdReplace(pairs: list<tuple<int, StdFst>>, ofst: StdMutableFst,
+                   root_label: int, call_label_type: ReplaceLabelType,
+                   return_label_type: ReplaceLabelType, return_label: int)
+
+    def `ReverseExt` as StdReverse(ifst: StdFst, ofst: StdMutableFst,
+                                   require_superinitial: bool = default)
+
+    def `SynchronizeExt` as StdSynchronize(ifst: StdFst, ofst: StdMutableFst)
+
+    def `RmEpsilonExt` as StdRmEpsilonCons(
+        ifst: StdFst, ofst: StdMutableFst, reverse: bool = default,
+        queue_type: QueueType = default, delta: float = default,
+        connect: bool = default, weight_threshold: TropicalWeight = default,
+        state_threshold: int = default)
+
+    def `ShortestDistanceExt` as StdShortestDistance(
+        fst: StdFst, queue_type: QueueType = default,
+        source: int = default, delta: float = default, reverse: bool = default)
+        -> list<TropicalWeight>
+
+    def `ShortestPathExt` as StdShortestPath(
+        ifst: StdFst, ofst: StdMutableFst, queue_type: QueueType = default,
+        nshortest: int = default, unique: bool = default,
+        delta: float = default,
+        weight_threshold: TropicalWeight = default,
+        state_threshold: int = default)

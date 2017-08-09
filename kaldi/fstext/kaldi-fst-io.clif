@@ -1,5 +1,6 @@
 from "fstext/lattice-weight-clifwrap.h" import *
-from "fstext/fst-types-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
 
 from "fstext/kaldi-fst-io.h":
   namespace `fst`:

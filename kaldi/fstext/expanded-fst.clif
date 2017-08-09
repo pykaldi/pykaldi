@@ -1,0 +1,67 @@
+# from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+# from "fstext/arc-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+
+from "fst/expanded-fst.h":
+  namespace `fst`:
+
+    # StdArc
+
+    class `ExpandedFst<StdArc>` as StdExpandedFst(StdFst):
+
+      def NumStates(self) -> int
+
+      def Copy(self, safe: bool = default) -> StdExpandedFst
+
+      @classmethod
+      def Read(cls, filename: str) -> StdExpandedFst
+
+    def `CountStates` as CountStdFstStates(fst: StdFst) -> int
+
+    def `CountArcs` as CountStdFstArcs(fst: StdFst) -> int
+
+    # LogArc
+
+    class `ExpandedFst<LogArc>` as LogExpandedFst(LogFst):
+
+      def NumStates(self) -> int
+
+      def Copy(self, safe: bool = default) -> LogExpandedFst
+
+      @classmethod
+      def Read(cls, filename: str) -> LogExpandedFst
+
+    def `CountStates` as CountLogFstStates(fst: LogFst) -> int
+
+    def `CountArcs` as CountLogFstArcs(fst: LogFst) -> int
+
+    # LatticeArc
+
+    class `ExpandedFst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeExpandedFst(LatticeFst):
+
+      def NumStates(self) -> int
+
+      def Copy(self, safe: bool = default) -> LatticeExpandedFst
+
+      @classmethod
+      def Read(cls, filename: str) -> LatticeExpandedFst
+
+    def `CountStates` as CountLatticeFstStates(fst: LatticeFst) -> int
+
+    def `CountArcs` as CountLatticeFstArcs(fst: LatticeFst) -> int
+
+    # CompactLatticeArc
+
+    class `ExpandedFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeExpandedFst(CompactLatticeFst):
+
+      def NumStates(self) -> int
+
+      def Copy(self, safe: bool = default) -> CompactLatticeExpandedFst
+
+      @classmethod
+      def Read(cls, filename: str) -> CompactLatticeExpandedFst
+
+    def `CountStates` as CountCompactLatticeFstStates(fst: CompactLatticeFst) -> int
+
+    def `CountArcs` as CountCompactLatticeFstArcs(fst: CompactLatticeFst) -> int

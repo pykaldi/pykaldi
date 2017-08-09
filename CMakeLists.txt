@@ -111,8 +111,9 @@ link_directories(
 #   CLIF_DEPS - (multi-value) other clif targets that this target depends on
 ####################################################################################################
 function(add_pyclif_library name pyclif_file)
-  set(multiValueArgs LIBRARIES LIBRARY_DIRS INCLUDE_DIRS CLIF_DEPS NAMESPACES)
-  cmake_parse_arguments(PYCLIF_LIBRARY "" "" "${multiValueArgs}" ${ARGN})
+  set(oneValueArgs RPATH)
+  set(multiValueArgs CLIF_DEPS NAMESPACES BASETYPES LIBRARIES)
+  cmake_parse_arguments(PYCLIF_LIBRARY "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   # PYCLIF configuration
   string(REPLACE ".clif" "" pyclif_file_basename ${pyclif_file})
@@ -142,7 +143,11 @@ function(add_pyclif_library name pyclif_file)
              ${CMAKE_CXX_FLAGS}"
           ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
       COMMAND
-          ${CMAKE_SOURCE_DIR}/add_namespace.sh ${gen_cc} ${PYCLIF_LIBRARY_NAMESPACES}
+          ${CMAKE_SOURCE_DIR}/use_namespace.sh ${gen_cc} ${PYCLIF_LIBRARY_NAMESPACES}
+      COMMAND
+          ${CMAKE_SOURCE_DIR}/add_namespace.sh ${gen_cc} ${PYCLIF_LIBRARY_BASETYPES}
+      COMMAND
+          ${CMAKE_SOURCE_DIR}/extern_base.sh ${gen_h} ${PYCLIF_LIBRARY_BASETYPES}
       VERBATIM
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
   )
@@ -166,7 +171,9 @@ function(add_pyclif_library name pyclif_file)
   add_CC_library(${module_name}
                  "${gen_cc};${gen_init}"
                  PYCLIFDEP
-                 ${ARGN})
+                 RPATH ${PYCLIF_LIBRARY_RPATH}
+                 CLIF_DEPS ${PYCLIF_LIBRARY_CLIF_DEPS}
+                 LIBRARIES ${PYCLIF_LIBRARY_LIBRARIES})
 
 endfunction(add_pyclif_library)
 
@@ -195,44 +202,48 @@ function(add_CC_library module_name SOURCES)
       string(REPLACE "/build" "/build/lib" PYCLIF_LIBRARY_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
   endif()
 
-  message("Sources for: ${module_name}")
+  message("Module: ${module_name}")
+
+  message("- Sources:")
 
   foreach(source ${SOURCES})
-    message(${source})
+    message("    ${source}")
   endforeach()
 
   # Create extension module
   add_library(${module_name} SHARED ${SOURCES})
 
-  message("Dependencies for: ${module_name}")
+  message("- Dependencies:")
 
   # If PYCLIFDEP is set, add a dependency on ${module_name}_pyclif
   if(PYCLIF_LIBRARY_PYCLIFDEP)
-    message("${module_name}_pyclif")
+    message("    ${module_name}_pyclif")
     add_dependencies(${module_name} ${module_name}_pyclif)
   endif(PYCLIF_LIBRARY_PYCLIFDEP)
 
   # Link with other extension modules
   foreach(LIB ${PYCLIF_LIBRARY_CLIF_DEPS})
-    message("${LIB}")
+    message("    ${LIB}")
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 
-  message("Libraries for: ${module_name}")
+  message("- Libraries:")
 
   # Link with clif library
   if(NOT "${module_name}" STREQUAL "${CLIF_LIBRARY}")
-    message("${CLIF_LIBRARY}")
+    message("    ${CLIF_LIBRARY}")
     target_link_libraries(${module_name} ${CLIF_LIBRARY})
   endif()
 
   # Link with other libraries
   foreach(LIB ${PYCLIF_LIBRARY_LIBRARIES})
-    message("${LIB}")
+    message("    ${LIB}")
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 
-  message("Installing ${module_name} into ${PYCLIF_LIBRARY_OUTPUTDIR}")
+  message("- Runtime path: ${PYCLIF_LIBRARY_RPATH}")
+
+  message("- Output directory: ${PYCLIF_LIBRARY_OUTPUTDIR}")
 
   # Do not prepend extension modules with "lib"
   set_target_properties(${module_name} PROPERTIES PREFIX "")

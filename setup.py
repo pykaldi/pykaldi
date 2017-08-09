@@ -111,14 +111,23 @@ class install_lib(setuptools.command.install_lib.install_lib):
 
 extensions = [
                 KaldiExtension("kaldi._clif"),
+                KaldiExtension("kaldi.fstext.properties"),
                 KaldiExtension("kaldi.fstext.symbol_table"),
                 KaldiExtension("kaldi.fstext.weight"),
                 KaldiExtension("kaldi.fstext.float_weight"),
                 KaldiExtension("kaldi.fstext.lattice_weight"),
                 KaldiExtension("kaldi.fstext.lattice_utils"),
-                KaldiExtension("kaldi.fstext.fst_types"),
+                KaldiExtension("kaldi.fstext.fst"),
+                KaldiExtension("kaldi.fstext.expanded_fst"),
+                KaldiExtension("kaldi.fstext.mutable_fst"),
+                KaldiExtension("kaldi.fstext.vector_fst"),
                 KaldiExtension("kaldi.fstext.fst_ext"),
                 KaldiExtension("kaldi.fstext.kaldi_fst_io"),
+                KaldiExtension("kaldi.fstext.drawer"),
+                KaldiExtension("kaldi.fstext.printer"),
+                KaldiExtension("kaldi.fstext.getters"),
+                KaldiExtension("kaldi.fstext.encode"),
+                KaldiExtension("kaldi.fstext.fst_operations"),
                 KaldiExtension("kaldi.matrix.matrix_common"),
                 KaldiExtension("kaldi.matrix.kaldi_vector"),
                 KaldiExtension("kaldi.matrix.kaldi_matrix"),
@@ -139,6 +148,9 @@ extensions = [
                 KaldiExtension("kaldi.util.kaldi_io"),
                 KaldiExtension("kaldi.util.kaldi_holder"),
                 KaldiExtension("kaldi.util.kaldi_table"),
+                KaldiExtension("kaldi.util.iostream"),
+                KaldiExtension("kaldi.util.fstream"),
+                KaldiExtension("kaldi.util.sstream"),
              ]
 
 packages = find_packages()

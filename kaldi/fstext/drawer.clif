@@ -1,0 +1,46 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "util/ios-clifwrap.h" import *
+
+from "fst/script/draw-impl.h":
+  namespace `fst`:
+
+    class `FstDrawer<StdArc>` as StdFstDrawer:
+      def __init__(self, fst: StdFst, isyms: SymbolTable, osyms: SymbolTable,
+                   ssyms: SymbolTable, accep: bool, title: str, width: float,
+                   height: float, portrait: bool, vertical: bool,
+                   ranksep: float, nodesep: float, fontsize: int,
+                   precision: int, float_format: str, show_weight_one: bool)
+
+      def Draw(self, strm: ostream, dest: str)
+
+    class `FstDrawer<LogArc>` as LogFstDrawer:
+      def __init__(self, fst: LogFst, isyms: SymbolTable, osyms: SymbolTable,
+                   ssyms: SymbolTable, accep: bool, title: str, width: float,
+                   height: float, portrait: bool, vertical: bool,
+                   ranksep: float, nodesep: float, fontsize: int,
+                   precision: int, float_format: str, show_weight_one: bool)
+
+      def Draw(self, strm: ostream, dest: str)
+
+    class `FstDrawer<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstDrawer:
+      def __init__(self, fst: LatticeFst, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable,
+                   accep: bool, title: str, width: float,
+                   height: float, portrait: bool, vertical: bool,
+                   ranksep: float, nodesep: float, fontsize: int,
+                   precision: int, float_format: str, show_weight_one: bool)
+
+      def Draw(self, strm: ostream, dest: str)
+
+    class `FstDrawer<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
+        as CompactLatticeFstDrawer:
+      def __init__(self, fst: CompactLatticeFst, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable,
+                   accep: bool, title: str, width: float,
+                   height: float, portrait: bool, vertical: bool,
+                   ranksep: float, nodesep: float, fontsize: int,
+                   precision: int, float_format: str, show_weight_one: bool)
+
+      def Draw(self, strm: ostream, dest: str)

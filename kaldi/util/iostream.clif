@@ -1,0 +1,10 @@
+from "iostream":
+  namespace `::std`:
+    class istream:
+      def get(self) -> int
+
+    class ostream:
+      def tellp(self) -> int
+
+    class iostream(istream):
+      def get(self) -> int

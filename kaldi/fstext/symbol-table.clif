@@ -22,9 +22,9 @@ from "fst/symbol-table.h":
       def Write(self, filename: str) -> bool
       def WriteText(self, filename: str) -> bool
       def `Find` as FindSymbol(self, key: int) -> str
-      def Find(self, symbol: str) -> int
-      def `Member` as MemberKey(self, key: int) -> bool
-      def Member(self, symbol: str) -> bool
+      def `Find` as FindIndex(self, symbol: str) -> int
+      def `Member` as MemberIndex(self, key: int) -> bool
+      def `Member` as MemberSymbol(self, symbol: str) -> bool
       def AvailableKey(self) -> int
       def NumSymbols(self) -> int
       def GetNthKey(self, pos: int) -> int
@@ -41,5 +41,7 @@ from "fst/symbol-table.h":
                            pairs: list<tuple<int, int>>) -> SymbolTable
     def CompatSymbols(syms1: SymbolTable, syms2: SymbolTable,
                       warning: bool = default) -> bool
-    def SymbolTableToString(table: SymbolTable) -> str
-    def StringToSymbolTable(str: str) -> SymbolTable
+    def `SymbolTableToString` as SerializeSymbolTable(table: SymbolTable)
+        -> bytes
+    def `StringToSymbolTable` as DeserializeSymbolTable(str: bytes)
+        -> SymbolTable

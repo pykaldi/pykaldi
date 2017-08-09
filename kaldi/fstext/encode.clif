@@ -1,0 +1,51 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fst/encode.h":
+  namespace `fst`:
+    const `kEncodeLabels` as ENCODE_LABELS: int
+    const `kEncodeWeights` as ENCODE_WEIGHTS: int
+    const `kEncodeFlags` as ENCODE_FLAGS: int
+
+    class `EncodeMapper<StdArc>` as StdEncodeMapper:
+      def __init__(self, flags: int, type: EncodeType)
+
+      @add__init__
+      def `EncodeMapper` as from_other(self, mapper: StdEncodeMapper)
+
+      @add__init__
+      def `EncodeMapper` as from_other_with_type(self, mapper: StdEncodeMapper,
+                                                 type: EncodeType)
+
+      def __call__(self, arc: StdArc) -> StdArc
+
+      # def FinalAction(self) -> MapFinalAction
+      # def InputSymbolsAction(self) -> MapSymbolsAction
+      # def OutputSymbolsAction(self) -> MapSymbolsAction
+
+      def Properties(self, inprops: int) -> int
+
+      def Flags(self) -> int
+
+      def Type(self) -> EncodeType
+
+      def Write(self, filename: str) -> bool
+
+      @classmethod
+      def Read(cls, filename: str, type: EncodeType = default)
+          -> StdEncodeMapper
+
+      def InputSymbols(self) -> SymbolTable
+
+      def OutputSymbols(self) -> SymbolTable
+
+      def SetInputSymbols(self, syms: SymbolTable)
+
+      def SetOutputSymbols(self, syms: SymbolTable)
+
+    def `Encode` as StdEncode(fst: StdMutableFst, mapper: StdEncodeMapper)
+
+    def `Decode` as StdDecode(fst: StdMutableFst, mapper: StdEncodeMapper)

@@ -2,6 +2,9 @@ from .options_ext import SimpleOptions, ParseOptions
 from .kaldi_table import ReadScriptFile, WriteScriptFile
 from ..matrix import Vector, Matrix
 from ..feat import WaveData
+from .iostream import *
+from .fstream import *
+from .sstream import *
 
 ################################################################################
 # Sequential Readers

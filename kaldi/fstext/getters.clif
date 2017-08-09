@@ -1,0 +1,47 @@
+from "fst/script/getters.h":
+  namespace `fst`:
+    enum ClosureType
+    enum ComposeFilter
+    enum DeterminizeType
+    enum EncodeType
+    enum EpsNormalizeType
+    enum ProjectType
+    enum QueueType
+    enum ReplaceLabelType
+    enum ReweightType
+
+  namespace `fst::script`:
+    enum ArcSortType
+    enum MapType
+    enum RandArcSelection
+
+    def GetArcSortType(str: str) -> (success: bool, sort_type: ArcSortType)
+
+    def GetClosureType(closure_plus: bool) -> ClosureType
+
+    def GetComposeFilter(str: str)
+        -> (success: bool, compose_filter: ComposeFilter)
+
+    def GetDeterminizeType(str: str)
+        -> (success: bool, det_type: DeterminizeType)
+
+    def GetEncodeFlags(encode_labels: bool, encode_weights: bool) -> int
+
+    def GetEpsNormalizeType(eps_norm_output: bool) -> EpsNormalizeType
+
+    def GetMapType(str: str) -> (success: bool, sort_type: MapType)
+
+    def GetProjectType(project_output: bool) -> ProjectType
+
+    def GetPushFlags(push_weights: bool, push_labels: bool,
+                     remove_total_weight: bool,
+                     remove_common_affix: bool) -> int
+
+    def GetQueueType(str: str) -> (success: bool, queue_type: QueueType)
+
+    def GetRandArcSelection(str: str) -> (success: bool, ras: RandArcSelection)
+
+    def GetReplaceLabelType(str: str, epsilon_on_replace: bool)
+        -> (success: bool, rlt: ReplaceLabelType)
+
+    def GetReweightType(to_final: bool) -> ReweightType

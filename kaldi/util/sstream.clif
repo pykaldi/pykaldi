@@ -1,0 +1,12 @@
+from "util/iostream-clifwrap.h" import *
+
+from "sstream":
+  namespace `::std`:
+    class istringstream(istream):
+      def str(self) -> str
+
+    class ostringstream(ostream):
+      def str(self) -> str
+
+    class stringstream(iostream):
+      def str(self) -> str

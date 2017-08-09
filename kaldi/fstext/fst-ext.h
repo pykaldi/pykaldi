@@ -22,6 +22,12 @@ std::string FstToString(const Fst<Arc> &fst,
   return ostrm.str();
 }
 
+// Stream I/O
+
+void WriteString(const string &s, std::iostream *strm) {
+  *strm << s;
+}
+
 // Serialization
 
 template<typename Arc>

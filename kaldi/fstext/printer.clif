@@ -1,0 +1,38 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
+
+from "fst/script/print-impl.h":
+  namespace `fst`:
+
+    class `FstPrinter<StdArc>` as StdFstPrinter:
+      def __init__(self, fst: StdFst, isyms: SymbolTable, osyms: SymbolTable,
+                   ssyms: SymbolTable, accep: bool, show_weight_one: bool,
+                   field_separator: str, missing_symbol: str = default)
+
+      def Print(self, strm: ostream, dest: str)
+
+    class `FstPrinter<LogArc>` as LogFstPrinter:
+      def __init__(self, fst: LogFst, isyms: SymbolTable, osyms: SymbolTable,
+                   ssyms: SymbolTable, accep: bool, show_weight_one: bool,
+                   field_separator: str, missing_symbol: str = default)
+
+      def Print(self, strm: ostream, dest: str)
+
+    class `FstPrinter<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstPrinter:
+      def __init__(self, fst: LatticeFst, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable,
+                   accep: bool, show_weight_one: bool,
+                   field_separator: str, missing_symbol: str = default)
+
+      def Print(self, strm: ostream, dest: str)
+
+    class `FstPrinter<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
+        as CompactLatticeFstPrinter:
+      def __init__(self, fst: CompactLatticeFst, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable,
+                   accep: bool, show_weight_one: bool,
+                   field_separator: str, missing_symbol: str = default)
+
+      def Print(self, strm: ostream, dest: str)

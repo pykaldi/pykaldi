@@ -1,0 +1,253 @@
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+
+from "fst/fst.h":
+  namespace `fst`:
+    const `kNoStateId` as NO_STATE_ID: int
+    const `kNoLabel` as NO_LABEL: int
+
+    # StdArc
+
+    class `Fst<StdArc>` as StdFst:
+
+      def Start(self) -> int
+
+      def Final(self, state: int) -> TropicalWeight
+
+      def NumArcs(self, state: int) -> int
+
+      def NumInputEpsilons(self, state: int) -> int
+
+      def NumOutputEpsilons(self, state: int) -> int
+
+      def Properties(self, mask: int, test: bool) -> int
+
+      def Type(self) -> str
+
+      def Copy(self, safe: bool = default) -> StdFst
+
+      @classmethod
+      def Read(cls, filename: str) -> StdFst
+
+      def Write(self, filename: str) -> bool
+
+      def InputSymbols(self) -> SymbolTable
+
+      def OutputSymbols(self) -> SymbolTable
+
+    class `StateIterator<Fst<StdArc>>` as StdFstStateIterator:
+
+      def __init__(self, fst: StdFst)
+
+      def Done(self) -> bool
+
+      def Value(self) -> int
+
+      def Next(self)
+
+      def Reset(self)
+
+    class `ArcIterator<Fst<StdArc>>` as StdFstArcIterator:
+
+      def __init__(self, fst: StdFst, s: int)
+
+      def Done(self) -> bool
+
+      def Value(self) -> StdArc
+
+      def Next(self)
+
+      def Reset(self)
+
+      def Seek(self, a: int)
+
+      def Position(self) -> int
+
+      def Flags(self) -> int
+
+      def SetFlags(self, flags: int, mask: int)
+
+    #LogArc
+
+    class `Fst<LogArc>` as LogFst:
+
+      def Start(self) -> int
+
+      def Final(self, state: int) -> LogWeight
+
+      def NumArcs(self, state: int) -> int
+
+      def NumInputEpsilons(self, state: int) -> int
+
+      def NumOutputEpsilons(self, state: int) -> int
+
+      def Properties(self, mask: int, test: bool) -> int
+
+      def Type(self) -> str
+
+      def Copy(self, safe: bool = default) -> LogFst
+
+      @classmethod
+      def Read(cls, filename: str) -> LogFst
+
+      def Write(self, filename: str) -> bool
+
+      def InputSymbols(self) -> SymbolTable
+
+      def OutputSymbols(self) -> SymbolTable
+
+    class `StateIterator<Fst<LogArc>>` as LogFstStateIterator:
+
+      def __init__(self, fst: LogFst)
+
+      def Done(self) -> bool
+
+      def Value(self) -> int
+
+      def Next(self)
+
+      def Reset(self)
+
+    class `ArcIterator<Fst<LogArc>>` as LogFstArcIterator:
+
+      def __init__(self, fst: LogFst, s: int)
+
+      def Done(self) -> bool
+
+      def Value(self) -> LogArc
+
+      def Next(self)
+
+      def Reset(self)
+
+      def Seek(self, a: int)
+
+      def Position(self) -> int
+
+      def Flags(self) -> int
+
+      def SetFlags(self, flags: int, mask: int)
+
+    # LatticeArc
+
+    class `Fst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFst:
+
+      def Start(self) -> int
+
+      def Final(self, state: int) -> LatticeWeight
+
+      def NumArcs(self, state: int) -> int
+
+      def NumInputEpsilons(self, state: int) -> int
+
+      def NumOutputEpsilons(self, state: int) -> int
+
+      def Properties(self, mask: int, test: bool) -> int
+
+      def Type(self) -> str
+
+      def Copy(self, safe: bool = default) -> LatticeFst
+
+      @classmethod
+      def Read(cls, filename: str) -> LatticeFst
+
+      def Write(self, filename: str) -> bool
+
+      def InputSymbols(self) -> SymbolTable
+
+      def OutputSymbols(self) -> SymbolTable
+
+    class `StateIterator<Fst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstStateIterator:
+
+      def __init__(self, fst: LatticeFst)
+
+      def Done(self) -> bool
+
+      def Value(self) -> int
+
+      def Next(self)
+
+      def Reset(self)
+
+    class `ArcIterator<Fst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstArcIterator:
+
+      def __init__(self, fst: LatticeFst, s: int)
+
+      def Done(self) -> bool
+
+      def Value(self) -> LatticeArc
+
+      def Next(self)
+
+      def Reset(self)
+
+      def Seek(self, a: int)
+
+      def Position(self) -> int
+
+      def Flags(self) -> int
+
+      def SetFlags(self, flags: int, mask: int)
+
+    # CompactLatticeArc
+
+    class `Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeFst:
+
+      def Start(self) -> int
+
+      def Final(self, state: int) -> CompactLatticeWeight
+
+      def NumArcs(self, state: int) -> int
+
+      def NumInputEpsilons(self, state: int) -> int
+
+      def NumOutputEpsilons(self, state: int) -> int
+
+      def Properties(self, mask: int, test: bool) -> int
+
+      def Type(self) -> str
+
+      def Copy(self, safe: bool = default) -> CompactLatticeFst
+
+      @classmethod
+      def Read(cls, filename: str) -> CompactLatticeFst
+
+      def Write(self, filename: str) -> bool
+
+      def InputSymbols(self) -> SymbolTable
+
+      def OutputSymbols(self) -> SymbolTable
+
+    class `StateIterator<Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstStateIterator:
+
+      def __init__(self, fst: CompactLatticeFst)
+
+      def Done(self) -> bool
+
+      def Value(self) -> int
+
+      def Next(self)
+
+      def Reset(self)
+
+    class `ArcIterator<Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstArcIterator:
+
+      def __init__(self, fst: CompactLatticeFst, s: int)
+
+      def Done(self) -> bool
+
+      def Value(self) -> CompactLatticeArc
+
+      def Next(self)
+
+      def Reset(self)
+
+      def Seek(self, a: int)
+
+      def Position(self) -> int
+
+      def Flags(self) -> int
+
+      def SetFlags(self, flags: int, mask: int)

@@ -1,0 +1,92 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
+
+from "fst/script/compile-impl.h":
+  namespace `fst`:
+
+    class `FstCompiler<StdArc>` as StdFstCompiler:
+      def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                   ikeep: bool, okeep: bool, nkeep: bool,
+                   allow_negative_labels: bool = default)
+
+      @add__init__
+      def `FstCompiler` as with_symbols(self, istrm: istream, source: str,
+                                        isyms: SymbolTable, osyms: SymbolTable,
+                                        ssyms: SymbolTable, accep: bool,
+                                        ikeep: bool, okeep: bool, nkeep: bool,
+                                        allow_negative_labels: bool,
+                                        add_symbols: bool)
+
+      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
+               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+               ikeep: bool, okeep: bool, nkeep: bool,
+               allow_negative_labels: bool, add_symbols: bool)
+
+      def Fst(self) -> StdVectorFst
+
+    class `FstCompiler<LogArc>` as LogFstCompiler:
+      def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                   ikeep: bool, okeep: bool, nkeep: bool,
+                   allow_negative_labels: bool = default)
+
+      @add__init__
+      def `FstCompiler` as with_symbols(self, istrm: istream, source: str,
+                                        isyms: SymbolTable, osyms: SymbolTable,
+                                        ssyms: SymbolTable, accep: bool,
+                                        ikeep: bool, okeep: bool, nkeep: bool,
+                                        allow_negative_labels: bool,
+                                        add_symbols: bool)
+
+      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
+               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+               ikeep: bool, okeep: bool, nkeep: bool,
+               allow_negative_labels: bool, add_symbols: bool)
+
+      def Fst(self) -> LogVectorFst
+
+    class `FstCompiler<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstCompiler:
+      def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                   ikeep: bool, okeep: bool, nkeep: bool,
+                   allow_negative_labels: bool = default)
+
+      @add__init__
+      def `FstCompiler` as with_symbols(self, istrm: istream, source: str,
+                                        isyms: SymbolTable, osyms: SymbolTable,
+                                        ssyms: SymbolTable, accep: bool,
+                                        ikeep: bool, okeep: bool, nkeep: bool,
+                                        allow_negative_labels: bool,
+                                        add_symbols: bool)
+
+      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
+               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+               ikeep: bool, okeep: bool, nkeep: bool,
+               allow_negative_labels: bool, add_symbols: bool)
+
+      def Fst(self) -> LatticeVectorFst
+
+    class `FstCompiler<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
+        as CompactLatticeFstCompiler:
+      def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                   ikeep: bool, okeep: bool, nkeep: bool,
+                   allow_negative_labels: bool = default)
+
+      @add__init__
+      def `FstCompiler` as with_symbols(self, istrm: istream, source: str,
+                                        isyms: SymbolTable, osyms: SymbolTable,
+                                        ssyms: SymbolTable, accep: bool,
+                                        ikeep: bool, okeep: bool, nkeep: bool,
+                                        allow_negative_labels: bool,
+                                        add_symbols: bool)
+
+      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
+               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+               ikeep: bool, okeep: bool, nkeep: bool,
+               allow_negative_labels: bool, add_symbols: bool)
+
+      def Fst(self) -> CompactLatticeVectorFst
