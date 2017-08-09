@@ -239,7 +239,7 @@ class RandomAccessWaveReader(_RandomAccessReaderBase,
     __getitem__ methods.
     """
     def __getitem__(self, key):
-        value = super(RandomAccessMatrixReader, self).__getitem__(key)
+        value = super(RandomAccessWaveReader, self).__getitem__(key)
         wave = WaveData()
         wave.Swap(value)
         return wave

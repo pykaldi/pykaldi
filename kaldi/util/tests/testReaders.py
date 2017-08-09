@@ -3,11 +3,15 @@ import unittest
 import numpy as np 
 
 from kaldi.matrix import *
-from kaldi.util import *
+import kaldi.util 
 
-import os 
+from mixins import *
+import os
 
-class _TestSequentialReaders:
+################################################################################################################
+# Sequential Readers
+################################################################################################################
+class _TestSequentialReaders(AuxMixin):
     def test__init__(self):
         reader = self.getImpl()
         self.assertIsNotNone(reader)
@@ -19,10 +23,10 @@ class _TestSequentialReaders:
             reader.Close()
 
         # Delete file in case it exists
-        if os.path.exists('/tmp/temp.ark'):
-            os.remove('/tmp/temp.ark')
+        if os.path.exists(self.filename):
+            os.remove(self.filename)
 
-        reader = self.getImpl('ark,t:/tmp/temp.ark')
+        reader = self.getImpl(self.rspecifier)
         self.assertIsNotNone(reader)
 
         # Note (VM): If the file does not exist, this is false
@@ -32,9 +36,9 @@ class _TestSequentialReaders:
         # self.assertFalse(reader.Done())
 
         # Touch file
-        open('/tmp/temp.ark', 'w').close()
+        open(self.filename, 'w').close()
         
-        reader = self.getImpl('ark,t:/tmp/temp.ark')
+        reader = self.getImpl(self.rspecifier)
         self.assertTrue(reader.IsOpen())
         self.assertTrue(reader.Done())
 
@@ -51,9 +55,9 @@ class _TestSequentialReaders:
         reader = None
 
         # Touch file
-        open('/tmp/temp.ark', 'w').close()
+        open(self.filename, 'w').close()
         
-        with self.getImpl('ark,t:/tmp/temp.ark') as reader:
+        with self.getImpl(self.rspecifier) as reader:
             self.assertTrue(reader.IsOpen())
             self.assertTrue(reader.Done())
         
@@ -66,17 +70,18 @@ class _TestSequentialReaders:
             with self.getImpl() as reader:
                 for k, v in reader:
                     self.assertTrue(reader.IsOpen())
-                    self.assertFalse(reader.IsDone())
+                    self.assertFalse(reader.Done())
 
         with self.assertRaises(RuntimeError):
             self.assertFalse(reader.IsOpen())
             self.assertTrue(reader.Done())
 
         reader = None
-        with self.getImpl('ark,t:/tmp/temp.ark') as reader:
-            for k, v in reader:
-                self.assertTrue(reader.IsOpen())
-                self.assertFalse(reader.Done())
+        with self.assertRaises(RuntimeError):
+            with self.getImpl(self.rspecifier) as reader:
+                for k, v in reader:
+                    self.assertTrue(reader.IsOpen())
+                    self.assertFalse(reader.Done())
 
         with self.assertRaises(RuntimeError):
             self.assertFalse(reader.IsOpen())
@@ -84,11 +89,11 @@ class _TestSequentialReaders:
 
     def testRead(self):
         # Create a file and write an example to it
-        with open('/tmp/temp.ark', 'w') as outpt:
+        with open(self.filename, 'w') as outpt:
             self.writeExample(outpt)
 
         # Read back the example
-        with self.getImpl('ark,t:/tmp/temp.ark') as reader:
+        with self.getImpl(self.rspecifier) as reader:
             for idx, (k, v) in enumerate(reader):
                 self.checkRead(idx, (k, v))
 
@@ -96,43 +101,47 @@ class _TestSequentialReaders:
             self.assertFalse(reader.IsOpen())
             self.assertTrue(reader.Done())
 
-class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialVectorReader(args[0])
-        else:
-            return SequentialVectorReader()
 
-    def writeExample(self, outpt):
-        pass
-
+class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase, VectorExampleMixin):
     def checkRead(self, idx, pair):
-        self.fail("TODO")
-
-class TestSequentialMatrixReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialMatrixReader(args[0])
+        k, v = pair 
+        if idx == 0:
+            self.assertEqual("one", k)
+            self.assertTrue(np.array_equal([3.0, 5.0, 7.0], v.numpy()))
+        elif idx == 1:
+            self.assertEqual("two", k)
+            self.assertTrue(np.array_equal([1.0, 2.0, 3.0], v.numpy()))
+        elif idx == 2:
+            self.assertEqual("three", k)
+            self.assertEqual(0, len(v.numpy()))
         else:
-            return SequentialMatrixReader()
-    
-    def writeExample(self, outpt):
-            pass
+            self.fail("shouldn't happen")
 
+class TestSequentialMatrixReader(_TestSequentialReaders, unittest.TestCase, MatrixExampleMixin):
     def checkRead(self, idx, pair):
-        self.fail("TODO")
-
-
-class TestSequentialFloatReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialFloatReader(args[0])
+        k, m = pair 
+        if idx == 0:
+            self.assertEqual("one", k)
+            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.numpy()))
+        elif idx == 1:
+            self.assertEqual("two", k)
+            self.assertTrue(np.array_equal([[1.0], [2.0], [3.0]], m.numpy()))
+        elif idx == 2:
+            self.assertEqual("three", k)
+            self.assertEqual(0, len(m.numpy()))
         else:
-            return SequentialFloatReader()
+            self.fail("shouldn't happen")
 
-    def writeExample(self, outpt):
-        outpt.write("one 1.0\ntwo 2.0\nthree 3.0\n")
+class TestSequentialWaveReader(_TestSequentialReaders, unittest.TestCase, WaveExampleMixin):
+    def checkRead(self, idx, pair):
+        k, m = pair 
+        if idx == 0:
+            self.assertTrue("one", k)
+            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.Data().numpy()))
+        else:
+            self.fail("shouldn't happen")
 
+class TestSequentialFloatReader(_TestSequentialReaders, unittest.TestCase, FloatExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
             self.assertTupleEqual(("one", 1.0), pair)
@@ -143,16 +152,7 @@ class TestSequentialFloatReader(_TestSequentialReaders, unittest.TestCase):
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
 
-class TestSequentialBoolReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialBoolReader(args[0])
-        else:
-            return SequentialBoolReader()
-
-    def writeExample(self, outpt):
-        outpt.write("one T\ntwo T\nthree F\n")
-
+class TestSequentialBoolReader(_TestSequentialReaders, unittest.TestCase, BoolExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
             self.assertTupleEqual(("one", True), pair)
@@ -163,18 +163,7 @@ class TestSequentialBoolReader(_TestSequentialReaders, unittest.TestCase):
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
         
-class TestSequentialIntVectorReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialIntVectorReader(args[0])
-        else:
-            return SequentialIntVectorReader()
-
-    def writeExample(self, outpt):
-        outpt.write("""one 1\n""" +\
-                    """two 2 3\n""" +\
-                    """three\n""")
-
+class TestSequentialIntVectorReader(_TestSequentialReaders, unittest.TestCase, IntVectorExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
             self.assertTupleEqual(("one", [1]), pair)
@@ -185,18 +174,7 @@ class TestSequentialIntVectorReader(_TestSequentialReaders, unittest.TestCase):
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
 
-class TestSequentialIntVectorVectorReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialIntVectorVectorReader(args[0])
-        else:
-            return SequentialIntVectorVectorReader()
-
-    def writeExample(self, outpt):
-        outpt.write("""one 1 ;\n""" +\
-                    """two 1 2 ; 3 4 ;\n""" +\
-                    """three\n""")
-
+class TestSequentialIntVectorVectorReader(_TestSequentialReaders, unittest.TestCase, IntVectorVectorExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
             self.assertTupleEqual(("one", [[1]]), pair)
@@ -207,18 +185,7 @@ class TestSequentialIntVectorVectorReader(_TestSequentialReaders, unittest.TestC
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
 
-class TestSequentialIntPairVectorReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialIntPairVectorReader(args[0])
-        else:
-            return SequentialIntPairVectorReader()
-
-    def writeExample(self, outpt):
-        outpt.write("""one 1 1\n""" +\
-                    """two 2 3 ; 4 5\n""" +\
-                    """three\n""")
-
+class TestSequentialIntPairVectorReader(_TestSequentialReaders, unittest.TestCase, IntPairVectorExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
             self.assertTupleEqual(("one", [(1, 1)]), pair)
@@ -229,18 +196,7 @@ class TestSequentialIntPairVectorReader(_TestSequentialReaders, unittest.TestCas
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
 
-class TestSequentialFloatPairVectorReader(_TestSequentialReaders, unittest.TestCase):
-    def getImpl(self, *args):
-        if args:
-            return SequentialFloatPairVectorReader(args[0])
-        else:
-            return SequentialFloatPairVectorReader()
-
-    def writeExample(self, outpt):
-        outpt.write("""one 1.0 1.0\n""" +\
-                    """two 2.0 3.0 ; 4.0 5.0\n""" +\
-                    """three\n""")
-
+class TestSequentialFloatPairVectorReader(_TestSequentialReaders, unittest.TestCase, FloatPairVectorExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
             self.assertTupleEqual(("one", [(1.0, 1.0)]), pair)
@@ -250,6 +206,178 @@ class TestSequentialFloatPairVectorReader(_TestSequentialReaders, unittest.TestC
             self.assertTupleEqual(("three", []), pair)
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
+
+################################################################################################################
+# Random Access Readers
+################################################################################################################
+class _TestRandomAccessReaders(AuxMixin):
+
+    def test__init__(self):
+        reader = self.getImpl()
+        self.assertIsNotNone(reader)
+        self.assertFalse(reader.IsOpen())
+
+        with self.assertRaises(RuntimeError): 
+            reader.Close()
+
+        # Delete file in case it exists
+        if os.path.exists(self.filename):
+            os.remove(self.filename)
+
+        reader = self.getImpl(self.rspecifier)
+        self.assertIsNotNone(reader)
+
+        # Note (VM): If the file does not exist, this is false
+        self.assertFalse(reader.IsOpen())
+
+        # Touch file
+        open(self.filename, 'w').close()
+        
+        reader = self.getImpl(self.rspecifier)
+        self.assertTrue(reader.IsOpen())
+
+    def testContextManager(self):
+        with self.assertRaises(RuntimeError):
+            with self.getImpl() as reader:
+                self.assertFalse(reader.IsOpen())
+                
+            self.assertFalse(reader.IsOpen())
+
+        # Reset reader so that it doesnt by default pass the next ones
+        reader = None
+
+        # Touch file
+        open(self.filename, 'w').close()
+        
+        with self.getImpl(self.rspecifier) as reader:
+            self.assertTrue(reader.IsOpen())
+        
+        self.assertFalse(reader.IsOpen())
+
+    def getValidKey(self):
+        return "one"
+
+    def getNotValidKey(self):
+        return "four"
+
+    def test__contains__(self):
+        # Create a file and write an example to it
+        with open(self.filename, 'w') as outpt:
+            self.writeExample(outpt)
+
+        # Empty impl
+        with self.assertRaises(RuntimeError):
+            self.assertFalse(self.getImpl().__contains__(self.getValidKey()))
+            self.assertFalse(self.getImpl().__contains__(self.getNotValidKey()))
+
+        # Check keys in example
+        self.assertTrue(self.getImpl(self.rspecifier).__contains__(self.getValidKey()))
+        self.assertFalse(self.getImpl(self.rspecifier).__contains__(self.getNotValidKey()))
+
+        # Also check for the *in* operator
+        self.assertTrue(self.getValidKey() in self.getImpl(self.rspecifier))
+        self.assertFalse(self.getNotValidKey() in self.getImpl(self.rspecifier))
+
+    def test__getitem__(self):
+        # Create a file and write an example to it
+        with open(self.filename, 'w') as outpt:
+            self.writeExample(outpt)
+
+        # 
+        self.checkRead(self.getImpl(self.rspecifier))
+
+        # Check that the keys are strings
+        with self.assertRaises(TypeError):
+            self.getImpl(self.rspecifier)[1]
+
+class TestRandomAccessVectorReader(_TestRandomAccessReaders, unittest.TestCase, VectorExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertTrue(np.array_equal([3.0, 5.0, 7.0], reader["one"].numpy()))
+            self.assertTrue(np.array_equal([1.0, 2.0, 3.0], reader["two"].numpy()))
+            self.assertEqual(0, len(reader["three"].numpy()))
+
+class TestRandomAccessMatrixReader(_TestRandomAccessReaders, unittest.TestCase, MatrixExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].numpy()))
+            self.assertTrue(np.array_equal([[1.0], [2.0], [3.0]], reader["two"].numpy()))
+            self.assertEqual(0, len(reader["three"].numpy()))
+
+class TestRandomAccessWaveReader(_TestRandomAccessReaders, unittest.TestCase, WaveExampleMixin):
+    def checkRead(self, reader):
+        self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].Data().numpy()))
+    
+class TestRandomAccessIntReader(_TestRandomAccessReaders, unittest.TestCase, IntExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual(1, reader['one'])
+            self.assertEqual(3, reader['three'])
+            self.assertEqual(2, reader['two'])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
+class TestRandomAccessFloatReader(_TestRandomAccessReaders, unittest.TestCase, IntExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual(1.0, reader['one'])
+            self.assertEqual(3.0, reader['three'])
+            self.assertEqual(2.0, reader['two'])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
+class TestRandomAccessBoolReader(_TestRandomAccessReaders, unittest.TestCase, BoolExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual(True, reader['one'])
+            self.assertEqual(False, reader['three'])
+            self.assertEqual(True, reader['two'])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
+class TestRandomAccessIntVectorReader(_TestRandomAccessReaders, unittest.TestCase, IntVectorExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual([1], reader['one'])
+            self.assertEqual([], reader['three'])
+            self.assertEqual([2, 3], reader['two'])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
+class TestRandomAccessIntVectorVectorReader(_TestRandomAccessReaders, unittest.TestCase, IntVectorVectorExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual([[1]], reader['one'])
+            self.assertEqual([], reader['three'])
+            self.assertEqual([[1, 2], [3, 4]], reader['two'])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
+class TestRandomAccessIntPairVectorReader(_TestRandomAccessReaders, unittest.TestCase, IntPairVectorExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual([(1, 1)], reader["one"])
+            self.assertEqual([], reader["three"])
+            self.assertEqual([(2, 3), (4, 5)], reader["two"])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
+class TestRandomAccessFloatPairVectorReader(_TestRandomAccessReaders, unittest.TestCase, FloatPairVectorExampleMixin):
+    def checkRead(self, reader):
+        with self.subTest():
+            self.assertEqual([(1.0, 1.0)], reader['one'])
+            self.assertEqual([], reader['three'])
+            self.assertEqual([(2.0, 3.0), (4.0, 5.0)], reader['two'])
+
+        with self.assertRaises(KeyError):
+            reader['four']
+
 
 if __name__ == '__main__':
     unittest.main()
