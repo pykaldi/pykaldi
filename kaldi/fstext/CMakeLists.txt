@@ -53,6 +53,10 @@ add_pyclif_library("printer" printer.clif
   CLIF_DEPS fst iostream
   RPATH $ORIGIN/../util
 )
+add_pyclif_library("compiler" compiler.clif
+  CLIF_DEPS vector_fst iostream
+  RPATH $ORIGIN/../util
+)
 add_pyclif_library("getters" getters.clif
   LIBRARIES -lfstscript
 )

@@ -1,6 +1,6 @@
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
-from "fstext/fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
 from "util/iostream-clifwrap.h" import *
 
 from "fst/script/compile-impl.h":

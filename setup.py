@@ -125,6 +125,7 @@ extensions = [
                 KaldiExtension("kaldi.fstext.kaldi_fst_io"),
                 KaldiExtension("kaldi.fstext.drawer"),
                 KaldiExtension("kaldi.fstext.printer"),
+                KaldiExtension("kaldi.fstext.compiler"),
                 KaldiExtension("kaldi.fstext.getters"),
                 KaldiExtension("kaldi.fstext.encode"),
                 KaldiExtension("kaldi.fstext.fst_operations"),
