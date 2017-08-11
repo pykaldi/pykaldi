@@ -3,37 +3,22 @@ A native-code wrapper for Kaldi in python.
 
 ## Installation
 
-### Prerequisites
+### Installing via Docker
+Take the following steps to install pykaldi through Docker:
+1. Install Docker in your machine as described in [Docker Documentation](https://docs.docker.com/engine/installation/)
 
- 1. [CMake](http://llvm.org/docs/CMake.html) version 3.5 or later is available.
+2. Since the pykaldi Dockerfile downloads all the necessary code dependencies, including pykaldi itself, only the Dockerfile is needed. You can directly download the latest [Dockerfile here](https://github.com/usc-sail/pykaldi/blob/master/Dockerfile)
 
- 2. Google [protobuf](https://developers.google.com/protocol-buffers/docs/downloads)
-    for inter-process communication between the CLIF frontend and backend.
-    Version 3.2.0 or later is required.
-    Please install protobuf for both C++ and Python from source, as we will
-    need some protobuf source code later on.
+3. In order to download the private repositories needed for installation, you will need to provide your github username and password as arguments to the docker build.
 
- 3. You must have [virtualenv](https://pypi.python.org/pypi/virtualenv)
-    installed.
-    
- 4. Optional: Install [Ninja](https://github.com/ninja-build/ninja)
-    
- 4. Install [Clif](https://github.com/google/clif/)
-    
-# Build instructions
 ```
-	# Define CXX_FLAGS:
-	export CXX_FLAGS=-I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/home/victor/clif_backend/build_matcher/lib/clang/5.0.0/include -I/usr/include
-
-	# Activate pyclif environment
-	source ~/opt/clif/bin/activate
-
-	# Provide a kaldi directory
-	export KALDI_DIR="/saildisk/tools/Kaldi/"
-
-	# Do python setup
-	DEBUG=1 python setup.py build
-
-	# Install
-	python setup.py install
+	$ sudo docker build --tag pykaldi --build-arg githubuser=XXX --build-arg githubpasswd=XXX .
 ```
+
+4. After the installation is completed, you can run an interactive version of the container
+```
+	$ sudo docker run -it pykaldi
+```
+
+### Installing via Source Files
+TODO...

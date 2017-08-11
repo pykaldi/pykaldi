@@ -292,17 +292,15 @@ class _TestRandomAccessReaders(AuxMixin):
 
 class TestRandomAccessVectorReader(_TestRandomAccessReaders, unittest.TestCase, VectorExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertTrue(np.array_equal([3.0, 5.0, 7.0], reader["one"].numpy()))
-            self.assertTrue(np.array_equal([1.0, 2.0, 3.0], reader["two"].numpy()))
-            self.assertEqual(0, len(reader["three"].numpy()))
+        self.assertTrue(np.array_equal([3.0, 5.0, 7.0], reader["one"].numpy()))
+        self.assertTrue(np.array_equal([1.0, 2.0, 3.0], reader["two"].numpy()))
+        self.assertEqual(0, len(reader["three"].numpy()))
 
 class TestRandomAccessMatrixReader(_TestRandomAccessReaders, unittest.TestCase, MatrixExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].numpy()))
-            self.assertTrue(np.array_equal([[1.0], [2.0], [3.0]], reader["two"].numpy()))
-            self.assertEqual(0, len(reader["three"].numpy()))
+        self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].numpy()))
+        self.assertTrue(np.array_equal([[1.0], [2.0], [3.0]], reader["two"].numpy()))
+        self.assertEqual(0, len(reader["three"].numpy()))
 
 class TestRandomAccessWaveReader(_TestRandomAccessReaders, unittest.TestCase, WaveExampleMixin):
     def checkRead(self, reader):
@@ -310,70 +308,63 @@ class TestRandomAccessWaveReader(_TestRandomAccessReaders, unittest.TestCase, Wa
     
 class TestRandomAccessIntReader(_TestRandomAccessReaders, unittest.TestCase, IntExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual(1, reader['one'])
-            self.assertEqual(3, reader['three'])
-            self.assertEqual(2, reader['two'])
+        self.assertEqual(1, reader['one'])
+        self.assertEqual(3, reader['three'])
+        self.assertEqual(2, reader['two'])
 
         with self.assertRaises(KeyError):
             reader['four']
 
 class TestRandomAccessFloatReader(_TestRandomAccessReaders, unittest.TestCase, IntExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual(1.0, reader['one'])
-            self.assertEqual(3.0, reader['three'])
-            self.assertEqual(2.0, reader['two'])
+        self.assertEqual(1.0, reader['one'])
+        self.assertEqual(3.0, reader['three'])
+        self.assertEqual(2.0, reader['two'])
 
         with self.assertRaises(KeyError):
             reader['four']
 
 class TestRandomAccessBoolReader(_TestRandomAccessReaders, unittest.TestCase, BoolExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual(True, reader['one'])
-            self.assertEqual(False, reader['three'])
-            self.assertEqual(True, reader['two'])
+        self.assertEqual(True, reader['one'])
+        self.assertEqual(False, reader['three'])
+        self.assertEqual(True, reader['two'])
 
         with self.assertRaises(KeyError):
             reader['four']
 
 class TestRandomAccessIntVectorReader(_TestRandomAccessReaders, unittest.TestCase, IntVectorExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual([1], reader['one'])
-            self.assertEqual([], reader['three'])
-            self.assertEqual([2, 3], reader['two'])
+        self.assertEqual([1], reader['one'])
+        self.assertEqual([], reader['three'])
+        self.assertEqual([2, 3], reader['two'])
 
         with self.assertRaises(KeyError):
             reader['four']
 
 class TestRandomAccessIntVectorVectorReader(_TestRandomAccessReaders, unittest.TestCase, IntVectorVectorExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual([[1]], reader['one'])
-            self.assertEqual([], reader['three'])
-            self.assertEqual([[1, 2], [3, 4]], reader['two'])
+        self.assertEqual([[1]], reader['one'])
+        self.assertEqual([], reader['three'])
+        self.assertEqual([[1, 2], [3, 4]], reader['two'])
 
         with self.assertRaises(KeyError):
             reader['four']
 
 class TestRandomAccessIntPairVectorReader(_TestRandomAccessReaders, unittest.TestCase, IntPairVectorExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual([(1, 1)], reader["one"])
-            self.assertEqual([], reader["three"])
-            self.assertEqual([(2, 3), (4, 5)], reader["two"])
+        self.assertEqual([(1, 1)], reader["one"])
+        self.assertEqual([], reader["three"])
+        self.assertEqual([(2, 3), (4, 5)], reader["two"])
 
         with self.assertRaises(KeyError):
             reader['four']
 
 class TestRandomAccessFloatPairVectorReader(_TestRandomAccessReaders, unittest.TestCase, FloatPairVectorExampleMixin):
     def checkRead(self, reader):
-        with self.subTest():
-            self.assertEqual([(1.0, 1.0)], reader['one'])
-            self.assertEqual([], reader['three'])
-            self.assertEqual([(2.0, 3.0), (4.0, 5.0)], reader['two'])
+        self.assertEqual([(1.0, 1.0)], reader['one'])
+        self.assertEqual([], reader['three'])
+        self.assertEqual([(2.0, 3.0), (4.0, 5.0)], reader['two'])
 
         with self.assertRaises(KeyError):
             reader['four']
