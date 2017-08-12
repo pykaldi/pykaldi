@@ -1,5 +1,6 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
+from "itf/online-feature-itf-clifwrap.h" import *
 from "util/options-ext-clifwrap.h" import *
 from "util/iostream-clifwrap.h" import *
 from "feat/feature-functions-clifwrap.h" import *
@@ -9,34 +10,18 @@ from "feat/feature-fbank-clifwrap.h" import *
 
 from "feat/online-feature.h":
   namespace `kaldi`:
-    class OnlineFeatureInterface:
-
-      def Dim(self) -> int
-
-      def IsLastFrame(self, frame: int) -> bool
-
-      def FrameShiftInSeconds(self) -> float
-
-      def NumFramesReady(self) -> int
-
-      def GetFrame(self, frame: int, feat: VectorBase)
-
-    class OnlineBaseFeature(OnlineFeatureInterface):
-
-      def AcceptWaveform(self, sampling_rate: float, waveform: VectorBase)
-
-      def InputFinished(self)
-
     class `OnlineGenericBaseFeature<MfccComputer>`
         as OnlineMfcc(OnlineBaseFeature):
 
       def __init__(self, opts: MfccOptions)
 
-    class `OnlineGenericBaseFeature<PlpComputer>` as OnlinePlp:
+    class `OnlineGenericBaseFeature<PlpComputer>`
+        as OnlinePlp(OnlineBaseFeature):
 
       def __init__(self, opts: PlpOptions)
 
-    class `OnlineGenericBaseFeature<FbankComputer>` as OnlineFbank:
+    class `OnlineGenericBaseFeature<FbankComputer>`
+        as OnlineFbank(OnlineBaseFeature):
 
       def __init__(self, opts: FbankOptions)
 

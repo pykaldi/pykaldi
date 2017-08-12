@@ -8,7 +8,10 @@ add_pyclif_library("sstream" sstream.clif
   BASETYPES iostream_clifwrap::pyistream iostream_clifwrap::pyostream iostream_clifwrap::pyiostream
 )
 add_pyclif_library("options_ext" options-ext.clif
+  CLIF_DEPS options_itf
   LIBRARIES kaldi-util
+  BASETYPES options__itf_clifwrap::pyOptionsItf
+  RPATH $ORIGIN/../itf
 )
 add_pyclif_library("kaldi_io" kaldi-io.clif
   CLIF_DEPS kaldi_matrix

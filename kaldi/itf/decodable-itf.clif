@@ -1,0 +1,11 @@
+
+from "itf/decodable-itf.h":
+  namespace `kaldi`:
+    class DecodableInterface:
+      def LogLikelihood(self, frame: int, index: int) -> float
+
+      def IsLastFrame(self, frame: int) -> bool
+
+      def NumFramesReady(self) -> int
+
+      def NumIndices(self) -> int

@@ -111,6 +111,9 @@ class install_lib(setuptools.command.install_lib.install_lib):
 
 extensions = [
                 KaldiExtension("kaldi._clif"),
+                KaldiExtension("kaldi.itf.options_itf"),
+                KaldiExtension("kaldi.itf.decodable_itf"),
+                KaldiExtension("kaldi.itf.online_feature_itf"),
                 KaldiExtension("kaldi.fstext.properties"),
                 KaldiExtension("kaldi.fstext.symbol_table"),
                 KaldiExtension("kaldi.fstext.weight"),
@@ -159,6 +162,7 @@ extensions = [
                 KaldiExtension("kaldi.util.iostream"),
                 KaldiExtension("kaldi.util.fstream"),
                 KaldiExtension("kaldi.util.sstream"),
+                KaldiExtension("kaldi.decoder.faster_decoder"),
              ]
 
 packages = find_packages()

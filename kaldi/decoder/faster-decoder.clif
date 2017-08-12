@@ -1,0 +1,36 @@
+from "itf/decodable-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "decoder/faster-decoder.h":
+  namespace `kaldi`:
+    class FasterDecoderOptions:
+      beam: float
+      max_active: int
+      min_active: int
+      beam_delta: float
+      hash_ratio: float
+
+      def Register(self, opts: OptionsItf, full: bool)
+
+    class FasterDecoder:
+      def __init__(self, fst: StdFst, config: FasterDecoderOptions)
+
+      def SetOptions(self, config: FasterDecoderOptions)
+
+      def Decode(self, decodable: DecodableInterface)
+
+      def ReachedFinal(self) -> bool
+
+      def GetBestPath(self, fst_out: LatticeMutableFst,
+                      use_final_probs: bool = default) -> bool
+
+      def InitDecoding(self)
+
+      def AdvanceDecoding(self, decodable: DecodableInterface,
+                          max_num_frames: int = default)
+
+      def NumFramesDecoded(self) -> int

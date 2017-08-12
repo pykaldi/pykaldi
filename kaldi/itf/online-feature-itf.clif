@@ -1,0 +1,21 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "itf/online-feature-itf.h":
+  namespace `kaldi`:
+    class OnlineFeatureInterface:
+
+      def Dim(self) -> int
+
+      def IsLastFrame(self, frame: int) -> bool
+
+      def FrameShiftInSeconds(self) -> float
+
+      def NumFramesReady(self) -> int
+
+      def GetFrame(self, frame: int, feat: VectorBase)
+
+    class OnlineBaseFeature(OnlineFeatureInterface):
+
+      def AcceptWaveform(self, sampling_rate: float, waveform: VectorBase)
+
+      def InputFinished(self)

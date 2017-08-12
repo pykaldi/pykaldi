@@ -1,5 +1,5 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
-from "util/options-ext-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
 
 from "feat/feature-spectrogram.h":
