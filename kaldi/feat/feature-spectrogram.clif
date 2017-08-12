@@ -1,0 +1,27 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "util/options-ext-clifwrap.h" import *
+from "feat/feature-window-clifwrap.h" import *
+
+from "feat/feature-spectrogram.h":
+  namespace `kaldi`:
+    class SpectrogramOptions:
+      frame_opts: FrameExtractionOptions
+      energy_floor: float
+      raw_energy: bool
+
+      def Register(self, opts: OptionsItf)
+
+    class SpectrogramComputer:
+      def __init__(self, opts: SpectrogramOptions)
+
+      @add__init__
+      def `SpectrogramComputer` as from_other(self, other: SpectrogramComputer)
+
+      def GetFrameOptions(self) -> FrameExtractionOptions
+
+      def Dim(self) -> int
+
+      def NeedRawLogEnergy(self) -> bool
+
+      def Compute(self, signal_log_energy: float, vtln_warp: float,
+                  signal_frame: VectorBase, feature: VectorBase)

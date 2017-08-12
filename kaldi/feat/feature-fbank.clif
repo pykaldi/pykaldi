@@ -1,0 +1,33 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "util/options-ext-clifwrap.h" import *
+from "feat/feature-window-clifwrap.h" import *
+from "feat/mel-computations-clifwrap.h" import *
+
+from "feat/feature-fbank.h":
+  namespace `kaldi`:
+    class FbankOptions:
+      frame_opts: FrameExtractionOptions
+      mel_opts: MelBanksOptions
+      use_energy: bool
+      energy_floor: float
+      raw_energy: bool
+      htk_compat: bool
+      use_log_fbank: bool
+      use_power: bool
+
+      def Register(self, opts: OptionsItf)
+
+    class FbankComputer:
+      def __init__(self, opts: FbankOptions)
+
+      @add__init__
+      def `FbankComputer` as from_other(self, other: FbankComputer)
+
+      def GetFrameOptions(self) -> FrameExtractionOptions
+
+      def Dim(self) -> int
+
+      def NeedRawLogEnergy(self) -> bool
+
+      def Compute(self, signal_log_energy: float, vtln_warp: float,
+                  signal_frame: VectorBase, feature: VectorBase)

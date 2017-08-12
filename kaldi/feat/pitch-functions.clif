@@ -1,0 +1,67 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "util/options-ext-clifwrap.h" import *
+from "feat/online-feature-clifwrap.h" import *
+
+from "feat/pitch-functions.h":
+  namespace `kaldi`:
+    class PitchExtractionOptions:
+      samp_freq: float
+      frame_shift_ms: float
+      frame_length_ms: float
+      preemph_coeff: float
+      min_f0: float
+      max_f0: float
+      soft_min_f0: float
+      penalty_factor: float
+      lowpass_cutoff: float
+      resample_freq: float
+      delta_pitch: float
+      nccf_ballast: float
+      lowpass_filter_width: int
+      upsample_filter_width: int
+      max_frames_latency: int
+      frames_per_chunk: int
+      simulate_first_pass_online: bool
+      recompute_frame: int
+      nccf_ballast_online: bool
+      snip_edges: bool
+
+      def Register(self, opts: OptionsItf)
+
+      def NccfWindowSize(self) -> int
+
+      def NccfWindowShift(self) -> int
+
+    class ProcessPitchOptions:
+      pitch_scale: float
+      pov_scale: float
+      pov_offset: float
+      delta_pitch_scale: float
+      delta_pitch_noise_stddev: float
+      normalization_left_context: int
+      normalization_right_context: int
+      delta_window: int
+      delay: int
+      add_pov_feature: bool
+      add_normalized_log_pitch: bool
+      add_delta_pitch: bool
+      add_raw_log_pitch: bool
+
+      def Register(self, opts: ParseOptions)
+
+    class OnlinePitchFeature(OnlineBaseFeature):
+      def __init__(self, opts: PitchExtractionOptions)
+
+    class OnlineProcessPitch(OnlineFeatureInterface):
+      def __init__(self, opts: ProcessPitchOptions,
+                   src: OnlineFeatureInterface)
+
+    def ComputeKaldiPitch(opts: PitchExtractionOptions, wave: VectorBase)
+        -> Matrix
+
+    def ProcessPitch(opts: ProcessPitchOptions, input: MatrixBase) -> Matrix
+
+    def ComputeAndProcessKaldiPitch(pitch_opts: PitchExtractionOptions,
+                                    process_opts: ProcessPitchOptions,
+                                    wave: VectorBase) -> Matrix

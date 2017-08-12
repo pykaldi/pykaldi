@@ -1,9 +1,29 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
+from "feat/feature-spectrogram-clifwrap.h" import *
 from "feat/feature-mfcc-clifwrap.h" import *
+from "feat/feature-plp-clifwrap.h" import *
+from "feat/feature-fbank-clifwrap.h" import *
 
 from "feat/feature-common-ext.h":
   namespace `kaldi`:
+    class `SpectrogramOfflineFeatureTpl` as Spectrogram:
+      # Additional dummy argument was added for resolving the difficulty CLIF
+      # was having with matching this method signature. We won't expose it in
+      # the Python class wrapping Spectrogram C extension type.
+      def __init__(self, opts: SpectrogramOptions, dummy: bool = default)
+
+      @add__init__
+      def `SpectrogramOfflineFeatureTpl` as from_other(self,
+                                                       other: Spectrogram)
+
+      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+
+      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
+                          vtnl_warp: float) -> Matrix
+
+      def Dim(self) -> int
+
     class `MfccOfflineFeatureTpl` as Mfcc:
       # Additional dummy argument was added for resolving the difficulty CLIF
       # was having with matching this method signature. We won't expose it in
@@ -14,5 +34,40 @@ from "feat/feature-common-ext.h":
       def `MfccOfflineFeatureTpl` as from_other(self, other: Mfcc)
 
       def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+
+      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
+                          vtnl_warp: float) -> Matrix
+
+      def Dim(self) -> int
+
+    class `PlpOfflineFeatureTpl` as Plp:
+      # Additional dummy argument was added for resolving the difficulty CLIF
+      # was having with matching this method signature. We won't expose it in
+      # the Python class wrapping Plp C extension type.
+      def __init__(self, opts: PlpOptions, dummy: bool = default)
+
+      @add__init__
+      def `PlpOfflineFeatureTpl` as from_other(self, other: Plp)
+
+      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+
+      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
+                          vtnl_warp: float) -> Matrix
+
+      def Dim(self) -> int
+
+    class `FbankOfflineFeatureTpl` as Fbank:
+      # Additional dummy argument was added for resolving the difficulty CLIF
+      # was having with matching this method signature. We won't expose it in
+      # the Python class wrapping Fbank C extension type.
+      def __init__(self, opts: FbankOptions, dummy: bool = default)
+
+      @add__init__
+      def `FbankOfflineFeatureTpl` as from_other(self, other: Fbank)
+
+      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+
+      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
+                          vtnl_warp: float) -> Matrix
 
       def Dim(self) -> int

@@ -13,6 +13,7 @@ from "feat/feature-window.h":
       round_to_power_of_two: bool
       blackman_coeff: float
       snip_edges: bool
+      allow_downsample: bool
 
       def WindowShift(self) -> int
 

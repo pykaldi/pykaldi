@@ -1,0 +1,29 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "feat/resample.h":
+  namespace `kaldi`:
+    class ArbitraryResample:
+      def __init__(self, num_samples_in: int, samp_rate_hz: float,
+                   filter_cutoff_hz: float, sample_points_secs: Vector,
+                   num_zeros: int)
+
+      def NumSamplesIn(self) -> int
+
+      def NumSamplesOut(self) -> int
+
+      def Resample(self, input: MatrixBase, output: MatrixBase)
+
+      def `Resample` as ResampleVector(self, input: VectorBase,
+                                       output: VectorBase)
+
+    class LinearResample:
+      def __init__(self, sample_rate_in_hz: int, samp_rate_out_hz: int,
+                   filter_cutoff_hz: float, num_zeros: int)
+
+      def Resample(self, input: VectorBase, flush: bool) -> Vector
+
+      def Reset(self)
+
+    def DownsampleWaveForm(orig_freq: float, wave: VectorBase,
+                           new_freq: float) -> Vector

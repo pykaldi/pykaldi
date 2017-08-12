@@ -1,0 +1,36 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "util/options-ext-clifwrap.h" import *
+from "feat/feature-window-clifwrap.h" import *
+from "feat/mel-computations-clifwrap.h" import *
+
+from "feat/feature-plp.h":
+  namespace `kaldi`:
+    class PlpOptions:
+      frame_opts: FrameExtractionOptions
+      mel_opts: MelBanksOptions
+      lpc_order: int
+      num_ceps: int
+      use_energy: bool
+      energy_floor: float
+      raw_energy: bool
+      compress_factor: float
+      cepstral_lifter: int
+      cepstral_scale: float
+      htk_compat: bool
+
+      def Register(self, opts: OptionsItf)
+
+    class PlpComputer:
+      def __init__(self, opts: PlpOptions)
+
+      @add__init__
+      def `PlpComputer` as from_other(self, other: PlpComputer)
+
+      def GetFrameOptions(self) -> FrameExtractionOptions
+
+      def Dim(self) -> int
+
+      def NeedRawLogEnergy(self) -> bool
+
+      def Compute(self, signal_log_energy: float, vtln_warp: float,
+                  signal_frame: VectorBase, feature: VectorBase)

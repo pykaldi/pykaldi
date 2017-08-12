@@ -1,0 +1,116 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "util/options-ext-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
+from "feat/feature-functions-clifwrap.h" import *
+from "feat/feature-mfcc-clifwrap.h" import *
+from "feat/feature-plp-clifwrap.h" import *
+from "feat/feature-fbank-clifwrap.h" import *
+
+from "feat/online-feature.h":
+  namespace `kaldi`:
+    class OnlineFeatureInterface:
+
+      def Dim(self) -> int
+
+      def IsLastFrame(self, frame: int) -> bool
+
+      def FrameShiftInSeconds(self) -> float
+
+      def NumFramesReady(self) -> int
+
+      def GetFrame(self, frame: int, feat: VectorBase)
+
+    class OnlineBaseFeature(OnlineFeatureInterface):
+
+      def AcceptWaveform(self, sampling_rate: float, waveform: VectorBase)
+
+      def InputFinished(self)
+
+    class `OnlineGenericBaseFeature<MfccComputer>`
+        as OnlineMfcc(OnlineBaseFeature):
+
+      def __init__(self, opts: MfccOptions)
+
+    class `OnlineGenericBaseFeature<PlpComputer>` as OnlinePlp:
+
+      def __init__(self, opts: PlpOptions)
+
+    class `OnlineGenericBaseFeature<FbankComputer>` as OnlineFbank:
+
+      def __init__(self, opts: FbankOptions)
+
+    class OnlineMatrixFeature(OnlineFeatureInterface):
+
+      def __init__(self, mat: MatrixBase)
+
+    class OnlineCmvnOptions:
+      cmn_window: int
+      speaker_frames: int
+      global_frames: int
+      normalize_mean: bool
+      normalize_variance: bool
+      modulus: int
+      ring_buffer_size: int
+      skip_dims: str
+
+      # NOTE: It probably does not make sense to wrap this check method.
+      # It does nothing when compiled with the NDEBUG flag.
+      # It aborts if check fails when compiled without the NDEBUG flag.
+      # def Check(self)
+
+      def Register(self, opts: ParseOptions)
+
+    class OnlineCmvnState:
+      speaker_cmvn_stats: DoubleMatrix
+      global_cmvn_stats: DoubleMatrix
+      frozen_state: DoubleMatrix
+
+      @add__init__
+      def `OnlineCmvnState` as from_stats(self, global_stats: DoubleMatrix)
+
+      @add__init__
+      def `OnlineCmvnState` as from_other(self, other: OnlineCmvnState)
+
+      def Write(self, os: ostream, binary: bool)
+      def Read(self, is: istream, binary: bool)
+
+    class OnlineCmvn(OnlineFeatureInterface):
+      def __init__(self, opts: OnlineCmvnOptions, cmvn_state: OnlineCmvnState,
+                   src: OnlineFeatureInterface)
+
+      @add__init__
+      def `OnlineCmvn` as without_state(self, opts: OnlineCmvnOptions,
+                                        src: OnlineFeatureInterface)
+
+      def GetState(self, cur_frame: int) -> OnlineCmvnState
+
+      def SetState(self, cmvn_state: OnlineCmvnState)
+
+      def Freeze(self, cur_frame: int)
+
+    class OnlineSpliceOptions:
+      left_context: int
+      right_context: int
+
+      def Register(self, po: ParseOptions)
+
+    class OnlineSpliceFrames(OnlineFeatureInterface):
+      def __init__(self, opts: OnlineSpliceOptions,
+                   src: OnlineFeatureInterface)
+
+    class OnlineTransform(OnlineFeatureInterface):
+      def __init__(self, transform: MatrixBase, src: OnlineFeatureInterface)
+
+    class OnlineDeltaFeature(OnlineFeatureInterface):
+      def __init__(self, opts: DeltaFeaturesOptions,
+                   src: OnlineFeatureInterface)
+
+    class OnlineCacheFeature(OnlineFeatureInterface):
+      def __init__(self, src: OnlineFeatureInterface)
+
+      def ClearCache(self)
+
+    class OnlineAppendFeature(OnlineFeatureInterface):
+      def __init__(self, src1: OnlineFeatureInterface,
+                 src2: OnlineFeatureInterface)
