@@ -16,25 +16,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake autoconf \
 # install necessary python packages
 RUN pip install numpy==1.13.1 setuptools==27.2.0 
 
-# Add pykaldi to the container
-ADD . /root/pykaldi
-
-# Update this with your own credentials
-# at time of build
-ARG githubuser
-ARG githubpasswd
-
-# Install (our) kaldi
-RUN git clone https://$githubuser:$githubpasswd@github.com/usc-sail/kaldi-pykaldi.git kaldi && \
-	cd kaldi/tools && \
-	./extras/check_dependencies.sh && \
-	make -j4 && \
-	cd ../src && \
-	./configure --shared && \
-	make clean -j && \
-	make depend -j && \
-	make -j4
-
 # Install protobuf with python package
 RUN git clone https://github.com/google/protobuf.git && \
 	cd protobuf && \
@@ -53,11 +34,32 @@ RUN git clone https://github.com/ninja-build/ninja.git && \
 	./configure.py --bootstrap && \
 	cp ninja /usr/local/bin
 
-# Install clif (apply patch so that install does not use virtual env)
+# Copy INSTALL.sh patch to the container
+COPY extras/clif/install.diff /root/pykaldi/extras/clif/
+
+# Install clif
 RUN git clone https://github.com/google/clif.git && \
 	cd clif && \
-	patch < /root/pykaldi/extras/clif/install.diff && \
+	# patch < /root/pykaldi/extras/clif/install.diff && \
 	./INSTALL.sh $(which python)
+
+# NOTE (VM): Args invalidate cache, thus from this point forward
+# 			 everything happens every build
+# Update this with your own credentials
+# at time of build
+ARG githubuser
+ARG githubpasswd
+
+# Install (our) kaldi
+RUN git clone https://$githubuser:$githubpasswd@github.com/usc-sail/kaldi-pykaldi.git kaldi && \
+	cd kaldi/tools && \
+	./extras/check_dependencies.sh && \
+	make -j4 && \
+	cd ../src && \
+	./configure --shared && \
+	make clean -j && \
+	make depend -j && \
+	make -j4
 
 # set env variables
 ENV KALDI_DIR /root/kaldi/
@@ -70,5 +72,8 @@ RUN echo "$CLIF_DIR"
 RUN echo "$KALDI_DIR"
 RUN echo "$PYCLIF"
 
+# Copy pykaldi code
+COPY . /root/pykaldi/
+
 # install pykaldi
-RUN python /root/pykaldi/setup.py install
+RUN cd /root/pykaldi/ && python setup.py install

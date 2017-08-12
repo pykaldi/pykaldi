@@ -267,7 +267,7 @@ endfunction(add_CC_library)
 set(CLIF_LIBRARY "_clif")
 string(REPLACE "/build" "/build/lib/kaldi" CLIF_LIB_LOCATION ${CMAKE_CURRENT_BINARY_DIR})
 add_CC_library(${CLIF_LIBRARY}
-  "${CLIF_DIR}/python/optional.cc;${CLIF_DIR}/python/runtime.cc;${CLIF_DIR}/python/slots.cc;${CLIF_DIR}/python/types.cc"
+  "${CMAKE_SOURCE_DIR}/clif/python/optional.cc;${CMAKE_SOURCE_DIR}/clif/python/runtime.cc;${CMAKE_SOURCE_DIR}/clif/python/slots.cc;${CMAKE_SOURCE_DIR}/clif/python/types.cc"
   OUTPUTDIR ${CLIF_LIB_LOCATION}
 )
 
