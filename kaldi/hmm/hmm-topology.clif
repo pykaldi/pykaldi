@@ -1,0 +1,42 @@
+from "util/iostream-clifwrap.h" import *
+
+from "hmm/hmm-topology.h":
+  namespace `kaldi`:
+    const `kNoPdf` as NO_PDF: int
+
+    class HmmTopology:
+      class HmmState:
+        forward_pdf_class: int
+        self_loop_pdf_class: int
+        # FIXME: unproperty
+        transitions: list<tuple<int, float>>
+
+        @add__init__
+        def `HmmState` as with_pdf(self, pdf_class: int)
+
+        @add__init__
+        def `HmmState` as with_forward_and_self_pdf(self,
+                                                    forward_pdf_class: int,
+                                                    self_loop_pdf_class: int)
+
+        def __eq__(self, other: HmmState) -> bool
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Check(self)
+
+      def IsHmm(self) -> bool
+
+      def TopologyForPhone(self, phone: int) -> list<HmmState>
+
+      def NumPdfClasses(self, phone: int) -> int
+
+      def GetPhones(self) -> list<int>
+
+      def GetPhoneToNumPdfClasses(self) -> list<int>
+
+      def MinLength(self, phone: int) -> int
+
+      def __eq__(self, other: HmmTopology) -> bool
