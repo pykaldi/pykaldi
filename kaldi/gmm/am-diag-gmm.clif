@@ -1,0 +1,62 @@
+from "itf/options-itf-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+
+from "gmm/am-diag-gmm.h":
+  namespace `kaldi`:
+    class AmDiagGmm:
+
+      def Init(self, proto: DiagGmm, num_pdfs: int)
+
+      def AddPdf(self, gmm: DiagGmm)
+
+      def CopyFromAmDiagGmm(self, other: AmDiagGmm)
+
+      def SplitPdf(self, idx: int, target_components: int,
+                   perturb_factor: float)
+
+      def SplitByCount(self, state_occs: Vector, target_components: int,
+                       perturb_factor: float, power: float, min_count: float)
+
+      def MergeByCount(self, state_occs: Vector, target_components: int,
+                       power: float, min_count: float)
+
+      def ComputeGconsts(self) -> int
+
+      def LogLikelihood(self, pdf_index: int, data: VectorBase) -> float
+
+      def Read(self, is: istream, binary: bool)
+      def Write(self, os: ostream, binary: bool)
+
+      def Dim(self) -> int
+
+      def NumPdfs(self) -> int
+
+      def NumGauss(self) -> int
+
+      def NumGaussInPdf(self, pdf_index: int) -> int
+
+      # FIXME: Add a work around wrapper
+      # def GetPdf(self, pdf_index: int) -> DiagGmm
+
+      def GetGaussianMean(self, pdf_index: int, gauss: int, out: VectorBase)
+
+      def GetGaussianVariance(self, pdf_index: int, gauss: int,
+                              out: VectorBase)
+
+      def SetGaussianMean(self, pdf_index: int, gauss: int, in: VectorBase)
+
+    class UbmClusteringOptions:
+      ubm_num_gauss: int
+      reduce_state_factor: float
+      intermediate_num_gauss: int
+      cluster_varfloor: float
+      max_am_gauss: int
+
+      def Register(self, opts: OptionsItf)
+
+      def Check(self)
+
+    def ClusterGaussiansToUbm(am: AmDiagGmm, state_occs: Vector,
+                              opts: UbmClusteringOptions, ubm_out: DiagGmm)

@@ -1,0 +1,116 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "gmm/diag-gmm.h":
+  namespace `kaldi`:
+    class DiagGmm:
+      @add__init__
+      def `DiagGmm` as from_other(self, gmm: DiagGmm)
+
+      # @add__init__
+      # def `DiagGmm` as from_clusterable(self, gc: GaussClusterable)
+
+      # def CopyFromNormal(self, diag_gmm_normal: DiagGmmNormal)
+
+      @add__init__
+      def `DiagGmm` as from_nmix_dim(self, nmix: int, dim: int)
+
+      # FIXME: CLIF is confused
+      # @add__init__
+      # def `DiagGmm` as merge_gmms(self, gmms: list<tuple<float, DiagGmm>>)
+
+      def Resize(self, nmix: int, dim: int)
+
+      def NumGauss(self) -> int
+
+      def Dim(self) -> int
+
+      def CopyFromDiagGmm(self, diaggmm: DiagGmm)
+
+      # def CopyFromFullGmm(self, fullgmm: FullGmm)
+
+      def LogLikelihood(self, data: VectorBase) -> float
+
+      def LogLikelihoods(self, data: VectorBase) -> Vector
+
+      def `LogLikelihoods` as LogLikelihoodsMatrix(self, data: MatrixBase)
+          -> Matrix
+
+      def LogLikelihoodsPreselect(self, data: VectorBase, indices: list<int>)
+          -> Vector
+
+      def GaussianSelection(self, data: VectorBase, num_gselect: int)
+          -> (log_like: float, output: list<int>)
+
+      def `GaussianSelection` as GaussianSelectionMatrix(
+          self, data: MatrixBase, num_gselect: int)
+          -> (log_like: float, output: list<list<int>>)
+
+      def GaussianSelectionPreselect(self, data: VectorBase,
+                                     preselect: list<int>, num_gselect: int)
+          -> (log_like: float, output: list<int>)
+
+      def ComponentPosteriors(self, data: VectorBase)
+          -> (log_like: float, posteriors: Vector)
+
+      def ComponentLogLikelihood(self, data: VectorBase, comp_idL: int)
+          -> float
+
+      def ComputeGconsts(self) -> int
+
+      def Generate(self, output: VectorBase)
+
+      # FIXME: Write a wrapper for this to work around the container not
+      # getting updated problem.
+      # def Split(self, target_components: int, perturb_factor: float,
+      #           history: list<int> = default)
+
+      def Perturb(self, perturb_factor: float)
+
+      # FIXME: Write a wrapper for this to work around the container not
+      # getting updated problem.
+      # def Merge(self, target_components: int, history: list<int> = default)
+
+      # def MergeKmeans(self, target_components: int,
+      #                 cfg: ClusterKMeansOptions = default)
+
+      def Write(self, os: ostream, binary: bool)
+      def Read(self, is: istream, binary: bool)
+
+      # def Interpolate(self, rho: float, source: DiagGmm, flags: GmmFlagsType = default)
+
+      # def `Interpolate` as InterpolateFull(self, rho: float, source: FullGmm, flags: GmmFlagsType = default)
+
+      gconsts_: Vector = property(`gconsts`)
+      weights_: Vector = property(`weights`)
+      means_invvars_: Matrix = property(`means_invvars`)
+      inv_vars_: Matrix = property(`inv_vars`)
+
+      def valid_gconsts(self) -> bool
+
+      def RemoveComponent(self, gauss: int, renorm_weights: bool)
+
+      def RemoveComponents(self, gauss: list<int>, renorm_weights: bool)
+
+      def SetWeights(self, w: VectorBase)
+
+      def SetMeans(self, m: MatrixBase)
+
+      def SetInvVarsAndMeans(self, invvars: MatrixBase, means: MatrixBase)
+
+      def SetInvVars(self, v: MatrixBase)
+
+      def GetVars(self) -> Matrix
+
+      def GetMeans(self) -> Matrix
+
+      def SetComponentMean(self, gauss: int, in: VectorBase)
+
+      def SetComponentInvVar(self, gauss: int, in: VectorBase)
+
+      def SetComponentWeight(self, gauss: int, weight: float)
+
+      def GetComponentMean(self, gauss: int, out: VectorBase)
+
+      def GetComponentVariance(self, gauss: int, out: VectorBase)
