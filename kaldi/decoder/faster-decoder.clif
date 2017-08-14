@@ -21,6 +21,7 @@ from "decoder/faster-decoder.h":
 
       def SetOptions(self, config: FasterDecoderOptions)
 
+      @async
       def Decode(self, decodable: DecodableInterface)
 
       def ReachedFinal(self) -> bool
@@ -30,6 +31,7 @@ from "decoder/faster-decoder.h":
 
       def InitDecoding(self)
 
+      @async
       def AdvanceDecoding(self, decodable: DecodableInterface,
                           max_num_frames: int = default)
 

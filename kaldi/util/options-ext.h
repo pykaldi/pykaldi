@@ -40,9 +40,94 @@ class ParseOptionsExt : public ParseOptions {
     return ParseOptions::Read(cargv.size(), cargv.data());
   }
 
+  struct Options {
+    std::map<std::string, bool> bool_map;
+    std::map<std::string, int32> int_map;
+    std::map<std::string, uint32> uint_map;
+    std::map<std::string, float> float_map;
+    std::map<std::string, double> double_map;
+    std::map<std::string, string> str_map;
+  };
+
+  Options &GetOptions() {
+    return options_;
+  }
+
   void PrintConfig() {
     ParseOptions::PrintConfig(std::cout);
   }
+
+  void NormalizeOptionName(std::string *str) {
+    std::string out;
+    std::string::iterator it;
+
+    for (it = str->begin(); it != str->end(); ++it) {
+      if (*it == '-')
+        out += '_';  // convert - to _
+      else
+        out += std::tolower(*it);
+    }
+    *str = out;
+
+    KALDI_ASSERT(str->length() > 0);
+  }
+
+  void RegisterBool(const std::string &name, const bool &value,
+                    const std::string &doc) {
+    std::string idx = name;
+    NormalizeOptionName(&idx);
+    auto ret = options_.bool_map.emplace(std::make_pair(std::move(idx),
+                                                        std::move(value)));
+    Register(name, &(ret.first->second), doc);
+  }
+
+  void RegisterInt(const std::string &name, const int32 &value,
+                   const std::string &doc) {
+    std::string idx = name;
+    NormalizeOptionName(&idx);
+    auto ret = options_.int_map.emplace(std::make_pair(std::move(idx),
+                                                        std::move(value)));
+    Register(name, &(ret.first->second), doc);
+  }
+
+  void RegisterUInt(const std::string &name, const uint32 &value,
+                    const std::string &doc) {
+    std::string idx = name;
+    NormalizeOptionName(&idx);
+    auto ret = options_.uint_map.emplace(std::make_pair(std::move(idx),
+                                                        std::move(value)));
+    Register(name, &(ret.first->second), doc);
+  }
+
+  void RegisterFloat(const std::string &name, const float &value,
+                     const std::string &doc) {
+    std::string idx = name;
+    NormalizeOptionName(&idx);
+    auto ret = options_.float_map.emplace(std::make_pair(std::move(idx),
+                                                        std::move(value)));
+    Register(name, &(ret.first->second), doc);
+  }
+
+  void RegisterDouble(const std::string &name, const double &value,
+                      const std::string &doc) {
+    std::string idx = name;
+    NormalizeOptionName(&idx);
+    auto ret = options_.double_map.emplace(std::make_pair(std::move(idx),
+                                                        std::move(value)));
+    Register(name, &(ret.first->second), doc);
+  }
+
+  void RegisterString(const std::string &name, const std::string &value,
+                      const std::string &doc) {
+    std::string idx = name;
+    NormalizeOptionName(&idx);
+    auto ret = options_.str_map.emplace(std::make_pair(std::move(idx),
+                                                        std::move(value)));
+    Register(name, &(ret.first->second), doc);
+  }
+
+private:
+  Options options_;
 };
 
 }  // namespace kaldi

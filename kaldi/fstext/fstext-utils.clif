@@ -1,0 +1,8 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from "fstext/fstext-utils.h":
+  namespace `fst`:
+    def `MinimizeEncoded` as StdMinimizeEncoded(fst: StdVectorFst,
+                                                delta: float = default)

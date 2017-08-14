@@ -1,3 +1,4 @@
+add_subdirectory("base")
 add_subdirectory("itf")
 add_subdirectory("matrix")
 add_subdirectory("util")

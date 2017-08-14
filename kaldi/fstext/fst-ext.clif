@@ -69,3 +69,7 @@ from "fstext/fst-ext.h":
         as RemoveAlignmentsFromCompactLattice(fst: CompactLatticeMutableFst)
     def `CompactLatticeHasAlignmentExt`
         as CompactLatticeHasAlignment(fst: CompactLatticeExpandedFst) -> bool
+
+    def GetLinearSymbolSequenceFromLatticeFst(fst: LatticeFst)
+        -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>,
+            tot_weight_out: LatticeWeight)

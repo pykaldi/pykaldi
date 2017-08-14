@@ -1,10 +1,30 @@
-from .options_ext import SimpleOptions, ParseOptions
+from argparse import Namespace
+import sys
+
+from .options_ext import SimpleOptions
 from .kaldi_table import ReadScriptFile, WriteScriptFile
 from ..matrix import Vector, Matrix
 from ..feat import WaveData
 from .iostream import *
 from .fstream import *
 from .sstream import *
+from .kaldi_io import *
+
+
+class ParseOptions(options_ext.ParseOptions):
+
+    def parse_args(self, args=None):
+        self.Read(args if args else sys.argv)
+        opts = self.GetOptions()
+        arg_dict = {}
+        arg_dict.update(opts.bool_map)
+        arg_dict.update(opts.int_map)
+        arg_dict.update(opts.uint_map)
+        arg_dict.update(opts.float_map)
+        arg_dict.update(opts.double_map)
+        arg_dict.update(opts.str_map)
+        return Namespace(**arg_dict)
+
 
 ################################################################################
 # Sequential Readers
@@ -13,7 +33,7 @@ from .sstream import *
 class _SequentialReaderBase(object):
     """Base class defining the common API for sequential table readers."""
 
-    def __init__(self, rspecifier=None):
+    def __init__(self, rspecifier=""):
         """Initializes a new sequential table reader.
 
         If rspecifier is not None, also opens the specified table.
@@ -22,8 +42,10 @@ class _SequentialReaderBase(object):
             rspecifier(str): Kaldi rspecifier for reading the data.
         """
         super(_SequentialReaderBase, self).__init__()
-        if rspecifier is not None:
-            self.Open(rspecifier)
+        if rspecifier != "":
+            if not self.Open(rspecifier):
+                raise IOError("Error opening SequentialTableReader with "
+                              "rspecifier: {}".format(rspecifier))
 
     def __enter__(self):
         return self
@@ -177,7 +199,7 @@ class SequentialFloatPairVectorReader(
 
 class _RandomAccessReaderBase(object):
     """Base class defining the common API for random access table readers."""
-    def __init__(self, rspecifier=None):
+    def __init__(self, rspecifier=""):
         """Initializes a new random access table reader.
 
         If rspecifier is not None, also opens the specified table.
@@ -186,8 +208,10 @@ class _RandomAccessReaderBase(object):
             rspecifier(str): Kaldi rspecifier for reading the data.
         """
         super(_RandomAccessReaderBase, self).__init__()
-        if rspecifier is not None:
-            self.Open(rspecifier)
+        if rspecifier != "":
+            if not self.Open(rspecifier):
+                raise IOError("Error opening RandomAccessTableReader with "
+                              "rspecifier: {}".format(rspecifier))
 
     def __enter__(self):
         return self
@@ -350,7 +374,7 @@ class RandomAccessFloatPairVectorReader(
 class _RandomAccessReaderMappedBase(object):
     """Base class defining the common API for random access mapped table
     readers."""
-    def __init__(self, table_rspecifier=None, map_rspecifier=None):
+    def __init__(self, table_rspecifier="", map_rspecifier=""):
         """Initializes a new random access mapped table reader.
 
         If rspecifier is not None, also opens the specified table.
@@ -359,8 +383,11 @@ class _RandomAccessReaderMappedBase(object):
             rspecifier(str): Kaldi rspecifier for reading the data.
         """
         super(_RandomAccessReaderMappedBase, self).__init__()
-        if table_rspecifier is not None and map_rspecifier is not None:
-            self.Open(table_rspecifier, map_rspecifier)
+        if table_rspecifier != "" and map_rspecifier != "":
+            if not self.Open(table_rspecifier, map_rspecifier):
+                raise IOError("Error opening RandomAccessTableReaderMapped "
+                              "with table_rspecifier: {}, map_rspecifier: {}"
+                              .format(table_rspecifier, map_rspecifier))
 
     def __enter__(self):
         return self
@@ -424,7 +451,7 @@ class RandomAccessFloatReaderMapped(
 
 class _WriterBase(object):
     """Base class defining the common API for table writers."""
-    def __init__(self, wspecifier=None):
+    def __init__(self, wspecifier=""):
         """Initializes a new table writer.
 
         If wspecifier is not None, also opens the specified table.
@@ -433,8 +460,10 @@ class _WriterBase(object):
             wspecifier(str): Kaldi wspecifier for writing the data.
         """
         super(_WriterBase, self).__init__()
-        if wspecifier is not None:
-            self.Open(wspecifier)
+        if wspecifier != "":
+            if not self.Open(wspecifier):
+                raise IOError("Error opening TableWriter with wspecifier: {}"
+                              .format(wspecifier))
 
     def __enter__(self):
         return self

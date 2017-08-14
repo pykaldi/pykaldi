@@ -1,5 +1,6 @@
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
 
 from "util/kaldi-io.h":
     namespace `kaldi`:
@@ -21,29 +22,33 @@ from "util/kaldi-io.h":
 
         class Output:
             @add__init__
-            def `Output` as OutputWithOptions(self, wxfilename:str, binary:bool, write_header:bool = default)
+            def `Output` as New(self, wxfilename:str, binary:bool, write_header:bool = default)
 
             def Open(self, wxfilename:str, binary:bool, write_header:bool) -> bool
 
-            def IsOpen(self) -> bool 
+            def IsOpen(self) -> bool
 
-            def Close(self) -> bool 
+            def `StreamPtr` as Stream(self) -> ostream
+
+            def Close(self) -> bool
 
         class Input:
             @add__init__
-            def `Input` as InputWithOptions(self, rxfilename:str, contents_binary:bool = default)
+            def `Input` as New(self, rxfilename:str, contents_binary:bool = default)
 
             def Open(self, rxfilename:str, contents_binary:bool = default) -> bool
 
             def OpenTextMode(self, rxfilename:str) -> bool
 
-            def IsOpen(self) -> bool 
+            def IsOpen(self) -> bool
 
-            def Close(self) -> int 
+            def Close(self) -> int
+
+            def `StreamPtr` as Stream(self) -> istream
 
         # Read/Write matrices #
-        
-        def `ReadKaldiObject` as ReadKaldiMatrix(filename:str, m:Matrix)        
+
+        def `ReadKaldiObject` as ReadKaldiMatrix(filename:str, m:Matrix)
 
         def `WriteKaldiObject` as WriteKaldiMatrix(c:Matrix, filename:str, binary:bool)
 

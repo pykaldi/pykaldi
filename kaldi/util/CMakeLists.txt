@@ -14,7 +14,7 @@ add_pyclif_library("options_ext" options-ext.clif
   RPATH $ORIGIN/../itf
 )
 add_pyclif_library("kaldi_io" kaldi-io.clif
-  CLIF_DEPS kaldi_matrix
+  CLIF_DEPS kaldi_matrix iostream
   LIBRARIES kaldi-util
   RPATH $ORIGIN/../matrix
 )

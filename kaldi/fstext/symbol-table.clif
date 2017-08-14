@@ -1,12 +1,21 @@
 
 from "fst/symbol-table.h":
   namespace `fst`:
+    class SymbolTableTextOptions:
+      allow_negative_labels: bool
+      fst_field_separator: str
+
+      def __init__(self, allow_negative_labels: bool = default)
+
     class SymbolTable:
       const `kNoSymbol` as NO_SYMBOL: int
 
       @add__init__
       def `SymbolTable` as with_name(self, name: str)
 
+      @classmethod
+      def ReadText(cls, filename: str,
+                   opts: SymbolTableTextOptions = default) -> SymbolTable
       @classmethod
       def Read(cls, filename: str) -> SymbolTable
       def Copy(self) -> SymbolTable

@@ -48,12 +48,12 @@ from "util/options-ext.h":
       @add__init__
       def `ParseOptionsExt` as from_other(self, prefix: str, other: OptionsItf)
 
-      def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
-      def `Register` as register_int(self, name: str, ptr: `int32` as int, doc: str)
-      def `Register` as register_uint(self, name: str, ptr: `uint32` as int, doc: str)
-      def `Register` as register_float(self, name: str, ptr: `float` as float, doc: str)
-      def `Register` as register_double(self, name: str, ptr: `double` as float, doc: str)
-      def `Register` as register_str(self, name: str, ptr: str, doc: str)
+      def `RegisterBool` as register_bool(self, name: str, value: bool, doc: str)
+      def `RegisterInt` as register_int(self, name: str, value: `int32` as int, doc: str)
+      def `RegisterUInt` as register_uint(self, name: str, value: `uint32` as int, doc: str)
+      def `RegisterFloat` as register_float(self, name: str, value: `float` as float, doc: str)
+      def `RegisterDouble` as register_double(self, name: str, value: `double` as float, doc: str)
+      def `RegisterString` as register_str(self, name: str, value: str, doc: str)
 
       def DisableOption(self, name: str)
       def Read(self, argv: list<str>) -> int
@@ -65,6 +65,16 @@ from "util/options-ext.h":
       def NumArgs(self) -> int
       def GetArg(self, param: int) -> str
       def GetOptArg(self, param: int) -> str
+
+      class Options:
+        bool_map: `std::map` as dict<str, bool>
+        int_map: `std::map` as dict<str, int>
+        uint_map: `std::map` as dict<str, int>
+        float_map: `std::map` as dict<str, float>
+        double_map: `std::map` as dict<str, float>
+        str_map: `std::map` as dict<str, str>
+
+      def GetOptions(self) -> Options
 
       @classmethod
       def Escape(cls, str: str) -> str

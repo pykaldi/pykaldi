@@ -44,6 +44,7 @@ from "fst/mutable-fst.h":
 
       def Copy(self, safe: bool = default) -> StdMutableFst
 
+      @async
       @classmethod
       def Read(cls, filename: str, convert: bool = default,
                convert_type: str = default) -> StdMutableFst
@@ -106,6 +107,7 @@ from "fst/mutable-fst.h":
 
       def Copy(self, safe: bool = default) -> LogMutableFst
 
+      @async
       @classmethod
       def Read(cls, filename: str, convert: bool = default,
                convert_type: str = default) -> LogMutableFst
@@ -168,6 +170,7 @@ from "fst/mutable-fst.h":
 
       def Copy(self, safe: bool = default) -> LatticeMutableFst
 
+      @async
       @classmethod
       def Read(cls, filename: str, convert: bool = default,
                convert_type: str = default) -> LatticeMutableFst
@@ -230,6 +233,7 @@ from "fst/mutable-fst.h":
 
       def Copy(self, safe: bool = default) -> CompactLatticeMutableFst
 
+      @async
       @classmethod
       def Read(cls, filename: str, convert: bool = default,
                convert_type: str = default) -> CompactLatticeMutableFst

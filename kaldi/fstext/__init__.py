@@ -9,14 +9,16 @@ from .properties import *
 from weight import *
 from .float_weight import *
 from .lattice_weight import *
+from .lattice_utils import *
 from .arc import *
 from .symbol_table import *
 from .fst import NO_STATE_ID, NO_LABEL
 from .expanded_fst import CountStdFstStates
 from . import mutable_fst
-from . import vector_fst
+from .vector_fst import LatticeVectorFst, CompactLatticeVectorFst
 from .fst_ext import *
 from .kaldi_fst_io import *
+from .fstext_utils import *
 from .drawer import *
 from .printer import *
 from .compiler import *

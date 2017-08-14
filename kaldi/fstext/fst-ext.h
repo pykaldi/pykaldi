@@ -7,6 +7,7 @@
 #include "fstext/lattice-weight.h"
 #include "fstext/lattice-utils.h"
 #include "fstext/kaldi-fst-io.h"
+#include "fstext/fstext-utils.h"
 
 namespace fst {
 
@@ -136,6 +137,17 @@ void RemoveAlignmentsFromCompactLatticeExt(
 bool CompactLatticeHasAlignmentExt(
     const ExpandedFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32> > > &fst) {
   return CompactLatticeHasAlignment(fst);
+}
+
+// Symbols
+
+bool GetLinearSymbolSequenceFromLatticeFst(
+    const Fst<ArcTpl<LatticeWeightTpl<float>>> &fst,
+    vector<int32> *isymbols_out,
+    vector<int32> *osymbols_out,
+    LatticeWeightTpl<float> *tot_weight_out) {
+  return GetLinearSymbolSequence(fst, isymbols_out, osymbols_out,
+                                 tot_weight_out);
 }
 
 }  // namespace fst

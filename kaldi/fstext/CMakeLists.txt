@@ -45,6 +45,10 @@ add_pyclif_library("kaldi_fst_io" kaldi-fst-io.clif
   CLIF_DEPS vector_fst
   LIBRARIES kaldi-fstext
 )
+add_pyclif_library("fstext_utils" fstext-utils.clif
+  CLIF_DEPS vector_fst
+  LIBRARIES kaldi-fstext
+)
 add_pyclif_library("drawer" drawer.clif
   CLIF_DEPS fst iostream
   RPATH $ORIGIN/../util

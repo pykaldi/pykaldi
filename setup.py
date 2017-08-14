@@ -111,6 +111,7 @@ class install_lib(setuptools.command.install_lib.install_lib):
 
 extensions = [
                 KaldiExtension("kaldi._clif"),
+                KaldiExtension("kaldi.base.io_funcs"),
                 KaldiExtension("kaldi.itf.options_itf"),
                 KaldiExtension("kaldi.itf.context_dep_itf"),
                 KaldiExtension("kaldi.itf.decodable_itf"),
@@ -127,6 +128,7 @@ extensions = [
                 KaldiExtension("kaldi.fstext.vector_fst"),
                 KaldiExtension("kaldi.fstext.fst_ext"),
                 KaldiExtension("kaldi.fstext.kaldi_fst_io"),
+                KaldiExtension("kaldi.fstext.fstext_utils"),
                 KaldiExtension("kaldi.fstext.drawer"),
                 KaldiExtension("kaldi.fstext.printer"),
                 KaldiExtension("kaldi.fstext.compiler"),
