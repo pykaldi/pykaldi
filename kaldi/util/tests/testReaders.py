@@ -13,6 +13,8 @@ import os
 ################################################################################################################
 class _TestSequentialReaders(AuxMixin):
     def test__init__(self):
+
+        # Empty reader
         reader = self.getImpl()
         self.assertIsNotNone(reader)
         with self.assertRaises(RuntimeError):
@@ -26,14 +28,9 @@ class _TestSequentialReaders(AuxMixin):
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
-        reader = self.getImpl(self.rspecifier)
-        self.assertIsNotNone(reader)
-
-        # Note (VM): If the file does not exist, this is false
-        self.assertFalse(reader.IsOpen())
-
-        # TODO (VM): This raises a runtime exception right now
-        # self.assertFalse(reader.Done())
+        # Reader into a file that does not exists
+        with self.assertRaises(OSError):
+            reader = self.getImpl(self.rspecifier)
 
         # Touch file
         open(self.filename, 'w').close()
@@ -43,6 +40,11 @@ class _TestSequentialReaders(AuxMixin):
         self.assertTrue(reader.Done())
 
     def testContextManager(self):
+        # Delete file in case it exists
+        if os.path.exists(self.filename):
+            os.remove(self.filename)
+
+        # Empty reader via CM
         with self.assertRaises(RuntimeError):
             with self.getImpl() as reader:
                 self.assertFalse(reader.IsOpen())
@@ -66,41 +68,22 @@ class _TestSequentialReaders(AuxMixin):
             self.assertTrue(reader.Done())
 
     def test__iter__(self):
-        with self.assertRaises(RuntimeError):
-            with self.getImpl() as reader:
-                for k, v in reader:
-                    self.assertTrue(reader.IsOpen())
-                    self.assertFalse(reader.Done())
-
-        with self.assertRaises(RuntimeError):
-            self.assertFalse(reader.IsOpen())
-            self.assertTrue(reader.Done())
-
-        reader = None
-        with self.assertRaises(RuntimeError):
-            with self.getImpl(self.rspecifier) as reader:
-                for k, v in reader:
-                    self.assertTrue(reader.IsOpen())
-                    self.assertFalse(reader.Done())
-
-        with self.assertRaises(RuntimeError):
-            self.assertFalse(reader.IsOpen())
-            self.assertTrue(reader.Done()) 
-
-    def testRead(self):
         # Create a file and write an example to it
         with open(self.filename, 'w') as outpt:
             self.writeExample(outpt)
 
-        # Read back the example
+        # Iterate over the file
         with self.getImpl(self.rspecifier) as reader:
             for idx, (k, v) in enumerate(reader):
                 self.checkRead(idx, (k, v))
 
-        with self.assertRaises(RuntimeError):
-            self.assertFalse(reader.IsOpen())
-            self.assertTrue(reader.Done())
+        # Check iteration is Done
+        # FIXME:
+        # This raises C++ exception instead of a simple True
+        # self.assertTrue(reader.Done())
 
+        # Check iterator is closed
+        self.assertFalse(reader.IsOpen())
 
 class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase, VectorExampleMixin):
     def checkRead(self, idx, pair):
@@ -224,8 +207,10 @@ class _TestRandomAccessReaders(AuxMixin):
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
-        reader = self.getImpl(self.rspecifier)
-        self.assertIsNotNone(reader)
+        # Reading a non-existant file raises an exception
+        with self.assertRaises(OSError):
+            reader = self.getImpl(self.rspecifier)
+            self.assertIsNotNone(reader)
 
         # Note (VM): If the file does not exist, this is false
         self.assertFalse(reader.IsOpen())
