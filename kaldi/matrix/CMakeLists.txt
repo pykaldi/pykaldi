@@ -37,6 +37,11 @@ add_pyclif_library("kaldi_vector_ext" kaldi-vector-ext.clif
   LIBRARIES kaldi-matrix
 )
 
+add_pyclif_library("kaldi_matrix_ext" kaldi-matrix-ext.clif
+  CLIF_DEPS tp_matrix sp_matrix
+  LIBRARIES kaldi-matrix
+)
+
 add_pyclif_library("matrix_functions" matrix-functions.clif
   CLIF_DEPS kaldi_matrix
   LIBRARIES kaldi-matrix

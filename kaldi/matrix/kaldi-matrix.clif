@@ -40,10 +40,13 @@ from "matrix/kaldi-matrix.h":
             # Copying functions #
             def CopyFromMat(self, M:MatrixBase, trans:MatrixTransposeType = default)
 
-            # FIXME (VM): Missing definitions
             # def `CopyFromMat` as CopyFromCudaMat(self, M:CuMatrixBase, trans:MatrixTransposeType = default)
-            # def CopyFromMat(self, M:CompressedMatrix);
-            # def CopyFromSp(self, M:SpMatrix);
+
+
+            # Note (VM): 
+            #   Moved to kaldi-matrix-ext.h 
+            # def CopyFromMat(self, M:CompressedMatrix)
+            # def CopyFromSp(self, M:SpMatrix)
             # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
@@ -126,16 +129,15 @@ from "matrix/kaldi-matrix.h":
 
             def ApplyHeaviside(self)
 
-            # FIXME:
-            #  This doesn't work because VectorBase<Real>() is protected
-            # def Eig(self, P: MatrixBase) -> (eigs_real: VectorBase, eigs_imag: VectorBase)
+            def Eig(self, P: MatrixBase, eigs_real: VectorBase, eigs_imag: VectorBase)
 
             def Power(self, pow: float) -> bool
 
-            # FIXME:
-            # void Svd(VectorBase<Real> *s, MatrixBase<Real> *U, MatrixBase<Real> *Vt) const;
+            def DestructiveSvd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
 
-            def Svd(self, s: VectorBase)
+            def `Svd` as CompleteSvd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
+
+            def `Svd` as SvdOnlySingularValues(self, s: VectorBase)
 
             def MinSingularValue(self) -> float
 
@@ -171,9 +173,6 @@ from "matrix/kaldi-matrix.h":
 
             def GroupPnorm(self, src: MatrixBase, power: float)
 
-            # FIXME:
-            # This doesn't follow Google conventions for C++,
-            # where inputs must come before any output
             # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase, power: float)
 
             def GroupMax(self, src: MatrixBase)
@@ -188,8 +187,8 @@ from "matrix/kaldi-matrix.h":
 
             def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase, check_thresh: float = default)
 
-            # FIXME:
-            # What to do here?
+            # Note (VM):
+            # Nothing to do here, it is already defined outside the object
             # friend Real kaldi::TraceMatMat<Real>(const MatrixBase<Real> &A,
             # const MatrixBase<Real> &B, MatrixTransposeType trans);  // tr (A B)
 
@@ -213,8 +212,8 @@ from "matrix/kaldi-matrix.h":
 
             def AddMatMatElements(self, alpha: float, A: MatrixBase, B: MatrixBase, beta: float)
 
-            # FIXME:
-            # Missing SpMatrix definition
+            # Note (VM):
+            # Move to kaldi-matrix-ext.h
             # def AddSp(self, alpha: float, S:SpMatrix)
 
             def AddMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
@@ -227,8 +226,8 @@ from "matrix/kaldi-matrix.h":
 
             def AddMatMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, C: MatrixBase, transC: MatrixTransposeType, beta: float)
 
-            # FIXME:
-            # Missing definitions
+            # Note (VM):
+            # Move to kaldi-matrix-ext.h
             # def AddSpMat(self, alpha: float, A:SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float)
             # def AddTpMat(self, alpha: float, A:TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
             # def AddMatSp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:SpMatrix, beta: float)
@@ -330,9 +329,9 @@ from "matrix/kaldi-matrix.h":
             #
             # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
-
-
         def `TraceMat` as TraceMat(A: MatrixBase) -> float
+
+        def `TraceMatMat` as TraceMatMat(A: MatrixBase, B: MatrixBase, trans: MatrixTransposeType = default) -> float
 
         def `TraceMatMatMat` as TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
                                                B: MatrixBase, transB: MatrixTransposeType,
@@ -347,9 +346,7 @@ from "matrix/kaldi-matrix.h":
 
         def `AssertEqual` as AssertEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default)
 
-        # Note (VM):
-        # Cannot be implemented as it is because outputs are before inputs
-        # def `SortSVD` as SortSVD(s: VectorBase, U: MatrixBase, Vt: MatrixBase, sort_on_absolute_value: bool = default)
+        def `SortSvd` as SortSvd(s: VectorBase, U: MatrixBase, Vt: MatrixBase = default, sort_on_absolute_value: bool = default)
 
         def `CreateEigenvalueMatrix` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase, D:MatrixBase)
 
@@ -361,6 +358,8 @@ from "matrix/kaldi-matrix.h":
         # def `operator>>` as Write(in: istream, M: Matrix) -> istream
 
         def `SameDim` as SameDimMatrix(M: MatrixBase, N: MatrixBase) -> bool
+
+
 
         class `MatrixBase<double>` as DoubleMatrixBase:
             num_rows_: int = property(`NumRows`)
@@ -485,14 +484,15 @@ from "matrix/kaldi-matrix.h":
 
             def ApplyHeaviside(self)
 
-            # FIXME:
-            #  This doesn't work because VectorBase<Real>() is protected
-            # def Eig(self, P: DoubleMatrixBase) -> (eigs_real: DoubleVectorBase, eigs_imag: DoubleVectorBase)
+            def Eig(self, P: DoubleMatrixBase, eigs_real: DoubleVectorBase, eigs_imag: DoubleVectorBase)
 
             def Power(self, pow: float) -> bool
 
-            # FIXME:
-            # void Svd(VectorBase<Real> *s, MatrixBase<Real> *U, MatrixBase<Real> *Vt) const;
+            def DestructiveSvd(self, s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase)
+
+            def `Svd` as CompleteSvd(self, s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase)
+
+            def `Svd` as SvdOnlySingularValues(self, s: DoubleVectorBase)
 
             def Svd(self, s: DoubleVectorBase)
 
@@ -670,6 +670,8 @@ from "matrix/kaldi-matrix.h":
 
         def `TraceMat` as TraceDoubleMat(A: DoubleMatrixBase) -> float
 
+        def `TraceMatMat` as TraceDoubleMatMat(A: DoubleMatrixBase, B: DoubleMatrixBase, trans:MatrixTransposeType = default) -> float
+
         def `TraceMatMatMat` as TraceDoubleMatMatMat(A: DoubleMatrixBase, transA: MatrixTransposeType,
                                                B: DoubleMatrixBase, transB: MatrixTransposeType,
                                                C: DoubleMatrixBase, transC: MatrixTransposeType) -> float
@@ -683,13 +685,10 @@ from "matrix/kaldi-matrix.h":
 
         def `AssertEqual` as AssertEqualDoubleMatrix(A:DoubleMatrixBase, B:DoubleMatrixBase, tol:`double` as float = default)
 
-        # Note (VM):
-        # Cannot be implemented as it is because outputs are before inputs
-        # def `SortSVD` as SortSVD(s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase, sort_on_absolute_value: bool = default)
+        def `SortSvd` as SortDoubleSvd(s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase = default, sort_on_absolute_value: bool = default)
 
         def `CreateEigenvalueMatrix` as CreateEigenvalueDoubleMatrix(real:DoubleVectorBase, imag:DoubleVectorBase, D:DoubleMatrixBase)
 
-        # TODO (VM):
         # def `operator<<` as Write(out: ostream, M: DoubleMatrixBase) -> ostream
         # def `operator>>` as Write(in: istream, M: DoubleMatrixBase) -> istream
         # def `operator>>` as Write(in: istream, M: DoubleMatrix) -> istream
@@ -703,7 +702,6 @@ from "matrix/kaldi-matrix.h":
             mSampleSize: int
             mSampleKind: int
 
-        # TODO:
         # template<typename Real>
         # bool ReadHtk(std::istream &is, Matrix<Real> *M, HtkHeader *header_ptr);
 

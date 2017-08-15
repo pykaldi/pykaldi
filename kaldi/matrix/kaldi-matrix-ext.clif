@@ -1,0 +1,33 @@
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "matrix/tp-matrix-clifwrap.h" import *
+from "matrix/compressed-matrix-clifwrap.h" import *
+
+
+from "matrix/kaldi-matrix-ext.h":
+	namespace `kaldi`:
+		def CopyFromMat(self: MatrixBase, M: CompressedMatrix)
+
+		def CopyFromSp(self: MatrixBase, M: SpMatrix)
+
+		def CopyFromTp(self: MatrixBase, M: TpMatrix)
+
+		def AddSp(self: MatrixBase, alpha: float, S: SpMatrix)
+
+		def AddSpMat(self: MatrixBase, alpha: float, A: SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+
+		def AddTpMat(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+
+		def AddMatSp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: SpMatrix, beta: float)
+
+		def AddMatTp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float)
+
+		def AddTpTp(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float)
+
+		def AddSpSp(self: MatrixBase, alpha: float, A: SpMatrix, B: SpMatrix, beta: float)
+
+		# FIXME: 
+		# MatrixBase constructor is protected...
+		# def GroupPnormDeriv(self: MatrixBase, input: MatrixBase, power: float) -> (output:Matrix)

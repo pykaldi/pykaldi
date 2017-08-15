@@ -144,6 +144,7 @@ extensions = [
                 KaldiExtension("kaldi.matrix.sp_matrix"),
                 KaldiExtension("kaldi.matrix.tp_matrix"),
                 KaldiExtension("kaldi.matrix.kaldi_vector_ext"),
+                KaldiExtension("kaldi.matrix.kaldi_matrix_ext"),
                 KaldiExtension("kaldi.matrix.matrix_functions"),
                 KaldiExtension("kaldi.feat.resample"),
                 KaldiExtension("kaldi.feat.signal"),

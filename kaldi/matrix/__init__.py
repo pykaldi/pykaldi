@@ -463,6 +463,39 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             raise ValueError("transpose_ method cannot be called on "
                              "matrices that do not own their data.")
 
+    def eig(self):
+        """Matrix eigenvalues """
+        m, n = self.size()
+        if m != n:
+            raise ValueError("eig method cannot be called on a nonsquare matrix.")
+        P = Matrix(n, n)
+        r, i = Vector(n), Vector(n)
+        self.Eig(P, r, i)
+
+        return P, r, i
+
+    def svd(self):
+        """Singular value decomposition. 
+           Kaldi has a major limitation. For nonsquare matrices, it assumes
+           m >= n (NumRows >= NumCols). """
+        m, n = self.size()
+
+        if m < n:
+            raise ValueError("svd for nonsquare matrices needs NumRows >= NumCols.")
+
+        U, Vt = Matrix(m, n), Matrix(n, n)
+        s = Vector(n)
+
+        self.CompleteSvd(s, U, Vt)
+
+        return U, s, Vt
+
+    def singularValues(self):
+        """Singular values only """
+        res = Vector(self.ncols())
+        self.SvdOnlySingularValues(res)
+        return res
+
     def __getitem__(self, index):
         """Custom getitem method.
 
