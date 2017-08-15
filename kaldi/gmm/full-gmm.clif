@@ -1,0 +1,83 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "gmm/model-common-clifwrap.h" import *
+
+from "gmm/full-gmm.h":
+    namespace `kaldi`:
+        class FullGmm:
+            @add__init__
+            def `FullGmm` as from_other(self, gmm: FullGmm)
+
+            @add__init__
+            def `FullGmm` as from_nmix_dim(self, nmix:int, dim: int)
+
+            def Resize(self, nmix: int, dim: int)
+
+            def NumGauss(self) -> int 
+
+            def Dim(self) -> int 
+
+            def CopyFromFullGmm(self, fullgmm: FullGmm)
+
+            # def CopyFromDiagGmm(self, diaggmm: DiagGmm)
+
+            def LogLikelihood(self, data: VectorBase) -> float
+
+            def LogLikelihoods(self, data:VectorBase) -> Vector 
+
+            def LogLikelihoodsPreselect(self, data:VectorBase, indices:list<int>) -> Vector
+
+            def GaussianSelection(self, data: VectorBase, num_gselect: int) -> (log_like: float, output: list<int>)
+
+            def GaussianSelectionPreselect(self, data: VectorBase, preselect: list<int>, num_gselect: int) -> (log_like: float, posteriors: list<int>)
+
+            def ComponentLogLikelihood(self, data: VectorBase, comp_idL: int) -> float 
+
+            def ComputeGconsts(self) -> int 
+
+            # See note from diag-gmm
+            # def Split
+
+            def Perturb(self, pertub_factor: float)
+
+            # See note from diag-gmm
+            # def Merge
+            # def MergePreselect
+
+            def Write(self, os: ostream, binary: bool)
+            def Read(self, is: istream, binary: bool)
+
+            def Interpolate(self, rho: float, source: FullGmm, flags: int = default)
+
+            gconsts_: Vector = property(`gconsts`)
+            weights_: Vector = property(`weights`)
+            means_invcovars_: Matrix = property(`means_invcovars`)
+            inv_covars_: list<SpMatrix> = property(`inv_covars`, `SetInvCovars`)
+
+            def SetWeights(self, w: Vector)
+
+            def SetMeans(self, m: Matrix)
+
+            def SetInvCovarsAndMeans(self, invcovars:list<SpMatrix>, means:Matrix)
+
+            def SetInvCovarsAndMeansInvCovars(self, invcovars:list<SpMatrix>, means_invcovars:Matrix)
+
+            def GetCovars(self) -> list<SpMatrix>
+
+            def GetMeans(self) -> Matrix 
+
+            def GetCovarsAndMeans(self) -> (covars:list<SpMatrix>, means: Matrix)
+
+            def RemoveComponent(self, gauss: int, renorm_weights: bool)
+
+            def RemoveComponents(self, gauss: list<int>, renorm_weights: bool)
+
+            def GetComponentMean(self, gauss: int, out: VectorBase)
+
+
+
+
+
+

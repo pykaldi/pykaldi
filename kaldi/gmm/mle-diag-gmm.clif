@@ -1,0 +1,81 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import * 
+
+from "gmm/mle-diag-gmm.h":
+    namespace `kaldi`:
+        class MleDiagGmmOptions:
+            variance_floor_vector: DoubleVector 
+            min_gaussian_weight: float 
+            min_gaussian_occupancy: float 
+            min_variance: float 
+            remove_low_count_gaussians: bool
+
+            def Register(self, opts: OptionsItf)
+
+        class MapDiagGmmOptions:
+            mean_tau: float
+            variance_tau: float 
+            weight_tau: float 
+
+            def Register(self, opts: OptionsItf)
+
+        class AccumDiagGmm:
+            @add__init__
+            def `AccumDiagGmm` as New(self, gmm: DiagGmm, flags: int)
+
+            @add__init__
+            def `AccumDiagGmm` as WithOther(self, other: AccumDiagGmm)
+
+            def Read(self, in_stream: istream, binary: bool, add: bool)
+
+            def Write(self, out_stream: ostream, binary: bool)
+
+            def `Resize` as Resize(self, num_gauss: int, dim: int, flags: int)
+
+            def `Resize` as ResizeWithGmm(self, gmm:DiagGmm, flags: int)
+
+            def NumGauss(self) -> int 
+
+            def Dim(self) -> int 
+
+            def SetZero(self, flags: int)
+
+            def Scale(self, f: float, flags: int)
+
+            def AccumulateForComponent(self, data: VectorBase, comp_index: int, weight: float)
+
+            def AccumulateFromPosteriors(self, data: VectorBase, gauss_posteriors: VectorBase)
+
+            def AccumulateFromDiag(self, gmm: DiagGmm, data: VectorBase, frame_posterior: float) -> float
+
+            def AccumulateFromDiagMultiThreaded(self, gmm: DiagGmm, data: MatrixBase, frame_weights: VectorBase, num_threads: int) -> float 
+
+            def AddStatsForComponent(self, comp_id: int, occ: float, x_stats: DoubleVectorBase, x2_stats: DoubleVectorBase)
+
+            def Add(self, scale: float, acc: AccumDiagGmm)
+
+            def SmoothStats(self, tau: float)
+
+            def SmoothWithAccum(self, tau: float, src_acc: AccumDiagGmm)
+
+            def SmoothWithModel(self, tau: float, src_gmm: DiagGmm)
+
+            flags_: int = property(`Flags`)
+
+            # FIXME
+            # occupancy_: DoubleVectorBase = property(`occupancy`)
+            # mean_accumulator_: DoubleMatrixBase = property(`mean_accumulator`)
+            # variance_accumulator_: DoubleMatrixBase = property(`variance_accumulator`)
+
+            def AssertEqual(self, other: AccumDiagGmm)
+
+        def AugmentGmmFlags(f: int) -> int 
+
+        # def MleDiagGmmUpdate(self, config: MleDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out:float, count_out: float, floored_elements_out: int = default, floored_gauss_out: int = default, removed_gauss_out: int = default)
+
+        # def MapDiagGmmUpdate(self, config: MapDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out: float, count_out: float)
+
+        # def MlObjective(self, gmm: DiagGmm, diag_gmm_acc:AccumDiagGmm) -> float

@@ -1,0 +1,40 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "gmm/model-common.h":
+    namespace `kaldi`:
+        enum GmmUpdateFlags with:
+            `kGmmMeans` as MEANS
+            `kGmmVariances` as VARIANCES
+            `kGmmWeights` as WEIGHTS
+            `kGmmTransitions` as TRANSITIONS
+            `kGmmAll` as ALL 
+
+        def StringToGmmFlags(s:str) -> GmmUpdateFlags
+
+        def GmmFlagsToString(gmm_flags: GmmUpdateFlags) -> str 
+
+        def AugmentGmmFlags(gmm_flags: GmmUpdateFlags) -> GmmUpdateFlags
+
+        enum SgmmUpdateFlags with:
+            `kSgmmPhoneVectors` as PHONE_VECTORS
+            `kSgmmPhoneProjections` as PHONE_PROJECTIONS
+            `kSgmmPhoneWeightProjections` as PHONE_WEIGHT_PROJECTIONS
+            `kSgmmCovarianceMatrix` as COVARIANCE_MATRIX
+            `kSgmmSubstateWeights` as SUBSTATE_WEIGHTS
+            `kSgmmSpeakerProjections` as SPEAKER_PROJECTIONS
+            `kSgmmTransitions` as TRANSITIONS
+            `kSgmmSpeakerWeightProjections` as SPEAKER_WEIGHT_PROJECTIONS 
+            `kSgmmAll` as ALL 
+
+        def StringToSgmmUpdateFlags(s:str) -> SgmmUpdateFlags
+
+        enum SgmmWriteFlags with:
+            `kSgmmGlobalParams` as GLOBAL_PARAMS
+            `kSgmmStateParams` as STATE_PARAMS 
+            `kSgmmNormalizers` as NORMALIZERS
+            `kSgmmBackgroundGmms` as BACKGROUND_GMMS
+            `kSgmmWriteAll` as WRITE_ALL
+
+        def StringToSgmmWriteFlags(s:str) -> SgmmWriteFlags
+
+        def GetSplitTargets(state_occs: Vector, target_components: int, power:float, min_count: float) -> list<int>

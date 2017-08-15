@@ -1,6 +1,7 @@
 from "util/iostream-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
+from "gmm/full-gmm-clifwrap.h" import *
 
 from "gmm/diag-gmm.h":
   namespace `kaldi`:
@@ -28,7 +29,7 @@ from "gmm/diag-gmm.h":
 
       def CopyFromDiagGmm(self, diaggmm: DiagGmm)
 
-      # def CopyFromFullGmm(self, fullgmm: FullGmm)
+      def CopyFromFullGmm(self, fullgmm: FullGmm)
 
       def LogLikelihood(self, data: VectorBase) -> float
 
@@ -78,9 +79,9 @@ from "gmm/diag-gmm.h":
       def Write(self, os: ostream, binary: bool)
       def Read(self, is: istream, binary: bool)
 
-      # def Interpolate(self, rho: float, source: DiagGmm, flags: GmmFlagsType = default)
+      def Interpolate(self, rho: float, source: DiagGmm, flags: int = default)
 
-      # def `Interpolate` as InterpolateFull(self, rho: float, source: FullGmm, flags: GmmFlagsType = default)
+      def `Interpolate` as InterpolateFull(self, rho: float, source: FullGmm, flags: int = default)
 
       gconsts_: Vector = property(`gconsts`)
       weights_: Vector = property(`weights`)
