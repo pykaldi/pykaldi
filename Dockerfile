@@ -34,13 +34,9 @@ RUN git clone https://github.com/ninja-build/ninja.git && \
 	./configure.py --bootstrap && \
 	cp ninja /usr/local/bin
 
-# Copy INSTALL.sh patch to the container
-COPY extras/clif/install.diff /root/pykaldi/extras/clif/
-
 # Install clif
 RUN git clone https://github.com/google/clif.git && \
 	cd clif && \
-	# patch < /root/pykaldi/extras/clif/install.diff && \
 	./INSTALL.sh $(which python)
 
 # NOTE (VM): Args invalidate cache, thus from this point forward
