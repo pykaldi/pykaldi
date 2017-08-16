@@ -22,7 +22,7 @@ add_pyclif_library("sp_matrix" sp-matrix.clif
   LIBRARIES kaldi-matrix
 )
 add_pyclif_library("tp_matrix" tp-matrix.clif
-  CLIF_DEPS packed_matrix
+  CLIF_DEPS sp_matrix
   LIBRARIES kaldi-matrix
 )
 add_pyclif_library("kaldi_vector_ext" kaldi-vector-ext.clif

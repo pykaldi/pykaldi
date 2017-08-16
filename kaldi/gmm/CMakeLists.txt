@@ -2,13 +2,13 @@ add_pyclif_library("model_common" model-common.clif
   CLIF_DEPS kaldi_vector
   LIBRARIES kaldi-gmm
 )
-add_pyclif_library("diag_gmm" diag-gmm.clif
-  CLIF_DEPS iostream kaldi_matrix
+add_pyclif_library("full_gmm" full-gmm.clif
+  CLIF_DEPS model_common iostream sp_matrix
   LIBRARIES kaldi-gmm
   RPATH $ORIGIN/../util:$ORIGIN/../matrix
 )
-add_pyclif_library("full_gmm" full-gmm.clif
-  CLIF_DEPS model_common iostream sp_matrix
+add_pyclif_library("diag_gmm" diag-gmm.clif
+  CLIF_DEPS full_gmm iostream kaldi_matrix 
   LIBRARIES kaldi-gmm
   RPATH $ORIGIN/../util:$ORIGIN/../matrix
 )
