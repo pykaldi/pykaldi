@@ -227,7 +227,7 @@ from "matrix/sp-matrix.h":
 
     # def TraceMatSpMatSp(A:MatrixBase, transA:MatrixTransposeType, B:SpMatrix, C:MatrixBase, transC: MatrixTransposeType, D:SpMatrix) -> float 
 
-    # def VecSpVec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float
+    def VecSpVec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float
 
     class SolverOptions:
       K:float 

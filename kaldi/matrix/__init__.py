@@ -97,6 +97,15 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         instance.SetRandn()
         return instance
 
+    @classmethod
+    def copyfromvec(cls, src):
+        """Copies data from src into a new instance of vector.
+        Args:
+            src (Vector): Source vector to copy
+        """
+        instance = cls.__new__(len(src))
+        instance.CopyFromVec(src)
+        return instance
 
     def clone(self):
         """Returns a copy of the vector."""
