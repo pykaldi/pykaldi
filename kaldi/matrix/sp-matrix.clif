@@ -6,20 +6,24 @@ from "matrix/matrix-ext.h" import *
 
 from "matrix/sp-matrix.h":
   namespace `kaldi`:
-    class `SpMatrix<float>` as SpMatrix:
+    class `SpMatrix<float>` as SpMatrix(PackedMatrix):
 
       @add__init__
       def `SpMatrix` as New(self, r: int, resize_type: MatrixResizeType = default)
 
       @add__init__
-      def `SpMatrix` as NewWithOther(self, orig:SpMatrix)
+      def `SpMatrix` as NewWithOtherSp(self, orig:SpMatrix)
 
-      # Shallow Swap
-      # def Swap(self, other:SpMatrix)
+      # @add__init__
+      # def `SpMatrix` as NewWithMatrix(self, orig: MatrixBase, copy_type: SpCopyType)
+
+      def `Swap` as SwapWithOther(self, other: SpMatrix)
 
       def Resize(self, nRows: int, resize_type:MatrixResizeType = default)
 
-      def `CopyFromSp` as CopyFromSp(self, other:SpMatrix)
+      def CopyFromSp(self, other:SpMatrix)
+
+      def CopyFromMat(self, orig:MatrixBase, copy_type:SpCopyType = default)
 
       # TODO: operator -> __getitem__
 
@@ -27,13 +31,12 @@ from "matrix/sp-matrix.h":
 
       def InvertDouble(self)
 
-      def Swap(self, other: SpMatrix)
-
       def Cond(self) -> float
 
       def ApplyPow(self, exponent: float)
 
-      # def SymPosSemiDefEig(self, ...)
+      # See note in kaldi (Tl;dr it calls Eig)
+      def SymPosSemiDefEig(self, s: VectorBase, P:MatrixBase, tolerance:float = default)
 
       def Eig(self, s: VectorBase, P: MatrixBase = default)
 
@@ -72,8 +75,8 @@ from "matrix/sp-matrix.h":
 
       def AddSmat2Sp(self, alpha: float, M:MatrixBase, transM:MatrixTransposeType, A:SpMatrix, beta: float = default)
 
+      # FIXME in sp-matrix-ext.h
       # def AddTp2Sp(self, alpha:float, T:TpMatrix, transM: MatrixTransposeType, A:SpMatrix, beta: float = default)
-
       # def AddTp2(self, alpha: float, T:TpMatrix, transM: MatrixTransposeType, beta:float = default)
 
       def AddMat2Vec(self, alpha:float, M:MatrixBase, transM:MatrixTransposeType, v:VectorBase, beta: float = default)
@@ -103,3 +106,144 @@ from "matrix/sp-matrix.h":
       def Tridiagonalize(self, Q:MatrixBase)
 
       def Qr(self, Q:MatrixBase)
+
+
+
+
+
+    class `SpMatrix<double>` as DoubleSpMatrix(PackedMatrix):
+
+      @add__init__
+      def `SpMatrix` as New(self, r: int, resize_type: MatrixResizeType = default)
+
+      @add__init__
+      def `SpMatrix` as NewWithOtherSp(self, orig:DoubleSpMatrix)
+
+      # @add__init__
+      # def `SpMatrix` as NewWithMatrix(self, orig: MatrixBase, copy_type: SpCopyType)
+
+      def `Swap` as SwapWithOther(self, other: DoubleSpMatrix)
+
+      def Resize(self, nRows: int, resize_type:MatrixResizeType = default)
+
+      def CopyFromSp(self, other:DoubleSpMatrix)
+
+      def CopyFromMat(self, orig:DoubleMatrixBase, copy_type:SpCopyType = default)
+
+      # TODO: operator -> __getitem__
+
+      def Invert(self)
+
+      def InvertDouble(self)
+
+      def Cond(self) -> float
+
+      def ApplyPow(self, exponent: float)
+
+      # See note in kaldi (Tl;dr it calls Eig)
+      def SymPosSemiDefEig(self, s: DoubleVectorBase, P:DoubleMatrixBase, tolerance:float = default)
+
+      def Eig(self, s: DoubleVectorBase, P: DoubleMatrixBase = default)
+
+      def TopEigs(self, s: DoubleVectorBase, P: DoubleMatrixBase, lanczos_dim: int = default)
+
+      def Log(self)
+
+      def Exp(self)
+
+      def MaxAbsEig(self) -> float 
+
+      # TODO: do it in python
+      # def PrintEigs(self, name:str)
+
+      def IsPosDef(self) -> bool
+
+      def AddSp(self, alpha:float, Ma:DoubleSpMatrix)
+
+      def LogPosDefDet(self) -> float
+
+      # FIXME: 
+      # Needs pointer to float
+      # def LogDet(self) -> (logdet_:float, det_sign: float)
+
+      def AddVec2(self, alpha: float, v: DoubleVectorBase)
+
+      def AddVecVec(self, alpha: float, v: DoubleVectorBase, w:DoubleVectorBase)
+
+      def AddVec2Sp(self, alpha: float, v: DoubleVectorBase, S:DoubleSpMatrix, beta: float)
+
+      def AddDiagVec(self, alpha: float, v:DoubleVectorBase)
+
+      def AddMat2(self, alpha: float, M: DoubleMatrixBase, transM: MatrixTransposeType, beta: float)
+
+      def AddMat2Sp(self, alpha: float, M: DoubleMatrixBase, transM: MatrixTransposeType, A:DoubleSpMatrix, beta: float = default)
+
+      def AddSmat2Sp(self, alpha: float, M:DoubleMatrixBase, transM:MatrixTransposeType, A:DoubleSpMatrix, beta: float = default)
+
+      # FIXME in sp-matrix-ext.h
+      # def AddTp2Sp(self, alpha:float, T:TpMatrix, transM: MatrixTransposeType, A:SpMatrix, beta: float = default)
+      # def AddTp2(self, alpha: float, T:TpMatrix, transM: MatrixTransposeType, beta:float = default)
+
+      def AddMat2Vec(self, alpha:float, M:DoubleMatrixBase, transM:MatrixTransposeType, v:DoubleVectorBase, beta: float = default)
+
+      def `ApplyFloor` as ApplyFloor(self, Floor:DoubleSpMatrix, alpha: float = default, verbose: bool = default) -> int
+
+      def `ApplyFloor` as Floor(self, floor:float) -> int
+
+      def IsDiagonal(self, cutoff:float = default) -> bool
+
+      def IsUnit(self, cutoff:float = default) -> bool
+
+      def IsZero(self, cutoff:float = default) -> bool
+
+      def IsTridiagonal(self, cutoff:float = default) -> bool
+
+      def FrobeniusNorm(self) -> float
+
+      def ApproxEqual(self, other:DoubleSpMatrix, tol:float = default) -> bool
+
+      def LimitCond(self, maxCond: float = default, invert:bool = default) -> int 
+
+      def LimitCondDouble(self, maxCond: float = default, invert: bool = default) -> int 
+
+      def Trace(self) -> float 
+
+      def Tridiagonalize(self, Q:DoubleMatrixBase)
+
+      def Qr(self, Q:DoubleMatrixBase)
+
+
+    # FIXME
+    # def TraceSpSp(A:SpMatrix, B:SpMatrix) -> float 
+
+    # FIXME
+    # def ApproxEqual(A:SpMatrix, B:SpMatrix, tol:float) -> bool
+
+    # def AssertEqual(A:SpMatrix, B:SpMatrix, tol:float)
+
+    # def TraceSpSp(A:SpMatrix, B:SpMatrix) -> float 
+
+    # def TraceSpSpLower(A:SpMatrix, B:SpMatrix) -> float 
+
+    # def TraceMatSpMatSp(A:MatrixBase, transA:MatrixTransposeType, B:SpMatrix, C:MatrixBase, transC: MatrixTransposeType, D:SpMatrix) -> float 
+
+    # def VecSpVec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float
+
+    class SolverOptions:
+      K:float 
+      eps:float
+      name:str
+      optimize_delta:bool
+      diagonal_precondition:bool
+      print_debug_output:bool
+
+      @add__init__
+      def `SolverOptions` as SolverOptionsWithName(self, name:str)
+
+      def Check(self)
+
+    def SolveQuadraticProblem(H:SpMatrix, g:VectorBase, opts:SolverOptions, x:VectorBase) -> float
+
+    def SolveQuadraticMatrixProblem(Q:SpMatrix, Y:MatrixBase, P:SpMatrix, opts:SolverOptions, M:MatrixBase) -> float 
+
+    def SolveDoubleQuadraticMatrixProblem(G:MatrixBase, P1:SpMatrix, P2:SpMatrix, Q1:SpMatrix, Q2:SpMatrix, opts:SolverOptions, M:MatrixBase) -> float

@@ -28,3 +28,9 @@ add_pyclif_library("mle_diag_gmm" mle-diag-gmm.clif
   LIBRARIES kaldi-gmm
   RPATH $ORIGIN/../itf:$ORIGIN/../util:$ORIGIN/../matrix
 )
+# add_pyclif_library("full_gmm_normal" full-gmm-normal.clif
+#   CLIF_DEPS full_gmm
+#   LIBRARIES kaldi-gmm
+#   RPATH $ORIGIN/../util:$ORIGIN/../matrix
+# )
+add_subdirectory("tests")

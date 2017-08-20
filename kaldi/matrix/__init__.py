@@ -6,7 +6,7 @@ import numpy
 # in Python 3. For some reason, symbols in matrix_common are assigned to the
 # module importlib._bootstrap ????
 from matrix_common import (MatrixResizeType, MatrixStrideType,
-                           MatrixTransposeType)
+                           MatrixTransposeType, SpCopyType)
 from .kaldi_vector import ApproxEqualVector, AssertEqualVector, VecVec
 from .kaldi_vector_ext import VecMatVec
 from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
@@ -14,12 +14,8 @@ from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
                            TraceMat, TraceMatMatMat, TraceMatMatMatMat)
 from .matrix_ext import vector_to_numpy, matrix_to_numpy
 from .matrix_functions import MatrixExponential, AssertSameDimMatrix
-from .packed_matrix import PackedMatrix
-from .sp_matrix import SpMatrix
-from .tp_matrix import TpMatrix
-
 from ._str import set_printoptions
-
+from . import packed_matrix, sp_matrix, tp_matrix
 
 ################################################################################
 # Define Vector and Matrix Classes
@@ -51,7 +47,7 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
             if isinstance(length, int) and length >= 0:
                 self.resize_(length, MatrixResizeType.UNDEFINED)
             else:
-                raise IndexError("length should be a non-negative integer.")
+                raise ValueError("length should be a non-negative integer.")
 
     @classmethod
     def new(cls, obj, start=0, length=None):
@@ -93,6 +89,14 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         matrix_ext.SubVector.__init__(instance, obj, start, length)
         instance.own_data = False
         return instance
+
+    @classmethod
+    def random(cls, dim):
+        """Returns a random vector of specified dim."""
+        instance = cls(dim)
+        instance.SetRandn()
+        return instance
+
 
     def clone(self):
         """Returns a copy of the vector."""
@@ -429,6 +433,11 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         """Checks if Matrices have the same size and data."""
         return self.ApproxEqual(other, tol)
 
+    def __eq__(self, other):
+        if not isinstance(other, Matrix):
+            return False        
+        return self.equal(other)
+
     def numpy(self):
         """Returns a new numpy ndarray sharing the data with this matrix."""
         return matrix_to_numpy(self)
@@ -495,6 +504,13 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         res = Vector(self.ncols())
         self.SvdOnlySingularValues(res)
         return res
+
+    @classmethod
+    def random(cls, rows, cols):
+        """Creates a random matrix of specified size."""
+        instance = cls(rows, cols)
+        instance.SetRandn()
+        return instance
 
     def __getitem__(self, index):
         """Custom getitem method.
@@ -580,6 +596,153 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
                     sys.stdout.encoding or 'UTF-8', 'replace')
             else:
                 return _str._matrix_str(self).encode('UTF-8', 'replace')
+
+
+
+# Note(VM):
+# We need to handle the inheritance of TpMatrix and SpMatrix
+# Since we did not do it in clif.
+class PackedMatrix(packed_matrix.PackedMatrix):
+    """Python wrapped for kaldi::PackedMatrix<float>
+
+    This class defines the user facing API for Kaldi PackedMatrix.
+    """
+
+    def __init__(self, num_rows=None):
+        """Initializes a new packed matrix.
+
+        If num_rows is not None, initializes the packed matrix to the specified size.
+        Otherwise, initializes an empty packed matrix.
+
+        Args:
+            num_rows (int): Number of rows
+        """
+        kaldi_matrix.PackedMatrix.__init__(self)
+        if num_rows is not None:
+            if isinstance(num_rows, int) and num_rows >= 0:
+                self.resize_(num_rows, MatrixResizeType.UNDEFINED)
+            else:
+                raise ValueError("num_rows should be a non-negative integer.")
+
+    def __len__(self):
+        return self.NumRows()
+
+    def size(self):
+        """Returns the size as a tuple (num_rows, num_cols)."""
+        return self.NumRows(), self.NumCols()
+
+    def nrows(self):
+        """Returns the number of rows."""
+        return self.NumRows()
+
+    def ncols(self):
+        """Returns the number of columns."""
+        return self.NumCols()
+
+    def resize_(self, num_rows,
+                resize_type = MatrixResizeType.SET_ZERO):
+        """Sets packed matrix to specified size."""
+        self.Resize(num_rows, resize_type)
+
+    def swap(self, other):
+        """Swaps the contents of Matrices. Shallow swap."""
+        if isinstance(other, Matrix):
+            self.SwapWithMatrix(self, other)
+        elif isinstance(other, PackedMatrix):
+            self.SwapWithPacked(self, other)
+        else:
+            raise ValueError("other must be either a Matrix or a PackedMatrix.")
+
+
+class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
+
+    def __init__(self, num_rows = None):
+        """Initializes a new tpmatrix.
+
+        If num_rows is not None, initializes the tpmatrix to the specified size.
+        Otherwise, initializes an empty tpmatrix.
+
+        Args:
+            num_rows (int): Number of rows
+        """
+        tp_matrix.TpMatrix.__init__(self)
+        if num_rows is not None:
+            if isinstance(num_rows, int) and num_rows >= 0:
+                self.resize_(num_rows, MatrixResizeType.UNDEFINED)
+            else:
+                raise ValueError("num_rows should be a non-negative integer.")
+
+    @classmethod
+    def new(cls, obj, **kwargs):
+        """Creates a new TpMatrix from obj."""
+        instance = cls.__new__(cls)
+        if isinstance(obj, TpMatrix):
+            instance = clone(obj)
+        elif isinstance(obj, PackedMatrix):
+            instance.CopyFromPacked(obj)
+        elif isinstance(obj, Matrix):
+            instance.CopyFromMat(obj, kwargs.get("Trans", MatrixTransposeType.NO_TRANS))
+        else:
+            raise ValueError("Type of object obj [type ={}] could not be interpreted as a TpMatrix.".format(type(obj)))
+
+    @classmethod
+    def cholesky(cls, spmatrix):
+        """Cholesky decomposition 
+           Returns a new tpmatrix X such that
+           matrix = X * X^T
+
+           Arguments:
+            spmatrix (SpMatrix) - Matrix to decompose
+        """
+        if not isinstance(spmatrix, SpMatrix):
+            raise ValueError("spmatrix object of type {} is not a SpMatrix".format(type(spmatrix)))
+
+        instance = TpMatrix(len(spmatrix))
+        instance.Cholesky(spmatrix) #Call C-method
+        return instance
+
+    def clone(self):
+        """Returns a copy of the tpmatrix."""
+        clone = TpMatrix(len(self))
+        clone.CopyFromTp(self)
+        return clone
+
+class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
+
+    def __init__(self, num_rows = None):
+        """Initializes a new SpMatrix.
+
+        If num_rows is not None, initializes the SpMatrix to the specified size.
+        Otherwise, initializes an empty SpMatrix.
+
+        Args:
+            num_rows (int): Number of rows
+        """
+        sp_matrix.SpMatrix.__init__(self)
+        if num_rows is not None:
+            if isinstance(num_rows, int) and num_rows >= 0:
+                self.resize_(num_rows, MatrixResizeType.UNDEFINED)
+            else:
+                raise ValueError("num_rows should be a non-negative integer.")
+
+    @classmethod
+    def new(cls, obj):
+        """Creates a new SpMatrix from obj."""
+        instance = cls.__new__(cls)
+        if isinstance(obj, SpMatrix):
+            instance = clone(obj)
+        elif isinstance(obj, PackedMatrix):
+            instance.CopyFromPacked(obj)
+        elif isinstance(obj, Matrix):
+            instance.CopyFromMat(obj, SpCopyType.TAKE_MEAN)
+        else:
+            raise ValueError("Type of object obj [type ={}] could not be interpreted as a SpMatrix.".format(type(obj)))
+
+    def clone(self):
+        """Returns a copy of the tpmatrix."""
+        clone = SpMatrix(len(self))
+        clone.CopyFromTp(self)
+        return clone
 
 ################################################################################
 # Define Vector and Matrix Utility Functions

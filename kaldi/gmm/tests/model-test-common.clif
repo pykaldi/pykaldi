@@ -1,0 +1,19 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "gmm/full-gmm-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+from "matrix/tp-matrix-clifwrap.h" import *
+# from "matrix/sp-matrix-clifwrap.h" import *
+
+from "gmm/model-test-common.h":
+	namespace `kaldi::unittest`:
+
+			# def RandPosdefSpMatrix(dim:int, matrix: SpMatrix, matrix_sqrt:TpMatrix = default, logdet:float = default)
+
+			def RandDiagGaussFeatures(num_samples:int, mean:VectorBase, sqrt_var:VectorBase, feats: MatrixBase)
+
+			def RandFullGaussFeatures(num_samples: int, mean:VectorBase, sqrt_var:TpMatrix, feats: MatrixBase)
+
+			def InitRandDiagGmm(dim:int, num_comp:int, gmm:DiagGmm)
+
+			def InitRandFullGmm(dim: int, num_comp:int, gmm:FullGmm)
