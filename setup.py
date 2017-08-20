@@ -24,6 +24,7 @@ KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 CLIF_CXX_FLAGS = os.getenv("CLIF_CXX_FLAGS", "")
+HAS_CUDA = os.getenv("CUDA") in ['ON', '1', 'YES', 'TRUE', 'Y']
 
 if not PYCLIF:
     try:
@@ -59,6 +60,7 @@ if DEBUG:
     print("CXX_FLAGS: {}".format(CXX_FLAGS))
     print("CLIF_CXX_FLAGS: {}".format(CLIF_CXX_FLAGS))
     print("BUILD_DIR: {}".format(BUILD_DIR))
+    print("HAS_CUDA: {}".format(HAS_CUDA))
     print("#"*50)
 
 ################################################################################
@@ -79,7 +81,8 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
                       '-DCLIF_DIR=' + CLIF_DIR,
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
-                      '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR]
+                      '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR,
+                      '-DCUDA=TRUE' if HAS_CUDA else '-DCUDA=FALSE']
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
@@ -158,11 +161,6 @@ extensions = [
                 KaldiExtension("kaldi.matrix.kaldi_vector_ext"),
                 KaldiExtension("kaldi.matrix.kaldi_matrix_ext"),
                 KaldiExtension("kaldi.matrix.matrix_functions"),
-                KaldiExtension("kaldi.cudamatrix.cu_device"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
-                KaldiExtension("kaldi.cudamatrix.cu_array"),
-                KaldiExtension("kaldi.cudamatrix.cu_vector"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrix"),
                 KaldiExtension("kaldi.feat.resample"),
                 KaldiExtension("kaldi.feat.signal"),
                 KaldiExtension("kaldi.feat.feature_window"),
@@ -196,6 +194,14 @@ extensions = [
                 KaldiExtension("kaldi.hmm.transition_model"),
                 KaldiExtension("kaldi.decoder.faster_decoder"),
              ]
+
+if HAS_CUDA:
+    extensions.extend([KaldiExtension("kaldi.cudamatrix.cu_device"),
+                       KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
+                       KaldiExtension("kaldi.cudamatrix.cu_array"),
+                       KaldiExtension("kaldi.cudamatrix.cu_vector"),
+                       KaldiExtension("kaldi.cudamatrix.cu_matrix")])
+
 
 packages = find_packages()
 
