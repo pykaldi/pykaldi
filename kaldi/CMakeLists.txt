@@ -1,6 +1,7 @@
 add_subdirectory("base")
 add_subdirectory("itf")
 add_subdirectory("matrix")
+add_subdirectory("cudamatrix")
 add_subdirectory("util")
 add_subdirectory("feat")
 add_subdirectory("fstext")

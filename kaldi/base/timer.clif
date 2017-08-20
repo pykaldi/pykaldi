@@ -1,0 +1,10 @@
+
+from "base/timer.h":
+  namespace `kaldi`:
+    class Timer:
+      @add__init__
+      def `Timer` as new(self, set_timer: bool)
+
+      def Reset(self)
+
+      def Elapsed(self) -> float

@@ -1,0 +1,21 @@
+
+from "cudamatrix/cu-matrixdim.h":
+  class `MatrixElement<float>` as MatrixElement:
+    row: int
+    column: int
+    weight: float
+
+  class `MatrixDim_` as MatrixDim:
+    rows: int
+    cols: int
+    stride: int
+
+  class `CuBlockMatrixData_` as CuBlockMatrixData:
+    row_offset: int
+    col_offset: int
+    matrix_dim: MatrixDim
+    # matrix_data: void*
+
+  class `Int32Pair` as IntPair:
+    first: int
+    second: int

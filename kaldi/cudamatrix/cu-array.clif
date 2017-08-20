@@ -1,0 +1,106 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "cudamatrix/cu-matrixdim-clifwrap.h" import *
+
+from "cudamatrix/cu-array.h":
+  namespace `kaldi`:
+    class `CuArray<int>` as CuArray:
+      @add__init__
+      def `CuArray` as new_from_size(self, dim: int,
+                                     resize_type: MatrixResizeType = default)
+
+      @add__init__
+      def `CuArray` as new_from_vector(self, src: list<int>)
+
+      @add__init__
+      def `CuArray` as new_from_other(self, src: CuArray)
+
+      def Dim(self) -> int
+
+      def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+
+      def Destroy(self)
+
+      def CopyFromVec(self, src: list<int>)
+
+      def CopyFromArray(self, src: CuArray)
+
+      def CopyToVec(self) -> list<int>
+
+      def SetZero(self)
+
+      def Set(self, value: int)
+
+      def Add(self, value: int)
+
+      def Min(self) -> int
+
+      def Max(self) -> int
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+
+    class `CuArray<Int32Pair>` as CuIntPairArray:
+      @add__init__
+      def `CuArray` as new_from_size(self, dim: int,
+                                     resize_type: MatrixResizeType = default)
+
+      @add__init__
+      def `CuArray` as new_from_vector(self, src: list<IntPair>)
+
+      @add__init__
+      def `CuArray` as new_from_other(self, src: CuIntPairArray)
+
+      def Dim(self) -> int
+
+      def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+
+      def Destroy(self)
+
+      def CopyFromVec(self, src: list<IntPair>)
+
+      def CopyFromArray(self, src: CuIntPairArray)
+
+      def CopyToVec(self) -> list<IntPair>
+
+      def SetZero(self)
+
+      def Set(self, value: IntPair)
+
+      def Add(self, value: IntPair)
+
+
+    class `CuArray<float*>` as CuFloatPtrArray:
+      @add__init__
+      def `CuArray` as new_from_size(self, dim: int,
+                                     resize_type: MatrixResizeType = default)
+
+      # @add__init__
+      # def `CuArray` as new_from_vector(self, src: list<`float` as float>)
+
+      @add__init__
+      def `CuArray` as new_from_other(self, src: CuFloatPtrArray)
+
+      def Dim(self) -> int
+
+      def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+
+      def Destroy(self)
+
+      # def CopyFromVec(self, src: list<`float` as float>)
+
+      def CopyFromArray(self, src: CuFloatPtrArray)
+
+      # def CopyToVec(self) -> list<`float` as float>
+
+      def SetZero(self)
+
+      # def Set(self, value: float)
+      #
+      # def Add(self, value: float)
+
+      def Min(self) -> `float` as float
+
+      def Max(self) -> `float` as float

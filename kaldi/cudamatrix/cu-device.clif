@@ -1,0 +1,34 @@
+from "base/timer-clifwrap.h" import *
+
+from "cudamatrix/cu-device.h":
+  namespace `kaldi`:
+    class CuTimer(Timer):
+      pass
+
+    class CuDevice:
+      @classmethod
+      def `InstantiatePtr` as Instantiate(cls) -> CuDevice
+
+      def SelectGpuId(self, use_gpu: str)
+
+      def Enabled(self) -> bool
+
+      def ActiveGpuId(self) -> int
+
+      def DoublePrecisionSupported(self) -> bool
+
+      # def AccuProfile(self, function_name: str, timer: CuTimer)
+
+      def PrintProfile(self)
+
+      def PrintMemoryUsage(self)
+
+      def ResetProfile(self)
+
+      # def GetFreeMemory(self) -> (ret: str, free: int, total: int)
+
+      # def DeviceGetName(self, len: int, dev: int) -> str
+
+      def CheckGpuHealth(self)
+
+      def SetDebugStrideMode(self, mode: bool) -> bool

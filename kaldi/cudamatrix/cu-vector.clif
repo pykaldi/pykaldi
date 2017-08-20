@@ -1,0 +1,127 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "cudamatrix/cu-vector.h":
+  namespace `kaldi`:
+    class `CuVectorBase<float>` as CuVectorBase:
+
+      def Dim(self) -> int
+
+      def `CopyFromVec` as CopyFromCuVec(self, src: CuVectorBase)
+
+      def CopyFromVec(self, src: VectorBase)
+
+      def CopyToVec(self, dst: VectorBase)
+
+      # def `CopyRowsFromMat` as CopyRowsFromCuMat(self, M: CuMatrixBase)
+
+      def CopyRowsFromMat(self, M: MatrixBase)
+
+      def SetZero(self)
+
+      def Set(self, value: float)
+
+      def Add(self, value: float)
+
+      def Scale(self, value: float)
+
+      def AddVec(self, alpha: float, vec: CuVectorBase, beta: float = default)
+
+      # def AddRowSumMat
+      # def AddColSumMat
+      # def AddTpVec
+      # def MulTp
+
+      def ApproxEqual(self, other: CuVectorBase, tol: float = default) -> bool
+
+      def InvertElements(self)
+
+      def ApplySoftMax(self)
+
+      def ApplyExp(self)
+
+      def ApplyLog(self)
+
+      def ApplyFloor(self, floor_val: float) -> int
+
+      def ApplyCeiling(self, ceiling_val: float) -> int
+
+      def ApplyPow(self, power: float)
+
+      def Sum(self) -> float
+
+      def SetRandn(self)
+
+      def SetRandUniform(self)
+
+      # def Range
+
+      # def CopyColFromMat
+      # def AddMatVec
+
+      def AddVecVec(self, alpha: float, v: CuVectorBase, r: CuVectorBase,
+                    beta: float)
+
+      # def AddSpVec
+      # def AddDiagMat2
+      # def AddDiagMatMat
+
+      def Norm(self, p: float) -> float
+
+      @sequential
+      def `operator()` as __getitem__(self, index: int) -> float
+
+      # FIXME: Need to write a CUDA kernel for this
+      # @sequential
+      # def `Set` as __setitem__(self, index: int, value: float)
+
+      # def CopyDiagFromPacked
+      # def CopyDiagFromMat
+
+      def Max(self) -> float
+
+      def Min(self) -> float
+
+      def ReplaceValue(self, orig: float, changed: float)
+
+      def MulElements(self, v: CuVectorBase)
+
+    class `CuVector<float>` as CuVector(CuVectorBase):
+      @add__init__
+      def `CuVector` as new_from_size(self, dim: int,
+                                      resize_type: MatrixResizeType = default)
+
+      # FIXME: CLIF cannot disambiguate these
+      # @add__init__
+      # def `CuVector` as new_from_other(self, v: CuVectorBase)
+      #
+      # @add__init__
+      # def `CuVector` as new_from_other(self, v: CuVector)
+      #
+      # @add__init__
+      # def `CuVector` as new_from_vector(self, v: VectorBase)
+
+      def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Swap(self, vec: Vector)
+
+    class `CuSubVector<float>` as CuSubVector(CuVectorBase):
+      def __init__(self, t: CuVectorBase, origin: int, length: int)
+
+      @add__init__
+      def `CuSubVector` as new_from_other(self, other: CuSubVector)
+
+      # CuSubVector(const CuMatrixBase<Real> &matrix, MatrixIndexT row)
+
+    def `ApproxEqual` as ApproxEqualCuVector(a: CuVectorBase, b: CuVectorBase,
+                                             tol: `float` as float = default)
+        -> bool
+
+    def `AssertEqual` as AssertEqualCuVector(a: CuVectorBase, b: CuVectorBase,
+                                             tol: `float` as float = default)
