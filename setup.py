@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Setup configuration."""
+from __future__ import print_function
 
 from setuptools import setup, find_packages
 import setuptools.command.build_ext
@@ -31,7 +32,14 @@ if not PYCLIF:
         raise RuntimeError("Could not find pyclif. Please add pyclif binary to"
                            " your PATH or set PYCLIF environment variable.")
 
-if not KALDI_DIR:
+if KALDI_DIR:
+    KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
+    with open("Makefile", "w") as makefile:
+        print("include {}".format(KALDI_MK_PATH), file=makefile)
+        print("print-% : ; @echo $($*)", file=makefile)
+    CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
+    check_call(["rm", "Makefile"])
+else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
 
 if not CLIF_DIR:
@@ -48,6 +56,7 @@ if DEBUG:
     print("KALDI_DIR: {}".format(KALDI_DIR))
     print("CLIF_DIR: {}".format(CLIF_DIR))
     print("NUMPY_INC_DIR: {}".format(NUMPY_INC_DIR))
+    print("CXX_FLAGS: {}".format(CXX_FLAGS))
     print("CLIF_CXX_FLAGS: {}".format(CLIF_CXX_FLAGS))
     print("BUILD_DIR: {}".format(BUILD_DIR))
     print("#"*50)
@@ -68,6 +77,7 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
                       '-DCLIF_DIR=' + CLIF_DIR,
+                      '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
                       '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR]
         if DEBUG:
@@ -111,6 +121,7 @@ class install_lib(setuptools.command.install_lib.install_lib):
 
 extensions = [
                 KaldiExtension("kaldi._clif"),
+                KaldiExtension("kaldi.base.timer"),
                 KaldiExtension("kaldi.base.io_funcs"),
                 KaldiExtension("kaldi.itf.options_itf"),
                 KaldiExtension("kaldi.itf.context_dep_itf"),
@@ -146,6 +157,11 @@ extensions = [
                 KaldiExtension("kaldi.matrix.kaldi_vector_ext"),
                 KaldiExtension("kaldi.matrix.kaldi_matrix_ext"),
                 KaldiExtension("kaldi.matrix.matrix_functions"),
+                KaldiExtension("kaldi.cudamatrix.cu_device"),
+                KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
+                KaldiExtension("kaldi.cudamatrix.cu_array"),
+                KaldiExtension("kaldi.cudamatrix.cu_vector"),
+                KaldiExtension("kaldi.cudamatrix.cu_matrix"),
                 KaldiExtension("kaldi.feat.resample"),
                 KaldiExtension("kaldi.feat.signal"),
                 KaldiExtension("kaldi.feat.feature_window"),

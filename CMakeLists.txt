@@ -67,8 +67,7 @@ endif(NOT NUMPY_INC_DIR)
 # From: https://github.com/usc-sail/barista/blob/master/CMakeLists.txt
 #  Set compiler and linker flags
 ####################################################################################################
-set (CMAKE_CXX_FLAGS
-"${CMAKE_CXX_FLAGS} -std=c++11 -msse -msse2 -pthread -fwrapv -Wall -Wno-sign-compare -Wno-write-strings -Wno-unused-local-typedefs -Wno-deprecated-declarations -Winit-self -DKALDI_DOUBLEPRECISION=0 -DHAVE_EXECINFO_H=1 -DHAVE_CXXABI_H -DHAVE_ATLAS -g")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
 
 set(CMAKE_INSTALL_RPATH "${KALDI_LIBRARIES_DIR}:${OPENFST_LIB_DIR}:$ORIGIN/..:$ORIGIN")
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
