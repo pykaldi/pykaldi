@@ -411,6 +411,10 @@ template <typename... Args>
 PyObject* Clif_PyObjFrom(std::vector<bool, Args...>&& c, py::PostConv pc) {
   return py::ListFromIterators(begin(c), end(c), pc);
 }
+template <typename... Args>
+PyObject* Clif_PyObjFrom(const std::vector<bool, Args...>& c, py::PostConv pc){
+  return py::ListFromIterators(begin(c), end(c), pc);
+}
 template<typename T, typename... Args>
 PyObject* Clif_PyObjFrom(const std::list<T, Args...>& c, py::PostConv pc) {
   return py::ListFromSizableCont(c, pc);
