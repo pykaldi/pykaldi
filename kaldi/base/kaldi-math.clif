@@ -1,0 +1,39 @@
+
+
+
+from "base/kaldi-math.h":
+  namespace `kaldi`:
+
+    class RandomState:
+      seed: int
+
+    def Rand(state: RandomState = default) -> int
+
+    def RandInt(first: int, last: int, state: RandomState = default) -> int 
+
+    def WithProb(prob:float, state: RandomState = default) -> bool
+
+    def RandUniform(state: RandomState = default) -> float 
+
+    def RandGauss(state: RandomState = default) -> float 
+
+    def RandPoisson(lambda: float, state: RandomState = default) -> int
+
+    # FIXME:
+    # def RandGauss2(a:float, b:float, state: RandomState = default)
+    # def LogAdd(x:float, y:float) -> float
+
+    def ApproxEqual(a:float, b:float, relative_tolerance:float = default) -> bool
+
+    def RoundUpToNearestPowerOfTwo(n:int) -> int 
+
+    def DivideRoundingDown(a:int, b:int) -> int
+
+    def `Gcd` as Gcd(m:int, n:int) -> int 
+
+    def `Lcm` as Lcm(m:int, n:int) -> int 
+
+    def `Factorize` as Factorize(m:int) -> (factors:list<int>)
+
+    # FIXME
+    # def Hypot(x:float, y:float) -> float

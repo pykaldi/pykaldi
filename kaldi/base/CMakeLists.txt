@@ -4,3 +4,6 @@ add_pyclif_library("io_funcs" io-funcs.clif
   CLIF_DEPS iostream
   RPATH $ORIGIN/../util
 )
+add_pyclif_library("kaldi_math" kaldi-math.clif
+  LIBRARIES kaldi-base
+)
