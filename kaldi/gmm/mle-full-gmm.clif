@@ -1,0 +1,66 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "gmm/model-common-clifwrap.h" import *
+from "gmm/full-gmm-clifwrap.h" import *
+from "gmm/full-gmm-normal-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+
+from "gmm/mle-full-gmm.h":
+  namespace `kaldi`:
+    
+    class MleFullGmmOptions:
+      min_gaussian_weight: float 
+      min_gaussian_occupancy: float
+      variance_floor: float 
+      max_condition: float 
+      remove_low_count_gaussians: bool
+
+      def Register(self, opts:OptionsItf)
+
+    class AccumFullGmm:
+      @add__init__
+      def `AccumFullGmm` as NewWithParams(self, num_comp:int, dim:int, flags:int)
+
+      @add__init__
+      def `AccumFullGmm` as NewWithFull(self, gmm:FullGmm, flags:int)
+
+      @add__init__
+      def `AccumFullGmm` as NewWithOther(self, gmm:AccumFullGmm)
+
+      # TODO:
+      # def Read
+      # def Write
+
+      def `Resize` as Resize(self, num_comp:int, dim:int, flags:int)
+
+      def `Resize` as ResizeWithFull(self, gmm:FullGmm, flags:int)
+
+      def ResizeVarAccumulator(self, num_comp:int, dim:int)
+
+      def NumGauss(self) -> int 
+
+      def Dim(self) -> int 
+
+      def SetZero(self, flags:int)
+
+      def Scale(self, f:float, flags:int)
+
+      def AccumulateForComponent(self, data:VectorBase, comp_index:int, weight:float)
+
+      def AccumulateFromPosteriors(self, data:VectorBase, gauss_posteriors:VectorBase)
+
+      def AccumulateFromFull(self, gmm:FullGmm, data:VectorBase, frame_posterior:float) -> float 
+
+      def AccumulateFromDiag(self, gmm:DiagGmm, data:VectorBase, frame_posterior:float) -> float 
+
+      def Flags(self) -> int 
+
+      def occupancy(self) -> DoubleVector
+
+      def mean_accumulator(self) -> DoubleMatrix
+
+      def covariance_accumulator(self) -> list<DoubleSpMatrix>
+
+    def MleFullGmmUpdate(config:MleFullGmmOptions, fullgmm_acc:AccumFullGmm, flags:int, gmm:FullGmm) -> (obj_change_out: float, count_out: float)

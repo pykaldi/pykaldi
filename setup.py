@@ -184,6 +184,7 @@ extensions = [
                 KaldiExtension("kaldi.gmm.model_common"),
                 KaldiExtension("kaldi.gmm.diag_gmm"),
                 KaldiExtension("kaldi.gmm.full_gmm"),
+                KaldiExtension("kaldi.gmm.full_gmm_ext"),
                 KaldiExtension("kaldi.gmm.full_gmm_normal"),
                 KaldiExtension("kaldi.gmm.mle_diag_gmm"),
                 KaldiExtension("kaldi.gmm.am_diag_gmm"),
