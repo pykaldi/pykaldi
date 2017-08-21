@@ -22,7 +22,8 @@ Take the following steps to install pykaldi through Docker:
 
 1. Follow the installation instructions for [Protobuf](https://github.com/google/protobuf.git) C++ and Python package.
 ```
-	$ git clone git clone https://github.com/google/protobuf.git protobuf
+	$ sudo apt-get install autoconf automake libtool curl make g++ unzip
+	$ git clone https://github.com/google/protobuf.git protobuf
 	$ cd protobuf
 	$ ./autogen.sh 
 	$ ./configure && make -j4
@@ -61,6 +62,7 @@ Take the following steps to install pykaldi through Docker:
 	$ export CLIF_DIR=<directory where clif was installed>
 	$ export DEBUG="True"
 	$ export PYCLIF=<pyclif binary location>
+	$ export CUDA=False
 ```
 
 6. Install __pykaldi__
