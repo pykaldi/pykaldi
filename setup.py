@@ -24,7 +24,6 @@ KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 CLIF_CXX_FLAGS = os.getenv("CLIF_CXX_FLAGS", "")
-# ENV_HAS_CUDA = os.getenv("CUDA") in ['ON', '1', 'YES', 'TRUE', 'Y']
 
 if not PYCLIF:
     try:
@@ -39,7 +38,7 @@ if KALDI_DIR:
         print("include {}".format(KALDI_MK_PATH), file=makefile)
         print("print-% : ; @echo $($*)", file=makefile)
     CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
-    KALDI_HAS_CUDA = int(check_output(['make', 'print-CUDA']).decode("utf-8").strip())
+    KALDI_HAVE_CUDA = int(check_output(['make', 'print-CUDA']).decode("utf-8").strip())
     check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
@@ -61,7 +60,7 @@ if DEBUG:
     print("CXX_FLAGS: {}".format(CXX_FLAGS))
     print("CLIF_CXX_FLAGS: {}".format(CLIF_CXX_FLAGS))
     print("BUILD_DIR: {}".format(BUILD_DIR))
-    print("KALDI_HAS_CUDA: {}".format(KALDI_HAS_CUDA))
+    print("KALDI_HAVE_CUDA: {}".format(KALDI_HAVE_CUDA))
     print("#"*50)
 
 ################################################################################
@@ -83,7 +82,7 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
                       '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR,
-                      '-DCUDA=TRUE' if KALDI_HAS_CUDA else '-DCUDA=FALSE']
+                      '-DCUDA=TRUE' if KALDI_HAVE_CUDA else '-DCUDA=FALSE']
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
@@ -195,14 +194,14 @@ extensions = [
                 KaldiExtension("kaldi.hmm.hmm_topology"),
                 KaldiExtension("kaldi.hmm.transition_model"),
                 KaldiExtension("kaldi.decoder.faster_decoder"),
+                KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
+                KaldiExtension("kaldi.cudamatrix.cu_array"),
+                KaldiExtension("kaldi.cudamatrix.cu_vector"),
+                KaldiExtension("kaldi.cudamatrix.cu_matrix")
              ]
 
-if KALDI_HAS_CUDA:
-    extensions.extend([KaldiExtension("kaldi.cudamatrix.cu_device"),
-                       KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
-                       KaldiExtension("kaldi.cudamatrix.cu_array"),
-                       KaldiExtension("kaldi.cudamatrix.cu_vector"),
-                       KaldiExtension("kaldi.cudamatrix.cu_matrix")])
+if KALDI_HAVE_CUDA:
+    extensions.append(KaldiExtension("kaldi.cudamatrix.cu_device"))
 
 
 packages = find_packages()
