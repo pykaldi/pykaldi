@@ -106,7 +106,7 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
             src (Vector): Source vector to copy
         """
         instance = cls.__new__(len(src))
-        instance.copyfromvec(src)
+        instance.copy_from_vec(src)
         return instance
 
     def copy_from_vec(self, src):
