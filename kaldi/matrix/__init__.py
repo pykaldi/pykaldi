@@ -8,7 +8,9 @@ import numpy
 from matrix_common import (MatrixResizeType, MatrixStrideType,
                            MatrixTransposeType, SpCopyType)
 from .kaldi_vector import ApproxEqualVector, AssertEqualVector, VecVec
-from .kaldi_vector_ext import VecMatVec
+# from .kaldi_vector_ext import VecMatVec
+import kaldi_vector_ext
+import kaldi_matrix_ext
 from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
                            AttemptComplexPower, CreateEigenvalueMatrix,
                            TraceMat, TraceMatMatMat, TraceMatMatMatMat)
@@ -98,14 +100,23 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         return instance
 
     @classmethod
-    def copyfromvec(cls, src):
+    def new_from_vec(cls, src):
         """Copies data from src into a new instance of vector.
         Args:
             src (Vector): Source vector to copy
         """
         instance = cls.__new__(len(src))
-        instance.CopyFromVec(src)
+        instance.copyfromvec(src)
         return instance
+
+    def copy_from_vec(self, src):
+        """Copies data from src into this vector. Fails if self and src are not of the same size.
+        Args:
+            src (Vector): Source vector to copy
+        """
+        if len(self) != len(src):
+            raise ValueError("src with size {} cannot be copied to vector of size {}.".format(len(src), len(self)))
+        self.CopyFromVec(src)
 
     def clone(self):
         """Returns a copy of the vector."""
@@ -408,6 +419,16 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         instance.own_data = False
         return instance
 
+    def copy_from_mat(self, src):
+        """Copies data from src into this matrix. Fails if src and self are of different size.
+        Args:
+            src (Matrix): matrix to copy data from 
+        """
+        if self.size() != src.size():
+            raise ValueError("Cannot copy matrix with dimensions {} by {} into matrix with dimensions {} by {}".format(src.size()[0], src.size()[1],
+                                                                                                                       self.size()[0], self.size()[1]))
+        self.CopyFromMat(src)
+
     def clone(self):
         """Returns a copy of the matrix."""
         rows, cols = self.size()
@@ -429,6 +450,10 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
     def size(self):
         """Returns the size as a tuple (num_rows, num_cols)."""
         return self.num_rows_, self.num_cols_
+
+    def shape(self):
+        """Alias for size."""
+        return size(self)
 
     def nrows(self):
         """Returns the number of rows."""
@@ -508,7 +533,7 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
 
         return U, s, Vt
 
-    def singularValues(self):
+    def singular_values(self):
         """Singular values only """
         res = Vector(self.ncols())
         self.SvdOnlySingularValues(res)
@@ -605,6 +630,42 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
                     sys.stdout.encoding or 'UTF-8', 'replace')
             else:
                 return _str._matrix_str(self).encode('UTF-8', 'replace')
+
+    def copy_from_sp(self, Sp):
+        """Copy Sp matrix to this matrix."""
+        kaldi_matrix_ext.CopyFromSp(self, Sp)
+
+    def copy_from_tp(self, Tp):
+        """Copy Tp matrix to this matrix."""
+        kaldi_matrix_ext.CopyFromTp(self, Tp)
+
+    def add_sp(self, alpha, Sp):
+        """Adds (alpha x Sp) matrix to this matrix."""
+        kaldi_matrix_ext.AddSp(self, alpha, Sp)
+
+    def add_sp_mat(self, alpha, A, transA, B, transB, beta = 1.0):
+        """???"""
+        kaldi_matrix_ext.AddSpMat(self, alpha, A, transA, B, transB, beta)
+
+    def add_tp_mat(self, alpha, A, transA, B, transB, beta = 1.0):
+        """???"""
+        kaldi_matrix_ext.AddTpMat(self, alpha, A, transA, B, transB, beta)
+
+    def add_mat_sp(self, alpha, A, transA, B, beta = 1.0):
+        """???"""
+        kaldi_matrix_ext.AddMatSp(self, alpha, A, transA, B, beta)
+
+    def add_mat_tp(self, alpha, A, transA, B, transB, beta = 1.0):
+        """???"""
+        kaldi_matrix_ext.AddMatTp(self, alpha, A, transA, B, transB, beta)
+
+    def add_tp_tp(self, alpha, A, transA, B, transB, beta = 1.0):
+        """???"""
+        kaldi_matrix_ext.AddTpTp(self, alpha, A, transA, B, transB, beta)
+
+    def add_sp_sp(self, alpha, A, B, beta = 1.0):
+        """???"""
+        kaldi_matrix_ext.AddSpSp(self, alpha, A, B, beta)
 
 
 
