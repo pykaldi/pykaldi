@@ -271,4 +271,3 @@ add_CC_library(${CLIF_LIBRARY}
 )
 
 add_subdirectory("kaldi")
-add_subdirectory("docs")
