@@ -2,7 +2,7 @@
 """Setup configuration."""
 from __future__ import print_function
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 import setuptools.command.build_ext
 import setuptools.command.install_lib
 import distutils.command.build
@@ -12,6 +12,9 @@ import os
 from subprocess import check_output, check_call
 
 import numpy
+
+# This might get risky
+from kaldi import __version__
 
 ################################################################################
 # Check variables / find programs
@@ -118,6 +121,19 @@ class install_lib(setuptools.command.install_lib.install_lib):
         outfiles = setuptools.command.install_lib.install_lib.install(self)
         print(outfiles)
 
+class build_doc(Command):
+    user_options = []
+    description = "Builds documentation using sphinx. Calls apidoc."
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        pass
+
 ################################################################################
 # Setup pykaldi
 ################################################################################
@@ -207,7 +223,7 @@ if KALDI_HAVE_CUDA:
 packages = find_packages()
 
 setup(name = 'pykaldi',
-      version = '0.0.2',
+      version = __version__,
       description = 'Kaldi Python Wrapper',
       author = 'SAIL',
       ext_modules=extensions,
@@ -218,5 +234,6 @@ setup(name = 'pykaldi',
           },
       packages = packages,
       package_data = {},
-      install_requires = ['enum34;python_version<"3.4"', 'numpy', 'sphinx'],
+      install_requires = ['enum34;python_version<"3.4"', 'numpy',
+                          'sphinx', 'sphinx_rtd_theme'],
       zip_safe = False)
