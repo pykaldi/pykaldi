@@ -4,6 +4,7 @@
 *~
 
 env.sh
+.autoenv.zsh
 
 # CMake files
 CMakeCache.txt

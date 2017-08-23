@@ -17,7 +17,7 @@ import numpy
 # Check variables / find programs
 ################################################################################
 
-DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y']
+DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y', 'true', 'yes', 'on', 'y']
 PYCLIF = os.getenv("PYCLIF")
 CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')
@@ -38,7 +38,7 @@ if KALDI_DIR:
         print("include {}".format(KALDI_MK_PATH), file=makefile)
         print("print-% : ; @echo $($*)", file=makefile)
     CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
-    KALDI_HAVE_CUDA = int(check_output(['make', 'print-CUDA']).decode("utf-8").strip())
+    KALDI_HAVE_CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip() in ['ON', '1', 'YES', 'TRUE', 'Y', 'true', 'yes', 'on', 'y']
     check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
