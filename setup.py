@@ -218,5 +218,5 @@ setup(name = 'pykaldi',
           },
       packages = packages,
       package_data = {},
-      install_requires = ['enum34;python_version<"3.4"', 'numpy'],
+      install_requires = ['enum34;python_version<"3.4"', 'numpy', 'sphinx'],
       zip_safe = False)
