@@ -8,7 +8,11 @@ from .mle_full_gmm import AccumFullGmm
 from ..matrix import Vector, Matrix
 
 class FullGmm(full_gmm.FullGmm):
+	"""Python wrapper for kaldi::FullGmm<Float>
 
+	Provides a more pythonic access to the C methods.
+
+	"""
 	def __init__(self, nmix = 0, dim = 0):
 		"""Creates a new FullGmm with specified number of gaussian mixtures and dimensions.
 
