@@ -161,6 +161,7 @@ extensions = [
                 KaldiExtension("kaldi.feat.resample"),
                 KaldiExtension("kaldi.feat.signal"),
                 KaldiExtension("kaldi.feat.wave_reader"),
+                KaldiExtension("kaldi.fstext.arc"),
                 KaldiExtension("kaldi.fstext.compiler"),
                 KaldiExtension("kaldi.fstext.drawer"),
                 KaldiExtension("kaldi.fstext.encode"),
