@@ -1,0 +1,57 @@
+from "itf/options-itf-clifwrap.h" import *
+from "itf/decodable-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-compute-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+from "nnet3/am-nnet-simple-clifwrap.h" import *
+
+from "nnet3/nnet-am-decodable-simple.h":
+  namespace `kaldi::nnet3`:
+    class NnetSimpleComputationOptions:
+      extra_left_context: int
+      extra_right_context: int
+      extra_left_context_initial: int
+      extra_right_context_final: int
+      frame_subsampling_factor: int
+      frames_per_chunk: int
+      acoustic_scale: float
+      debug_computation: bool
+      optimize_config: NnetOptimizeOptions
+      compute_config: NnetComputeOptions
+      compiler_config: CachingOptimizingCompilerOptions
+
+      def Register(self, opts: OptionsItf)
+
+    class DecodableNnetSimple:
+      def __init__(self, opts: NnetSimpleComputationOptions, nnet: Nnet,
+                   priors: VectorBase, feats: MatrixBase,
+                   compiler: CachingOptimizingCompiler,
+                   ivector: VectorBase = default,
+                   online_ivectors: MatrixBase = default,
+                   online_ivector_period: int = default)
+
+      def NumFrames(self) -> int
+
+      def OutputDim(self) -> int
+
+      def GetOutputForFrame(self, frame: int, output: VectorBase)
+
+      def GetOutput(self, subsampled_frame: int, pdf_id: int) -> float
+
+    class DecodableAmNnetSimple(DecodableInterface):
+      def __init__(self, opts: NnetSimpleComputationOptions,
+                   trans_model: TransitionModel, am_nnet: AmNnetSimple,
+                   feats: MatrixBase, ivector: VectorBase = default,
+                   online_ivectors: MatrixBase = default,
+                   online_ivector_period: int = default,
+                   compiler: CachingOptimizingCompiler = default)
+
+    class DecodableAmNnetSimpleParallel(DecodableInterface):
+      def __init__(self, opts: NnetSimpleComputationOptions,
+                   trans_model: TransitionModel, am_nnet: AmNnetSimple,
+                   feats: MatrixBase, ivector: VectorBase = default,
+                   online_ivectors: MatrixBase = default,
+                   online_ivector_period: int = default)

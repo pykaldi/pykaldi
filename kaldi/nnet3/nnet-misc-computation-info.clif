@@ -1,0 +1,8 @@
+from "util/iostream-clifwrap.h" import *
+
+from "nnet3/nnet-computation.h":
+  namespace `kaldi::nnet3`:
+    class MiscComputationInfo:
+      def __eq__(self, other: MiscComputationInfo) -> bool
+
+      def Print(self, os: ostream)

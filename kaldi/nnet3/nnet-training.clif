@@ -1,0 +1,61 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/sparse-matrix-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-compute-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+
+from "nnet3/nnet-training.h":
+  namespace `kaldi::nnet3`:
+    class NnetTrainerOptions:
+      zero_component_stats: bool
+      store_component_stats: bool
+      print_interval: int
+      debug_computation: bool
+      momentum: float
+      backstitch_training_scale: float
+      backstitch_training_interval: int
+      read_cache: str
+      write_cache: str
+      binary_write_cache: bool
+      max_param_change: float
+      optimize_config: NnetOptimizeOptions
+      compute_config: NnetComputeOptions
+      compiler_config: CachingOptimizingCompilerOptions
+
+      def Register(self, opts: OptionsItf)
+
+    class ObjectiveFunctionInfo:
+      current_phase: int
+      minibatches_this_phase: int
+      tot_weight: float
+      tot_objf: float
+      tot_aux_objf: float
+      tot_weight_this_phase: float
+      tot_objf_this_phase: float
+      tot_aux_objf_this_phase: float
+
+      def UpdateStats(self, output_name: str, minibatches_per_phase: int,
+                      minibatch_counter: int, this_minibatch_weight: float,
+                      this_minibatch_tot_objf: float,
+                      this_minibatch_tot_aux_objf: float = default)
+
+      def PrintStatsForThisPhase(self, output_name: str,
+                                 minibatches_per_phase: int, phase: int)
+
+      def PrintTotalStats(self, output_name: str) -> bool
+
+    class NnetTrainer:
+      def __init__(self, config: NnetTrainerOptions, nnet: Nnet)
+
+      def Train(self, eg: NnetExample)
+
+      def PrintTotalStats(self) -> bool
+
+      def PrintMaxChangeStats(self)
+
+    def ComputeObjectiveFunction(supervision: GeneralMatrix,
+                                 objective_type: ObjectiveType,
+                                 output_name: str, supply_deriv: bool,
+                                 computer: NnetComputer)
+        -> (tot_weight: float, tot_objf: float)

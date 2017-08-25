@@ -1,0 +1,17 @@
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/nnet-compile.h":
+  namespace `kaldi::nnet3`:
+    class CompilerOptions:
+      output_debug_info: bool
+
+    class Compiler:
+      def __init__(self, request: ComputationRequest, nnet: Nnet)
+
+      # @add__init__
+      # def `Compiler` as new_from_sequence(self,
+      #                                     request: list<ComputationRequest>,
+      #                                     nnet: Nnet)
+
+      def CreateComputation(self, opts: CompilerOptions) -> NnetComputation

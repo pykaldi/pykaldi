@@ -1,0 +1,60 @@
+from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+
+from "nnet3/nnet-optimize-utils.h":
+  namespace `kaldi::nnet3`:
+    class VariableMergingOptimizer:
+      def __init__(self, config: NnetOptimizeOptions, nnet: Nnet,
+                   computation: NnetComputation)
+
+      def MergeVariables(self) -> bool
+
+    def ConsolidateModelUpdate(nnet: Nnet, computation: NnetComputation)
+
+    class DerivativeTimeLimiter:
+      def __init__(self, nnet: Nnet, min_deriv_time: int, max_deriv_time: int,
+                   computation: NnetComputation)
+
+      def LimitDerivTimes(self)
+
+    def LimitDerivativeTimes(nnet: Nnet, min_deriv_time: int,
+                             max_deriv_time: int,
+                             computation: NnetComputation)
+
+    def RequestIsDecomposable(request: ComputationRequest)
+        -> (suc: bool, mini_request: ComputationRequest, num_n_values: int)
+
+    def ExpandComputation(nnet: Nnet, misc_info: MiscComputationInfo,
+                          computation: NnetComputation, need_debug_info: bool,
+                          num_n_values: int) -> NnetComputation
+
+    def ReplaceRowWithMatrixOps(computation: NnetComputation) -> bool
+
+    def SnipRowOps(computation: NnetComputation) -> bool
+
+    def RenumberComputation(computation: NnetComputation)
+
+    def RemoveNoOps(computation: NnetComputation)
+
+    def IdentifySubmatrixArgs(command: NnetComputation.Command) -> list<int>
+
+    # def `IdentifySubmatrixArgs` as IdentifySubmatrixArgsFromCommands(
+    #     commands: list<NnetComputation.Command>) -> list<int>
+
+    def IdentifySubmatrixArgsInComputation(computation: NnetComputation)
+        -> list<int>
+
+    # def IdentifyIndexesMultiArgs(commands: list<NnetComputation.Command>)
+    #     -> list<int>
+    #
+    # def IdentifyIndexesArgs(commands: list<NnetComputation.Command>)
+    #     -> list<int>
+    #
+    # def IdentifyIndexesRangesArgs(commands: list<NnetComputation.Command>)
+    #     -> list<int>
+
+    def OptimizeLoopedComputation(nnet: Nnet, computation: NnetComputation)
+
+    def FixGotoLabel(computation: NnetComputation)

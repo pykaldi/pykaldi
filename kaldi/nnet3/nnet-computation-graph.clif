@@ -1,0 +1,64 @@
+from "util/iostream-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/nnet-computation-graph.h":
+  namespace `kaldi::nnet3`:
+    class ComputationGraph:
+      cindexes: list<tuple<int, Index>>
+      is_input: list<bool>
+      dependencies: list<list<int>>
+      segment_ends: list<int>
+
+      def `GetCindexId` as GetCindexIdOrAdd(self, cindex: tuple<int, Index>,
+                                            is_input: bool)
+          -> (id: int, is_new: bool)
+
+      def GetCindexId(self, cindex: tuple<int, Index>) -> int
+
+      def Renumber(self, start_cindex_id: int, keep: list<bool>)
+
+      def Print(self, os: ostream, node_names: list<str>)
+
+    class ComputationGraphBuilder:
+      def __init__(self, nnet: Nnet, graph: ComputationGraph)
+
+      def Compute(self, request: ComputationRequest)
+
+      def AllOutputsAreComputable(self) -> bool
+
+      def ExplainWhyAllOutputsNotComputable(self)
+
+      def GetComputableInfo(self) -> list<list<bool>>
+
+      def Prune(self)
+
+      enum ComputableInfo with:
+        `kUnknown` as UNKNOWN
+        `kComputable` as COMPUTABLE
+        `kNotComputable` as NOT_COMPUTABLE
+        `kWillNotCompute` as WILL_NOT_COMPUTE
+
+    class CindexSet:
+      def `operator()` as __contains__(self, cindex: tuple<int, Index>) -> bool
+
+      # FIXME: No idea what is wrong with this ???
+      # def __init__(self, graph: ComputationGraph)
+
+      # @add__init__
+      # def `CindexSet` as new_from_computable(self, graph: ComputationGraph,
+      #                                        is_computable: list<int>,
+      #                                        treat_unknown_as_computable: bool)
+
+    class IndexSet:
+      def `operator()` as __contains__(self, index: Index) -> bool
+
+      # def __init__(self, graph: ComputationGraph, computable_info: list<int>,
+      #              node_id: int, treat_unknown_as_computable: bool)
+
+    def ComputeComputationPhases(nnet: Nnet, graph: ComputationGraph)
+        -> list<list<list<int>>>
+
+    # class ComputationStepsComputer

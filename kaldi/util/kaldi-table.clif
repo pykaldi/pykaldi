@@ -2,6 +2,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/compressed-matrix-clifwrap.h" import *
 from "feat/wave-reader-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
 
 from "util/kaldi-table.h":
   namespace `kaldi`:
@@ -730,6 +731,64 @@ from "util/kaldi-table.h":
       def IsOpen(self) -> bool
 
       def Write(self, key: str, value: list<tuple<float, float>>)
+
+      def Flush(self)
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+  namespace `kaldi::nnet3`:
+    class SequentialNnetExampleReader:
+      @add__init__
+      def `SequentialTableReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def Done(self) -> bool
+
+      def Key(self) -> str
+
+      def FreeCurrent(self)
+
+      def Value(self) -> NnetExample
+
+      def Next(self)
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class RandomAccessNnetExampleReader:
+      @add__init__
+      def `RandomAccessTableReader` as New(self, rspecifier: str)
+
+      def Open(self, rspecifier: str) -> bool
+
+      def HasKey(self, key: str) -> bool
+
+      def Value(self, key: str) -> NnetExample
+
+      def IsOpen(self) -> bool
+
+      def Close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class NnetExampleWriter:
+      @add__init__
+      def `TableWriter` as New(self, wspecifier: str)
+
+      def Open(self, wspecifier: str) -> bool
+
+      def IsOpen(self) -> bool
+
+      def Write(self, key: str, value: NnetExample)
 
       def Flush(self)
 

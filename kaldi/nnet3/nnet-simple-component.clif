@@ -1,0 +1,246 @@
+from "cudamatrix/cu-vector-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+
+from "nnet3/nnet-simple-component.h":
+  namespace `kaldi::nnet3`:
+    class PnormComponent(Component):
+      def Init(self, input_dim: int, output_dim: int)
+
+      @add__init__
+      def `PnormComponent` as new(self, input_dim: int, output_dim: int)
+
+    class DropoutComponent(RandomComponent):
+      def Init(self, dim: int, dropout_proportion: float = default,
+               dropout_per_frame: bool = default)
+
+      @add__init__
+      def `DropoutComponent` as new(self, dim: int,
+                                    dropout_proportion: float = default,
+                                    dropout_per_frame: bool = default)
+
+      def SetDropoutProportion(self, dropout_proportion: float)
+
+      def DropoutProportion(self) -> float
+
+    class ElementwiseProductComponent(Component):
+      def Init(self, input_dim: int, output_dim: int)
+
+      @add__init__
+      def `ElementwiseProductComponent` as new(self, input_dim: int,
+                                               output_dim: int)
+
+    class NormalizeComponent(Component):
+      def Init(self, input_dim: int, target_rms: float, add_log_stddev: bool)
+
+      @add__init__
+      def `NormalizeComponent` as new(self, input_dim: int,
+                                      target_rms: float = default,
+                                      add_log_stddev: bool = default)
+
+      @add__init__
+      def `NormalizeComponent` as new_from_other(self,
+                                                 other: NormalizeComponent)
+
+    class SigmoidComponent(NonlinearComponent):
+      @add__init__
+      def `SigmoidComponent` as new_from_other(self, other: SigmoidComponent)
+
+    class TanhComponent(NonlinearComponent):
+      @add__init__
+      def `TanhComponent` as new_from_other(self, other: TanhComponent)
+
+    class RectifiedLinearComponent(NonlinearComponent):
+      @add__init__
+      def `RectifiedLinearComponent` as new_from_other(
+          self, other: RectifiedLinearComponent)
+
+    class AffineComponent(UpdatableComponent):
+      @add__init__
+      def `AffineComponent` as new_from_other(self, other: AffineComponent)
+
+      @add__init__
+      def `AffineComponent` as new(self, linear_params: CuMatrixBase,
+                                   bias_params: CuVectorBase,
+                                   learning_rate: float)
+      def Init(self, input_dim: int, output_dim: int,
+               param_stddev: float, bias_stddev: float)
+
+      def `Init` as InitFromMatrix(self, matrix_filename: str)
+
+      def Resize(self, input_dim: int, output_dim: int)
+
+    class RepeatedAffineComponent(UpdatableComponent):
+      def BiasParams(self) -> CuVector
+
+      def LinearParams(self) -> CuMatrix
+
+      def Init(self, input_dim: int, output_dim: int, num_repeats: int,
+               param_stddev: float, bias_mean: float, bias_stddev: float)
+
+      @add__init__
+      def `RepeatedAffineComponent` as new_from_other(
+          self, other: RepeatedAffineComponent)
+
+    class BlockAffineComponent(UpdatableComponent):
+      def Init(self, input_dim: int, output_dim: int, num_blocks: int,
+               param_stddev: float, bias_mean: float, bias_stddev: float)
+
+      @add__init__
+      def `BlockAffineComponent` as new_from_other(self,
+                                                   other: BlockAffineComponent)
+
+      @add__init__
+      def `BlockAffineComponent` as new_from_rac(
+          self, other: RepeatedAffineComponent)
+
+    class NaturalGradientRepeatedAffineComponent(RepeatedAffineComponent):
+      @add__init__
+      def `NaturalGradientRepeatedAffineComponent` as new_from_other(
+          self, other: NaturalGradientRepeatedAffineComponent)
+
+    class SoftmaxComponent(NonlinearComponent):
+      @add__init__
+      def `SoftmaxComponent` as new_from_other(self, other: SoftmaxComponent)
+
+    class LogSoftmaxComponent(NonlinearComponent):
+      @add__init__
+      def `LogSoftmaxComponent` as new_from_other(self,
+                                                  other: LogSoftmaxComponent)
+
+    class NaturalGradientAffineComponent(AffineComponent):
+      def Init(self, input_dim: int, output_dim: int, param_stddev: float,
+               bias_stddev: float, bias_mean: float, rank_in: int,
+               rank_out: int, update_period: int, num_samples_history: float,
+               alpha: float)
+
+      def `Init` as InitFromMatrix(self, rank_in: int, rank_out: int,
+                                   update_period: int,
+                                   num_samples_history: float,
+                                   alpha: float, matrix_filename: str)
+
+      @add__init__
+      def `NaturalGradientAffineComponent` as new_from_other(
+          self, other: NaturalGradientAffineComponent)
+
+    class FixedAffineComponent(Component):
+      # @add__init__
+      # def `FixedAffineComponent` as new_from_affine(
+      #     self, c: AffineComponent)
+
+      def Init(self, matrix: CuMatrixBase)
+
+      def BiasParams(self) -> CuVector
+
+      def LinearParams(self) -> CuMatrix
+
+    class SumGroupComponent(Component):
+      def `Init` as InitFromSizes(self, sizes: list<int>)
+
+      def Init(self, input_dim: int, output_dim: int)
+
+      def GetSizes(self) -> list<int>
+
+    class FixedScaleComponent(Component):
+      def Init(self, scales: CuVectorBase)
+
+      def Scales(self) -> CuVector
+
+    class FixedBiasComponent(Component):
+      def Init(self, scales: CuVectorBase)
+
+    class NoOpComponent(NonlinearComponent):
+      @add__init__
+      def `NoOpComponent` as new_from_other(self, other: NoOpComponent)
+
+    class SumBlockComponent(Component):
+      @add__init__
+      def `SumBlockComponent` as new_from_other(self, other: SumBlockComponent)
+
+    class ClipGradientComponent(Component):
+      @add__init__
+      def `ClipGradientComponent` as new(
+          self, dim: int, clipping_threshold: float, norm_based_clipping: bool,
+          self_repair_clipped_proportion_threshold: float,
+          self_repair_target: float, self_repair_scale: float,
+          num_clipped: int, count: int, num_self_repaired: int,
+          num_backpropped: int)
+
+      def Init(self, dim: int, clipping_threshold: float,
+               norm_based_clipping: bool,
+               self_repair_clipped_proportion_threshold: float,
+               self_repair_target: float, self_repair_scale: float,
+               num_clipped: int, count: int, num_self_repaired: int,
+               num_backpropped: int)
+
+    class PermuteComponent(Component):
+      @add__init__
+      def `PermuteComponent` as new(self, column_map: list<int>)
+
+      def Init(self, column_map: list<int>)
+
+    class PerElementScaleComponent(UpdatableComponent):
+      @add__init__
+      def `PerElementScaleComponent` as new_from_other(
+          self, other: PerElementScaleComponent)
+
+      def Init(self, dim: int, param_mean: float, param_stddev: float)
+
+      def `Init` as InitFromVector(self, vector_filename: str)
+
+    class PerElementOffsetComponent(UpdatableComponent):
+      @add__init__
+      def `PerElementOffsetComponent` as new_from_other(
+          self, other: PerElementOffsetComponent)
+
+      def Init(self, dim: int, param_mean: float, param_stddev: float)
+
+      def `Init` as InitFromVector(self, vector_filename: str)
+
+    class ConstantFunctionComponent(UpdatableComponent):
+      @add__init__
+      def `ConstantFunctionComponent` as new_from_other(
+          self, other: ConstantFunctionComponent)
+
+    class NaturalGradientPerElementScaleComponent(PerElementScaleComponent):
+      @add__init__
+      def `NaturalGradientPerElementScaleComponent` as new_from_other(
+          self, other: NaturalGradientPerElementScaleComponent)
+
+      def Init(self, dim: int, param_mean: float, param_stddev: float,
+               rank: int, update_period: int, num_samples_history: float,
+               alpha: float)
+
+      def `Init` as InitFromVector(self, vector_filename: str, rank: int,
+                                   update_period: int,
+                                   num_samples_history: float, alpha: float)
+
+    # ConvolutionComponent
+
+    class LstmNonlinearityComponent(UpdatableComponent):
+      @add__init__
+      def `LstmNonlinearityComponent` as new_from_other(
+          self, other: LstmNonlinearityComponent)
+
+      def Init(self, cell_dim: int, use_dropout: bool, param_stddev: float,
+               tanh_self_repair_threshold: float,
+               sigmoid_self_repair_threshold: float, self_repair_scale: float)
+
+    # MaxPoolingComponent
+
+    class BatchNormComponent(Component):
+      @add__init__
+      def `BatchNormComponent` as new_from_other(self,
+                                                 other: BatchNormComponent)
+
+      def Offset(self) -> CuVector
+      def Scale(self) -> CuVector
+
+    class CompositeComponent(UpdatableComponent):
+      def Init(self, components: list<Component>, max_rows_process: int)
+
+      def NumComponents(self) -> int
+
+      # def GetComponent(self, i: int) -> Component
+
+      def SetComponent(self, i: int, component: Component)

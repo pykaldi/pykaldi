@@ -1,0 +1,53 @@
+from "util/iostream-clifwrap.h" import *
+
+from "nnet3/nnet-common.h":
+  namespace `kaldi::nnet3`:
+    class Index:
+      n: int
+      t: int
+      x: int
+
+      @add__init__
+      def `Index` as new(self, n: int, t: int, x: int = default)
+
+      def __eq__(self, other: Index) -> bool
+
+      def __ne__(self, other: Index) -> bool
+
+      def __lt__(self, other: Index) -> bool
+
+      def __add__(self, other: Index) -> Index
+
+      def __iadd__(self, other: Index) -> Index
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Read(self, is: istream, binary: bool)
+
+    const `kNoTime` as NO_TIME: int
+
+    # class IndexLessNxt
+
+    def WriteIndexVector(os: ostream, binary: bool, vec: list<Index>)
+
+    def ReadIndexVector(is: istream, binary: bool) -> list<Index>
+
+    # class IndexHasher, ...
+
+    def PrintCindex(os: ostream, cindex: tuple<int,Index>,
+                    node_names: list<str>)
+
+    def PrintIndexes(os: ostream, indexes: list<Index>)
+
+    def PrintCindexes(os: ostream, cindexes: list<tuple<int,Index>>,
+                      node_names: list<str>)
+
+    def AppendCindexes(node: int, indexes: list<Index>)
+        -> list<tuple<int,Index>>
+
+    def WriteCindexVector(os: ostream, binary: bool,
+                          vec: list<tuple<int,Index>>)
+
+    def ReadCindexVector(is: istream, binary: bool) -> list<tuple<int,Index>>
+
+    def PrintIntegerVector(os: ostream, ints: list<int>)

@@ -23,8 +23,8 @@ add_pyclif_library("kaldi_holder" kaldi-holder.clif
   LIBRARIES kaldi-util
 )
 add_pyclif_library("kaldi_table" kaldi-table.clif
-  NAMESPACES kaldi
-  CLIF_DEPS compressed_matrix wave_reader
+  NAMESPACES kaldi kaldi::nnet3
+  CLIF_DEPS compressed_matrix wave_reader nnet_example
   LIBRARIES kaldi-util
-  RPATH $ORIGIN/../matrix:$ORIGIN/../feat
+  RPATH $ORIGIN/../matrix:$ORIGIN/../feat:$ORIGIN/../nnet3
 )

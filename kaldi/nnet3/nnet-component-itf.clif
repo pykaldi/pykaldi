@@ -1,0 +1,151 @@
+from "util/iostream-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
+from "nnet3/nnet-parse-clifwrap.h" import *
+
+from "nnet3/nnet-component-itf.h":
+  capsule `void` as Void
+
+  namespace `kaldi::nnet3`:
+    class ComponentPrecomputedIndexes:
+      def Copy(self) -> ComponentPrecomputedIndexes
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Type(self) -> str
+
+      @classmethod
+      def ReadNew(cls, is: istream, binary: bool)
+          -> ComponentPrecomputedIndexes
+
+      @classmethod
+      def NewComponentPrecomputedIndexesOfType(cls, cpi_type: str)
+          -> ComponentPrecomputedIndexes
+
+    class Component:
+      def Propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def Backprop(self, debug_info: str, indexes: ComponentPrecomputedIndexes,
+                   in_value: CuMatrixBase, out_value: CuMatrixBase,
+                   out_deriv: CuMatrixBase, memo: Void, to_update: Component,
+                   in_deriv: CuMatrixBase)
+
+      def StoreStats(self, in_value: CuMatrixBase, out_value: CuMatrixBase,
+                     memo: Void)
+
+      def ZeroStats(self)
+
+      def GetInputIndexes(self, misc_info: MiscComputationInfo,
+                          output_index: Index) -> list<Index>
+
+      # def IsComputable(self, misc_info: MiscComputationInfo,
+      #                  output_index: Index, input_index_set: IndexSet)
+      #     -> (ret: bool, used_inputs: list<Index>)
+
+      # NOTE: This won't work as it is
+      # def ReorderIndexes(self, input_indexes: list<Index>,
+      #                    output_indexes: list<Index>)
+
+      def PrecomputeIndexes(self, misc_info: MiscComputationInfo,
+                            input_indexes: list<Index>,
+                            output_indexes: list<Index>, need_backprop: bool)
+          -> ComponentPrecomputedIndexes
+
+      def Type(self) -> str
+
+      def InitFromConfig(self, cfl: ConfigLine)
+
+      def InputDim(self) -> int
+
+      def OutputDim(self) -> int
+
+      def Properties(self) -> int
+
+      @classmethod
+      def ReadNew(cls, is: istream, binary: bool) -> Component
+
+      def Copy(self) -> Component
+
+      @classmethod
+      def NewComponentOfType(cls, type: str) -> Component
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Info(self) -> str
+
+      def Scale(self, scale: float)
+
+      def Add(self, alpha: float, other: Component)
+
+      def DeleteMemo(self, memo: Void)
+
+    class RandomComponent(Component):
+      def ResetGenerator(self)
+
+      def SetTestMode(self, test_mode: bool)
+
+    class UpdatableComponent(Component):
+      # FIXME: Enabling copy constructor requires implementing pure virtual
+      # methods of Component.
+      # @add__init__
+      # def `UpdatableComponent` as new_from_other(self,
+      #                                            other: UpdatableComponent)
+
+      def DotProduct(self, other: UpdatableComponent) -> float
+
+      def PerturbParams(self, stddev: float)
+
+      def SetUnderlyingLearningRate(self, lrate: float)
+
+      def SetActualLearningRate(self, lrate: float)
+
+      def SetAsGradient(self)
+
+      def FreezeNaturalGradient(self, freeze: bool)
+
+      def LearningRate(self) -> float
+
+      def MaxChange(self) -> float
+
+      def NumParameters(self) -> int
+
+      def Vectorize(self, params: VectorBase)
+
+      def UnVectorize(self, params: VectorBase)
+
+    class NonlinearComponent(Component):
+      # FIXME: Enabling copy constructor requires implementing pure virtual
+      # methods of Component.
+      # @add__init__
+      # def `NonlinearComponent` as new_from_other(self,
+      #                                            other: NonlinearComponent)
+
+      # def ValueSum(self) -> CuDoubleVector
+      # def DerivSum(self) -> CuDoubleVector
+
+      def Count(self) -> float
+
+    enum ComponentProperties with:
+      `kSimpleComponent` as SIMPLE_COMPONENT
+      `kUpdatableComponent` as UPDATABLE_COMPONENT
+      `kLinearInInput` as LINEAR_IN_INPUT
+      `kLinearInParameters` as LINEAR_IN_PARAMETERS
+      `kPropagateInPlace` as PROPAGATE_IN_PLACE
+      `kPropagateAdds` as PROPAGATE_ADDS
+      `kReordersIndexes` as REORDERS_INDEXES
+      `kBackpropAdds` as BACKPROP_ADDS
+      `kBackpropNeedsInput` as BACKPROP_NEEDS_INPUT
+      `kBackpropNeedsOutput` as BACKPROP_NEEDS_OUTPUT
+      `kBackpropInPlace` as BACKPROP_IN_PLACE
+      `kStoresStats` as STORES_STATS
+      `kInputContiguous` as INPUT_CONTIGUOUS
+      `kOutputContiguous` as OUTPUT_CONTIGUOUS
+      `kUsesMemo` as USES_MEMO
+      `kRandomComponent` as RANDOM_COMPONENT

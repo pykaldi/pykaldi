@@ -1,0 +1,47 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-compute-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+
+from "nnet3/nnet-diagnostics.h":
+  namespace `kaldi::nnet3`:
+    class SimpleObjectiveInfo:
+      tot_weight: float
+      tot_objective: float
+
+    class PerDimObjectiveInfo(SimpleObjectiveInfo):
+      tot_weight_vec: Vector
+      tot_objective_vec: Vector
+
+    class NnetComputeProbOptions:
+      debug_computation: bool
+      compute_deriv: bool
+      compute_accuracy: bool
+      store_component_stats: bool
+      compute_per_dim_accuracy: bool
+      optimize_config: NnetOptimizeOptions
+      compute_config: NnetComputeOptions
+      compiler_config: CachingOptimizingCompilerOptions
+
+      def Register(self, opts: OptionsItf)
+
+    class NnetComputeProb:
+      def __init__(self, config: NnetComputeProbOptions, nnet: Nnet)
+
+      # NnetComputeProb second constructor
+
+      def Reset(self)
+
+      def Compute(self, eg: NnetExample)
+
+      def PrintTotalStats(self) -> bool
+
+      def GetObjective(self, output_name: str) -> SimpleObjectiveInfo
+
+      def GetTotalObjective(self) -> (tot_objective: float, tot_weight: float)
+
+      def GetDeriv(self) -> Nnet
+
+    # ComputeAccuracy

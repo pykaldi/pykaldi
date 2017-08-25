@@ -105,6 +105,17 @@ class SequentialWaveReader(_SequentialReaderBase,
         return key, wave
 
 
+class SequentialNnetExampleReader(_SequentialReaderBase,
+                                  kaldi_table.SequentialNnetExampleReader):
+    """Python wrapper for
+    kaldi::SequentialTableReader<KaldiObjectHolder<NnetExample>>.
+
+    This is a wrapper around the C extension type SequentialNnetExampleReader.
+    It provides a more Pythonic API by implementing the iterator protocol.
+    """
+    pass
+
+
 class SequentialIntReader(_SequentialReaderBase,
                           kaldi_table.SequentialIntReader):
     """Python wrapper for kaldi::SequentialTableReader<BasicHolder<int32>>.
@@ -267,6 +278,18 @@ class RandomAccessWaveReader(_RandomAccessReaderBase,
         wave = WaveData()
         wave.Swap(value)
         return wave
+
+
+class RandomAccessNnetExampleReader(_RandomAccessReaderBase,
+                                    kaldi_table.RandomAccessNnetExampleReader):
+    """Python wrapper for
+    kaldi::RandomAccessTableReader<KaldiObjectHolder<NnetExample>>.
+
+    This is a wrapper around the C extension type RandomAccessNnetExampleReader.
+    It provides a more Pythonic API by implementing the __contains__ and
+    __getitem__ methods.
+    """
+    pass
 
 
 class RandomAccessIntReader(_RandomAccessReaderBase,
@@ -494,6 +517,15 @@ class WaveWriter(_WriterBase, kaldi_table.WaveWriter):
     """Python wrapper for kaldi::TableWriter<WaveHolder>.
 
     This is a wrapper around the C extension type WaveWriter.
+    It provides a more Pythonic API by implementing the __setitem__ method.
+    """
+    pass
+
+
+class NnetExampleWriter(_WriterBase, kaldi_table.NnetExampleWriter):
+    """Python wrapper for kaldi::TableWriter<KaldiObjectHolder<NnetExample>>.
+
+    This is a wrapper around the C extension type NnetExampleWriter.
     It provides a more Pythonic API by implementing the __setitem__ method.
     """
     pass

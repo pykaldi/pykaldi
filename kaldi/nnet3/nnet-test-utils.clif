@@ -1,0 +1,43 @@
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/nnet-test-utils.h":
+  namespace `kaldi::nnet3`:
+    class NnetGenerationOptions:
+      allow_context: bool
+      allow_nonlinearity: bool
+      allow_recursion: bool
+      allow_clockwork: bool
+      allow_multiple_inputs: bool
+      allow_multiple_outputs: bool
+      allow_final_nonlinearity: bool
+      allow_use_of_x_dim: bool
+      allow_ivector: bool
+      allow_statistics_pooling: bool
+      output_dim: int
+
+    def GenerateConfigSequence(opts: NnetGenerationOptions) -> list<str>
+
+    def GenerateConfigSequenceCompositeBlock(opts: NnetGenerationOptions)
+        -> list<str>
+
+    def ComputeExampleComputationRequestSimple(nnet: Nnet,
+                                               request: ComputationRequest)
+        -> list<Matrix>
+
+    def GenerateRandomSimpleComponent() -> Component
+
+    def NnetParametersAreIdentical(nnet1: Nnet, nnet2: Nnet, threshold: float)
+        -> bool
+
+    def GenerateSimpleNnetTrainingExample(num_supervised_frames: int,
+                                          left_context: int,
+                                          right_context: int, input_dim: int,
+                                          output_dim: int, ivector_dim: int)
+        -> NnetExample
+
+    def ExampleApproxEqual(eg1: NnetExample, eg2: NnetExample, delta: float)
+        -> bool

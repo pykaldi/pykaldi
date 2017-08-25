@@ -1,0 +1,12 @@
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+
+from "nnet3/nnet-convolutional-component.h":
+  namespace `kaldi::nnet3`:
+    class TimeHeightConvolutionComponent(UpdatableComponent):
+      @add__init__
+      def `TimeHeightConvolutionComponent` as new_from_other(
+          self, other: TimeHeightConvolutionComponent)
+
+      # PrecomputedIndexes
+
+      def ScaleLinearParams(self, alpha: float)

@@ -1,0 +1,74 @@
+from "itf/options-itf-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/nnet-optimize.h":
+  namespace `kaldi::nnet3`:
+    class NnetOptimizeOptions:
+      optimize: bool
+      consolidate_model_update: bool
+      propagate_in_place: bool
+      backprop_in_place: bool
+      optimize_row_ops: bool
+      convert_addition: bool
+      remove_assignments: bool
+      allow_left_merge: bool
+      allow_right_merge: bool
+      initialize_undefined: bool
+      move_sizing_commands: bool
+      allocate_from_other: bool
+      min_deriv_time: int
+      max_deriv_time: int
+      max_deriv_time_relative: int
+      snip_row_ops: bool
+      optimize_looped_computation: bool
+
+      def Register(self, opts: OptionsItf)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def __eq__(self, other: NnetOptimizeOptions) -> bool
+
+    def MaxOutputTimeInRequest(request: ComputationRequest) -> int
+
+    def Optimize(config: NnetOptimizeOptions, nnet: Nnet,
+                 max_output_time_in_request: int, computation: NnetComputation)
+
+    class CachingOptimizingCompilerOptions:
+      use_shortcut: bool
+      cache_capacity: int
+
+      def Register(self, opt: OptionsItf)
+
+    class CachingOptimizingCompiler:
+      def __init__(self, nnet: Nnet,
+                   config: CachingOptimizingCompilerOptions = default)
+
+      @add__init__
+      def `CachingOptimizingCompiler` as new_with_optimize_opts(
+          self, nnet: Nnet, opt_config: NnetOptimizeOptions,
+          config: CachingOptimizingCompilerOptions = default)
+
+      def Compile(self, request: ComputationRequest) -> NnetComputation
+
+      def ReadCache(self, is: istream, binary: bool)
+
+      def WriteCache(self, os: ostream, binary: bool)
+
+    def ConsolidateModelUpdate(nnet: Nnet, computation: NnetComputation)
+
+    def ConvertAdditionToAssignment(nnet: Nnet, computation: NnetComputation)
+
+    def VariableMergingOptimization(config: NnetOptimizeOptions,
+                                    nnet: Nnet, computation: NnetComputation)
+
+    def RemoveUnnecessaryZeroing(nnet: Nnet, computation: NnetComputation)
+
+    def MoveSizingCommands(nnet: Nnet, computation: NnetComputation)
+
+    def RemoveUnnecessaryAllocation(nnet: Nnet, computation: NnetComputation)
+
+    def ConsolidateIoOperations(nnet: Nnet, computation: NnetComputation)

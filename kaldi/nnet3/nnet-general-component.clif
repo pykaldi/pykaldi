@@ -1,0 +1,60 @@
+from "cudamatrix/cu-array-clifwrap.h" import *
+from "cudamatrix/cu-vector-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+
+from "nnet3/nnet-general-component.h":
+  namespace `kaldi::nnet3`:
+    class DistributeComponent(Component):
+      @add__init__
+      def `DistributeComponent` as new(self, input_dim: int, output_dim: int)
+
+      def Init(self, input_dim: int, output_dim: int)
+
+    class DistributeComponentPrecomputedIndexes(ComponentPrecomputedIndexes):
+      pairs: list<tuple<int, int>>
+
+    class StatisticsExtractionComponent(Component):
+      @add__init__
+      def `StatisticsExtractionComponent` as new_from_other(
+          self, other: StatisticsExtractionComponent)
+
+    class StatisticsExtractionComponentPrecomputedIndexes(ComponentPrecomputedIndexes):
+      forward_indexes: CuIntPairArray
+      counts: CuVector
+      backward_indexes: CuArray
+
+    class StatisticsPoolingComponent(Component):
+      @add__init__
+      def `StatisticsPoolingComponent` as new_from_other(
+          self, other: StatisticsPoolingComponent)
+
+    class StatisticsPoolingComponentPrecomputedIndexes(ComponentPrecomputedIndexes):
+      forward_indexes: CuIntPairArray
+      backward_indexes: CuIntPairArray
+
+    class BackpropTruncationComponent(Component):
+      @add__init__
+      def `BackpropTruncationComponent` as new(self, dim: int, scale: float,
+                                               clipping_threshold: float,
+                                               zeroing_threshold: float,
+                                               zeroing_interval: int,
+                                               recurrence_interval: int)
+
+      def Init(self, dim: int, scale: float, clipping_threshold: float,
+               zeroing_threshold: float, zeroing_interval: int,
+               recurrence_interval: int)
+
+    class BackpropTruncationComponentPrecomputedIndexes(ComponentPrecomputedIndexes):
+      zeroing: CuVector
+      zeroing_sum: float
+
+    class ConstantComponent(UpdatableComponent):
+      @add__init__
+      def `ConstantComponent` as new_from_other(self, other: ConstantComponent)
+
+    class DropoutMaskComponent(RandomComponent):
+      @add__init__
+      def `DropoutMaskComponent` as new_from_other(self,
+                                                   other: DropoutMaskComponent)
+
+      def SetDropoutProportion(self, p: float)

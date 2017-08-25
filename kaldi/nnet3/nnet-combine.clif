@@ -1,0 +1,27 @@
+from "itf/options-itf-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/nnet-combine.h":
+  namespace `kaldi::nnet3`:
+    class NnetCombineConfig:
+      num_iters: int
+      initial_impr: float
+      max_effective_inputs: int
+      test_gradient: bool
+      enforce_positive_weights: bool
+      enforce_sum_to_one: bool
+      sum_to_one_penalty: float
+      separate_weights_per_component: bool
+
+      def Register(self, opts: OptionsItf)
+
+    class NnetCombiner:
+      def __init__(self, config: NnetCombineConfig, num_nnets: int,
+                   egs: list<NnetExample>, first_nnet: Nnet)
+
+      def AcceptNnet(self, nnet: Nnet)
+
+      def Combine(self)
+
+      def GetNnet(self) -> Nnet

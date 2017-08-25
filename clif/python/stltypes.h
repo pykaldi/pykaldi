@@ -300,6 +300,18 @@ PyObject* ListFromIterators(T begin, T end, py::PostConv pc) {
   return py;
 }
 
+// The following two specializations are needed for handling vector<bool>
+// subobjects in STL containers, e.g. vector<vector<bool>>
+template<>
+PyObject* ListFromSizableCont(const std::vector<bool>& c,
+                              py::PostConv pc) {
+  return ListFromIterators(begin(c), end(c), pc);
+}
+template<>
+PyObject* ListFromSizableCont(std::vector<bool>& c, py::PostConv pc) {
+  return ListFromIterators(begin(c), end(c), pc);
+}
+
 template<typename T>
 PyObject* DictFromCont(T&& c, py::PostConv pc) {
   PyObject* py = PyDict_New();

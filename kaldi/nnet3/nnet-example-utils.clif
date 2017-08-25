@@ -1,0 +1,93 @@
+from "itf/options-itf-clifwrap.h" import *
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+# To import kaldi table wrapper, we need to import wave reader wrapper first.
+from "feat/wave-reader-clifwrap.h" import *
+from "util/kaldi-table-clifwrap.h" import *
+
+from "nnet3/nnet-example-utils.h":
+  namespace `kaldi::nnet3`:
+    def MergeExamples(src: list<NnetExample>, compress: bool) -> NnetExample
+
+    def GetComputationRequest(nnet: Nnet, eg: NnetExample,
+                              need_model_derivative: bool,
+                              store_component_stats: bool)
+        -> ComputationRequest
+
+    def WriteVectorAsChar(os: ostream, binary: bool, vec: VectorBase)
+
+    def ReadVectorAsChar(is: istream, binary: bool) -> Vector
+
+    class ExampleGenerationConfig:
+      left_context: int
+      right_context: int
+      left_context_initial: int
+      right_context_final: int
+      num_frames_overlap: int
+      frame_subsampling_factor: int
+      num_frames_str: str
+      num_frames: list<int>
+
+      def ComputeDerived(self)
+
+      def Register(self, opts: OptionsItf)
+
+    class ChunkTimeInfo:
+      first_frame: int
+      num_frames: int
+      left_context: int
+      right_context: int
+      output_weights: list<float>
+
+    class UtteranceSplitter:
+      # def __init__(self, config: ExampleGenerationConfig)
+
+      def Config(self) -> ExampleGenerationConfig
+
+      def GetChunksForUtterance(self, utterance_length: int)
+          -> list<ChunkTimeInfo>
+
+      def LengthsMatch(self, utt: str, utterance_length: int,
+                       supervision_length: int,
+                       length_tolerance: int = default) -> bool
+
+      def ExitStatus(self) -> int
+
+    class ExampleMergingConfig:
+      compress: bool
+      measure_output_frames: str
+      minibatch_size: str
+      discard_partial_minibatches:str
+
+      # def __init__(self, default_minibatch_size: str = default)
+
+      def Register(self, opts: OptionsItf)
+
+      def ComputeDerived(self)
+
+      def MinibatchSize(self, size_of_eg: int, num_available_egs: int,
+                        input_ended: bool) -> int
+
+    def GetNnetExampleSize(a: NnetExample) -> int
+
+    class ExampleMergingStats:
+      def WroteExample(self, example_size: int, structure_hash: int,
+                       minibatch_size: int)
+
+      def DiscardedExamples(self, example_size: int, structure_hash: int,
+                            num_discarded: int)
+
+      def PrintStats(self)
+
+    class ExampleMerger:
+      def __init__(self, config: ExampleMergingConfig,
+                   writer: NnetExampleWriter)
+
+      def AcceptExample(self, a: NnetExample)
+
+      def Finish(self)
+
+      def ExitStatus(self) -> int

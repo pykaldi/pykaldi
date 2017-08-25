@@ -1,0 +1,192 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "cudamatrix/cu-array-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
+# from "nnet3/nnet-component-itf-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/nnet-computation.h":
+  namespace `kaldi::nnet3`:
+    class IoSpecification:
+      name: str
+      indexes: list<Index>
+      has_deriv: bool
+
+      @add__init__
+      def `IoSpecification` as new_from_other(self, other: IoSpecification)
+
+      @add__init__
+      def `IoSpecification` as new_from_indexes(self, name: str,
+                                                indexes: list<Index>,
+                                                has_deriv: bool = default)
+
+      @add__init__
+      def `IoSpecification` as new_from_interval(self, name: str,
+                                                 t_start: int, t_end: int)
+
+      def Print(self, os: ostream)
+
+      def Swap(self, other: IoSpecification)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def __eq__(self, other: IoSpecification) -> bool
+
+    # class IoSpecificationHasher
+
+    class ComputationRequest:
+      inputs: list<IoSpecification>
+      outputs: list<IoSpecification>
+      need_model_derivative: bool
+      store_component_stats: bool
+      misc_info: MiscComputationInfo
+
+      def NeedDerivatives(self) -> bool
+
+      def IndexForInput(self, node_name: str) -> int
+
+      def IndexForOutput(self, node_name: str) -> int
+
+      def Print(self, os: ostream)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def __eq__(self, other: ComputationRequest) -> bool
+
+    enum CommandType with:
+      `kAllocMatrixUndefined` as ALLOC_MATRIX_UNDEFINED
+      `kAllocMatrixZeroed` as ALLOC_MATRIX_ZEROED
+      `kDeallocMatrix` as DEALLOC_MATRIX
+      `kAllocMatrixFromOther` as ALLOC_MATRIX_FROM_OTHER
+      `kAllocMatrixFromOtherZeroed` as ALLOC_MATRIX_FROM_OTHER_ZEROED
+      `kPropagate` as PROPAGATE
+      `kBackprop` as BACKPROP
+      `kBackpropNoModelUpdate` as BACKPROP_NO_MODEL_UPDATE
+      `kMatrixCopy` as MATRIX_COPY
+      `kMatrixAdd` as MATRIX_ADD
+      `kCopyRows` as COPY_ROWS
+      `kAddRows` as ADD_ROWS
+      `kCopyRowsMulti` as COPY_ROWS_MULTI
+      `kCopyToRowsMulti` as COPY_TO_ROWS_MULTI
+      `kAddRowsMulti` as ADD_ROWS_MULTI
+      `kAddToRowsMulti` as ADD_TO_ROWS_MULTI
+      `kAddRowRanges` as ADD_ROW_RANGES
+      `kAcceptInput` as ACCEPT_INPUT
+      `kProvideOutput` as PROVIDE_OUTPUT
+      `kNoOperation` as NO_OPERATION
+      `kNoOperationPermanent` as NO_OPERATION_PERMANENT
+      `kNoOperationMarker` as NO_OPERATION_MARKER
+      `kNoOperationLabel` as NO_OPERATION_LABEL
+      `kGotoLabel` as GOTO_LABEL
+
+    class NnetComputation:
+      class MatrixInfo:
+        num_rows: int
+        num_cols: int
+        stride_type: MatrixStrideType
+
+        @add__init__
+        def `MatrixInfo` as new(self, num_rows: int, num_cols: int,
+                                stride_type: MatrixStrideType)
+
+        def Read(self, is: istream, binary: bool)
+
+        def Write(self, os: ostream, binary: bool)
+
+      class MatrixDebugInfo:
+        is_deriv: bool
+        cindexes: list<tuple<int, Index>>
+
+        def Swap(self, other: MatrixDebugInfo)
+
+        def Read(self, is: istream, binary: bool)
+
+        def Write(self, os: ostream, binary: bool)
+
+      class SubMatrixInfo:
+        matrix_index: int
+        row_offset: int
+        num_rows: int
+        col_offset: int
+        num_cols: int
+
+        @add__init__
+        def `SubMatrixInfo` as new(self, matrix_index: int, row_offset: int,
+                                   num_rows: int, col_offset: int,
+                                   num_cols: int)
+
+        def Read(self, is: istream, binary: bool)
+
+        def Write(self, os: ostream, binary: bool)
+
+        def __eq__(self, other: SubMatrixInfo) -> bool
+
+      class Command:
+        command_type: CommandType
+        arg1: int
+        arg2: int
+        arg3: int
+        arg4: int
+        arg5: int
+        arg6: int
+        arg7: int
+
+        def __init__(self, command_type: CommandType = default,
+                     arg1: int = default, arg2: int = default,
+                     arg3: int = default, arg4: int = default,
+                     arg5: int = default, arg6: int = default,
+                     arg7: int = default)
+
+        def Read(self, is: istream, binary: bool)
+
+        def Write(self, os: ostream, binary: bool)
+
+      class PrecomputedIndexesInfo:
+        # data: ComponentPrecomputedIndexes
+        input_indexes: list<Index>
+        output_indexes: list<Index>
+
+      matrices: list<MatrixInfo>
+      matrix_debug_info: list<MatrixDebugInfo>
+      submatrices: list<SubMatrixInfo>
+      component_precomputed_indexes: list<PrecomputedIndexesInfo>
+      indexes: list<list<int>>
+      indexes_multi: list<list<tuple<int, int>>>
+      indexes_ranges: list<list<tuple<int, int>>>
+      commands: list<Command>
+      need_model_derivative: bool
+      indexes_cuda: list<CuArray>
+      indexes_ranges_cuda: list<CuIntPairArray>
+
+      def NewMatrix(self, num_rows: int, num_cols: int,
+                    stride_type: MatrixStrideType) -> int
+
+      def NewSubMatrix(self, base_submatrix: int, row_offset: int,
+                       num_rows: int, col_offset: int, num_cols: int) -> int
+
+      def IsWholeMatrix(self, submatrix_index: int) -> bool
+
+      def ComputeCudaIndexes(self)
+
+      def Print(self, os: ostream, nnet: Nnet)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def GetSubmatrixStrings(self, nnet: Nnet) -> list<str>
+
+      def GetWholeSubmatrices(self) -> list<int>
+
+      def GetCommandStrings(self, nnet: Nnet) -> (preamble: str,
+                                                  command_strings: list<str>)
+
+      def Clear(self)
+
+      @add__init__
+      def `NnetComputation` as new_from_other(self, other: NnetComputation)

@@ -1,0 +1,108 @@
+from "util/iostream-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+from "nnet3/nnet-descriptor-clifwrap.h" import *
+
+from "nnet3/nnet-nnet.h":
+  namespace `kaldi::nnet3`:
+    enum ObjectiveType with:
+      `kLinear` as LINEAR
+      `kQuadratic` as QUADRATIC
+
+    enum NodeType with:
+      `kInput` as INPUT
+      `kDescriptor` as DESCRIPTOR
+      `kComponent` as COMPONENT
+      `kDimRange` as DIM_RANGE
+      `kNone` as NONE
+
+    class NetworkNode:
+      node_type: NodeType
+      descriptor: Descriptor
+
+      # FIXME: Can CLIF wrap unions?
+      # component_index: int
+      # node_index: int
+      # objective_type: int
+
+      dim: int
+      dim_offset: int
+
+      # def Dim(nnet: Nnet) -> int
+
+      def __init__(self, nt: NodeType = default)
+
+      @add__init__
+      def `NetworkNode` as new_from_other(self, other: NetworkNode)
+
+
+    class Nnet:
+      def ReadConfig(self, config_file: istream)
+
+      def NumComponents(self) -> int
+
+      def NumNodes(self) -> int
+
+      # def GetComponent(self, c: int) -> Component
+
+      def SetComponent(self, c: int, component: Component)
+
+      def AddComponent(self, name: str, component: Component) -> int
+
+      def GetNode(self, node: int) -> NetworkNode
+
+      def IsComponentNode(self, node: int) -> bool
+
+      def IsDimRangeNode(self, node: int) -> bool
+
+      def IsInputNode(self, node: int) -> bool
+
+      def IsDescriptorNode(self, node: int) -> bool
+
+      def IsOutputNode(self, node: int) -> bool
+
+      def IsComponentInputNode(self, node: int) -> bool
+
+      def GetNodeNames(self) -> list<str>
+
+      def GetNodeName(self, node_index: int) -> str
+
+      def SetNodeName(self, node_index: int, new_name: str)
+
+      def GetComponentNames(self) -> list<str>
+
+      def GetComponentName(self, node_index: int) -> str
+
+      def GetNodeIndex(self, node_name: str) -> int
+
+      def GetComponentIndex(self, component_name: str) -> int
+
+      def InputDim(self, input_name: str) -> int
+
+      def OutputDim(self, output_name: str) -> int
+
+      def Read(self, is: istream, binary: bool)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Check(self, warn_for_orphans: bool = default)
+
+      def Info(self) -> str
+
+      def Modulus(self) -> int
+
+      @add__init__
+      def `Nnet` as new_from_other(self, other: Nnet)
+
+      def Copy(self) -> Nnet
+
+      def Swap(self, other: Nnet)
+
+      def RemoveOrphanNodes(self, remove_orphan_inputs: bool = default)
+
+      def RemoveOrphanComponents(self)
+
+      def RemoveSomeNodes(self, nodes_to_remove: list<int>)
+
+      def ResetGenerators(self)
+
+      def GetConfigLines(self, include_dim: bool) -> list<str>

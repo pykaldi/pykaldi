@@ -1,0 +1,121 @@
+from "util/iostream-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+
+from "nnet3/nnet-descriptor.h":
+  namespace `kaldi::nnet3`:
+    class ForwardingDescriptor:
+      def MapToInput(self, output: Index) -> tuple<int,Index>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def Copy(self) -> ForwardingDescriptor
+
+      def Modulus(self) -> int
+
+      def WriteConfig(self, os: ostream, node_names: list<str>)
+
+      def GetNodeDependencies(self) -> list<int>
+
+    class SimpleForwardingDescriptor(ForwardingDescriptor):
+      def __init__(self, src_node: int)
+
+    class OffsetForwardingDescriptor(ForwardingDescriptor):
+      def __init__(self, src: ForwardingDescriptor, offset: Index)
+
+      # def Src(self) -> ForwardingDescriptor
+
+    class SwitchingForwardingDescriptor(ForwardingDescriptor):
+      def __init__(self, src: list<ForwardingDescriptor>)
+
+    class RoundingForwardingDescriptor(ForwardingDescriptor):
+      def __init__(self, src: ForwardingDescriptor, t_modulus: int)
+
+    class ReplaceIndexForwardingDescriptor(ForwardingDescriptor):
+      enum VariableName with:
+        `kN` as N
+        `kT` as T
+        `kX` as X
+
+      def __init__(self, src: ForwardingDescriptor,
+                   variable_name: VariableName, value: int)
+
+    class SumDescriptor:
+      def GetDependencies(self, ind: Index) -> list<tuple<int,Index>>
+
+      # def IsComputable(self, ind: Index, cindex_set: CindexSet)
+      #     -> list<tuple<int,Index>>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def Copy(self) -> SumDescriptor
+
+      def GetNodeDependencies(self) -> list<int>
+
+      def Modulus(self) -> int
+
+      def WriteConfig(self, os: ostream, node_names: list<str>)
+
+    class OptionalSumDescriptor(SumDescriptor):
+      def __init__(self, src: SumDescriptor)
+
+    class SimpleSumDescriptor(SumDescriptor):
+      def __init__(self, src: ForwardingDescriptor)
+
+      # def Src(self) -> ForwardingDescriptor
+
+    class BinarySumDescriptor(SumDescriptor):
+      enum Operation with:
+        `kSum` as SUM
+        `kFailover` as FAILOVER
+
+      def __init__(self, op: Operation, src1: SumDescriptor,
+                   src2: SumDescriptor)
+
+    class Descriptor:
+      # def Dim(self, nnet: Nnet) -> int
+      # def Parse(self, node_names: list<str>, next_token: ??) -> bool
+
+      def WriteConfig(self, os: ostream, node_names: list<str>)
+
+      def GetDependencies(self, index: Index) -> list<tuple<int, Index>>
+
+      # def IsComputable(self, ind: Index, cindex_set: CindexSet)
+      #     -> list<tuple<int,Index>>
+
+      def GetNodeDependencies(self) -> list<int>
+
+      def Modulus(self) -> int
+
+      def NumParts(self) -> int
+
+      # def Part(self, n: int) -> SumDescriptor
+
+      @add__init__
+      def `Descriptor` as new_from_other(self, other: Descriptor)
+
+      @add__init__
+      def `Descriptor` as new_from_parts(self, parts: list<SumDescriptor>)
+
+    class GeneralDescriptor:
+      enum DescriptorType with:
+        `kAppend` as APPEND
+        `kSum` as SUM
+        `kFailover` as FAILOVER
+        `kIfDefined` as IF_DEFINED
+        `kOffset` as OFFSET
+        `kSwitch` as SWITCH
+        `kRound` as ROUND
+        `kReplaceIndex` as REPLACE_INDEX
+        `kNodeName` as NODE_NAME
+
+      # def Parse(self, node_names: list<str>, next_token: ??)
+      #     -> GeneralDescriptor
+
+      def __init__(self, t: DescriptorType, value1: int = default,
+                   value2: int = default)
+
+      def GetNormalizedDescriptor(self) -> GeneralDescriptor
+
+      def ConvertToDescriptor(self) -> Descriptor
+
+      def Print(self, node_names: list<str>, os: ostream)

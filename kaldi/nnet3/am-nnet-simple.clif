@@ -1,0 +1,38 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from "nnet3/am-nnet-simple.h":
+  namespace `kaldi::nnet3`:
+    class AmNnetSimple:
+      @add__init__
+      def `AmNnetSimple` as new_from_other(self, other: AmNnetSimple)
+
+      @add__init__
+      def `AmNnetSimple` as new_from_nnet(self, nnet: Nnet)
+
+      def NumPdfs(self) -> int
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Read(self, is: istream, binary: bool)
+
+      def GetNnet(self) -> Nnet
+
+      def SetNnet(self, nnet: Nnet)
+
+      def SetPriors(self, priors: VectorBase)
+
+      # def Priors(self) -> VectorBase
+
+      def Info(self) -> str
+
+      def LeftContext(self) -> int
+
+      def RightContext(self) -> int
+
+      def InputDim(self) -> int
+
+      def IvectorDim(self) -> int
+
+      def SetContext(self)

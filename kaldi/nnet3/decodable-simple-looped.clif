@@ -1,0 +1,78 @@
+from "itf/options-itf-clifwrap.h" import *
+from "itf/decodable-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "cudamatrix/cu-vector-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-compute-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+from "nnet3/am-nnet-simple-clifwrap.h" import *
+
+from "nnet3/decodable-simple-looped.h":
+  namespace `kaldi::nnet3`:
+    class NnetSimpleLoopedComputationOptions:
+      extra_left_context_initial: int
+      frame_subsampling_factor: int
+      frames_per_chunk: int
+      acoustic_scale: float
+      debug_computation: bool
+      optimize_config: NnetOptimizeOptions
+      compute_config: NnetComputeOptions
+
+      # NOTE: Wrapping this method is probably not a good idea.
+      # It either does nothing or aborts when the assertion fails.
+      # def Check(self)
+
+      def Register(self, opts: OptionsItf)
+
+    class DecodableNnetSimpleLoopedInfo:
+      def __init__(self, opts: NnetSimpleLoopedComputationOptions, nnet: Nnet)
+
+      @add__init__
+      def `DecodableNnetSimpleLoopedInfo` as new_from_am(
+          self, opts: NnetSimpleLoopedComputationOptions, nnet: AmNnetSimple)
+
+      @add__init__
+      def `DecodableNnetSimpleLoopedInfo` as new_from_priors(
+          self, opts: NnetSimpleLoopedComputationOptions, priors: Vector,
+          nnet: Nnet)
+
+      def Init(self, opts: NnetSimpleLoopedComputationOptions, nnet: Nnet)
+
+      # FIXME: Need to remove const qualifiers in C++ code to expose these.
+      # opts: NnetSimpleLoopedComputationOptions
+      # nnet: Nnet
+
+      log_priors: CuVector
+      frames_left_context: int
+      frames_right_context: int
+      frames_per_chunk: int
+      output_dim: int
+      has_ivectors: bool
+      request1: ComputationRequest
+      request2: ComputationRequest
+      request3: ComputationRequest
+      computation: NnetComputation
+
+    class DecodableNnetSimpleLooped:
+      def __init__(self, info: DecodableNnetSimpleLoopedInfo,
+                   feats: MatrixBase, ivector: VectorBase = default,
+                   online_ivectors: MatrixBase = default,
+                   online_ivector_period: int = default)
+
+      def NumFrames(self) -> int
+
+      def OutputDim(self) -> int
+
+      def GetOutputForFrame(self, frame: int, output: VectorBase)
+
+      def GetOutput(self, subsampled_frame: int, pdf_id: int) -> float
+
+    class DecodableAmNnetSimpleLooped(DecodableInterface):
+      def __init__(self, info: DecodableNnetSimpleLoopedInfo,
+                   trans_model: TransitionModel, feats: MatrixBase,
+                   ivector: VectorBase = default,
+                   online_ivectors: MatrixBase = default,
+                   online_ivector_period: int = default)

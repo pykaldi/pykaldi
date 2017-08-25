@@ -1,0 +1,21 @@
+from "itf/decodable-itf-clifwrap.h" import *
+from "itf/online-feature-itf-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "nnet3/decodable-simple-looped-clifwrap.h" import *
+
+from "nnet3/decodable-online-looped.h":
+  namespace `kaldi::nnet3`:
+    class DecodableNnetLoopedOnline(DecodableInterface):
+      def __init__(self, info: DecodableNnetSimpleLoopedInfo,
+                   input_features: OnlineFeatureInterface,
+                   ivector_features: OnlineFeatureInterface)
+
+      def FrameSubsamplingFactor(self) -> int
+
+    class DecodableAmNnetLoopedOnline(DecodableInterface):
+      def __init__(self, trans_model: TransitionModel,
+                   info: DecodableNnetSimpleLoopedInfo,
+                   input_features: OnlineFeatureInterface,
+                   ivector_features: OnlineFeatureInterface)
+
+      def FrameSubsamplingFactor(self) -> int
