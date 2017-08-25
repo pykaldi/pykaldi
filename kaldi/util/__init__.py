@@ -12,8 +12,20 @@ from .kaldi_io import *
 
 
 class ParseOptions(options_ext.ParseOptions):
+    """Python wrapper for kaldi::ParseOptions
 
+    Provides methods to parse arguments coming from Kaldi.
+    """
     def parse_args(self, args=None):
+        """
+        Parse arguments and adds them to Namespace.
+
+        Args:
+            args (dict or None): If dict, update options with args. If None, read options from sys.argv.
+
+        Returns:
+            Namespace with updated arguments.
+        """
         self.Read(args if args else sys.argv)
         opts = self.GetOptions()
         arg_dict = {}
@@ -25,14 +37,19 @@ class ParseOptions(options_ext.ParseOptions):
         arg_dict.update(opts.str_map)
         return Namespace(**arg_dict)
 
-
 ################################################################################
 # Sequential Readers
 ################################################################################
 
 class _SequentialReaderBase(object):
-    """Base class defining the common API for sequential table readers."""
+    """Base class defining the common API for sequential table readers.
 
+    Args:
+        rspecifier (str or empty): Kaldi rspecifier. If given, also opens the specifier.
+
+    Raises:
+        IOError on error while reading rspecifier.
+    """
     def __init__(self, rspecifier=""):
         """Initializes a new sequential table reader.
 
@@ -57,6 +74,14 @@ class _SequentialReaderBase(object):
         return self.next()
 
     def next(self):
+        """While not self.Done(), returns next pair from the rspecifier.
+
+        Returns:
+            key, value pair from rspecifier
+
+        Raises:
+            StopIteration when self.Done() 
+        """
         if self.Done():
             raise StopIteration
         else:
@@ -74,6 +99,7 @@ class SequentialVectorReader(_SequentialReaderBase,
     It provides a more Pythonic API by implementing the iterator protocol.
     """
     def next(self):
+        """Like :meth:`_SequentialReaderBase.next` plus converts value into :class:`kaldi.matrix.Vector` """
         key, value = super(SequentialVectorReader, self).next()
         return key, Vector.new(value)
 
@@ -87,6 +113,7 @@ class SequentialMatrixReader(_SequentialReaderBase,
     It provides a more Pythonic API by implementing the iterator protocol.
     """
     def next(self):
+        """Like :meth:`_SequentialReaderBase.next` plus converts value into :class:`kaldi.matrix.Matrix` """
         key, value = super(SequentialMatrixReader, self).next()
         return key, Matrix.new(value)
 
@@ -99,6 +126,7 @@ class SequentialWaveReader(_SequentialReaderBase,
     It provides a more Pythonic API by implementing the iterator protocol.
     """
     def next(self):
+        """Like :meth:`_SequentialReaderBase.next` plus converts value into :class:`kaldi.feat.WaveData` """
         key, value = super(SequentialWaveReader, self).next()
         wave = WaveData()
         wave.Swap(value)
@@ -209,7 +237,14 @@ class SequentialFloatPairVectorReader(
 ################################################################################
 
 class _RandomAccessReaderBase(object):
-    """Base class defining the common API for random access table readers."""
+    """Base class defining the common API for random access table readers.
+
+    Args:
+        rspecifier(str): Kaldi rspecifier for reading the data.
+
+    Raises:
+        IOError if reading rspecifier causes an error
+    """
     def __init__(self, rspecifier=""):
         """Initializes a new random access table reader.
 
@@ -247,6 +282,7 @@ class RandomAccessVectorReader(_RandomAccessReaderBase,
     __getitem__ methods.
     """
     def __getitem__(self, key):
+        """Like :meth:`_RandomAccessReaderBase.__getitem__` but converts the output to :class:`kaldi.matrix.Vector`"""
         value = super(RandomAccessVectorReader, self).__getitem__(key)
         return Vector.new(value)
 
@@ -261,6 +297,7 @@ class RandomAccessMatrixReader(_RandomAccessReaderBase,
     __getitem__ methods.
     """
     def __getitem__(self, key):
+        """Like :meth:`_RandomAccessReaderBase.__getitem__` but converts the output to :class:`kaldi.matrix.Matrix`"""
         value = super(RandomAccessMatrixReader, self).__getitem__(key)
         return Matrix.new(value)
 
@@ -274,6 +311,7 @@ class RandomAccessWaveReader(_RandomAccessReaderBase,
     __getitem__ methods.
     """
     def __getitem__(self, key):
+        """Like :meth:`_RandomAccessReaderBase.__getitem__` but converts the output to :class:`kaldi.feat.WaveData`"""
         value = super(RandomAccessWaveReader, self).__getitem__(key)
         wave = WaveData()
         wave.Swap(value)
@@ -393,10 +431,17 @@ class RandomAccessFloatPairVectorReader(
 ################################################################################
 # Random Access Mapped Readers
 ################################################################################
-
 class _RandomAccessReaderMappedBase(object):
     """Base class defining the common API for random access mapped table
-    readers."""
+    readers.
+
+    Args:
+        table_rspecifier (str or empty): Kaldi rspecifier to read the specified table.
+        map_rspecifier (str or empty): Kaldi rspecifier for reading the data.
+
+    Raises:
+        IOError if an error happens while reading rspecifiers.
+    """
     def __init__(self, table_rspecifier="", map_rspecifier=""):
         """Initializes a new random access mapped table reader.
 
@@ -437,6 +482,7 @@ class RandomAccessVectorReaderMapped(
     __getitem__ methods.
     """
     def __getitem__(self, key):
+        """Like :meth:`RandomAccessVectorReaderMapped.__getitem__` but converts the value to :class:`kaldi.matrix.Vector`"""
         value = super(RandomAccessVectorReaderMapped, self).__getitem__(key)
         return Vector.new(value)
 
@@ -453,6 +499,7 @@ class RandomAccessMatrixReaderMapped(
     __getitem__ methods.
     """
     def __getitem__(self, key):
+        """Like :meth:`RandomAccessVectorReaderMapped.__getitem__` but converts the value to :class:`kaldi.matrix.Matrix`"""
         value = super(RandomAccessMatrixReaderMapped, self).__getitem__(key)
         return Matrix.new(value)
 
@@ -473,7 +520,14 @@ class RandomAccessFloatReaderMapped(
 ################################################################################
 
 class _WriterBase(object):
-    """Base class defining the common API for table writers."""
+    """Base class defining the common API for table writers.
+
+    Args:
+        wspecifier (str or None): Kaldi wspecifier for writing data.
+
+    Raises:
+        IOError if wspecifier cannot be written.
+    """
     def __init__(self, wspecifier=""):
         """Initializes a new table writer.
 

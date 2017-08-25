@@ -2,7 +2,7 @@
 """Setup configuration."""
 from __future__ import print_function
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 import setuptools.command.build_ext
 import setuptools.command.install_lib
 import distutils.command.build
@@ -13,11 +13,14 @@ from subprocess import check_output, check_call
 
 import numpy
 
+# This might get risky
+from kaldi import __version__
+
 ################################################################################
 # Check variables / find programs
 ################################################################################
 
-DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y']
+DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y', 'true', 'yes', 'on', 'y']
 PYCLIF = os.getenv("PYCLIF")
 CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')
@@ -38,6 +41,7 @@ if KALDI_DIR:
         print("include {}".format(KALDI_MK_PATH), file=makefile)
         print("print-% : ; @echo $($*)", file=makefile)
     CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
+    KALDI_HAVE_CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip() in ['ON', '1', 'YES', 'TRUE', 'Y', 'true', 'yes', 'on', 'y']
     check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
@@ -59,6 +63,7 @@ if DEBUG:
     print("CXX_FLAGS: {}".format(CXX_FLAGS))
     print("CLIF_CXX_FLAGS: {}".format(CLIF_CXX_FLAGS))
     print("BUILD_DIR: {}".format(BUILD_DIR))
+    print("KALDI_HAVE_CUDA: {}".format(KALDI_HAVE_CUDA))
     print("#"*50)
 
 ################################################################################
@@ -79,7 +84,8 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
                       '-DCLIF_DIR=' + CLIF_DIR,
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
-                      '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR]
+                      '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR,
+                      '-DCUDA=TRUE' if KALDI_HAVE_CUDA else '-DCUDA=FALSE']
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
@@ -114,6 +120,19 @@ class install_lib(setuptools.command.install_lib.install_lib):
         self.build_dir = 'build/lib'
         outfiles = setuptools.command.install_lib.install_lib.install(self)
         print(outfiles)
+
+class build_doc(Command):
+    user_options = []
+    description = "Builds documentation using sphinx. Calls apidoc."
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        pass
 
 ################################################################################
 # Setup pykaldi
@@ -158,11 +177,6 @@ extensions = [
                 KaldiExtension("kaldi.matrix.kaldi_vector_ext"),
                 KaldiExtension("kaldi.matrix.kaldi_matrix_ext"),
                 KaldiExtension("kaldi.matrix.matrix_functions"),
-                KaldiExtension("kaldi.cudamatrix.cu_device"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
-                KaldiExtension("kaldi.cudamatrix.cu_array"),
-                KaldiExtension("kaldi.cudamatrix.cu_vector"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrix"),
                 KaldiExtension("kaldi.feat.resample"),
                 KaldiExtension("kaldi.feat.signal"),
                 KaldiExtension("kaldi.feat.feature_window"),
@@ -186,6 +200,7 @@ extensions = [
                 KaldiExtension("kaldi.gmm.model_common"),
                 KaldiExtension("kaldi.gmm.diag_gmm"),
                 KaldiExtension("kaldi.gmm.full_gmm"),
+                KaldiExtension("kaldi.gmm.full_gmm_ext"),
                 KaldiExtension("kaldi.gmm.full_gmm_normal"),
                 KaldiExtension("kaldi.gmm.mle_diag_gmm"),
                 KaldiExtension("kaldi.gmm.am_diag_gmm"),
@@ -224,12 +239,20 @@ extensions = [
                 KaldiExtension("kaldi.nnet3.nnet_am_decodable_simple"),
                 KaldiExtension("kaldi.nnet3.decodable_simple_looped"),
                 KaldiExtension("kaldi.nnet3.decodable_online_looped"),
+                KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
+                KaldiExtension("kaldi.cudamatrix.cu_array"),
+                KaldiExtension("kaldi.cudamatrix.cu_vector"),
+                KaldiExtension("kaldi.cudamatrix.cu_matrix")
              ]
+
+if KALDI_HAVE_CUDA:
+    extensions.append(KaldiExtension("kaldi.cudamatrix.cu_device"))
+
 
 packages = find_packages()
 
 setup(name = 'pykaldi',
-      version = '0.0.2',
+      version = __version__,
       description = 'Kaldi Python Wrapper',
       author = 'SAIL',
       ext_modules=extensions,
@@ -240,5 +263,6 @@ setup(name = 'pykaldi',
           },
       packages = packages,
       package_data = {},
-      install_requires = ['enum34;python_version<"3.4"', 'numpy'],
+      install_requires = ['enum34;python_version<"3.4"', 'numpy',
+                          'sphinx', 'sphinx_rtd_theme'],
       zip_safe = False)

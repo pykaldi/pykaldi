@@ -52,10 +52,14 @@ kaldi_math.kLogZeroBaseFloat = -np.inf
 
 def lcm(x, y):
     """Returns the least common multiple for x and y.
+
     Args:
         x (int), y (int): positive integers
+
+    Raises:
+        ValueError if x <= 0 or y <= 0
     """
-    if x <= 0 and y <= 0:
+    if x <= 0 or y <= 0:
         raise ValueError("Lcm parameters must be positive integers.")
     return _Lcm(x, y)
 
@@ -66,8 +70,12 @@ kaldi_math.lcm = lcm
 def factorize(x):
     """Splits a number into its prime factors, in sorted order from
     least to greates, with duplication.
+
     Args:
         x (int): positive integer
+
+    Raises:
+        ValueError if x <= 0
     """
     if x <= 0:
         raise ValueError("Parameter x must be a positive integer.")

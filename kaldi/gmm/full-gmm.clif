@@ -33,6 +33,8 @@ from "gmm/full-gmm.h":
 
             def GaussianSelectionPreselect(self, data: VectorBase, preselect: list<int>, num_gselect: int) -> (log_like: float, posteriors: list<int>)
 
+            def ComponentPosteriors(self, data:VectorBase, posterior:VectorBase) -> float
+
             def ComponentLogLikelihood(self, data: VectorBase, comp_idL: int) -> float 
 
             def ComputeGconsts(self) -> int 
