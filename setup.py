@@ -132,7 +132,7 @@ class build_doc(Command):
         pass
 
     def run(self):
-        pass
+        check_call(['make', 'docs'], cwd = BUILD_DIR)
 
 ################################################################################
 # Setup pykaldi
@@ -207,6 +207,7 @@ extensions = [
                 KaldiExtension("kaldi.matrix.matrix_functions"),
                 KaldiExtension("kaldi.matrix.packed_matrix"),
                 KaldiExtension("kaldi.matrix.sp_matrix"),
+                KaldiExtension("kaldi.matrix.sparse_matrix"),
                 KaldiExtension("kaldi.matrix.tp_matrix"),
                 KaldiExtension("kaldi.nnet3.am_nnet_simple"),
                 KaldiExtension("kaldi.nnet3.decodable_simple_looped"),
@@ -260,7 +261,8 @@ setup(name = 'pykaldi',
       cmdclass = {
           'build_ext': CMakeBuild,
           'build': build,
-          'install_lib': install_lib
+          'install_lib': install_lib,
+          'build_sphinx': build_doc
           },
       packages = packages,
       package_data = {},
