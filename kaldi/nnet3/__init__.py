@@ -2,13 +2,14 @@ from .natural_gradient_online import *
 from .nnet_common import *
 from .nnet_example import *
 from .nnet_parse import *
-from .nnet_computation import *
+from .nnet_misc_computation_info import *
 from .nnet_component_itf import *
 from .nnet_simple_component import *
 from .nnet_convolutional_component import *
 from .nnet_general_component import *
 from .nnet_descriptor import *
 from .nnet_nnet import *
+from .nnet_computation import *
 from .nnet_test_utils import *
 from .nnet_graph import *
 from .nnet_compile import *
