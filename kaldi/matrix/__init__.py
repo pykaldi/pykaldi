@@ -15,6 +15,7 @@ from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
 from .matrix_ext import vector_to_numpy, matrix_to_numpy
 from .matrix_functions import MatrixExponential, AssertSameDimMatrix
 from ._str import set_printoptions
+from . import sparse_matrix 
 from . import packed_matrix, sp_matrix, tp_matrix
 
 ################################################################################
@@ -444,7 +445,7 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
 
     def __eq__(self, other):
         if not isinstance(other, Matrix):
-            return False        
+            return False
         return self.equal(other)
 
     def numpy(self):
@@ -493,7 +494,7 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         return P, r, i
 
     def svd(self):
-        """Singular value decomposition. 
+        """Singular value decomposition.
            Kaldi has a major limitation. For nonsquare matrices, it assumes
            m >= n (NumRows >= NumCols). """
         m, n = self.size()
@@ -696,7 +697,7 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
 
     @classmethod
     def cholesky(cls, spmatrix):
-        """Cholesky decomposition 
+        """Cholesky decomposition
            Returns a new tpmatrix X such that
            matrix = X * X^T
 

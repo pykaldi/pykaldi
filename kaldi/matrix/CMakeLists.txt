@@ -13,6 +13,11 @@ add_pyclif_library("compressed_matrix" compressed-matrix.clif
   CLIF_DEPS kaldi_matrix
   LIBRARIES kaldi-matrix
 )
+add_pyclif_library("sparse_matrix" sparse-matrix.clif
+  CLIF_DEPS iostream compressed_matrix cu_matrix
+  LIBRARIES kaldi-matrix
+	RPATH $ORIGIN/../util:$ORIGIN/../cudamatrix
+)
 add_pyclif_library("packed_matrix" packed-matrix.clif
   CLIF_DEPS kaldi_matrix
   LIBRARIES kaldi-matrix

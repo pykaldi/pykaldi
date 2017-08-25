@@ -1,0 +1,181 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/compressed-matrix-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+
+from "matrix/sparse-matrix.h":
+  namespace `kaldi`:
+    class `SparseVector<float>` as SparseVector:
+      def Dim(self) -> int
+
+      def Sum(self) -> float
+
+      def CopyElementsToVec(self, vec: VectorBase)
+
+      def AddToVec(self, alpha: float, vec: VectorBase)
+
+      def CopyFromSvec(self, other: SparseVector)
+
+      @add__init__
+      def `SparseVector` as new_from_other(self, other: SparseVector)
+
+      def Swap(self, other: SparseVector)
+
+      def Max(self) -> (value: float, index: int)
+
+      def NumElements(self) -> int
+
+      def GetElement(self, i: int) -> tuple<int, float>
+
+      def SetRandn(self, zero_prob: float)
+
+      @add__init__
+      def `SparseVector` as new_from_dim(self, dim: int)
+
+      @add__init__
+      def `SparseVector` as new_from_pairs(self, dim: int,
+                                           pairs: list<tuple<int, float>>)
+
+      def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Scale(self, alpha: float)
+
+    def VecSvec(vec: VectorBase, svec: SparseVector) -> float
+
+    class `SparseMatrix<float>` as SparseMatrix:
+      def NumRows(self) -> int
+
+      def NumCols(self) -> int
+
+      def NumElements(self) -> int
+
+      def Sum(self) -> float
+
+      def FrobeniusNorm(self) -> float
+
+      def CopyToMat(self, other: MatrixBase, t: MatrixTransposeType = default)
+
+      def CopyElementsToVec(self, other: VectorBase)
+
+      def CopyFromSmat(self, other: SparseMatrix)
+
+      def AddToMat(self, alpha: float, other: MatrixBase,
+                   t: MatrixTransposeType = default)
+
+      @add__init__
+      def `SparseMatrix` as new_from_other(self, other: SparseMatrix)
+
+      def Swap(self, other: SparseMatrix)
+
+      @add__init__
+      def `SparseMatrix` as new_from_pairs(
+          self, dim: int, pairs: list<list<tuple<int, float>>>)
+
+      def SetRandn(self, zero_prob: float)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Read(self, is: istream, binary: bool)
+
+      def Row(self, r: int) -> SparseVector
+
+      def SetRow(self, r: int, vec: SparseVector)
+
+      # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
+
+      @add__init__
+      def `SparseMatrix` as new_from_dims(self, num_rows: int, num_cols: int)
+
+      def Resize(self, rows: int, cols: int,
+                 resize_type: MatrixResizeType = default)
+
+      def Scale(self, alpha: float)
+
+    def TraceMatSmat(A: MatrixBase, B: SparseMatrix,
+                     trans: MatrixTransposeType = default) -> float
+
+    enum GeneralMatrixType with:
+      `kFullMatrix` as FULL_MATRIX
+      `kCompressedMatrix` as COMPRESSED_MATRIX
+      `kSparseMatrix` as SPARSE_MATRIX
+
+    class GeneralMatrix:
+      def Type(self) -> GeneralMatrixType
+
+      def Compress(self)
+
+      def Uncompress(self)
+
+      def Write(self, os: ostream, binary: bool)
+
+      def Read(self, is: istream, binary: bool)
+
+      def GetSparseMatrix(self) -> SparseMatrix
+
+      def SwapSparseMatrix(self, smat: SparseMatrix)
+
+      def GetCompressedMatrix(self) -> CompressedMatrix
+
+      def SwapCompressedMatrix(self, cmat: CompressedMatrix)
+
+      def GetFullMatrix(self) -> Matrix
+
+      def GetMatrix(self) -> Matrix
+
+      def SwapFullMatrix(self, cmat: Matrix)
+
+      def CopyToMat(self, mat: MatrixBase,
+                    trans: MatrixTransposeType = default)
+
+      def `CopyToMat` as CopyToCuMat(self, cu_mat: CuMatrixBase,
+                                     trans: MatrixTransposeType = default)
+
+      def AddToMat(self, alpha: float, mat: MatrixBase,
+                   trans: MatrixTransposeType = default)
+
+      def `AddToMat` as AddToCuMat(self, alpha: float, cu_mat: CuMatrixBase,
+                                   trans: MatrixTransposeType = default)
+
+      def Scale(self, alpha: float)
+
+      def NumRows(self) -> int
+
+      def NumCols(self) -> int
+
+      @add__init__
+      def `GeneralMatrix` as new_from_matrix(self, other: MatrixBase)
+
+      @add__init__
+      def `GeneralMatrix` as new_from_compressed(self, other: CompressedMatrix)
+
+      @add__init__
+      def `GeneralMatrix` as new_from_sparse(self, other: SparseMatrix)
+
+      @add__init__
+      def `GeneralMatrix` as new_from_other(self, other: GeneralMatrix)
+
+      def Clear(self)
+
+      def Swap(self, other: GeneralMatrix)
+
+    # def AppendGeneralMatrixRows(src: list<GeneralMatrix>) -> GeneralMatrix
+
+    def FilterSparseMatrixRows(in: SparseMatrix, keep_rows: list<bool>)
+        -> SparseMatrix
+
+    def FilterMatrixRows(in: Matrix, keep_rows: list<bool>) -> Matrix
+
+    def FilterCompressedMatrixRows(in: CompressedMatrix, keep_rows: list<bool>)
+        -> Matrix
+
+    def FilterGeneralMatrixRows(in: GeneralMatrix, keep_rows: list<bool>)
+        -> GeneralMatrix
+
+    def ExtractRowRangeWithPadding(in: GeneralMatrix, row_offset: int,
+                                   num_rows: int) -> GeneralMatrix
