@@ -147,7 +147,10 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         return self
 
     def clone(self):
-        """Returns a copy of the vector."""
+        """
+        Returns:
+            a copy of this Vector.
+        """
         clone = Vector(len(self))
         clone.CopyFromVec(self)
         return clone
@@ -166,7 +169,10 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         return self.size() == other.size() and self.ApproxEqual(other, tol)
 
     def numpy(self):
-        """Returns a new :class:`numpy.ndarray` sharing the data with this vector."""
+        """
+        Returns:
+            a new :class:`numpy.ndarray` sharing the data with this vector.
+        """
         return vector_to_numpy(self)
 
     def range(self, start, length):
@@ -175,6 +181,9 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         Args:
             start (int): Start of the new vector.
             length (int): Length of the new vector. If it is None, it defaults to len(obj) - start.
+        
+        Returns:
+            New vector with range of elements.
         """
         return Vector.new(self, start, length)
 
@@ -222,8 +231,8 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         Raises:
             ValueError: If `v.size() != M.ncols()`, or if `(M*v).size() != self.size()`
 
-        Note:
-            self is updated to `beta*self + alpha*M*v`
+        Returns:
+            This vector after update.
         """
         m, n = M.size()
         if v.size() != n:
@@ -281,10 +290,14 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         Args:
             M (TpMatrix): A matrix of dimensions m x m.
             trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If `MatrixTransposeType.TRANS`, solves M^T x = b instead.
+        
+        Returns:
+            This vector after update.
         """
         m, m = M.size()
         self.resize_(m) # Resize self
         kaldi_vector_ext.Solve(self, M, trans)
+        return self
 
     def copy_rows_from_mat(self, M):
         """Performs a row stack of the matrix M.
@@ -580,6 +593,9 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             col_start (int): Start col of the new matrix.
             num_rows (int): Number of rows of the new matrix.
             num_cols (int): Number of cols of the new matrix.
+
+        Returns:
+            A new instance of class Matrix.
         """
         if isinstance(obj, kaldi_matrix.MatrixBase):
             obj_rows, obj_cols = obj.num_rows_, obj.num_cols_
@@ -632,12 +648,25 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
                                                                                                                        self.size()[0], self.size()[1]))
         self.CopyFromMat(src)
 
-    def clone(self):
-        """Returns a copy of this matrix."""
-        rows, cols = self.size()
-        clone = Matrix(rows, cols)
-        clone.CopyFromMat(self)
-        return clone
+    def copy_from_sp(self, Sp):
+        """Copy SpMatrix contents to this matrix.
+
+        Args:
+            Sp (SpMatrix): Matrix to copy from.
+        """
+        m, m = Sp.size()
+        self.resize_(m, m)
+        kaldi_matrix_ext.CopyFromSp(self, Sp)
+
+    def copy_from_tp(self, Tp):
+        """Copy TpMatrix contents to this matrix.
+
+        Args:
+            Tp (TpMatrix): Matrix to copy from.
+        """
+        m, m = Tp.size()
+        self.resize_(m, m)
+        kaldi_matrix_ext.CopyFromTp(self, Tp)
 
     def copy_(self, src):
         """Copies data from src into this matrix and returns this matrix.
@@ -646,15 +675,28 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             src (Matrix): Source matrix to copy
 
         Returns:
-            self
+            This matrix after update.
         """
         m, n = src.size()
         self.resize_(m, n)
         self.CopyFromMat(src)
         return self
 
+    def clone(self):
+        """
+        Returns:
+            a copy of this matrix.
+        """
+        rows, cols = self.size()
+        clone = Matrix(rows, cols)
+        clone.CopyFromMat(self)
+        return clone
+
     def size(self):
-        """Returns the size as a tuple (num_rows, num_cols)."""
+        """
+        Returns:
+            the size as a tuple (num_rows, num_cols).
+        """
         return self.num_rows_, self.num_cols_
 
     def shape(self):
@@ -662,11 +704,17 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         return size(self)
 
     def nrows(self):
-        """Returns the number of rows."""
+        """
+        Returns:
+            number of rows.
+        """
         return self.num_rows_
 
     def ncols(self):
-        """Returns the number of columns."""
+        """
+        Returns:
+            number of columns.
+        """
         return self.num_cols_
 
     def equal(self, other, tol=1e-16):
@@ -699,6 +747,9 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             num_rows (int): Number of rows to grab
             col_start (int): Index of starting column
             num_cols (int): Number of columns to grab
+
+        Returns:
+            New Matrix with range of elements.
         """
         return Matrix.new(self, row_start, col_start, num_rows, num_cols)
 
@@ -775,14 +826,13 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         Kaldi has a major limitation. For nonsquare matrices, it assumes m >= n (NumRows >= NumCols).
 
         Returns:
-           - U (Matrix): Orthonormal Matrix m x n
-           - s (Vector): Singular values
-           - V^T (Matrix): Orthonormal Matrix n x n
+            - U (Matrix): Orthonormal Matrix m x n
+            - s (Vector): Singular values
+            - V^T (Matrix): Orthonormal Matrix n x n
 
         Raises:
-           ValueError: If self.nrows() < self.ncols()
+            ValueError: If self.nrows() < self.ncols()
         """
-
         m, n = self.size()
 
         if m < n:
@@ -905,27 +955,10 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             else:
                 return _str._matrix_str(self).encode('UTF-8', 'replace')
 
-    def copy_from_sp(self, Sp):
-        """Copy Sp matrix to this matrix.
-
-        Args:
-            Sp (SpMatrix): Matrix to copy from.
-        """
-        m, m = Sp.size()
-        self.resize_(m, m)
-        kaldi_matrix_ext.CopyFromSp(self, Sp)
-
-    def copy_from_tp(self, Tp):
-        """Copy Tp matrix to this matrix.
-        Args:
-            Tp (TpMatrix): Matrix to copy from.
-        """
-        m, m = Tp.size()
-        self.resize_(m, m)
-        kaldi_matrix_ext.CopyFromTp(self, Tp)
-
     def add_sp(self, alpha, Sp):
-        """Adds (alpha x Sp) matrix to this matrix.
+        """Computes
+
+        self <- self + alpha * Sp
 
         Args:
             alpha (float): Coefficient for Sp
@@ -935,53 +968,163 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             ValueError if Sp.size() != self.size()
         """
         if Sp.size() != self.size():
-            raise ValueError("Cannot add SpMatrix ({0} by {0}) with self ({1} by {2})".format(other.size(), self.size()[0], self.size()[1]))
+            raise ValueError()
         kaldi_matrix_ext.AddSp(self, alpha, Sp)
 
     def add_sp_mat(self, alpha, A, B, transB, beta):
-        """???
+        """Computes
+
+        self <- beta * self + alpha * A * B
 
         Args:
-            alpha (float):
-            A (SpMatrix):
-            B (Matrix_like):
-            transB (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
-            beta (float):
+            alpha (float): Coefficient for the product A * B
+            A (SpMatrix): Symmetric matrix of size m x q
+            B (Matrix_like): Matrix_like of size q x n
+            transB (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            beta (float): Coefficient for this matrix
+
+        Raises:
+            ValueError when the dimensions of self, A and B are not consistent.
         """
+        m, n = self.size()
+        p, q = A.size()
+        r, t = B.size()
+
+        if m != p or \
+        (transB == MatrixTransposeType.NO_TRANS and (q != r or t != n)) or \
+        (transB == MatrixTransposeType.TRANS and (q != t or r != n)):
+            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+
         kaldi_matrix_ext.AddSpMat(self, alpha, A, transA, B, beta)
 
     def add_tp_mat(self, alpha, A, transA, B, transB, beta = 1.0):
-        """???"""
+        """Like `add_sp_mat` where A is a `TpMatrix`.
+
+        Args:
+            alpha (float): Coefficient for the product A * B
+            A (TpMatrix): Triangular matrix of size m x m
+            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            B (Matrix_like): Matrix_like of size m x n
+            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            beta (float): Coefficient for this matrix
+
+        Raises:
+            ValueError when the dimensions of self, A and B are not consistent.
+        """
+        m, n = self.size()
+        p, p = A.size()
+        r, t = B.size()
+
+        if m != p or \
+        (transB == MatrixTransposeType.NO_TRANS and (p != r or t != n)) or \
+        (transB == MatrixTransposeType.TRANS and (p != t or r != n)):
+            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+
         kaldi_matrix_ext.AddTpMat(self, alpha, A, transA, B, transB, beta)
 
     def add_mat_sp(self, alpha, A, transA, B, beta = 1.0):
-        """???"""
+        """Like `add_sp_mat` where B is a `SpMatrix`
+
+        Args:
+            alpha (float): Coefficient for the product A * B
+            A (Matrix_like): Matrix of size m x n
+            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            B (SpMatrix): Symmetric Matrix of size n x n
+            beta (float): Coefficient for this matrix
+
+        Raises:
+            ValueError when the dimensions of self, A and B are not consistent.
+        """
+        m, n = self.size()
+        p, q = A.size()
+        r, r = B.size()
+
+        if n != r \
+        (transA == MatrixTransposeType.NO_TRANS and (m != p or q != r)) or \
+        (transA == MatrixTransposeType.TRANS and (m != q or p != r)):
+            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+        
         kaldi_matrix_ext.AddMatSp(self, alpha, A, transA, B, beta)
 
     def add_mat_tp(self, alpha, A, transA, B, transB, beta = 1.0):
-        """???"""
+        """Like `add_tp_mat` where B is a `TpMatrix`
+
+        Args:
+            alpha (float): Coefficient for the product A * B
+            A (Matrix_like): Matrix of size m x q
+            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            B (TpMatrix): Matrix_like of size m x n
+            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            beta (float): Coefficient for this matrix
+
+        Raises:
+            ValueError when the dimensions of self, A and B are not consistent.
+        """
+        m, n = self.size()
+        p, q = A.size()
+        r, r = B.size()
+
+        if m != p or q != r or n != r:
+            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+
         kaldi_matrix_ext.AddMatTp(self, alpha, A, transA, B, transB, beta)
 
     def add_tp_tp(self, alpha, A, transA, B, transB, beta = 1.0):
-        """???"""
+        """Like `add_sp_mat` where both are `TpMatrix`
+
+        Args:
+            alpha (float): Coefficient for the product A * B
+            A (TpMatrix): Triangular Matrix of size m x m
+            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            B (TpMatrix): Triangular Matrix of size m x m
+            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            beta (float): Coefficient for this matrix
+
+        Raises:
+            ValueError if matrices are not consistent
+        """
+        m, n = self.size()
+        p, q = A.size()
+        r, r = B.size()
+
+        if m != p != r:
+            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+
         kaldi_matrix_ext.AddTpTp(self, alpha, A, transA, B, transB, beta)
 
     def add_sp_sp(self, alpha, A, B, beta = 1.0):
-        """???"""
+        """Like `add_sp_mat` where both are `SpMatrix`
+
+        Args:
+            alpha (float): Coefficient for the product A * B
+            A (SpMatrix): Triangular Matrix of size m x m
+            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            B (SpMatrix): Triangular Matrix of size m x m
+            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            beta (float): Coefficient for this matrix
+
+        Raises:
+            ValueError if matrices are not consistent
+        """
+        m, n = self.size()
+        p, q = A.size()
+        r, r = B.size()
+
+        if m != p != r:
+            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+
         kaldi_matrix_ext.AddSpSp(self, alpha, A, B, beta)
 
 
 
-# Note(VM):
-# We need to handle the inheritance of TpMatrix and SpMatrix
-# Since we did not do it in clif.
+
 class PackedMatrix(packed_matrix.PackedMatrix):
     """Python wrapper for kaldi::PackedMatrix<float>
 
     This class defines the user facing API for Kaldi PackedMatrix.
 
     Args:
-        num_rows (int): Number of rows (and columns).
+        num_rows (int): Number of rows.
     """
     def __init__(self, num_rows=None):
         """Initializes a new packed matrix.
@@ -1003,15 +1146,30 @@ class PackedMatrix(packed_matrix.PackedMatrix):
         return self.NumRows()
 
     def size(self):
-        """Returns the size as a tuple (num_rows, num_cols)."""
+        """
+
+        Returns:
+            size as a tuple (num_rows, num_cols).
+
+        """
         return self.NumRows(), self.NumCols()
 
     def nrows(self):
-        """Returns the number of rows."""
+        """
+
+        Returns:
+            number of rows.
+
+        """
         return self.NumRows()
 
     def ncols(self):
-        """Returns the number of columns."""
+        """
+
+        Returns:
+            number of columns.
+
+        """
         return self.NumCols()
 
     def resize_(self, num_rows,
@@ -1076,6 +1234,9 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
         Args:
             obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data from.
             trans (MatrixTransposeType): Only used when obj is Matrix_like. Defaults to MatrixTransposeType.NO_TRANS.
+        
+        Returns:
+            New TpMatrix from obj.
         """
         instance = cls.__new__(cls)
         if isinstance(obj, TpMatrix):
@@ -1084,16 +1245,27 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
             instance.CopyFromPacked(obj)
         else:
             # Try to convert it to a matrix
-            instance.CopyFromMat(Matrix.new(obj), kwargs.get("Trans", ))
+            m = Matrix.new(obj)
+            if m.size()[0] != m.size()[1]:
+                raise ValueError("obj is not a square matrix.")
+            tmp = TpMatrix()
+            tmp.resize_(m.size()[0])
+            tmp.CopyFromMat(m, trans)
+            instance = tmp
+        return instance
 
     @classmethod
     def cholesky(cls, spmatrix):
-        """Cholesky decomposition
-           Returns a new tpmatrix X such that
-           matrix = X * X^T
+        """Cholesky decomposition 
+        Returns a new TPMatrix X such that
+           
+        spmatrix = X * X^T
 
-           Arguments:
+        Arguments:
             spmatrix (SpMatrix): Matrix to decompose
+        
+        Returns:
+            Cholesky decomposition of spmatrix.
         """
         if not isinstance(spmatrix, SpMatrix):
             raise ValueError("spmatrix object of type {} is not a SpMatrix".format(type(spmatrix)))
@@ -1103,7 +1275,12 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
         return instance
 
     def clone(self):
-        """Returns a copy of the tpmatrix."""
+        """
+
+        Returns:
+            copy of this TpMatrix.
+
+        """
         clone = TpMatrix(len(self))
         clone.CopyFromTp(self)
         return clone
@@ -1138,6 +1315,9 @@ class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
 
         Args:
             obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data from. If Matrix_like, make sure its symetric by taking the mean (obj + obj^T)/2
+        
+        Returns:
+            New SpMatrix from obj.
         """
         instance = cls.__new__(cls)
         if isinstance(obj, SpMatrix):
@@ -1146,9 +1326,15 @@ class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
             instance.CopyFromPacked(obj)
         elif isinstance(obj, Matrix):
             instance.CopyFromMat(Matrix.new(obj), SpCopyType.TAKE_MEAN)
+        return instance
 
     def clone(self):
-        """Returns a copy of the tpmatrix."""
+        """
+
+        Returns:
+            Copy of this SpMatrix.
+
+        """
         clone = SpMatrix(len(self))
         clone.CopyFromTp(self)
         return clone

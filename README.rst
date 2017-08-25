@@ -12,7 +12,7 @@ A Python Wrapper for Kaldi
 Examples:
 -------------------
 
-#. Calculate MFCC features and write them to file:
+#. Calculate MFCC features and write them to file:::
 
     >>> from kaldi.feat import MfccOptions, Mfcc
     >>> from kaldi.util import *
@@ -46,7 +46,14 @@ How is this possible?
 Contents
 --------
 .. toctree::
-  :caption: Developer's Guide
+  :caption: For Users:
+  :glob:
+  :maxdepth: 2
+
+  user/*
+  
+.. toctree::
+  :caption: For Developers:
   :glob:
   :maxdepth: 2
 

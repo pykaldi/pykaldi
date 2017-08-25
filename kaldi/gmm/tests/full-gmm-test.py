@@ -126,7 +126,7 @@ class TestFullGmm(unittest.TestCase):
         gmm.SetInvCovarsAndMeans(invcovars, means)
         gmm.ComputeGconsts()
 
-        loglike1, posterior1 = gmm.componentPosteriors(feat)
+        loglike1, posterior1 = gmm.component_posteriors(feat)
 
         self.assertAlmostEqual(loglike, loglike1, delta = 0.01)
         self.assertAlmostEqual(1.0, posterior1.Sum(), delta = 0.01)
@@ -182,7 +182,7 @@ class TestFullGmm(unittest.TestCase):
         # CopyFromFullGmm
         gmm4 = FullGmm()
         gmm4.CopyFromFullGmm(gmm)
-        loglike5, _ = gmm4.componentPosteriors(feat)
+        loglike5, _ = gmm4.component_posteriors(feat)
         self.assertAlmostEqual(loglike, loglike5, delta = 0.01)
 
         # CopyFromDiag
