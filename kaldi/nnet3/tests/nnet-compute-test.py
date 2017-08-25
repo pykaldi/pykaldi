@@ -3,7 +3,7 @@
 import random
 import unittest
 
-from kaldi.cudamatrix.cu_device import *
+from kaldi.cudamatrix import cuda_available
 from kaldi.cudamatrix.cu_matrix import *
 from kaldi.matrix import ApproxEqualVector, Matrix, Vector
 from kaldi.nnet3 import *
@@ -156,9 +156,11 @@ class TestNnetCompute(unittest.TestCase):
 
 if __name__ == '__main__':
     for i in range(2):
-        CuDevice.Instantiate().SetDebugStrideMode(True)
-        if i == 0:
-            CuDevice.Instantiate().SelectGpuId("no")
-        else:
-            CuDevice.Instantiate().SelectGpuId("yes")
+        if cuda_available():
+            from kaldi.cudamatrix.cu_device import CuDevice
+            CuDevice.Instantiate().SetDebugStrideMode(True)
+            if i == 0:
+                CuDevice.Instantiate().SelectGpuId("no")
+            else:
+                CuDevice.Instantiate().SelectGpuId("yes")
         unittest.main(exit=False)

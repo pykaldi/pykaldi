@@ -28,7 +28,7 @@ add_pyclif_library("nnet_misc_computation_info" nnet-misc-computation-info.clif
 )
 
 add_pyclif_library("nnet_component_itf" nnet-component-itf.clif
-  CLIF_DEPS iostream cu_matrix kaldi_vector nnet_parse nnet_misc_computation_info
+  CLIF_DEPS iostream cu_matrix kaldi_vector nnet_common nnet_parse nnet_misc_computation_info
   LIBRARIES kaldi-nnet3
   RPATH $ORIGIN/../util:$ORIGIN/../cudamatrix:$ORIGIN/../matrix
 )
