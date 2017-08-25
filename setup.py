@@ -145,7 +145,7 @@ extensions = [
                 KaldiExtension("kaldi.base.timer"),
                 KaldiExtension("kaldi.cudamatrix.cu_array"),
                 KaldiExtension("kaldi.cudamatrix.cu_vector"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrix")
+                KaldiExtension("kaldi.cudamatrix.cu_matrix"),
                 KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
                 KaldiExtension("kaldi.decoder.faster_decoder"),
                 KaldiExtension("kaldi.feat.feature_common_ext"),
