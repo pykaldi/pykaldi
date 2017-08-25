@@ -961,14 +961,14 @@ def stdcompose(ifst1, ifst2, compose_filter="auto", connect=True):
     transducer must be sorted (or otherwise support appropriate matchers).
 
     Args:
-    ifst1: The first input FST.
-    ifst2: The second input FST.
-    compose_filter: A string matching a known composition filter; one of:
-        "alt_sequence", "auto", "match", "null", "sequence", "trivial".
-    connect: Should output be trimmed?
+        ifst1: The first input FST.
+        ifst2: The second input FST.
+        compose_filter: A string matching a known composition filter; one of:
+            "alt_sequence", "auto", "match", "null", "sequence", "trivial".
+        connect: Should output be trimmed?
 
     Returns:
-    A composed FST.
+        A composed FST.
 
     See also: `arcsort`.
     """
