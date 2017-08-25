@@ -9,3 +9,9 @@ add_pyclif_library("transition_model" transition-model.clif
   LIBRARIES kaldi-hmm
   RPATH $ORIGIN/../itf:$ORIGIN/../util:$ORIGIN/../matrix
 )
+
+add_pyclif_library("posterior" posterior.clif
+  CLIF_DEPS iostream kaldi_matrix transition_model
+  LIBRARIES kaldi-hmm
+  RPATH $ORIGIN/../util:$ORIGIN/../matrix
+)

@@ -1,0 +1,85 @@
+from "util/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "hmm/posterior.h":
+  namespace `kaldi`:
+    class PosteriorHolder:
+      @classmethod
+      def Write(cls, os: ostream, binary: bool,
+                t: list<list<tuple<int, float>>>) -> bool
+
+      def Clear(self)
+
+      def Read(self, is: istream) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+      def Value(self) -> list<list<tuple<int, float>>>
+
+      def Swap(self, other: PosteriorHolder)
+
+      def ExtractRange(self, other: PosteriorHolder, range: str) -> bool
+
+    def WritePosterior(os: ostream, binary: bool,
+                       post: list<list<tuple<int, float>>>)
+
+    def ReadPosterior(is: istream, binary: bool)
+        -> list<list<tuple<int, float>>>
+
+    class GaussPostHolder:
+      @classmethod
+      def Write(cls, os: ostream, binary: bool,
+                t: list<list<tuple<int, Vector>>>) -> bool
+
+      def Clear(self)
+
+      def Read(self, is: istream) -> bool
+
+      @classmethod
+      def IsReadInBinary(cls) -> bool
+
+      def Value(self) -> list<list<tuple<int, Vector>>>
+
+      def Swap(self, other: GaussPostHolder)
+
+      def ExtractRange(self, other: GaussPostHolder, range: str) -> bool
+
+    # ScalePosterior
+
+    def TotalPosterior(post: list<list<tuple<int, float>>>) -> float
+
+    def PosteriorEntriesAreDisjoint(post_elem1: list<tuple<int, float>>,
+                                    post_elem2: list<tuple<int, float>>)
+        -> bool
+
+    def MergePosteriors(post1: list<list<tuple<int, float>>>,
+                        post2: list<list<tuple<int, float>>>, merge: bool,
+                        drop_frames: bool)
+        -> (num_frames: int, post: list<list<tuple<int, float>>>)
+
+    def VectorToPosteriorEntry(log_likes: VectorBase, num_gselect: int,
+                               min_post: float)
+        -> (log_like: float, post_entry: list<tuple<int, float>>)
+
+    def AlignmentToPosterior(ali: list<int>) -> list<list<tuple<int, float>>>
+
+    # SortPosteriorByPdfs
+
+    def ConvertPosteriorToPdfs(tmodel: TransitionModel,
+                               post_in: list<list<tuple<int, float>>>)
+        -> list<list<tuple<int, float>>>
+
+    def ConvertPosteriorToPhones(tmodel: TransitionModel,
+                                 post_in: list<list<tuple<int, float>>>)
+        -> list<list<tuple<int, float>>>
+
+    # WeightSilencePost, WeightSilencePostDistributed
+
+    def PosteriorToMatrix(post: list<list<tuple<int, float>>>, post_dim: int)
+        -> Matrix
+
+    def PosteriorToPdfMatrix(post: list<list<tuple<int, float>>>,
+                             model: TransitionModel) -> Matrix
