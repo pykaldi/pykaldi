@@ -1,3 +1,5 @@
+# from "util/iostream-clifwrap.h" import *
+
 from "util/iostream-ext.h":
   namespace `::std`:
     class istream:

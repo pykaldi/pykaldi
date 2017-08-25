@@ -166,7 +166,7 @@ class _StdFstBase(object):
             isymbols = self.InputSymbols()
         if osymbols is None:
             osymbols = self.OutputSymbols()
-        ostrm = ofstream.to_file(filename)
+        ostrm = ofstream.new_from_file(filename)
         fstdrawer = StdFstDrawer(
             self, isymbols, osymbols, ssymbols,
             acceptor, title, width, height, portrait, vertical, ranksep,

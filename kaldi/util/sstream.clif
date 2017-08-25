@@ -3,10 +3,19 @@ from "util/iostream-clifwrap.h" import *
 from "sstream":
   namespace `::std`:
     class istringstream(istream):
+      @add__init__
+      def `istringstream` as new_from_str(self, str: str)
+
       def str(self) -> str
 
     class ostringstream(ostream):
+      @add__init__
+      def `ostringstream` as new_from_str(self, str: str)
+
       def str(self) -> str
 
     class stringstream(iostream):
+      @add__init__
+      def `stringstream` as new_from_str(self, str: str)
+
       def str(self) -> str
