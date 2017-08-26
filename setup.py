@@ -10,12 +10,14 @@ import setuptools.extension
 
 import os
 from subprocess import check_output, check_call
+from queue import Queue
 
 import numpy
 
 # This might get risky
 from kaldi import __version__
 
+from distutils.file_util import copy_file
 ################################################################################
 # Check variables / find programs
 ################################################################################
@@ -69,11 +71,32 @@ if DEBUG:
 ################################################################################
 # Use CMake to build Python extensions in parallel
 ################################################################################
+def populateExtensionList():
+    extensions = []
+    lib_dir = os.path.join(BUILD_DIR, "lib")
+    for dirpath, _, filenames in os.walk( os.path.join(lib_dir, "kaldi") ):
+
+        lib_path = os.path.relpath(dirpath, lib_dir)
+
+        if lib_path == ".":
+            lib_path = "kaldi"
+
+        # append filenames
+        for f in filenames:
+            f = os.path.splitext(f)[0] # remove extension
+            ext_name = "{}.{}".format(lib_path, f)
+            extensions.append(KaldiExtension(ext_name))
+    return extensions
 
 class KaldiExtension(setuptools.extension.Extension):
     """Dummy class that only holds the name of the extension"""
     def __init__(self, name):
         setuptools.extension.Extension.__init__(self, name, [])
+        self._needs_stub = False
+    def __eq__(self, other):
+        return isinstance(other, KaldiExtension) and other.name == self.name
+    def __str__(self):
+        return "KaldiExtension({})".format(self.name)
 
 class CMakeBuild(setuptools.command.build_ext.build_ext):
     def run(self):
@@ -96,9 +119,39 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         check_call(['make', '-j'], cwd = BUILD_DIR)
         print() # Add an empty line for cleaner output
 
+        # Populates extension list
+        self.extensions = populateExtensionList()
+
+        if DEBUG:
+            for ext in self.extensions:
+                print(ext)
+            self.verbose = True
+
         self.inplace = old_inplace
         if old_inplace:
             self.copy_extensions_to_source()
+
+    def copy_extensions_to_source(self):
+        build_py = self.get_finalized_command('build_py')
+        for ext in self.extensions:
+            fullname = self.get_ext_fullname(ext.name)
+            filename = self.get_ext_filename(fullname)
+            modpath = fullname.split('.')
+            package = '.'.join(modpath[:-1])
+            package_dir = build_py.get_package_dir(package)
+            dest_filename = os.path.join(package_dir,
+                                         os.path.basename(filename))
+            src_filename = os.path.join(self.build_lib, filename)
+
+            # Always copy, even if source is older than destination, to ensure
+            # that the right extensions for the current Python/platform are
+            # used.
+            copy_file(
+                src_filename, dest_filename, verbose=self.verbose,
+                dry_run=self.dry_run
+            )
+            if ext._needs_stub:
+                self.write_stub(package_dir or os.curdir, ext, True)
 
     def get_ext_filename(self, fullname):
         """Convert the name of an extension (eg. "foo.bar") into the name
@@ -123,7 +176,7 @@ class install_lib(setuptools.command.install_lib.install_lib):
 
 class build_doc(Command):
     user_options = []
-    description = "Builds documentation using sphinx. Calls apidoc."
+    description = "Builds documentation using sphinx."
 
     def initialize_options(self):
         pass
@@ -132,125 +185,18 @@ class build_doc(Command):
         pass
 
     def run(self):
-        check_call(['make', 'docs'], cwd = BUILD_DIR)
+        try:
+            import sphinx
+            check_call(['make', 'docs'], cwd = BUILD_DIR)
+        except ImportError:
+            print("Sphinx was not found. Install it using pip install sphinx.")
 
 ################################################################################
 # Setup pykaldi
 ################################################################################
-
-extensions = [
-                KaldiExtension("kaldi._clif"),
-                KaldiExtension("kaldi.base.io_funcs"),
-                KaldiExtension("kaldi.base.kaldi_math"),
-                KaldiExtension("kaldi.base.timer"),
-                KaldiExtension("kaldi.cudamatrix.cu_array"),
-                KaldiExtension("kaldi.cudamatrix.cu_vector"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrix"),
-                KaldiExtension("kaldi.cudamatrix.cu_matrixdim"),
-                KaldiExtension("kaldi.decoder.faster_decoder"),
-                KaldiExtension("kaldi.feat.feature_common_ext"),
-                KaldiExtension("kaldi.feat.feature_fbank"),
-                KaldiExtension("kaldi.feat.feature_functions"),
-                KaldiExtension("kaldi.feat.feature_mfcc"),
-                KaldiExtension("kaldi.feat.feature_plp"),
-                KaldiExtension("kaldi.feat.feature_spectrogram"),
-                KaldiExtension("kaldi.feat.feature_window"),
-                KaldiExtension("kaldi.feat.mel_computations"),
-                KaldiExtension("kaldi.feat.online_feature"),
-                KaldiExtension("kaldi.feat.pitch_functions"),
-                KaldiExtension("kaldi.feat.resample"),
-                KaldiExtension("kaldi.feat.signal"),
-                KaldiExtension("kaldi.feat.wave_reader"),
-                KaldiExtension("kaldi.fstext.arc"),
-                KaldiExtension("kaldi.fstext.compiler"),
-                KaldiExtension("kaldi.fstext.drawer"),
-                KaldiExtension("kaldi.fstext.encode"),
-                KaldiExtension("kaldi.fstext.expanded_fst"),
-                KaldiExtension("kaldi.fstext.float_weight"),
-                KaldiExtension("kaldi.fstext.fst"),
-                KaldiExtension("kaldi.fstext.fst_ext"),
-                KaldiExtension("kaldi.fstext.fst_operations"),
-                KaldiExtension("kaldi.fstext.fstext_utils"),
-                KaldiExtension("kaldi.fstext.getters"),
-                KaldiExtension("kaldi.fstext.kaldi_fst_io"),
-                KaldiExtension("kaldi.fstext.lattice_weight"),
-                KaldiExtension("kaldi.fstext.lattice_utils"),
-                KaldiExtension("kaldi.fstext.mutable_fst"),
-                KaldiExtension("kaldi.fstext.printer"),
-                KaldiExtension("kaldi.fstext.properties"),
-                KaldiExtension("kaldi.fstext.symbol_table"),
-                KaldiExtension("kaldi.fstext.vector_fst"),
-                KaldiExtension("kaldi.fstext.weight"),
-                KaldiExtension("kaldi.gmm.am_diag_gmm"),
-                KaldiExtension("kaldi.gmm.decodable_am_diag_gmm"),
-                KaldiExtension("kaldi.gmm.diag_gmm"),
-                KaldiExtension("kaldi.gmm.full_gmm"),
-                KaldiExtension("kaldi.gmm.full_gmm_ext"),
-                KaldiExtension("kaldi.gmm.full_gmm_normal"),
-                KaldiExtension("kaldi.gmm.mle_diag_gmm"),
-                KaldiExtension("kaldi.gmm.mle_full_gmm"),
-                KaldiExtension("kaldi.gmm.model_common"),
-                KaldiExtension("kaldi.gmm.tests.model_test_common"),
-                KaldiExtension("kaldi.hmm.hmm_topology"),
-                KaldiExtension("kaldi.hmm.posterior"),
-                KaldiExtension("kaldi.hmm.transition_model"),
-                KaldiExtension("kaldi.itf.context_dep_itf"),
-                KaldiExtension("kaldi.itf.decodable_itf"),
-                KaldiExtension("kaldi.itf.online_feature_itf"),
-                KaldiExtension("kaldi.itf.options_itf"),
-                KaldiExtension("kaldi.matrix.compressed_matrix"),
-                KaldiExtension("kaldi.matrix.kaldi_matrix"),
-                KaldiExtension("kaldi.matrix.kaldi_matrix_ext"),
-                KaldiExtension("kaldi.matrix.kaldi_vector"),
-                KaldiExtension("kaldi.matrix.kaldi_vector_ext"),
-                KaldiExtension("kaldi.matrix.matrix_common"),
-                KaldiExtension("kaldi.matrix.matrix_ext"),
-                KaldiExtension("kaldi.matrix.matrix_functions"),
-                KaldiExtension("kaldi.matrix.packed_matrix"),
-                KaldiExtension("kaldi.matrix.sp_matrix"),
-                KaldiExtension("kaldi.matrix.sparse_matrix"),
-                KaldiExtension("kaldi.matrix.tp_matrix"),
-                KaldiExtension("kaldi.nnet3.am_nnet_simple"),
-                KaldiExtension("kaldi.nnet3.decodable_simple_looped"),
-                KaldiExtension("kaldi.nnet3.decodable_online_looped"),
-                KaldiExtension("kaldi.nnet3.natural_gradient_online"),
-                KaldiExtension("kaldi.nnet3.nnet_am_decodable_simple"),
-                KaldiExtension("kaldi.nnet3.nnet_analyze"),
-                KaldiExtension("kaldi.nnet3.nnet_common"),
-                KaldiExtension("kaldi.nnet3.nnet_combine"),
-                KaldiExtension("kaldi.nnet3.nnet_compile"),
-                KaldiExtension("kaldi.nnet3.nnet_compute"),
-                KaldiExtension("kaldi.nnet3.nnet_component_itf"),
-                KaldiExtension("kaldi.nnet3.nnet_computation"),
-                KaldiExtension("kaldi.nnet3.nnet_computation_graph"),
-                KaldiExtension("kaldi.nnet3.nnet_convolutional_component"),
-                KaldiExtension("kaldi.nnet3.nnet_descriptor"),
-                KaldiExtension("kaldi.nnet3.nnet_diagnostics"),
-                KaldiExtension("kaldi.nnet3.nnet_example"),
-                KaldiExtension("kaldi.nnet3.nnet_example_utils"),
-                KaldiExtension("kaldi.nnet3.nnet_general_component"),
-                KaldiExtension("kaldi.nnet3.nnet_graph"),
-                KaldiExtension("kaldi.nnet3.nnet_misc_computation_info"),
-                KaldiExtension("kaldi.nnet3.nnet_nnet"),
-                KaldiExtension("kaldi.nnet3.nnet_optimize"),
-                KaldiExtension("kaldi.nnet3.nnet_optimize_utils"),
-                KaldiExtension("kaldi.nnet3.nnet_parse"),
-                KaldiExtension("kaldi.nnet3.nnet_simple_component"),
-                KaldiExtension("kaldi.nnet3.nnet_test_utils"),
-                KaldiExtension("kaldi.nnet3.nnet_training"),
-                KaldiExtension("kaldi.nnet3.nnet_utils"),
-                KaldiExtension("kaldi.util.fstream"),
-                KaldiExtension("kaldi.util.iostream"),
-                KaldiExtension("kaldi.util.kaldi_holder"),
-                KaldiExtension("kaldi.util.kaldi_io"),
-                KaldiExtension("kaldi.util.kaldi_table"),
-                KaldiExtension("kaldi.util.options_ext"),
-                KaldiExtension("kaldi.util.sstream"),
-             ]
-
-if KALDI_HAVE_CUDA:
-    extensions.append(KaldiExtension("kaldi.cudamatrix.cu_device"))
-
+if not KALDI_HAVE_CUDA:
+    print("Removing cu_device")
+    extensions.remove(KaldiExtension("kaldi.cudamatrix.cu_device"))
 
 packages = find_packages()
 
@@ -258,7 +204,7 @@ setup(name = 'pykaldi',
       version = __version__,
       description = 'Kaldi Python Wrapper',
       author = 'SAIL',
-      ext_modules=extensions,
+      # ext_modules=extensions,
       cmdclass = {
           'build_ext': CMakeBuild,
           'build': build,
@@ -267,6 +213,5 @@ setup(name = 'pykaldi',
           },
       packages = packages,
       package_data = {},
-      install_requires = ['enum34;python_version<"3.4"', 'numpy',
-                          'sphinx', 'sphinx_rtd_theme'],
+      install_requires = ['enum34;python_version<"3.4"', 'numpy'],
       zip_safe = False)
