@@ -51,8 +51,8 @@ class StdEncodeMapper(encode.StdEncodeMapper):
     on disk to construct this class.
 
     Args:
-        encode_labels: Should labels be encoded?
-        encode_weights: Should weights be encoded?
+        encode_labels (bool): Should labels be encoded?
+        encode_weights (bool): Should weights be encoded?
     """
 
     def __init__(self, encode_labels=False, encode_weights=False):
@@ -133,26 +133,26 @@ class _StdFstBase(object):
         The graph can be rendered using the `dot` binary provided by Graphviz.
 
         Args:
-          filename: The string location of the output dot/Graphviz file.
+          filename (string): The string location of the output dot/Graphviz file.
           isymbols: An optional symbol table used to label input symbols.
           osymbols: An optional symbol table used to label output symbols.
           ssymbols: An optional symbol table used to label states.
-          acceptor: Should the figure be rendered in acceptor format if
-              possible?
-          title: An optional string indicating the figure title.
-          width: The figure width, in inches.
-          height: The figure height, in inches.
-          portrait: Should the figure be rendered in portrait rather than
-              landscape?
-          vertical: Should the figure be rendered bottom-to-top rather than
+          acceptor (bool): Should the figure be rendered in acceptor format if
+              possible? Defaults False.
+          title (string): An optional string indicating the figure title. Defaults empty.
+          width (float): The figure width, in inches. Defaults 8.5''.
+          height (float): The figure height, in inches. Defaults 11''.
+          portrait (bool): Should the figure be rendered in portrait rather than
+              landscape? Defaults False.
+          vertical (bool): Should the figure be rendered bottom-to-top rather than
               left-to-right?
-          ranksep: The minimum separation separation between ranks, in inches.
-          nodesep: The minimum separation between nodes, in inches.
-          fontsize: Font size, in points.
-          precision: Numeric precision for floats, in number of chars.
-          float_format: One of: 'e', 'f' or 'g'.
-          show_weight_one: Should weights equivalent to semiring One be
-              printed?
+          ranksep (float): The minimum separation separation between ranks, in inches. Defaults 0.4''.
+          nodesep (float): The minimum separation between nodes, in inches. Defaults 0.25''.
+          fontsize (int): Font size, in points. Defaults 14pt.
+          precision (int): Numeric precision for floats, in number of chars. Defaults to 5.
+          float_format ('e', 'f' or 'g'): One of: 'e', 'f' or 'g'. Defaults to 'g'
+          show_weight_one (bool): Should weights equivalent to semiring One be
+              printed? Defaults False.
 
         For more information about the rendering options, see `man dot`.
 
@@ -189,10 +189,9 @@ class _StdFstBase(object):
           isymbols: An optional symbol table used to label input symbols.
           osymbols: An optional symbol table used to label output symbols.
           ssymbols: An optional symbol table used to label states.
-          acceptor: Should the FST be rendered in acceptor format if possible?
-          show_weight_one: Should weights equivalent to semiring One be printed?
-          missing_symbol: The string to be printed when symbol table lookup
-              fails.
+          acceptor (bool): Should the FST be rendered in acceptor format if possible? Defaults False.
+          show_weight_one (bool): Should weights equivalent to semiring One be printed? Defaults False.
+          missing_symbol: The string to be printed when symbol table lookup fails.
 
         Returns:
           A formatted string representing the FST.

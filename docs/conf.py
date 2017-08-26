@@ -32,7 +32,9 @@ import kaldi
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     # 'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -125,6 +127,9 @@ html_sidebars = {
 # Keep autodoc order as in the source
 autodoc_member_order = 'bysource'
 
+autodoc_default_flags = ['members']
+
+autosummary_generate = True
 
 # -- Options for HTMLHelp output ------------------------------------------
 

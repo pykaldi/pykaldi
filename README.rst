@@ -14,21 +14,21 @@ Examples:
 
 #. Calculate MFCC features and write them to file:::
 
-    >>> from kaldi.feat import MfccOptions, Mfcc
-    >>> from kaldi.util import *
-    >>> wav_rspecifier = "scp:~/pykaldi/tests/wav.scp"
-    >>> mfcc_wspecifier = "ark,t:~/pykaldi/tests/mfcc.ark"
-    >>> opts = MfccOptions()
-    >>> opts.frame_opts.dither = 0.0
-    >>> opts.frame_opts.preemph_coeff = 0.0
-    >>> opts.frame_opts.round_to_power_of_two = True
-    >>> opts.use_energy = False
-    >>> mfcc = Mfcc(opts)
-    >>> with SequentialWaveReader(wav_rspecifier) as reader:
-    >>>     with MatrixWriter(mfcc_wspecifier) as writer:
-    >>>         for key, wave in reader:
-    >>>            writer[key] = mfcc.ComputeFeatures(wave.Data()[0],
-    >>>                                                wave.SampFreq(), 1.0)
+    from kaldi.feat import MfccOptions, Mfcc
+    from kaldi.util import *
+    wav_rspecifier = "scp:~/pykaldi/tests/wav.scp"
+    mfcc_wspecifier = "ark,t:~/pykaldi/tests/mfcc.ark"
+    opts = MfccOptions()
+    opts.frame_opts.dither = 0.0
+    opts.frame_opts.preemph_coeff = 0.0
+    opts.frame_opts.round_to_power_of_two = True
+    opts.use_energy = False
+    mfcc = Mfcc(opts)
+    with SequentialWaveReader(wav_rspecifier) as reader:
+        with MatrixWriter(mfcc_wspecifier) as writer:
+            for key, wave in reader:
+               writer[key] = mfcc.ComputeFeatures(wave.Data()[0],
+                                                   wave.SampFreq(), 1.0)
 
 #. `Decode features using GMM-based model <https://gist.github.com/vrmpx/ef3f889ece05cb26e3a60a52613e650f>`_
 
@@ -46,6 +46,11 @@ How is this possible?
 Contents
 --------
 .. toctree::
+  :hidden:
+
+  self
+
+.. toctree::
   :caption: For Users:
   :glob:
   :maxdepth: 2
@@ -59,9 +64,20 @@ Contents
 
   dev/*
 
-.. toctree::
-  :caption: API
-  :glob:
-  :maxdepth: 2
+Packages
+--------
 
-  api/*
+.. autosummary::
+  :toctree: _autosummary
+
+  kaldi.base
+  kaldi.cudamatrix
+  kaldi.decoder
+  kaldi.feat
+  kaldi.fstext
+  kaldi.gmm
+  kaldi.hmm
+  kaldi.itf
+  kaldi.matrix
+  kaldi.nnet3
+  kaldi.util

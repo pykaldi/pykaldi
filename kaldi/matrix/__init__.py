@@ -1,3 +1,6 @@
+"""
+Qui aute qui exercitation consequat velit in ut duis cupidatat esse aliquip nulla ut velit dolore veniam ut ex ut in quis ut do nulla.
+"""
 import sys
 import numpy
 
@@ -1248,10 +1251,11 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
             m = Matrix.new(obj)
             if m.size()[0] != m.size()[1]:
                 raise ValueError("obj is not a square matrix.")
-            tmp = TpMatrix()
-            tmp.resize_(m.size()[0])
-            tmp.CopyFromMat(m, trans)
-            instance = tmp
+            # tmp = TpMatrix()
+            # tmp.resize_(m.size()[0])
+            instance.resize_(m.size()[0])
+            instance.CopyFromMat(m, trans)
+            # instance = tmp
         return instance
 
     @classmethod
