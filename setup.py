@@ -198,7 +198,10 @@ class build_doc(Command):
 ################################################################################
 # Setup pykaldi
 ################################################################################
-extensions = [KaldiExtension("dummy")]
+
+# We add a `dummy` extension in order to force setuptools to do the build_ext step
+extensions = [KaldiExtension("kaldi")]
+
 packages = find_packages()
 
 setup(name = 'pykaldi',
