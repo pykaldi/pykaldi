@@ -127,6 +127,10 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
                 print(ext)
             self.verbose = True
 
+        if not KALDI_HAVE_CUDA:
+            print("Removing cu_device")
+            extensions.remove(KaldiExtension("kaldi.cudamatrix.cu_device"))
+
         self.inplace = old_inplace
         if old_inplace:
             self.copy_extensions_to_source()
@@ -194,17 +198,14 @@ class build_doc(Command):
 ################################################################################
 # Setup pykaldi
 ################################################################################
-if not KALDI_HAVE_CUDA:
-    print("Removing cu_device")
-    extensions.remove(KaldiExtension("kaldi.cudamatrix.cu_device"))
-
+extensions = [KaldiExtension("dummy")]
 packages = find_packages()
 
 setup(name = 'pykaldi',
       version = __version__,
       description = 'Kaldi Python Wrapper',
       author = 'SAIL',
-      # ext_modules=extensions,
+      ext_modules=extensions,
       cmdclass = {
           'build_ext': CMakeBuild,
           'build': build,
