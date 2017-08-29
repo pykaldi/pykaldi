@@ -1,3 +1,4 @@
+from "cudamatrix/cu-matrixdim-clifwrap.h" import *
 from "cudamatrix/cu-array-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
 from "nnet3/nnet-component-itf-clifwrap.h" import *

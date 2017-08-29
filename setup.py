@@ -93,8 +93,8 @@ class KaldiExtension(setuptools.extension.Extension):
     def __init__(self, name):
         setuptools.extension.Extension.__init__(self, name, [])
         self._needs_stub = False
-    def __eq__(self, other):
-        return isinstance(other, KaldiExtension) and other.name == self.name
+#    def __eq__(self, other):
+#        return isinstance(other, KaldiExtension) and other.name == self.name
     def __str__(self):
         return "KaldiExtension({})".format(self.name)
 
@@ -126,10 +126,6 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
             for ext in self.extensions:
                 print(ext)
             self.verbose = True
-
-        if not KALDI_HAVE_CUDA:
-            print("Removing cu_device")
-            extensions.remove(KaldiExtension("kaldi.cudamatrix.cu_device"))
 
         self.inplace = old_inplace
         if old_inplace:

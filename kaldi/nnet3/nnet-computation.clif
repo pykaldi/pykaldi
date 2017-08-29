@@ -1,5 +1,6 @@
 from "util/iostream-clifwrap.h" import *
 from "matrix/matrix-common-clifwrap.h" import *
+from "cudamatrix/cu-matrixdim-clifwrap.h" import *
 from "cudamatrix/cu-array-clifwrap.h" import *
 from "nnet3/nnet-common-clifwrap.h" import *
 from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
