@@ -17,10 +17,28 @@
 # HTML output directory
 set(SPHINX_HTML_DIR "${CMAKE_BINARY_DIR}/sphinx/html")
 
+
+
+# call autogen everytime the readme is updated
+set(AUTOGEN_OUTDIR "${CMAKE_CURRENT_SOURCE_DIR}/_autosummary")
+set(AUTOGEN_IN "../README.rst")
+add_custom_command(
+  OUTPUT ${AUTOGEN_OUTDIR}
+  COMMAND sphinx-autogen ${AUTOGEN_IN}
+  						 --imported-members
+  						 -o ${AUTOGEN_OUTDIR}
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  DEPENDS ${AUTOGEN_IN}
+  COMMENT "Calling autogen"
+  VERBATIM
+)
+
 add_custom_target(docs
 	COMMAND	python -msphinx
 			-q -b html
 			"${CMAKE_CURRENT_SOURCE_DIR}"
 			"${SPHINX_HTML_DIR}"
 	VERBATIM
-	COMMENT "Building HTML documentation with Sphinx")
+	COMMENT "Building HTML documentation with Sphinx"
+	DEPENDS ${AUTOGEN_OUTDIR}
+)

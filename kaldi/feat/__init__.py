@@ -14,9 +14,16 @@ from . import wave_reader
 from ..matrix import Matrix
 
 class WaveData(wave_reader.WaveData):
+    """Python wrapper for ::kaldi::WaveData<float>"""
     def __init__(self):
         """Initializes a new wave data structure."""
         super(WaveData, self).__init__()
 
     def Data(self):
+        """
+        Getter method for WaveData.Data(). Wraps the result in :class:`~kaldi.matrix.Matrix`
+        
+        Returns:
+            Matrix with WaveData
+        """
         return Matrix.new(super(WaveData, self).Data())

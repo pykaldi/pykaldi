@@ -127,7 +127,9 @@ html_sidebars = {
 # Keep autodoc order as in the source
 autodoc_member_order = 'bysource'
 
-autodoc_default_flags = ['members']
+# List of autodoc directive flags that should be 
+# automatically applied to all autodoc directives
+autodoc_default_flags = ['members', 'undoc-members', 'private-members', 'inherited-members']
 
 autosummary_generate = True
 

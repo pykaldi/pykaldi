@@ -1,6 +1,3 @@
-"""
-Qui aute qui exercitation consequat velit in ut duis cupidatat esse aliquip nulla ut velit dolore veniam ut ex ut in quis ut do nulla.
-"""
 import sys
 import numpy
 
