@@ -31,8 +31,6 @@ class FullGmm(full_gmm.FullGmm):
             raise ValueError("nmix and dimension must be a positive integer.")
         if nmix > 0 and dim > 0:
             self.Resize(nmix, dim)
-            self.dim = dim 
-            self.nmix = nmix
         
     def copy(self, src):
         """Copies data from src into this FullGmm and returns this FullGmm.
@@ -64,7 +62,7 @@ class FullGmm(full_gmm.FullGmm):
         Raises:
             ValueError if data is not consistent with this components dimension.
         """
-        if data.size() != self.dim:
+        if data.size() != self.Dim():
             raise ValueError("data point is not consistent with component dimension.")
         posteriors = Vector(self.NumGauss())
         loglike = self.ComponentPosteriors(data, posteriors)

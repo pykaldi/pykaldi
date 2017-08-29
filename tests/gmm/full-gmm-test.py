@@ -9,7 +9,7 @@ from kaldi.matrix import *
 from kaldi.gmm import FullGmm, DiagGmm
 
 from kaldi.matrix import kaldi_vector
-from model_test_common import *
+from kaldi.gmm.tests.model_test_common import *
 from kaldi.gmm.full_gmm_normal import FullGmmNormal
 from kaldi.gmm.mle_full_gmm import AccumFullGmm
 from kaldi.gmm.model_common import GmmUpdateFlags
