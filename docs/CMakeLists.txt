@@ -21,9 +21,10 @@ set(SPHINX_HTML_DIR "${CMAKE_BINARY_DIR}/sphinx/html")
 
 # call autogen everytime the readme is updated
 set(AUTOGEN_OUTDIR "${CMAKE_CURRENT_SOURCE_DIR}/_autosummary")
-set(AUTOGEN_IN "../README.rst")
+set(AUTOGEN_IN "API.rst")
 add_custom_command(
   OUTPUT ${AUTOGEN_OUTDIR}
+  COMMAND rm -rf ${AUTOGEN_OUTDIR}
   COMMAND sphinx-autogen ${AUTOGEN_IN}
   						 --imported-members
   						 -o ${AUTOGEN_OUTDIR}
