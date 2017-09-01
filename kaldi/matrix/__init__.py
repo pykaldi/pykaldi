@@ -8,8 +8,8 @@ from matrix_common import (MatrixResizeType, MatrixStrideType,
                            MatrixTransposeType, SpCopyType)
 from .kaldi_vector import ApproxEqualVector, AssertEqualVector, VecVec
 # from .kaldi_vector_ext import VecMatVec
-import kaldi_vector_ext
-import kaldi_matrix_ext
+from . import kaldi_vector_ext
+from . import kaldi_matrix_ext
 from .kaldi_matrix import (ApproxEqualMatrix, AssertEqualMatrix, SameDimMatrix,
                            AttemptComplexPower, CreateEigenvalueMatrix,
                            TraceMat, TraceMatMatMat, TraceMatMatMatMat)
@@ -18,6 +18,7 @@ from .matrix_functions import MatrixExponential, AssertSameDimMatrix
 from ._str import set_printoptions
 from . import sparse_matrix
 from . import packed_matrix, sp_matrix, tp_matrix
+from . import optimization
 
 ################################################################################
 # Define Vector and Matrix Classes

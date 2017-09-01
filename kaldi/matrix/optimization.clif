@@ -1,0 +1,43 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+
+from "matrix/optimization.h":
+  namespace `kaldi`:
+    class LinearCgdOptions:
+      max_iters: int
+      max_error: float
+      recompute_residual_factor: float
+
+    def LinearCgd(opts: LinearCgdOptions, A: SpMatrix, b: VectorBase,
+                  x: VectorBase) -> int
+
+
+    class LbfgsOptions:
+      minimize: bool
+      m: int
+      first_step_learning_rate: float
+      first_step_length: float
+      first_step_impr: float
+      c1: float
+      c2: float
+      d: float
+      max_line_search_iters: int
+      avg_step_length: int
+
+      def __init__(self, minimize :bool = default)
+
+
+    class `OptimizeLbfgs<float>` as OptimizeLbfgs:
+      def __init__(self, x: VectorBase, opts: LbfgsOptions)
+
+      # TODO: Implement C++ wrappers
+      # def GetValue(self) -> (x: VectorBase, objf_value: float)
+      # def GetProposedValue(self) -> VectorBase
+
+      def RecentStepLength(self) -> float
+
+      def DoStep(self, function_value: float, gradient: VectorBase)
+
+      def `DoStep` as DoStepApproxHessian(self, function_value: float,
+                                          gradient: VectorBase,
+                                          diag_approx_2nd_deriv: VectorBase)
