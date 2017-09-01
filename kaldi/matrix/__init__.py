@@ -23,279 +23,197 @@ from . import packed_matrix, sp_matrix, tp_matrix
 # Define Vector and Matrix Classes
 ################################################################################
 
-class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
-    """Python wrapper for kaldi::Vector<float> and kaldi::SubVector<float>.
+class VectorBase(object):
+    """Base class for vector types.
 
-    This class defines the user facing API for Kaldi Vector and SubVector types.
-    It bundles the raw CLIF wrappings produced for Vector and SubVector types
-    and provides a more Pythonic API.
+    This class defines a more Pythonic user facing API for Vector and SubVector
+    types.
 
-    Attributes:
-        own_data (bool): True if vector owns its data, False otherwise.
-
-    Args:
-        length (int): Length of the new vector.
-
-    Note:
-        Unless otherwise specified, most methods will update self.
+    (No constructor.)
     """
 
-    def __init__(self, length=None):
-        """Initializes a new vector.
-
-        If length is not `None`, initializes the vector to the specified length.
-        Otherwise, initializes an empty vector.
-
-        Args:
-            length (int): Length of the new vector.
-        """
-        kaldi_vector.Vector.__init__(self)
-        self.own_data = True
-        if length is not None:
-            if isinstance(length, int) and length >= 0:
-                self.resize_(length, MatrixResizeType.UNDEFINED)
-            else:
-                raise ValueError("length should be a non-negative integer.")
-
-    @classmethod
-    def new(cls, obj, start=0, length=None):
-        """Creates a new vector from a vector like object.
-
-        If possible the new vector will share its data with the `obj`, i.e. no
-        copy will be made. A copy of the `obj` will only be made if `obj.__array__`
-        returns a copy, if `obj` is a sequence or if a copy is needed to satisfy
-        any of the other requirements (data type, order, etc.). Regardless of
-        whether a copy is made or not, the new vector will not own its data,
-        i.e. it will not support resizing. If a resizable vector is needed, it
-        can be created by calling the clone method on the new vector.
-
-        Args:
-            obj (vector_like): A vector, a 1-D numpy array, any object exposing
-                a 1-D array interface, an object whose __array__ method returns
-                a 1-D numpy array, or any sequence that can be interpreted as a
-                vector.
-            start (int): Start of the new vector.
-            length (int): Length of the new vector. If it is None, it defaults
-                to len(obj) - start.
-
-        Returns:
-            A new Vector with the same data as obj.
-        """
-        if not isinstance(obj, kaldi_vector.VectorBase):
-            obj = numpy.array(obj, dtype=numpy.float32, copy=False, order='C')
-            if obj.ndim != 1:
-                raise ValueError("obj should be a 1-D vector like object.")
-        obj_len = len(obj)
-        if not (0 <= start <= obj_len):
-            raise IndexError("start={0} should be in the range [0,{1}] "
-                             "when len(obj)={1}.".format(start, obj_len))
-        max_len = obj_len - start
-        if length is None:
-            length = max_len
-        if not (0 <= length <= max_len):
-            raise IndexError("length={} should be in the range [0,{}] when "
-                             "start={} and len(obj)={}."
-                             .format(length, max_len, start, obj_len))
-        instance = cls.__new__(cls)
-        matrix_ext.SubVector.__init__(instance, obj, start, length)
-        instance.own_data = False
-        return instance
-
-    @classmethod
-    def random(cls, dim):
-        """Returns a random vector of specified dim.
-
-        Args:
-            dim (int): Output Vector dimension.
-
-        Returns:
-            A new Vector randomly initialized.
-        """
-        instance = cls(dim)
-        instance.SetRandn()
-        return instance
-
-    @classmethod
-    def new_from_vec(cls, src):
-        """Copies data from src into a new instance of vector.
-
-        Args:
-            src (Vector): Source vector to copy.
-
-        Returns:
-            A new Vector with data copied from src.
-        """
-        instance = cls.__new__(len(src))
-        instance.copy_from_vec(src)
-        return instance
-
     def copy_(self, src):
-        """Copies data from src into this vector. Fails if self and src are not of the same size.
+        """Copies the elements from src into this vector and returns this
+        vector.
 
         Args:
-            src (Vector): Source vector to copy.
+            src (VectorBase): Source vector to copy.
 
         Returns:
-            This Vector.
+            This vector.
 
         Raises:
-            ValueError: When src has a different dimension than self.
+            ValueError: If src has a different size than self.
         """
-        if len(self) != len(src):
-            raise ValueError("src with size {} cannot be copied to vector of size {}.".format(len(src), len(self)))
+        if self.size() != src.size():
+            raise ValueError("src with size {} cannot be copied into vector of "
+                             " size {}.".format(src.size(), self.size()))
         self.CopyFromVec(src)
         return self
 
     def clone(self):
-        """
+        """Returns a copy of this vector.
+
         Returns:
-            a copy of this Vector.
+            A new :class:`Vector` that is a copy of this vector.
         """
-        clone = Vector(len(self))
+        clone = Vector(self.size())
         clone.CopyFromVec(self)
         return clone
 
+    @property
+    def shape(self):
+        """For numpy.ndarray compatibility."""
+        return (self.size(),)
+
     def equal(self, other, tol=1e-16):
-        """Checks if vectors have the same length and data.
+        """True if vectors have the same size and elements.
 
         Args:
-            other (Vector): Vector to compare against.
-            tol (float): Tolerance of the equality comparisson.
+            other (VectorBase): Vector to compare against.
+            tol (float): Tolerance for the equality check.
 
         Returns:
-            True if self and other are the same size and ||self - other||<tol.
+            True if self.size() == other.size() and ||self - other|| < tol.
             False otherwise.
         """
         return self.size() == other.size() and self.ApproxEqual(other, tol)
 
     def numpy(self):
-        """
+        """Returns a new 1-D numpy array backed by this vector.
+
         Returns:
-            a new :class:`numpy.ndarray` sharing the data with this vector.
+            A new :class:`numpy.ndarray` sharing the data with this vector.
         """
         return vector_to_numpy(self)
 
-    def range(self, start, length):
-        """Returns a range of elements as a new vector.
+    def range(self, start=0, length=None):
+        """Returns the given range of elements as a new vector.
 
         Args:
             start (int): Start of the new vector.
-            length (int): Length of the new vector. If it is None, it defaults to len(obj) - start.
-        
+            length (int): Length of the new vector. If None, defaults to
+                self.size() - start.
+
         Returns:
-            New vector with range of elements.
+            A new :class:`SubVector` sharing data with this vector.
         """
-        return Vector.new(self, start, length)
-
-    def resize_(self, length, resize_type=MatrixResizeType.SET_ZERO):
-        """Resizes the vector to desired length.
-
-        Args:
-            length (int): Size of new vector.
-            resize_type (:data:`MatrixResizeType`): Type of resize to perform. Defaults to `MatrixResizeType.SET_ZERO`.
-
-        Raises:
-            ValueError: When Vector does not own its data.
-        """
-        if self.own_data:
-            self.Resize(length, resize_type)
-        else:
-            raise ValueError("resize_ method cannot be called on vectors "
-                             "that do not own their data.")
-
-    def swap_(self, other):
-        """Swaps the contents of vectors. Shallow swap.
-
-        Args:
-            other (Vector): Vector to swap contents with.
-
-        Raises:
-            ValueError: When this Vector does not own its data.
-        """
-        if self.own_data and other.own_data:
-            self.Swap(other)
-        else:
-            raise ValueError("swap_ method cannot be called on vectors "
-                             "that do not own their data.")
+        return SubVector(self, start, length)
 
     def add_mat_vec(self, alpha, M, trans, v, beta):
-        """Add matrix times vector. Updates and returns self.
+        """Adds matrix M times vector v to this vector and returns it.
 
         Args:
-            alpha (int): Coefficient for Matrix M
+            alpha (int): Coefficient for matrix M
             M (Matrix): Matrix with dimensions m x n
-            trans (:class:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If MatrixTransposeType.TRANS, replace M with its transpose M^T
+            trans (:class:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace M with its transpose M^T.
             v (Vector): Vector of size n
-            beta (int): Coefficient for this Vector
+            beta (int): Coefficient for this vector
 
         Raises:
-            ValueError: If `v.size() != M.ncols()`, or if `(M*v).size() != self.size()`
+            ValueError: If v.size() != M.num_cols or (M*v).size() != self.size()
 
         Returns:
-            This vector after update.
+            This vector.
         """
-        m, n = M.size()
-        if v.size() != n:
-            raise ValueError("Matrix with size {}x{} cannot be multiplied with Vector of size {}".format(M.nrows(), M.ncols(), v.size()))
-        if self.size() != m:
-            raise ValueError("(M*v) with size {} cannot be added to this Vector (size = {})".format(m, self.size()))
+        if v.size() != M.num_cols:
+            raise ValueError("Matrix with size {}x{} cannot be multiplied with "
+                             "Vector of size {}"
+                             .format(M.num_rows, M.num_cols, v.size()))
+        if self.size() != M.num_rows:
+            raise ValueError("(M*v) with size {} cannot be added to this Vector"
+                             " (size = {})".format(M.num_rows, self.size()))
         kaldi_vector_ext.AddMatVec(self, alpha, M, trans, v, beta)
         return self
 
     def add_mat_svec(self, alpha, M, trans, v, beta):
-        """Like :meth:`~kaldi.matrix.Vector.add_mat_vec`, except optimized for sparse v."""
-        m, n = M.size()
-        if v.size() != n:
-            raise ValueError("Matrix with size {}x{} cannot be multiplied with Vector of size {}".format(M.nrows(), M.ncols(), v.size()))
-        if self.size() != m:
-            raise ValueError("(M*v) with size {} cannot be added to this Vector (size = {})".format(m, self.size()))
+        """Like :meth:`~kaldi.matrix.Vector.add_mat_vec`, except optimized for
+        sparse v."""
+        if v.size() != M.num_cols:
+            raise ValueError("Matrix with size {}x{} cannot be multiplied with "
+                             "SparseVector of size {}"
+                             .format(M.num_rows, M.num_cols, v.size()))
+        if self.size() != M.num_rows:
+            raise ValueError("(M*v) with size {} cannot be added to this Vector"
+                             " (size = {})".format(M.num_rows, self.size()))
         kaldi_vector_ext.AddMatSvec(self, alpha, M, trans, v, beta)
+        return self
 
     def add_sp_vec(self, alpha, M, v, beta):
-        """Like :meth:`~kaldi.matrix.Vector.add_mat_vec`, for the case where M is SpMatrix.
+        """Like :meth:`~kaldi.matrix.Vector.add_mat_vec`, for the case where M
+        is a symmetric packed matrix.
 
         See also: :class:`~kaldi.matrix.SpMatrix`.
         """
-        m, n = M.size()
-        if v.size() != n:
-            raise ValueError("Matrix with size {}x{} cannot be multiplied with Vector of size {}".format(M.nrows(), M.ncols(), v.size()))
-        if self.size() != m:
-            raise ValueError("(M*v) with size {} cannot be added to this Vector (size = {})".format(m, self.size()))
+        if v.size() != M.num_cols:
+            raise ValueError("SpMatrix with size {}x{} cannot be multiplied "
+                             "with Vector of size {}"
+                             .format(M.num_rows, M.num_cols, v.size()))
+        if self.size() != M.num_rows:
+            raise ValueError("(M*v) with size {} cannot be added to this Vector"
+                             " (size = {})".format(M.num_rows, self.size()))
         kaldi_vector_ext.AddSpVec(self, alpha, M, v, beta)
+        return self
 
     def add_tp_vec(self, alpha, M, trans, v, beta):
-        """Like :meth:`~kaldi.matrix.Vector.add_mat_vec`, for the case where M is TpMatrix.
+        """Like :meth:`~kaldi.matrix.Vector.add_mat_vec`, for the case where M
+        is a triangular packed matrix.
 
         See also: :class:`~kaldi.matrix.TpMatrix`
         """
+        if v.size() != M.num_cols:
+            raise ValueError("TpMatrix with size {}x{} cannot be multiplied "
+                             "with Vector of size {}"
+                             .format(M.num_rows, M.num_cols, v.size()))
+        if self.size() != M.num_rows:
+            raise ValueError("(M*v) with size {} cannot be added to this Vector"
+                             " (size = {})".format(M.num_rows, self.size()))
         kaldi_vector_ext.AddTpVec(self, alpha, M, trans, v, beta)
+        return self
 
     def mul_tp(self, M, trans):
-        """Multiplies self by lower-triangular matrix.
+        """Multiplies self with lower-triangular matrix M and returns it.
 
         Args:
             M (TpMatrix): Lower-triangular matrix of size m x m.
-            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If `MatrixTransposeType.TRANS`, replace `M` with `M^T`.
+            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If `MatrixTransposeType.TRANS`, muliplies with `M^T`.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows
         """
+        if self.size() != M.num_rows:
+            raise ValueError("TpMatrix with size {}x{} cannot be multiplied "
+                             "with Vector of size {}"
+                             .format(M.num_rows, M.num_cols, self.size()))
         kaldi_vector_ext.MulTp(self, M, trans)
+        return self
 
     def solve(self, M, trans):
-        """ Solves linear system.
+        """Solves the linear system defined by M and this vector.
 
-        If `trans == kNoTrans`, solves M x = b, where b is the value of self at input and x is the value of **this** at output.
-        If `trans == kTrans`, solves M^T x = b.
+        If `trans == MatrixTransposeType.NO_TRANS`, solves M x = b, where b is
+        the value of **self** at input and x is the value of **self** at output.
+        If `trans == MatrixTransposeType.TRANS`, solves M^T x = b.
 
         Warning: Does not test for M being singular or near-singular.
 
         Args:
             M (TpMatrix): A matrix of dimensions m x m.
-            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If `MatrixTransposeType.TRANS`, solves M^T x = b instead.
-        
+            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If `MatrixTransposeType.TRANS`, solves M^T x = b instead.
+
         Returns:
-            This vector after update.
+            This vector.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows
         """
-        m, m = M.size()
-        self.resize_(m) # Resize self
+        if self.size() != M.num_rows:
+            raise ValueError("The number of rows of the input TpMatrix ({}) "
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows, self.size()))
         kaldi_vector_ext.Solve(self, M, trans)
         return self
 
@@ -303,94 +221,153 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         """Performs a row stack of the matrix M.
 
         Args:
-            M (Matrix_like): Matrix to stack rows from.
+            M (MatrixBase): Matrix to stack rows from.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows * M.num_cols
         """
+        if self.size() != M.num_rows * M.num_cols:
+            raise ValueError("The number of elements of the input Matrix ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows * M.num_cols, self.size()))
         kaldi_vector_ext.CopyRowsFromMat(self, M)
+        return self
 
     def copy_cols_from_mat(self, M):
         """Performs a column stack of the matrix M.
 
         Args:
-            M (Matrix_like): Matrix to stack columns from.
+            M (MatrixBase): Matrix to stack columns from.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows * M.num_cols
         """
+        if self.size() != M.num_rows * M.num_cols:
+            raise ValueError("The number of elements of the input Matrix ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows * M.num_cols, self.size()))
         kaldi_vector_ext.CopyColsFromMat(self, M)
+        return self
 
     def copy_row_from_mat(self, M, row):
         """Extracts a row of the matrix M.
 
         Args:
-            M (Matrix_like): Matrix of size m x n.
+            M (MatrixBase): Matrix of size m x n.
             row (int): Index of row.
 
         Raises:
-            IndexError: If not 0 <= row < (m - 1).
+            ValueError: If self.size() != M.num_cols
+            IndexError: If not 0 <= row < M.num_rows
         """
-        m, n = M.size()
-        if not isinstance(int, row) and not (0 <= row < m - 1):
+        if self.size() != M.num_cols:
+            raise ValueError("The number of columns of the input Matrix ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_cols, self.size()))
+        if not isinstance(int, row) and not (0 <= row < M.num_rows):
             raise IndexError()
-        self.resize_(n)
         kaldi_vector_ext.CopyRowFromMat(self, M, row)
+        return self
 
     def copy_col_from_mat(self, M, col):
-        """Like :meth:`copy_row_from_mat` but for columns."""
-        m, n = M.size()
-        if not instance(int, col) and not (0 <= col < n - 1):
+        """Extracts a column of the matrix M.
+
+        Args:
+            M (MatrixBase): Matrix of size m x n.
+            col (int): Index of column.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows
+            IndexError: If not 0 <= col < M.num_cols
+        """
+        if self.size() != M.num_rows:
+            raise ValueError("The number of rows of the input Matrix ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows, self.size()))
+        if not instance(int, col) and not (0 <= col < M.num_cols):
             raise IndexError()
-        self.resize_(m)
         kaldi_vector_ext.CopyColFromMat(self, M, col)
+        return self
 
     def copy_diag_from_mat(self, M):
         """Extracts the diagonal of the matrix M.
 
         Args:
-            M (Matrix_like): Matrix of size m x n.
+            M (MatrixBase): Matrix of size m x n.
+
+        Raises:
+            ValueError: If self.size() != min(M.size())
         """
-        m, n = M.size()
-        if m >= n:
-            self.resize_(m)
-        else:
-            self.resize_(n)
+        if self.size() != min(M.size()):
+            raise ValueError("The size of the input Matrix diagonal ({})"
+                             "should match the size of this Vector ({})."
+                             .format(min(M.size()), self.size()))
         kaldi_vector_ext.CopyDiagFromMat(self, M)
+        return self
 
     def copy_from_packed(self, M):
         """Copy data from a SpMatrix or TpMatrix.
 
         Args:
-            M (TpMatrix or SpMatrix): Matrix of size m x m.
+            M (PackedMatrix): Packed matrix of size m x m.
+        Raises:
+            ValueError: If self.size() !=  M.num_rows * (M.num_rows + 1) / 2
         """
-        m, m = M.size()
-        self.resize_(m)
+        numel = M.num_rows * (M.num_rows + 1) / 2
+        if self.size() != numel:
+            raise ValueError("The number of elements of the input PackedMatrix "
+                             "({}) should match the size of this Vector ({})."
+                             .format(numel, self.size()))
         kaldi_vector_ext.CopyFromPacked(self, M)
+        return self
 
     def copy_diag_from_packed(self, M):
         """Extracts the diagonal of the packed matrix M.
 
         Args:
-            M (TpMatrix or SpMatrix): Matrix of size m x m.
+            M (PackedMatrix): Packed matrix of size m x m.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows
         """
-        m, m = M.size()
-        self.resize_(m)
+        if self.size() != M.num_rows:
+            raise ValueError("The size of the input Matrix diagonal ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows, self.size()))
         kaldi_vector_ext.CopyDiagFromPacked(self, M)
+        return self
 
     def copy_diag_from_sp(self, M):
         """Extracts the diagonal of the symmetric matrix M.
 
         Args:
             M (SpMatrix): SpMatrix of size m x m.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows
         """
-        m, m = M.size()
-        self.resize_(m)
+        if self.size() != M.num_rows:
+            raise ValueError("The size of the input Matrix diagonal ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows, self.size()))
         kaldi_vector_ext.CopyDiagFromSp(self, M)
+        return self
 
     def copy_diag_from_tp(self, M):
         """Extracts the diagonal of the triangular matrix M.
 
         Args:
             M (TpMatrix): TpMatrix of size m x m.
+
+        Raises:
+            ValueError: If self.size() != M.num_rows
         """
-        m, m = M.size()
-        self.resize_(m)
+        if self.size() != M.num_rows:
+            raise ValueError("The size of the input Matrix diagonal ({})"
+                             "should match the size of this Vector ({})."
+                             .format(M.num_rows, self.size()))
         kaldi_vector_ext.CopyDiagFromTp(self, M)
+        return self
 
     def add_row_sum_mat(self, alpha, M, beta=1.0):
         """Does self = alpha * (sum of rows of M) + beta * self.
@@ -401,12 +378,13 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
             beta (float): Coefficient for *this* Vector. Defaults to 1.0.
 
         Raises:
-            ValueError: If (sum of rows of M).size() != self.size()
+            ValueError: If self.size() != M.num_cols
         """
-        m, n = M.size()
-        if self.size() != n:
-            raise ValueError("Cannot add sum of rows M with size {} to vector of size {}".format(n, self.size()))
+        if self.size() != M.num_cols:
+            raise ValueError("Cannot add sum of rows of M with size {} to "
+                             "vector of size {}".format(M.num_cols, self.size()))
         kaldi_vector_ext.AddRowSumMat(self, alpha, M, beta)
+        return self
 
     def add_col_sum_mat(self, alpha, M, beta=1.0):
         """Does `self = alpha * (sum of cols of M) + beta * self`
@@ -417,26 +395,33 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
             beta (float): Coefficient for *this* Vector. Defaults to 1.0.
 
         Raises:
-            ValueError: If (sum of cols of M).size() != self.size()
+            ValueError: If self.size() != M.num_rows
         """
-        m, n = M.size()
-        if self.size() != m:
-            raise ValueError("Cannot add sum of cols M with size {} to vector of size {}".format(m, self.size()))
+        if self.size() != M.num_rows:
+            raise ValueError("Cannot add sum of cols of M with size {} to "
+                             "vector of size {}".format(M.num_rows, self.size()))
         kaldi_vector_ext.AddColSumMat(self, alpha, M, beta)
+        return self
 
     def add_diag_mat2(self, alpha, M,
                       trans=MatrixTransposeType.NO_TRANS, beta=1.0):
-        """Add the diagonal of a matrix times itself.
+        """Adds the diagonal of matrix M squared to this vector.
 
         Args:
             alpha (float): Coefficient for diagonal x diagonal.
             M (Matrix_like): Matrix of size m x n.
-            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If trans == MatrixTransposeType.NO_TRANS: `self = diag(M M^T) +  beta * self`. If trans == MatrixTransposeType.TRANS: `self = diag(M^T M) +  beta * self`
-            beta (float): Coefficient for **this**.
+            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If trans == MatrixTransposeType.NO_TRANS:
+                `self = diag(M M^T) +  beta * self`.
+                If trans == MatrixTransposeType.TRANS:
+                `self = diag(M^T M) +  beta * self`
+            beta (float): Coefficient for **self**.
         """
-        m, n = M.size()
-        self.resize_(m)
+        if self.size() != M.num_rows:
+            raise ValueError("Cannot add diagonal of M squared with size {} to "
+                             "vector of size {}".format(M.num_rows, self.size()))
         kaldi_vector_ext.AddDiagMat2(self, alpha, M, trans, beta)
+        return self
 
     def add_diag_mat_mat(self, alpha, M, transM, N, transN, beta=1.0):
         """Add the diagonal of a matrix product.
@@ -447,9 +432,11 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         Args:
             alpha (float): Coefficient for the diagonal.
             M (Matrix_like): Matrix of size m x n.
-            transM (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If MatrixTransposeType.TRANS, replace M with M^T.
+            transM (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace M with M^T.
             N (Matrix_like): Matrix of size n x q.
-            transN (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): If MatrixTransposeType.TRANS, replace N with N^T.
+            transN (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace N with N^T.
             beta (float): Coefficient for self.
         """
         m, n = M.size()
@@ -458,17 +445,21 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
         if transM == MatrixTransposeType.NO_TRANS:
             if transN == MatrixTransposeType.NO_TRANS:
                 if n != p:
-                    raise ValueError("Cannot multiply M ({} by {}) with N ({} by {})".format(m, n, p, q))
+                    raise ValueError("Cannot multiply M ({} by {}) with "
+                                     "N ({} by {})".format(m, n, p, q))
             else:
                 if n != q:
-                    raise ValueError("Cannot multiply M ({} by {}) with N^T ({} by {})".format(m, n, q, p))
+                    raise ValueError("Cannot multiply M ({} by {}) with "
+                                     "N^T ({} by {})".format(m, n, q, p))
         else:
             if transN == MatrixTransposeType.NO_TRANS:
                 if m != p:
-                    raise ValueError("Cannot multiply M ({} by {}) with N ({} by {})".format(n, m, p, q))
+                    raise ValueError("Cannot multiply M ({} by {}) with "
+                                     "N ({} by {})".format(n, m, p, q))
             else:
                 if m != q:
-                    raise ValueError("Cannot multiply M ({} by {}) with N ({} by {})".format(n, m, q, p))
+                    raise ValueError("Cannot multiply M ({} by {}) with "
+                                     "N ({} by {})".format(n, m, q, p))
         kaldi_vector_ext.AddDiagMatMat(self, alpha, M, transM, N, transN, beta)
 
     def __repr__(self):
@@ -498,235 +489,252 @@ class Vector(kaldi_vector.Vector, matrix_ext.SubVector):
 
         Returns:
             - a float if the index is an integer
-            - a vector if the index is a slice
+            - a :class:`SubVector` if the index is a slice
 
         Caveats:
-            - Kaldi Vector type does not support non-contiguous memory layouts,
+            - Kaldi vectors do not support non-contiguous memory layouts,
               i.e. the stride should always be the size of a float. If the
               result of an indexing operation requires an unsupported stride
               value, no data will be shared with the source vector, i.e. a copy
               will be made. While in this case, the resulting vector does not
               share its data with the source vector, it is still considered to
-              not own its data. See the documentation for the __getitem__ method
-              of the Matrix type for further details.
+              not own its data. See the documentation for the __getitem__
+              method of the :class:`MatrixBase` for further details.
         """
-        if isinstance(index, int):
-            return super(Vector, self).__getitem__(index)
-        elif isinstance(index, slice):
-            return Vector.new(self.numpy().__getitem__(index))
-        else:
-            raise TypeError("index must be an integer or a slice.")
+        ret = self.numpy().__getitem__(index)
+        if isinstance(ret, numpy.float32):
+            return float(ret)
+        elif isinstance(ret, numpy.ndarray):
+            if ret.ndim == 1:
+                return SubVector(ret)
+            else:
+                raise ValueError("indexing operation returned a numpy array "
+                                 " with {} dimensions.".format(ret.ndim))
+        raise TypeError("indexing operation returned an invalid type {}."
+                        .format(type(ret)))
 
     def __setitem__(self, index, value):
-        """Custom setitem method"""
-        if isinstance(value, (Vector, Matrix)):
+        """Custom setitem method,
+
+        Offloads the operation to numpy by converting kaldi types to ndarrays.
+        """
+        if isinstance(value, (VectorBase, MatrixBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)
 
-    def __delitem__(self, index):
-        """Removes an element from the vector without reallocating."""
-        if self.own_data:
-            super(Vector, self).__delitem__(index)
-        else:
-            raise ValueError("__delitem__ method cannot be called on vectors "
-                             "that do not own their data.")
 
+class Vector(VectorBase, kaldi_vector.Vector):
+    """Python wrapper for kaldi::Vector<float>.
 
-class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
-    """Python wrapper for kaldi::Matrix<float> and kaldi::SubMatrix<float>.
-
-    This class defines the user facing API for Kaldi Matrix and SubMatrix types.
-    It bundles the raw CLIF wrappings produced for Matrix and SubMatrix types
-    and provides a more Pythonic API.
-
-    Attributes:
-        own_data (bool): True if matrix owns its data, False otherwise.
-
-    Args:
-        num_rows (int): Number of rows.
-        num_cols (int): Number of columns.
-
-    Note:
-        Unless otherwise specified, most methods will update self.
-
+    This class defines a more Pythonic user facing API for the Kaldi Vector
+    type.
     """
-    def __init__(self, num_rows=None, num_cols=None):
-        """Initializes a new matrix.
 
-        If num_rows and num_cols are not None, initializes the matrix to the
-        specified size. Otherwise, initializes an empty matrix.
+    def __init__(self, length=None):
+        """Initializes a new vector.
+
+        If length is not `None`, initializes the vector to the specified length.
+        Otherwise, initializes an empty vector.
 
         Args:
-            num_rows (int): Number of rows of the new matrix.
-            num_cols (int): Number of cols of the new matrix.
+            length (int): Length of the new vector.
         """
-        kaldi_matrix.Matrix.__init__(self)
-        self.own_data = True
-        if num_rows is not None or num_cols is not None:
-            if num_rows is None or num_cols is None:
-                raise ValueError("num_rows and num_cols should be given "
-                                 "together.")
-            if not (isinstance(num_rows, int) and isinstance(num_cols, int)):
-                raise TypeError("num_rows and num_cols should be integers.")
-            if not (num_rows > 0 and num_cols > 0):
-                if not (num_rows == 0 and num_cols == 0):
-                    raise IndexError("num_rows and num_cols should both be "
-                                     "positive or they should both be 0.")
-            self.resize_(num_rows, num_cols, MatrixResizeType.UNDEFINED)
+        super(Vector, self).__init__()
+        if length is not None:
+            if isinstance(length, int) and length >= 0:
+                self.resize_(length, MatrixResizeType.UNDEFINED)
+            else:
+                raise ValueError("length should be a non-negative integer.")
 
     @classmethod
-    def new(cls, obj, row_start=0, col_start=0, num_rows=None, num_cols=None):
-        """Creates a new matrix from a matrix like object.
+    def new(cls, obj, start=0, length=None):
+        """Creates a new vector from a vector like object.
 
-        If possible the new matrix will share its data with the `obj`, i.e. no
-        copy will be made. A copy of the `obj` will only be made if `obj.__array__`
-        returns a copy, if `obj` is a sequence or if a copy is needed to satisfy
-        any of the other requirements (data type, order, etc.). Regardless of
-        whether a copy is made or not, the new matrix will not own its data,
-        i.e. it will not support resizing. If a resizable matrix is needed, it
-        can be created by calling the clone method on the new matrix.
+        The output vector owns its data, i.e. elements of obj are copied.
 
         Args:
-            obj (matrix_like): A matrix, a 2-D numpy array, any object exposing a 2-D array interface, an object whose __array__ method returns a 2-D numpy array, or any sequence that can be interpreted as a matrix.
-            row_start (int): Start row of the new matrix.
-            col_start (int): Start col of the new matrix.
-            num_rows (int): Number of rows of the new matrix.
-            num_cols (int): Number of cols of the new matrix.
+            obj (vector_like): A vector, a 1-D numpy array, any object exposing
+                a 1-D array interface, an object with an __array__ method
+                returning a 1-D numpy array, or any sequence that can be
+                interpreted as a vector.
+            start (int): Start of the new vector.
+            length (int): Length of the new vector. If it is None, it defaults
+                to len(obj) - start.
 
         Returns:
-            A new instance of class Matrix.
+            A new :class:`Vector` with the same elements as obj.
         """
-        if isinstance(obj, kaldi_matrix.MatrixBase):
-            obj_rows, obj_cols = obj.num_rows_, obj.num_cols_
-        else:
+        if not isinstance(obj, kaldi_vector.VectorBase):
             obj = numpy.array(obj, dtype=numpy.float32, copy=False, order='C')
-            if obj.ndim != 2:
-                raise ValueError("obj should be a 2-D matrix like object.")
-            obj_rows, obj_cols = obj.shape
-        if not (0 <= row_start <= obj_rows):
-            raise IndexError("row_start={0} should be in the range [0,{1}] "
-                             "when obj.num_rows_={1}."
-                             .format(row_start, obj_rows))
-        if not (0 <= col_start <= obj_cols):
-            raise IndexError("col_start={0} should be in the range [0,{1}] "
-                             "when obj.num_cols_={1}."
-                             .format(col_offset, obj_cols))
-        max_rows, max_cols = obj_rows - row_start, obj_cols - col_start
-        if num_rows is None:
-            num_rows = max_rows
-        if num_cols is None:
-            num_cols = max_cols
-        if not (0 <= num_rows <= max_rows):
-            raise IndexError("num_rows={} should be in the range [0,{}] "
-                             "when row_start={} and obj.num_rows_={}."
-                             .format(num_rows, max_rows,
-                                     row_start, obj_rows))
-        if not (0 <= num_cols <= max_cols):
-            raise IndexError("num_cols={} should be in the range [0,{}] "
-                             "when col_start={} and obj.num_cols_={}."
-                             .format(num_cols, max_cols,
-                                     col_start, obj_cols))
-        if not (num_rows > 0 and num_cols > 0):
-            if not (num_rows == 0 and num_cols == 0):
-                raise IndexError("num_rows and num_cols should both be "
-                                 "positive or they should both be 0.")
-        instance = cls.__new__(cls)
-        matrix_ext.SubMatrix.__init__(instance, obj,
-                                      row_start, num_rows, col_start, num_cols)
-        instance.own_data = False
-        return instance
+            if obj.ndim != 1:
+                raise ValueError("obj should be a 1-D vector like object.")
+            obj = SubVector(obj)
+        obj_len = obj.size()
+        if not (0 <= start <= obj_len):
+            raise IndexError("start={0} should be in the range [0,{1}] "
+                             "when len(obj)={1}.".format(start, obj_len))
+        max_len = obj_len - start
+        if length is None:
+            length = max_len
+        if not (0 <= length <= max_len):
+            raise IndexError("length={} should be in the range [0,{}] when "
+                             "start={} and len(obj)={}."
+                             .format(length, max_len, start, obj_len))
+        vector = cls(length)
+        vector.CopyFromVec(obj)
+        return vector
 
-    def copy_from_mat(self, src):
-        """Copies data from src into this matrix. Fails if src and self are of different size.
+    def resize_(self, length, resize_type=MatrixResizeType.SET_ZERO):
+        """Resizes the vector to desired length.
 
         Args:
-            src (Matrix): matrix to copy data from
+            length (int): Size of new vector.
+            resize_type (:data:`MatrixResizeType`): Resize type.
+                Defaults to `MatrixResizeType.SET_ZERO`.
         """
-        if self.size() != src.size():
-            raise ValueError("Cannot copy matrix with dimensions {} by {} into matrix with dimensions {} by {}".format(src.size()[0], src.size()[1],
-                                                                                                                       self.size()[0], self.size()[1]))
-        self.CopyFromMat(src)
+        self.Resize(length, resize_type)
+        return self
 
-    def copy_from_sp(self, Sp):
-        """Copy SpMatrix contents to this matrix.
+    def swap_(self, other):
+        """Swaps the contents of vectors. Shallow swap.
 
         Args:
-            Sp (SpMatrix): Matrix to copy from.
-        """
-        m, m = Sp.size()
-        self.resize_(m, m)
-        kaldi_matrix_ext.CopyFromSp(self, Sp)
+            other (Vector): Vector to swap contents with.
 
-    def copy_from_tp(self, Tp):
-        """Copy TpMatrix contents to this matrix.
+        Raises:
+            TypeError: if other is not a :class:`Vector` instance.
+        """
+        if not isinstance(other, kaldi_vector.Vector):
+            raise TypeError("other should be a Vector instance.")
+        self.Swap(other)
+        return self
+
+    def __delitem__(self, index):
+        """Removes an element from the vector."""
+        if not (0 <= index < self.size()):
+            raise IndexError("index={} should be in the range [0,{})."
+                             .format(index, self.size()))
+        self.RemoveElement(index)
+
+
+class SubVector(VectorBase, matrix_ext.SubVector):
+    """Python wrapper for kaldi::SubVector<float>.
+
+    This class defines a more Pythonic user facing API for the Kaldi SubVector
+    type.
+    """
+
+    def __init__(self, obj, start=0, length=None):
+        """Creates a new vector from a vector like object.
+
+        If possible the new vector will share its data with the `obj`, i.e. no
+        copy will be made. A copy will only be made if `obj.__array__` returns a
+        copy, if `obj` is a sequence or if a copy is needed to satisfy any of
+        the other requirements (data type, order, etc.). Regardless of whether a
+        copy is made or not, the new vector will not own its data, i.e. it will
+        not support vector operations that reallocate the underlying data such
+        as resizing.
 
         Args:
-            Tp (TpMatrix): Matrix to copy from.
+            obj (vector_like): A vector, a 1-D numpy array, any object exposing
+                a 1-D array interface, an object whose __array__ method returns
+                a 1-D numpy array, or any sequence that can be interpreted as a
+                vector.
+            start (int): Start of the new vector.
+            length (int): Length of the new vector. If it is None, it defaults
+                to len(obj) - start.
+
+        Returns:
+            A new :class:`SubVector` with the same data as obj.
         """
-        m, m = Tp.size()
-        self.resize_(m, m)
-        kaldi_matrix_ext.CopyFromTp(self, Tp)
+        if not isinstance(obj, kaldi_vector.VectorBase):
+            obj = numpy.array(obj, dtype=numpy.float32, copy=False, order='C')
+            if obj.ndim != 1:
+                raise ValueError("obj should be a 1-D vector like object.")
+        obj_len = len(obj)
+        if not (0 <= start <= obj_len):
+            raise IndexError("start={0} should be in the range [0,{1}] "
+                             "when len(obj)={1}.".format(start, obj_len))
+        max_len = obj_len - start
+        if length is None:
+            length = max_len
+        if not (0 <= length <= max_len):
+            raise IndexError("length={} should be in the range [0,{}] when "
+                             "start={} and len(obj)={}."
+                             .format(length, max_len, start, obj_len))
+        super(SubVector, self).__init__(obj, start, length)
+
+
+class MatrixBase(object):
+    """Base class for matrix types.
+
+    This class defines a more Pythonic user facing API for Matrix and SubMatrix
+    types.
+
+    (No constructor.)
+    """
 
     def copy_(self, src):
-        """Copies data from src into this matrix and returns this matrix.
+        """Copies the elements from src into this matrix and returns this.
 
         Args:
-            src (Matrix): Source matrix to copy
+            src (Matrix or SpMatrix or TpMatrix): matrix to copy data from
 
         Returns:
-            This matrix after update.
+            This matrix.
+
+        Raises:
+            ValueError: If src has a different size than self.
         """
-        m, n = src.size()
-        self.resize_(m, n)
-        self.CopyFromMat(src)
+        if self.size() != src.size():
+            raise ValueError("Cannot copy matrix with dimensions {s[0]}x{s[1]} "
+                             "into matrix with dimensions {d[0]}x{d[1]}"
+                             .format(s=src.size(), d=self.size()))
+        if isinstance(src, MatrixBase):
+            self.CopyFromMat(src)
+        elif isinstance(src, SpMatrix):
+            kaldi_matrix_ext.CopyFromSp(self, src)
+        elif isinstance(src, TpMatrix):
+            kaldi_matrix_ext.CopyFromTp(self, src)
         return self
 
     def clone(self):
-        """
+        """Returns a copy of this matrix.
+
         Returns:
-            a copy of this matrix.
+            A new :class:`Matrix` that is a copy of this matrix.
         """
-        rows, cols = self.size()
-        clone = Matrix(rows, cols)
+        clone = Matrix(*self.size())
         clone.CopyFromMat(self)
         return clone
 
     def size(self):
-        """
-        Returns:
-            the size as a tuple (num_rows, num_cols).
-        """
-        return self.num_rows_, self.num_cols_
+        """Returns the size of this matrix.
 
+        Returns:
+            A tuple (num_rows, num_cols) of integers.
+        """
+        return self.num_rows, self.num_cols
+
+    @property
     def shape(self):
-        """Alias for size."""
-        return size(self)
-
-    def nrows(self):
-        """
-        Returns:
-            number of rows.
-        """
-        return self.num_rows_
-
-    def ncols(self):
-        """
-        Returns:
-            number of columns.
-        """
-        return self.num_cols_
+        """For numpy.ndarray compatibility."""
+        return self.size()
 
     def equal(self, other, tol=1e-16):
-        """Checks if Matrices have the same size and data.
+        """True if Matrices have the same size and elements.
 
         Args:
-            other (Matrix): Matrix to compare to.
-            tol (float): Float comparisson tolerance.
+            other (MatrixBase): Matrix to compare to.
+            tol (float): Tolerance for the equality check.
 
         Returns:
-            True if self.size() == other.size() and ||self - other|| < tol
+            True if self.size() == other.size() and ||self - other|| < tol.
+            False otherwise.
         """
+        if self.size() != other.size():
+            return False
         return self.ApproxEqual(other, tol)
 
     def __eq__(self, other):
@@ -736,75 +744,35 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         return self.equal(other)
 
     def numpy(self):
-        """Returns a new :class:`numpy.ndarray` sharing the data with this matrix."""
+        """Returns a new 2-D numpy array backed by this matrix.
+
+        Returns:
+            A new :class:`numpy.ndarray` sharing the data with this matrix.
+        """
         return matrix_to_numpy(self)
 
-    def range(self, row_start, num_rows, col_start, num_cols):
-        """Returns a range of elements as a new matrix.
+    def range(self, row_start=0, num_rows=None, col_start=0, num_cols=None):
+        """Returns the given range of elements as a new matrix.
 
         Args:
             row_start (int): Index of starting row
-            num_rows (int): Number of rows to grab
+            num_rows (int): Number of rows to grab. If None, defaults to
+                self.num_rows - row_start.
             col_start (int): Index of starting column
-            num_cols (int): Number of columns to grab
+            num_cols (int): Number of columns to grab. If None, defaults to
+                self.num_cols - col_start.
 
         Returns:
-            New Matrix with range of elements.
+            A new :class:`SubMatrix` sharing data with this matrix.
         """
-        return Matrix.new(self, row_start, col_start, num_rows, num_cols)
-
-    def resize_(self, num_rows, num_cols,
-                resize_type=MatrixResizeType.SET_ZERO,
-                stride_type=MatrixStrideType.DEFAULT):
-        """Sets matrix to the specified size.
-
-        Args:
-            num_rows (int): Number of rows of new matrix.
-            num_cols (int): Number of columns of new matrix.
-            resize_type (:class:`MatrixResizeType`): Type of resize to perform. Defaults to MatrixResizeType.SET_ZERO.
-            stride_type (:class:`MatrixStrideType`): Type of stride for new matrix. Defaults to MatrixStrideType.DEFAULT.
-
-        Raises:
-            ValueError: If matrices do not own their data.
-        """
-        if self.own_data:
-            self.Resize(num_rows, num_cols, resize_type, stride_type)
-        else:
-            raise ValueError("resize_ method cannot be called on "
-                             "matrices that do not own their data.")
-
-    def swap_(self, other):
-        """Swaps the contents of Matrices. Shallow swap.
-
-        Args:
-            other (Matrix): Matrix to swap with.
-
-        Raises:
-            ValueError: if matrices do not own their data.
-        """
-        if self.own_data and other.own_data:
-            self.Swap(other)
-        else:
-            raise ValueError("swap_ method cannot be called on "
-                             "matrices that do not own their data.")
-
-    def transpose_(self):
-        """Transpose the matrix.
-
-        Raises:
-            ValueError: if matrix does not own its data.
-        """
-        if self.own_data:
-            self.Transpose()
-        else:
-            raise ValueError("transpose_ method cannot be called on "
-                             "matrices that do not own their data.")
+        return SubMatrix(self, row_start, num_rows, col_start, num_cols)
 
     def eig(self):
         """Eigenvalues of matrix.
 
         Returns:
-            - P (Matrix): Eigenvector matrix, where ith column corresponds to the ith eigenvector.
+            - P (Matrix): Eigenvector matrix, where ith column corresponds to
+                          the ith eigenvector.
             - r (Vector): Vector with real part eigenvalues.
             - i (Vector): Vector with imaginary part eigenvalues.
 
@@ -813,17 +781,17 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         """
         m, n = self.size()
         if m != n:
-            raise ValueError("eig method cannot be called on a nonsquare matrix.")
+            raise ValueError("eig method cannot be called on a nonsquare "
+                             "matrix.")
         P = Matrix(n, n)
         r, i = Vector(n), Vector(n)
         self.Eig(P, r, i)
-
         return P, r, i
 
     def svd(self):
         """Singular value decomposition.
 
-        Kaldi has a major limitation. For nonsquare matrices, it assumes m >= n (NumRows >= NumCols).
+        For nonsquare matrices, assumes self.num_rows >= self.num_cols.
 
         Returns:
             - U (Matrix): Orthonormal Matrix m x n
@@ -831,44 +799,26 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             - V^T (Matrix): Orthonormal Matrix n x n
 
         Raises:
-            ValueError: If self.nrows() < self.ncols()
+            ValueError: If self.num_rows < self.num_cols
         """
         m, n = self.size()
-
         if m < n:
-            raise ValueError("svd for nonsquare matrices needs NumRows >= NumCols.")
-
+            raise ValueError("svd for nonsquare matrices requires self.num_rows "
+                             ">= self.num_cols.")
         U, Vt = Matrix(m, n), Matrix(n, n)
         s = Vector(n)
-
-        self.CompleteSvd(s, U, Vt)
-
+        self.Svd(s, U, Vt)
         return U, s, Vt
 
     def singular_values(self):
-        """Performs singular value decomposition, returns only the singular values.
+        """Performs singular value decomposition, returns singular values.
 
         Returns:
-            Singular values of self.
+            A :class:`Vector` representing singular values of this matrix.
         """
-        res = Vector(self.ncols())
-        self.SvdOnlySingularValues(res)
+        res = Vector(self.num_cols)
+        self.SingularValues(res)
         return res
-
-    @classmethod
-    def random(cls, rows, cols):
-        """Creates a new Matrix of specified size and initializes it with random data.
-
-        Args:
-            rows (int): Number of rows in new matrix.
-            cols (int): Number of cols in new matrix.
-
-        Returns:
-            A new matrix with random values.
-        """
-        instance = cls(rows, cols)
-        instance.SetRandn()
-        return instance
 
     def __getitem__(self, index):
         """Custom getitem method.
@@ -905,37 +855,28 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
                 >>> m[:,0:4:2] = m[:,1:4:2]
         """
         ret = self.numpy().__getitem__(index)
-        if isinstance(ret, numpy.ndarray):
-            if ret.ndim == 2:
-                return Matrix.new(ret)
-            elif ret.ndim == 1:
-                return Vector.new(ret)
-        elif isinstance(ret, numpy.float32):
+        if isinstance(ret, numpy.float32):
             return float(ret)
-        else:
-            raise TypeError("indexing operation returned an invalid type {}."
-                            .format(type(ret)))
+        elif isinstance(ret, numpy.ndarray):
+            if ret.ndim == 2:
+                return SubMatrix(ret)
+            elif ret.ndim == 1:
+                return SubVector(ret)
+            else:
+                raise ValueError("indexing operation returned a numpy array "
+                                 " with {} dimensions.".format(ret.ndim))
+        raise TypeError("indexing operation returned an invalid type {}."
+                        .format(type(ret)))
 
     def __setitem__(self, index, value):
         """Custom setitem method.
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(value, (Matrix, Vector)):
+        if isinstance(value, (MatrixBase, VectorBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)
-
-    def __delitem__(self, index):
-        """Removes a row from the matrix without reallocating."""
-        if self.own_data:
-            if 0 <= index < self.num_rows_:
-                self.RemoveRow(index)
-            else:
-                raise IndexError
-        else:
-            raise ValueError("__delitem__ method cannot be called on "
-                             "matrices that do not own their data.")
 
     def __repr__(self):
         return str(self)
@@ -970,6 +911,7 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         if Sp.size() != self.size():
             raise ValueError()
         kaldi_matrix_ext.AddSp(self, alpha, Sp)
+        return self
 
     def add_sp_mat(self, alpha, A, B, transB, beta):
         """Computes
@@ -980,7 +922,8 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
             alpha (float): Coefficient for the product A * B
             A (SpMatrix): Symmetric matrix of size m x q
             B (Matrix_like): Matrix_like of size q x n
-            transB (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            transB (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
         Raises:
@@ -993,9 +936,12 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         if m != p or \
         (transB == MatrixTransposeType.NO_TRANS and (q != r or t != n)) or \
         (transB == MatrixTransposeType.TRANS and (q != t or r != n)):
-            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+            raise ValueError("Matrices are not consistent: self({s[0]}x{s[1]}),"
+                             " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
+                             .format(s=self.size(), a=A.size(), b=B.size()))
 
         kaldi_matrix_ext.AddSpMat(self, alpha, A, transA, B, beta)
+        return self
 
     def add_tp_mat(self, alpha, A, transA, B, transB, beta = 1.0):
         """Like `add_sp_mat` where A is a `TpMatrix`.
@@ -1003,9 +949,11 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         Args:
             alpha (float): Coefficient for the product A * B
             A (TpMatrix): Triangular matrix of size m x m
-            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            transA (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace A with A^T
             B (Matrix_like): Matrix_like of size m x n
-            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            transB (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
         Raises:
@@ -1018,9 +966,12 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         if m != p or \
         (transB == MatrixTransposeType.NO_TRANS and (p != r or t != n)) or \
         (transB == MatrixTransposeType.TRANS and (p != t or r != n)):
-            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+            raise ValueError("Matrices are not consistent: self({s[0]}x{s[1]}),"
+                             " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
+                             .format(s=self.size(), a=A.size(), b=B.size()))
 
         kaldi_matrix_ext.AddTpMat(self, alpha, A, transA, B, transB, beta)
+        return self
 
     def add_mat_sp(self, alpha, A, transA, B, beta = 1.0):
         """Like `add_sp_mat` where B is a `SpMatrix`
@@ -1028,7 +979,8 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         Args:
             alpha (float): Coefficient for the product A * B
             A (Matrix_like): Matrix of size m x n
-            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            transA (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace A with A^T
             B (SpMatrix): Symmetric Matrix of size n x n
             beta (float): Coefficient for this matrix
 
@@ -1042,9 +994,12 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         if n != r \
         (transA == MatrixTransposeType.NO_TRANS and (m != p or q != r)) or \
         (transA == MatrixTransposeType.TRANS and (m != q or p != r)):
-            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
-        
+            raise ValueError("Matrices are not consistent: self({s[0]}x{s[1]}),"
+                             " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
+                             .format(s=self.size(), a=A.size(), b=B.size()))
+
         kaldi_matrix_ext.AddMatSp(self, alpha, A, transA, B, beta)
+        return self
 
     def add_mat_tp(self, alpha, A, transA, B, transB, beta = 1.0):
         """Like `add_tp_mat` where B is a `TpMatrix`
@@ -1052,9 +1007,11 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         Args:
             alpha (float): Coefficient for the product A * B
             A (Matrix_like): Matrix of size m x q
-            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            transA (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace A with A^T
             B (TpMatrix): Matrix_like of size m x n
-            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            transB (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
         Raises:
@@ -1065,9 +1022,12 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         r, r = B.size()
 
         if m != p or q != r or n != r:
-            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+            raise ValueError("Matrices are not consistent: self({s[0]}x{s[1]}),"
+                             " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
+                             .format(s=self.size(), a=A.size(), b=B.size()))
 
         kaldi_matrix_ext.AddMatTp(self, alpha, A, transA, B, transB, beta)
+        return self
 
     def add_tp_tp(self, alpha, A, transA, B, transB, beta = 1.0):
         """Like `add_sp_mat` where both are `TpMatrix`
@@ -1075,9 +1035,11 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         Args:
             alpha (float): Coefficient for the product A * B
             A (TpMatrix): Triangular Matrix of size m x m
-            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            transA (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace A with A^T
             B (TpMatrix): Triangular Matrix of size m x m
-            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            transB (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
         Raises:
@@ -1088,9 +1050,12 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         r, r = B.size()
 
         if m != p != r:
-            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+            raise ValueError("Matrices are not consistent: self({s[0]}x{s[1]}),"
+                             " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
+                             .format(s=self.size(), a=A.size(), b=B.size()))
 
         kaldi_matrix_ext.AddTpTp(self, alpha, A, transA, B, transB, beta)
+        return self
 
     def add_sp_sp(self, alpha, A, B, beta = 1.0):
         """Like `add_sp_mat` where both are `SpMatrix`
@@ -1098,9 +1063,11 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         Args:
             alpha (float): Coefficient for the product A * B
             A (SpMatrix): Triangular Matrix of size m x m
-            transA (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace A with A^T
+            transA (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace A with A^T
             B (SpMatrix): Triangular Matrix of size m x m
-            transB (`matrix_common.MatrixTransposeType`): if MatrixTransposeType.TRANS, replace B with B^T
+            transB (`matrix_common.MatrixTransposeType`):
+                If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
         Raises:
@@ -1111,31 +1078,231 @@ class Matrix(kaldi_matrix.Matrix, matrix_ext.SubMatrix):
         r, r = B.size()
 
         if m != p != r:
-            raise ValueError("Matrices are not consistent: self({} x {}), A ({} x {}), B({} x {})".format(self.nrows(), self.ncols(), A.nrows(), A.ncols(), B.nrows(), B.ncols()))
+            raise ValueError("Matrices are not consistent: self({s[0]}x{s[1]}),"
+                             " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
+                             .format(s=self.size(), a=A.size(), b=B.size()))
 
         kaldi_matrix_ext.AddSpSp(self, alpha, A, B, beta)
 
 
 
+class Matrix(MatrixBase, kaldi_matrix.Matrix):
+    """Python wrapper for kaldi::Matrix<float>.
+
+    This class defines a more Pythonic user facing API for the Kaldi Matrix
+    type.
+    """
+    def __init__(self, num_rows=None, num_cols=None):
+        """Initializes a new matrix.
+
+        If num_rows and num_cols are not None, initializes the matrix to the
+        specified size. Otherwise, initializes an empty matrix.
+
+        Args:
+            num_rows (int): Number of rows of the new matrix.
+            num_cols (int): Number of cols of the new matrix.
+        """
+        super(Matrix, self).__init__()
+        if num_rows is not None or num_cols is not None:
+            if num_rows is None or num_cols is None:
+                raise ValueError("num_rows and num_cols should be given "
+                                 "together.")
+            if not (isinstance(num_rows, int) and isinstance(num_cols, int)):
+                raise TypeError("num_rows and num_cols should be integers.")
+            if not (num_rows > 0 and num_cols > 0):
+                if not (num_rows == 0 and num_cols == 0):
+                    raise IndexError("num_rows and num_cols should both be "
+                                     "positive or they should both be 0.")
+            self.resize_(num_rows, num_cols, MatrixResizeType.UNDEFINED)
+
+    @classmethod
+    def new(cls, obj, row_start=0, num_rows=None, col_start=0, num_cols=None):
+        """Creates a new matrix from a matrix like object.
+
+        The output matrix owns its data, i.e. elements of obj are copied.
+
+        Args:
+            obj (matrix_like): A matrix, a 2-D numpy array, any object exposing
+                a 2-D array interface, an object with an __array__ method
+                returning a 2-D numpy array, or any (nested) sequence that can
+                be interpreted as a matrix.
+            row_start (int): Start row of the new matrix.
+            num_rows (int): Number of rows of the new matrix.
+            col_start (int): Start col of the new matrix.
+            num_cols (int): Number of cols of the new matrix.
+
+        Returns:
+            A new :class:`Matrix` with the same elements as obj.
+        """
+        if not isinstance(obj, kaldi_matrix.MatrixBase):
+            obj = numpy.array(obj, dtype=numpy.float32, copy=False, order='C')
+            if obj.ndim != 2:
+                raise ValueError("obj should be a 2-D matrix like object.")
+            obj = SubMatrix(obj)
+        obj_num_rows, obj_num_cols = obj.size()
+        if not (0 <= row_start <= obj_num_rows):
+            raise IndexError("row_start={0} should be in the range [0,{1}] "
+                             "when obj.num_rows={1}."
+                             .format(row_start, obj_num_rows))
+        if not (0 <= col_start <= obj_num_cols):
+            raise IndexError("col_start={0} should be in the range [0,{1}] "
+                             "when obj.num_cols={1}."
+                             .format(col_offset, obj_num_cols))
+        max_rows, max_cols = obj_num_rows - row_start, obj_num_cols - col_start
+        if num_rows is None:
+            num_rows = max_rows
+        if num_cols is None:
+            num_cols = max_cols
+        if not (0 <= num_rows <= max_rows):
+            raise IndexError("num_rows={} should be in the range [0,{}] "
+                             "when row_start={} and obj.num_rows={}."
+                             .format(num_rows, max_rows,
+                                     row_start, obj_num_rows))
+        if not (0 <= num_cols <= max_cols):
+            raise IndexError("num_cols={} should be in the range [0,{}] "
+                             "when col_start={} and obj.num_cols={}."
+                             .format(num_cols, max_cols,
+                                     col_start, obj_num_cols))
+        if not (num_rows > 0 and num_cols > 0):
+            if not (num_rows == 0 and num_cols == 0):
+                raise IndexError("num_rows and num_cols should both be "
+                                 "positive or they should both be 0.")
+        matrix = cls(num_rows, num_cols)
+        matrix.CopyFromMat(obj)
+        return matrix
+
+    def resize_(self, num_rows, num_cols,
+                resize_type=MatrixResizeType.SET_ZERO,
+                stride_type=MatrixStrideType.DEFAULT):
+        """Sets matrix to the specified size.
+
+        Args:
+            num_rows (int): Number of rows of new matrix.
+            num_cols (int): Number of columns of new matrix.
+            resize_type (:class:`MatrixResizeType`): Resize type.
+                Defaults to MatrixResizeType.SET_ZERO.
+            stride_type (:class:`MatrixStrideType`): Stride type.
+                Defaults to MatrixStrideType.DEFAULT.
+
+        Raises:
+            ValueError: If matrices do not own their data.
+        """
+        self.Resize(num_rows, num_cols, resize_type, stride_type)
+        return self
+
+    def swap_(self, other):
+        """Swaps the contents of matrices. Shallow swap.
+
+        Args:
+            other (Matrix): Matrix to swap contents with.
+
+        Raises:
+            TypeError: if other is not a :class:`Matrix` instance.
+        """
+        if not isinstance(other, kaldi_matrix.Matrix):
+            raise TypeError("other should be a Matrix instance.")
+        self.Swap(other)
+        return self
+
+    def transpose_(self):
+        """Transpose the matrix.
+
+        Raises:
+            ValueError: if matrix does not own its data.
+        """
+        self.Transpose()
+        return self
+
+    def __delitem__(self, index):
+        """Removes a row from the matrix."""
+        if not (0 <= index < self.num_rows):
+            raise IndexError("index={} should be in the range [0,{})."
+                             .format(index, self.num_rows))
+        self.RemoveRow(index)
+
+
+class SubMatrix(MatrixBase, matrix_ext.SubMatrix):
+    """Python wrapper for kaldi::SubMatrix<float>.
+
+    This class defines a more Pythonic user facing API for the Kaldi SubMatrix
+    type.
+    """
+    def __init__(self, obj, row_start=0, num_rows=None, col_start=0,
+                 num_cols=None):
+        """Creates a new matrix from a matrix like object.
+
+        If possible the new matrix will share its data with the `obj`, i.e. no
+        copy will be made. A copy will only be made if `obj.__array__` returns a
+        copy, if `obj` is a sequence or if a copy is needed to satisfy any of
+        the other requirements (data type, order, etc.). Regardless of whether a
+        copy is made or not, the new matrix will not own its data, i.e. it will
+        not support matrix operations that reallocate the underlying data such
+        as resizing.
+
+        Args:
+            obj (matrix_like): A matrix, a 2-D numpy array, any object exposing
+                a 2-D array interface, an object with an __array__ method
+                returning a 2-D numpy array, or any sequence that can be
+                interpreted as a matrix.
+            row_start (int): Start row of the new matrix.
+            num_rows (int): Number of rows of the new matrix.
+            col_start (int): Start col of the new matrix.
+            num_cols (int): Number of cols of the new matrix.
+
+        Returns:
+            A new :class:`SubMatrix` with the same data as obj.
+        """
+        if not isinstance(obj, kaldi_matrix.MatrixBase):
+            obj = numpy.array(obj, dtype=numpy.float32, copy=False, order='C')
+            if obj.ndim != 2:
+                raise ValueError("obj should be a 2-D matrix like object.")
+        obj_num_rows, obj_num_cols = obj.shape
+        if not (0 <= row_start <= obj_num_rows):
+            raise IndexError("row_start={0} should be in the range [0,{1}] "
+                             "when obj.num_rows={1}."
+                             .format(row_start, obj_num_rows))
+        if not (0 <= col_start <= obj_num_cols):
+            raise IndexError("col_start={0} should be in the range [0,{1}] "
+                             "when obj.num_cols={1}."
+                             .format(col_offset, obj_num_cols))
+        max_rows, max_cols = obj_num_rows - row_start, obj_num_cols - col_start
+        if num_rows is None:
+            num_rows = max_rows
+        if num_cols is None:
+            num_cols = max_cols
+        if not (0 <= num_rows <= max_rows):
+            raise IndexError("num_rows={} should be in the range [0,{}] "
+                             "when row_start={} and obj.num_rows={}."
+                             .format(num_rows, max_rows,
+                                     row_start, obj_num_rows))
+        if not (0 <= num_cols <= max_cols):
+            raise IndexError("num_cols={} should be in the range [0,{}] "
+                             "when col_start={} and obj.num_cols={}."
+                             .format(num_cols, max_cols,
+                                     col_start, obj_num_cols))
+        if not (num_rows > 0 and num_cols > 0):
+            if not (num_rows == 0 and num_cols == 0):
+                raise IndexError("num_rows and num_cols should both be "
+                                 "positive or they should both be 0.")
+        super(SubMatrix, self).__init__(obj, row_start, num_rows,
+                                        col_start, num_cols)
+
 
 class PackedMatrix(packed_matrix.PackedMatrix):
     """Python wrapper for kaldi::PackedMatrix<float>
 
-    This class defines the user facing API for Kaldi PackedMatrix.
-
-    Args:
-        num_rows (int): Number of rows.
+    This class defines the user facing API for PackedMatrix type.
     """
     def __init__(self, num_rows=None):
         """Initializes a new packed matrix.
 
-        If num_rows is not None, initializes the packed matrix to the specified size.
-        Otherwise, initializes an empty packed matrix.
+        If num_rows is not None, initializes the packed matrix to the specified
+        size. Otherwise, initializes an empty packed matrix.
 
         Args:
             num_rows (int): Number of rows
         """
-        kaldi_matrix.PackedMatrix.__init__(self)
+        super(PackedMatrix, self).__init__()
         if num_rows is not None:
             if isinstance(num_rows, int) and num_rows >= 0:
                 self.resize_(num_rows, MatrixResizeType.UNDEFINED)
@@ -1143,34 +1310,16 @@ class PackedMatrix(packed_matrix.PackedMatrix):
                 raise ValueError("num_rows should be a non-negative integer.")
 
     def __len__(self):
-        return self.NumRows()
+        return self.num_rows
 
     def size(self):
-        """
+        """Returns size as a tuple.
 
         Returns:
-            size as a tuple (num_rows, num_cols).
+            A tuple (num_rows, num_cols) of integers.
 
         """
-        return self.NumRows(), self.NumCols()
-
-    def nrows(self):
-        """
-
-        Returns:
-            number of rows.
-
-        """
-        return self.NumRows()
-
-    def ncols(self):
-        """
-
-        Returns:
-            number of columns.
-
-        """
-        return self.NumCols()
+        return self.num_rows, self.num_cols
 
     def resize_(self, num_rows,
                 resize_type = MatrixResizeType.SET_ZERO):
@@ -1178,13 +1327,13 @@ class PackedMatrix(packed_matrix.PackedMatrix):
 
         Args:
             num_rows (int): Number of rows of the new packed matrix.
-            resize_type (MatrixResizeType): Type of resize to perform. Defaults to MatrixResizeType.SET_ZERO.
+            resize_type (MatrixResizeType): Resize type.
+                Defaults to MatrixResizeType.SET_ZERO.
         """
         self.Resize(num_rows, resize_type)
 
-    def swap(self, other):
+    def swap_(self, other):
         """Swaps the contents of Matrices. Shallow swap.
-        Resizes self to other.size().
 
         Args:
             other (Matrix or PackedMatrix): Matrix to swap with.
@@ -1195,27 +1344,24 @@ class PackedMatrix(packed_matrix.PackedMatrix):
         m, n = other.size()
         if m != n:
             raise ValueError("other is not a square matrix.")
-        self.resize_(m)
         if isinstance(other, Matrix):
             self.SwapWithMatrix(self, other)
         elif isinstance(other, PackedMatrix):
             self.SwapWithPacked(self, other)
         else:
-            raise ValueError("other must be either a Matrix or a PackedMatrix.")
+            raise ValueError("other must be a Matrix or a PackedMatrix.")
+
 
 class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
     """Python wrapper for kaldi::TpMatrix<float>
 
-    This class defines the user facing API for Kaldi Triangular Matrix.
-
-    Args:
-        num_rows (int): Number of rows (and columns).
+    This class defines the user facing API for Triangular Matrix.
     """
     def __init__(self, num_rows = None):
         """Initializes a new tpmatrix.
 
-        If num_rows is not None, initializes the tpmatrix to the specified size.
-        Otherwise, initializes an empty tpmatrix.
+        If num_rows is not None, initializes the triangular matrix to the
+        specified size. Otherwise, initializes an empty triangular matrix.
 
         Args:
             num_rows (int): Number of rows
@@ -1232,9 +1378,11 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
         """Creates a new TpMatrix from obj.
 
         Args:
-            obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data from.
-            trans (MatrixTransposeType): Only used when obj is Matrix_like. Defaults to MatrixTransposeType.NO_TRANS.
-        
+            obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data
+                from.
+            trans (MatrixTransposeType): Only used when obj is Matrix_like.
+                Defaults to MatrixTransposeType.NO_TRANS.
+
         Returns:
             New TpMatrix from obj.
         """
@@ -1257,22 +1405,23 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
 
     @classmethod
     def cholesky(cls, spmatrix):
-        """Cholesky decomposition 
+        """Cholesky decomposition
         Returns a new TPMatrix X such that
-           
+
         spmatrix = X * X^T
 
         Arguments:
             spmatrix (SpMatrix): Matrix to decompose
-        
+
         Returns:
             Cholesky decomposition of spmatrix.
         """
         if not isinstance(spmatrix, SpMatrix):
-            raise ValueError("spmatrix object of type {} is not a SpMatrix".format(type(spmatrix)))
+            raise ValueError("spmatrix object of type {} is not a SpMatrix"
+                             .format(type(spmatrix)))
 
         instance = TpMatrix(len(spmatrix))
-        instance.Cholesky(spmatrix) #Call C-method
+        instance.Cholesky(spmatrix)
         return instance
 
     def clone(self):
@@ -1286,13 +1435,11 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
         clone.CopyFromTp(self)
         return clone
 
+
 class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
     """Python wrapper for kaldi::SpMatrix<float>
 
     This class defines the user facing API for Kaldi Simetric Matrix.
-
-    Args:
-        num_rows (int): Number of rows (and columns).
     """
     def __init__(self, num_rows = None):
         """Initializes a new SpMatrix.
@@ -1315,8 +1462,10 @@ class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
         """Creates a new SpMatrix from obj.
 
         Args:
-            obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data from. If Matrix_like, make sure its symetric by taking the mean (obj + obj^T)/2
-        
+            obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data
+                from. If Matrix_like, make sure its symetric by taking the mean
+                (obj + obj^T)/2
+
         Returns:
             New SpMatrix from obj.
         """

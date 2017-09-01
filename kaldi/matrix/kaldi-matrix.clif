@@ -1,33 +1,30 @@
+from "util/iostream-clifwrap.h" import *
 from "matrix/matrix-common-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 
 from "matrix/kaldi-matrix.h":
     namespace `kaldi`:
         class `MatrixBase<float>` as MatrixBase:
-            num_rows_: int = property(`NumRows`)
-            num_cols_: int = property(`NumCols`)
-
-            # FIXME (VM): maybe?
-            # stride_: int = property(`stride_`)
-
-            def Stride(self) -> int
+            num_rows: int = property(`NumRows`)
+            num_cols: int = property(`NumCols`)
+            stride: int = property(`Stride`)
 
             def SizeInBytes(self) -> int
 
+            # Note: It is probably a bad idea to expose these in Python.
             # def Data(self) -> float*
             # def RowData(self) -> float*
 
-            # FIXME(Dogan): Argument order is reversed in C++. Handle in Python.
-            # @sequential
-            # def `CopyRowFromVec` as __setitem__(self, r: int, v: VectorBase)
+            # Note: CopyRowFromVec functionality is provided in Python with
+            # the __setitem__ method.
 
-            # Note (VM):
-            # __getitem__ takes only two arguments (self, index), but
-            # here we need three (self, row, col).
-            # We cannot use a perfect mapping
-            def `operator()` as _getitem(self, r:int, c:int) -> float
+            # Note: operator() functionality is provided in Python with the
+            # __getitem__ method. This wrapper is for completeness.
+            def `operator()` as Get(self, r:int, c:int) -> float
 
-            def `Set` as _setitem(self, r:int, c:int, v:float)
+            # Note: Set functionality is provided in Python with the
+            # __setitem__ method.
+            def Set(self, r:int, c:int, v:float)
 
             def SetZero(self)
 
@@ -37,22 +34,25 @@ from "matrix/kaldi-matrix.h":
 
             def SetRandUniform(self)
 
-            # Copying functions #
-            def CopyFromMat(self, M:MatrixBase, trans:MatrixTransposeType = default)
+            # Copy methods
+            def CopyFromMat(self, M:MatrixBase,
+                            trans:MatrixTransposeType = default)
 
-            # def `CopyFromMat` as CopyFromCudaMat(self, M:CuMatrixBase, trans:MatrixTransposeType = default)
+            # def `CopyFromMat` as CopyFromCudaMat(
+            #     self, M:CuMatrixBase, trans:MatrixTransposeType = default)
 
 
-            # Note (VM): 
-            #   Moved to kaldi-matrix-ext.h 
+            # Note: These are wrapped in kaldi-matrix-ext.{h,clif}.
             # def CopyFromMat(self, M:CompressedMatrix)
             # def CopyFromSp(self, M:SpMatrix)
-            # def CopyFromTp(self, M:TpMatrix, trans:MatrixTransposeType = default)
+            # def CopyFromTp(self, M:TpMatrix,
+            #                trans:MatrixTransposeType = default)
+
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
             def CopyRowsFromVec(self, v:VectorBase)
 
-            def `CopyColsFromVec` as CopyColsFromVec(self, v:VectorBase)
+            def CopyColsFromVec(self, v:VectorBase)
 
             def CopyColFromVec(self, v:VectorBase, col:int)
 
@@ -74,9 +74,9 @@ from "matrix/kaldi-matrix.h":
 
             def Min(self) -> float
 
-            def `MulElements` as __mult__(self, A: MatrixBase)
+            def MulElements(self, A: MatrixBase)
 
-            def `DivElements` as __div__(self, A: MatrixBase)
+            def DivElements(self, A: MatrixBase)
 
             def Scale(self, alpha: float)
 
@@ -92,8 +92,14 @@ from "matrix/kaldi-matrix.h":
 
             # FIXME:
             def LogDet(self, det_sign: `float` as float = default) -> float
-            def Invert(self, log_det: `float` as float = default, det_sign: `float` as float = default, inverse_needed: bool = default)
-            def InvertDouble(self, logDet: `float` as float = default, det_sign: `float` as float = default, inverse_needed: bool = default)
+
+            def Invert(self, log_det: `float` as float = default,
+                       det_sign: `float` as float = default,
+                       inverse_needed: bool = default)
+
+            def InvertDouble(self, logDet: `float` as float = default,
+                             det_sign: `float` as float = default,
+                             inverse_needed: bool = default)
 
             def InvertElements(self)
 
@@ -129,15 +135,17 @@ from "matrix/kaldi-matrix.h":
 
             def ApplyHeaviside(self)
 
-            def Eig(self, P: MatrixBase, eigs_real: VectorBase, eigs_imag: VectorBase)
+            def Eig(self, P: MatrixBase, eigs_real: VectorBase,
+                    eigs_imag: VectorBase)
 
             def Power(self, pow: float) -> bool
 
-            def DestructiveSvd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
+            def DestructiveSvd(self, s: VectorBase, U: MatrixBase,
+                               Vt: MatrixBase)
 
-            def `Svd` as CompleteSvd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
+            def Svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
 
-            def `Svd` as SvdOnlySingularValues(self, s: VectorBase)
+            def `Svd` as SingularValues(self, s: VectorBase)
 
             def MinSingularValue(self) -> float
 
@@ -155,7 +163,8 @@ from "matrix/kaldi-matrix.h":
 
             def FrobeniusNorm(self) -> float
 
-            def ApproxEqual(self, other: MatrixBase, tol: float = default) -> bool
+            def ApproxEqual(self, other: MatrixBase, tol: float = default)
+                -> bool
 
             def Equal(self, other: MatrixBase) -> bool
 
@@ -173,7 +182,8 @@ from "matrix/kaldi-matrix.h":
 
             def GroupPnorm(self, src: MatrixBase, power: float)
 
-            # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase, power: float)
+            # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase,
+            #                     power: float)
 
             def GroupMax(self, src: MatrixBase)
 
@@ -185,12 +195,8 @@ from "matrix/kaldi-matrix.h":
 
             def DiffTanh(self, value: MatrixBase, diff: MatrixBase)
 
-            def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase, check_thresh: float = default)
-
-            # Note (VM):
-            # Nothing to do here, it is already defined outside the object
-            # friend Real kaldi::TraceMatMat<Real>(const MatrixBase<Real> &A,
-            # const MatrixBase<Real> &B, MatrixTransposeType trans);  // tr (A B)
+            def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase,
+                                 check_thresh: float = default)
 
             def Add(self, alpha: float)
 
@@ -202,36 +208,60 @@ from "matrix/kaldi-matrix.h":
 
             def AddVecToCols(self, alpha: float, v: VectorBase)
 
-            def AddMat(self, alpha: float, M: MatrixBase, transA: MatrixTransposeType = default)
+            def AddMat(self, alpha: float, M: MatrixBase,
+                       transA: MatrixTransposeType = default)
 
-            def SymAddMat2(self, alpha: float, M: MatrixBase, transA: MatrixTransposeType, beta: float)
+            def SymAddMat2(self, alpha: float, M: MatrixBase,
+                           transA: MatrixTransposeType, beta: float)
 
-            def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase, transM: MatrixTransposeType, beta: float = default)
+            def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase,
+                              transM: MatrixTransposeType,
+                              beta: float = default)
 
-            def AddMatDiagVec(self, alpha: float, M: MatrixBase, transM: MatrixTransposeType, v: VectorBase, beta: float = default)
+            def AddMatDiagVec(self, alpha: float, M: MatrixBase,
+                              transM: MatrixTransposeType, v: VectorBase,
+                              beta: float = default)
 
-            def AddMatMatElements(self, alpha: float, A: MatrixBase, B: MatrixBase, beta: float)
+            def AddMatMatElements(self, alpha: float, A: MatrixBase,
+                                  B: MatrixBase, beta: float)
 
             # Note (VM):
             # Move to kaldi-matrix-ext.h
             # def AddSp(self, alpha: float, S:SpMatrix)
 
-            def AddMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddMatMat(self, alpha: float, A: MatrixBase,
+                          transA: MatrixTransposeType, B: MatrixBase,
+                          transB: MatrixTransposeType, beta: float)
 
-            def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase, C: MatrixBase)
+            def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase,
+                                C: MatrixBase)
 
-            def AddMatSmat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddMatSmat(self, alpha: float, A: MatrixBase,
+                           transA: MatrixTransposeType, B: MatrixBase,
+                           transB: MatrixTransposeType, beta: float)
 
-            def AddSmatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddSmatMat(self, alpha: float, A: MatrixBase,
+                           transA: MatrixTransposeType, B: MatrixBase,
+                           transB: MatrixTransposeType, beta: float)
 
-            def AddMatMatMat(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, C: MatrixBase, transC: MatrixTransposeType, beta: float)
+            def AddMatMatMat(self, alpha: float, A: MatrixBase,
+                             transA: MatrixTransposeType, B: MatrixBase,
+                             transB: MatrixTransposeType, C: MatrixBase,
+                             transC: MatrixTransposeType, beta: float)
 
             # Note (VM):
             # Move to kaldi-matrix-ext.h
-            # def AddSpMat(self, alpha: float, A:SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float)
-            # def AddTpMat(self, alpha: float, A:TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
-            # def AddMatSp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:SpMatrix, beta: float)
-            # def AddMatTp(self, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B:TpMatrix, transB: MatrixTransposeType, beta: float)
+            # def AddSpMat(self, alpha: float, A:SpMatrix, B: MatrixBase,
+            #              transB: MatrixTransposeType, beta: float)
+            # def AddTpMat(self, alpha: float, A:TpMatrix,
+            #              transA: MatrixTransposeType, B: MatrixBase,
+            #              transB: MatrixTransposeType, beta: float)
+            # def AddMatSp(self, alpha: float, A: MatrixBase,
+            #              transA: MatrixTransposeType, B:SpMatrix,
+            #              beta: float)
+            # def AddMatTp(self, alpha: float, A: MatrixBase,
+            #              transA: MatrixTransposeType, B:TpMatrix,
+            #              transB: MatrixTransposeType, beta: float)
             # def AddTpTp
             # def AddSpSp
 
@@ -241,10 +271,12 @@ from "matrix/kaldi-matrix.h":
 
             def OrthogonalizeRows(self)
 
-            # Note (VM): nothing to do here
-            # void Read(std::istream & in, bool binary, bool add = false);
-            # void Write(std::ostream & out, bool binary) const;
+            def Read(self, is: istream, binary: bool, add: bool = default)
 
+            def Write(self, os: ostream, binary: bool)
+
+        # Note: SubMatrix is wrapped manually. See matrix-ext.cc
+        #
         # class `SubMatrix<float>` as SubMatrix(MatrixBase):
         #
         #     def __init__(self, T:MatrixBase, ro:int, r:int, co:int, c:int)
@@ -253,29 +285,34 @@ from "matrix/kaldi-matrix.h":
         #     # We cannot wrap this constructor automatically since CLIF does
         #     # not support wrapping raw data pointers.
         #     # @add__init__
-        #     # def `SubMatrix` as NewWithData(self, data:`float` as float, num_rows: int, num_cols: int, stride: int)
+        #     # def `SubMatrix` as NewWithData(self, data:`float` as float,
+        #                                      num_rows: int, num_cols: int,
+        #                                      stride: int)
         #
         #     @add__init__
         #     def `SubMatrix` as NewWithSubMatrix(self, other:SubMatrix)
-
+        #
         #     # Accessing of sub-parts of the matrix. #
         #     def Row(self, i:int) -> SubVector
-
-        #     def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
-
+        #
+        #     def Range(self, row_offset:int, num_rows:int, col_offset:int,
+        #               num_cols: int) -> SubMatrix
+        #
         #     def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
-
+        #
         #     def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
 
         class `Matrix<float>` as Matrix(MatrixBase):
 
             @add__init__
-            def `Matrix` as NewWithSize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def `Matrix` as NewWithSize(self, r:int, c:int,
+                                        resize_type:MatrixResizeType = default,
+                                        stride_type:MatrixStrideType = default)
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
-                  # MatrixTransposeType trans = kNoTrans);
+            #                 MatrixTransposeType trans = kNoTrans);
 
             def Swap(self, other:Matrix)
 
@@ -283,7 +320,8 @@ from "matrix/kaldi-matrix.h":
             # void Swap(CuMatrix<Real> *mat);
 
             @add__init__
-            def `Matrix` as NewWithMatrix(self, M:MatrixBase, trans:MatrixTransposeType = default)
+            def `Matrix` as NewWithMatrix(self, M:MatrixBase,
+                                          trans:MatrixTransposeType = default)
 
             # TODO:
             # @add__init__
@@ -291,11 +329,10 @@ from "matrix/kaldi-matrix.h":
             # @add__init__
             # def `Matrix` as FromCompressedMatrix(self, C:CompressedMatrix)
             # @add__init__
-            # def `Matrix` as FromCompressedMatrix(self, M:TpMatrix, trans:MatrixTransposeType = default)
+            # def `Matrix` as FromCompressedMatrix(
+            #     self, M:TpMatrix, trans:MatrixTransposeType = default)
 
-            # Note (VM):
-            # Are we implementing this?
-            # void Read(std::istream & in, bool binary, bool add = false);
+            def Read(self, is: istream, binary: bool, add: bool = default)
 
             def RemoveRow(self, i:int)
 
@@ -305,16 +342,6 @@ from "matrix/kaldi-matrix.h":
                        resize_type:MatrixResizeType = default,
                        stride_type:MatrixStrideType = default)
 
-            # Todo (VM):
-            # <strikethrough>Check if this actually works</strikethrough>
-            # Better to do it in python
-            # def `operator=` as __copy__(self, other:MatrixBase) -> Matrix
-
-            # NOTE (VM):
-            # This is actually a private method,
-            # so it might not be a good idea to wrap it
-            # def `Init` as __init__(self, r:int, c:int)
-
             # NOTE:
             # We cannot wrap Row here since SubVector is wrapped elsewhere.
             # We implement it in Python by constructing a SubVector object.
@@ -323,69 +350,67 @@ from "matrix/kaldi-matrix.h":
             # NOTE:
             # We cannot wrap *Range here since SubMatrix is wrapped elsewhere.
             # We implement them in Python by constructing SubMatrix objects.
-            # def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+            # def Range(self, row_offset:int, num_rows:int, col_offset:int,
+            #           num_cols: int) -> SubMatrix
             #
             # def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
             #
             # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
-        def `TraceMat` as TraceMat(A: MatrixBase) -> float
+        def TraceMat(A: MatrixBase) -> float
 
-        def `TraceMatMat` as TraceMatMat(A: MatrixBase, B: MatrixBase, trans: MatrixTransposeType = default) -> float
+        def TraceMatMat(A: MatrixBase, B: MatrixBase,
+                        trans: MatrixTransposeType = default) -> float
 
-        def `TraceMatMatMat` as TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
-                                               B: MatrixBase, transB: MatrixTransposeType,
-                                               C: MatrixBase, transC: MatrixTransposeType) -> float
+        def TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
+                           B: MatrixBase, transB: MatrixTransposeType,
+                           C: MatrixBase, transC: MatrixTransposeType) -> float
 
-        def `TraceMatMatMatMat` as TraceMatMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
-                                                     B: MatrixBase, transB: MatrixTransposeType,
-                                                     C: MatrixBase, transC: MatrixTransposeType,
-                                                     D: MatrixBase, transD: MatrixTransposeType) -> float
+        def TraceMatMatMatMat(
+            A: MatrixBase, transA: MatrixTransposeType,
+            B: MatrixBase, transB: MatrixTransposeType,
+            C: MatrixBase, transC: MatrixTransposeType,
+            D: MatrixBase, transD: MatrixTransposeType) -> float
 
-        def `ApproxEqual` as ApproxEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default) -> bool
+        def `ApproxEqual` as ApproxEqualMatrix(
+            A:MatrixBase, B:MatrixBase, tol:`float` as float = default) -> bool
 
-        def `AssertEqual` as AssertEqualMatrix(A:MatrixBase, B:MatrixBase, tol:`float` as float = default)
+        def `AssertEqual` as AssertEqualMatrix(
+            A:MatrixBase, B:MatrixBase, tol:`float` as float = default)
 
-        def `SortSvd` as SortSvd(s: VectorBase, U: MatrixBase, Vt: MatrixBase = default, sort_on_absolute_value: bool = default)
+        def SortSvd(s: VectorBase, U: MatrixBase, Vt: MatrixBase = default,
+                    sort_on_absolute_value: bool = default)
 
-        def `CreateEigenvalueMatrix` as CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase, D:MatrixBase)
+        def CreateEigenvalueMatrix(real:VectorBase, imag:VectorBase,
+                                   D:MatrixBase)
 
-        def `AttemptComplexPower` as AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
-
-        # TODO (VM):
-        # def `operator<<` as Write(out: ostream, M: MatrixBase) -> ostream
-        # def `operator>>` as Write(in: istream, M: MatrixBase) -> istream
-        # def `operator>>` as Write(in: istream, M: Matrix) -> istream
+        def AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
 
         def `SameDim` as SameDimMatrix(M: MatrixBase, N: MatrixBase) -> bool
 
 
 
         class `MatrixBase<double>` as DoubleMatrixBase:
-            num_rows_: int = property(`NumRows`)
-            num_cols_: int = property(`NumCols`)
-
-            # FIXME (VM): maybe?
-            # stride_: int = property(`stride_`)
-
-            def Stride(self) -> int
+            num_rows: int = property(`NumRows`)
+            num_cols: int = property(`NumCols`)
+            stride: int = property(`Stride`)
 
             def SizeInBytes(self) -> int
 
             # def Data(self) -> float*
             # def RowData(self) -> float*
 
-            # FIXME(Dogan): Argument order is reversed in C++. Handle in Python.
+            # FIXME(Dogan): Argument order is reversed in C++.
             # @sequential
-            # def `CopyRowFromVec` as __setitem__(self, r: int, v: DoubleVectorBase)
+            # def `CopyRowFromVec` as __setitem__(self, r: int,
+            #                                     v: DoubleVectorBase)
 
             # Note (VM):
             # __getitem__ takes only two arguments (self, index), but
             # here we need three (self, row, col).
-            # We cannot use a perfect mapping
-            def `operator()` as _getitem(self, r:int, c:int) -> float
+            def `operator()` as Get(self, r:int, c:int) -> float
 
-            def `Set` as _setitem(self, r:int, c:int, v:float)
+            def Set(self, r:int, c:int, v:float)
 
             def SetZero(self)
 
@@ -395,19 +420,24 @@ from "matrix/kaldi-matrix.h":
 
             def SetRandUniform(self)
 
-            # Copying functions #
-            def CopyFromMat(self, M:DoubleMatrixBase, trans:MatrixTransposeType = default)
+            # Copy methods
+            def CopyFromMat(self, M:DoubleMatrixBase,
+                            trans:MatrixTransposeType = default)
 
             # FIXME (VM): Missing definitions
-            # def `CopyFromMat` as CopyFromCudaMat(self, M:CuDoubleMatrixBase, trans:MatrixTransposeType = default)
+            # def `CopyFromMat` as CopyFromCudaMat(
+            #     self, M:CuDoubleMatrixBase,
+            #     trans:MatrixTransposeType = default)
             # def CopyFromMat(self, M:CompressedMatrix);
             # def CopyFromSp(self, M:SpDoubleMatrix);
-            # def CopyFromTp(self, M:TpDoubleMatrix, trans:MatrixTransposeType = default)
-            # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuDoubleVector)
+            # def CopyFromTp(self, M:TpDoubleMatrix,
+            #                trans:MatrixTransposeType = default)
+            # def `CopyRowsFromVec` as CopyRowFromCudaVec(self,
+            #                                             v:CuDoubleVector)
 
             def CopyRowsFromVec(self, v:DoubleVectorBase)
 
-            def `CopyColsFromVec` as CopyColsFromVec(self, v:DoubleVectorBase)
+            def CopyColsFromVec(self, v:DoubleVectorBase)
 
             def CopyColFromVec(self, v:DoubleVectorBase, col:int)
 
@@ -429,9 +459,9 @@ from "matrix/kaldi-matrix.h":
 
             def Min(self) -> float
 
-            def `MulElements` as __mult__(self, A: DoubleMatrixBase)
+            def MulElements(self, A: DoubleMatrixBase)
 
-            def `DivElements` as __div__(self, A: DoubleMatrixBase)
+            def DivElements(self, A: DoubleMatrixBase)
 
             def Scale(self, alpha: float)
 
@@ -447,8 +477,14 @@ from "matrix/kaldi-matrix.h":
 
             # FIXME:
             def LogDet(self, det_sign: `double` as float = default) -> float
-            def Invert(self, log_det: `double` as float = default, det_sign: `double` as float = default, inverse_needed: bool = default)
-            def InvertDouble(self, logDet: `double` as float = default, det_sign: `double` as float = default, inverse_needed: bool = default)
+
+            def Invert(self, log_det: `double` as float = default,
+                       det_sign: `double` as float = default,
+                       inverse_needed: bool = default)
+
+            def InvertDouble(self, logDet: `double` as float = default,
+                             det_sign: `double` as float = default,
+                             inverse_needed: bool = default)
 
             def InvertElements(self)
 
@@ -464,7 +500,8 @@ from "matrix/kaldi-matrix.h":
             # void CopyRows(const Real *const *src);
             # void CopyToRows(Real *const *dst) const;
 
-            def AddRows(self, alpha: float, src: DoubleMatrixBase, indexes: int)
+            def AddRows(self, alpha: float, src: DoubleMatrixBase,
+                        indexes: int)
 
             # FIXME:
             # void AddRows(Real alpha, const Real *const *src);
@@ -484,17 +521,18 @@ from "matrix/kaldi-matrix.h":
 
             def ApplyHeaviside(self)
 
-            def Eig(self, P: DoubleMatrixBase, eigs_real: DoubleVectorBase, eigs_imag: DoubleVectorBase)
+            def Eig(self, P: DoubleMatrixBase, eigs_real: DoubleVectorBase,
+                    eigs_imag: DoubleVectorBase)
 
             def Power(self, pow: float) -> bool
 
-            def DestructiveSvd(self, s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase)
+            def DestructiveSvd(self, s: DoubleVectorBase, U: DoubleMatrixBase,
+                               Vt: DoubleMatrixBase)
 
-            def `Svd` as CompleteSvd(self, s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase)
+            def Svd(self, s: DoubleVectorBase, U: DoubleMatrixBase,
+                    Vt: DoubleMatrixBase)
 
-            def `Svd` as SvdOnlySingularValues(self, s: DoubleVectorBase)
-
-            def Svd(self, s: DoubleVectorBase)
+            def `Svd` as SingularValues(self, s: DoubleVectorBase)
 
             def MinSingularValue(self) -> float
 
@@ -512,7 +550,8 @@ from "matrix/kaldi-matrix.h":
 
             def FrobeniusNorm(self) -> float
 
-            def ApproxEqual(self, other: DoubleMatrixBase, tol: float = default) -> bool
+            def ApproxEqual(self, other: DoubleMatrixBase,
+                            tol: float = default) -> bool
 
             def Equal(self, other: DoubleMatrixBase) -> bool
 
@@ -533,65 +572,91 @@ from "matrix/kaldi-matrix.h":
             # FIXME:
             # This doesn't follow Google conventions for C++,
             # where inputs must come before any output
-            # def GroupPnormDeriv(self, input: DoubleMatrixBase, output: DoubleMatrixBase, power: float)
+            # def GroupPnormDeriv(self, input: DoubleMatrixBase,
+            #                     output: DoubleMatrixBase, power: float)
 
             def GroupMax(self, src: DoubleMatrixBase)
 
-            def GroupMaxDeriv(self, input: DoubleMatrixBase, output: DoubleMatrixBase)
+            def GroupMaxDeriv(self, input: DoubleMatrixBase,
+                              output: DoubleMatrixBase)
 
             def Tanh(self, src: DoubleMatrixBase)
 
-            def DiffSigmoid(self, value: DoubleMatrixBase, diff: DoubleMatrixBase)
+            def DiffSigmoid(self, value: DoubleMatrixBase,
+                            diff: DoubleMatrixBase)
 
             def DiffTanh(self, value: DoubleMatrixBase, diff: DoubleMatrixBase)
 
-            def SymPosSemiDefEig(self, s: DoubleVectorBase, P: DoubleMatrixBase, check_thresh: float = default)
-
-            # FIXME:
-            # What to do here?
-            # friend Real kaldi::TraceMatMat<Real>(const MatrixBase<Real> &A,
-            # const MatrixBase<Real> &B, MatrixTransposeType trans);  // tr (A B)
+            def SymPosSemiDefEig(self, s: DoubleVectorBase,
+                                 P: DoubleMatrixBase,
+                                 check_thresh: float = default)
 
             def Add(self, alpha: float)
 
             def AddToDiag(self, alpha: float)
 
-            def AddVecVec(self, alpha: float, a: DoubleVectorBase, b: DoubleVectorBase)
+            def AddVecVec(self, alpha: float, a: DoubleVectorBase,
+                          b: DoubleVectorBase)
 
             def AddVecToRows(self, alpha: float, v: DoubleVectorBase)
 
             def AddVecToCols(self, alpha: float, v: DoubleVectorBase)
 
-            def AddMat(self, alpha: float, M: DoubleMatrixBase, transA: MatrixTransposeType = default)
+            def AddMat(self, alpha: float, M: DoubleMatrixBase,
+                       transA: MatrixTransposeType = default)
 
-            def SymAddMat2(self, alpha: float, M: DoubleMatrixBase, transA: MatrixTransposeType, beta: float)
+            def SymAddMat2(self, alpha: float, M: DoubleMatrixBase,
+                           transA: MatrixTransposeType, beta: float)
 
-            def AddDiagVecMat(self, alpha: float, v: DoubleVectorBase, M: DoubleMatrixBase, transM: MatrixTransposeType, beta: float = default)
+            def AddDiagVecMat(self, alpha: float, v: DoubleVectorBase,
+                              M: DoubleMatrixBase, transM: MatrixTransposeType,
+                              beta: float = default)
 
-            def AddMatDiagVec(self, alpha: float, M: DoubleMatrixBase, transM: MatrixTransposeType, v: DoubleVectorBase, beta: float = default)
+            def AddMatDiagVec(self, alpha: float, M: DoubleMatrixBase,
+                              transM: MatrixTransposeType, v: DoubleVectorBase,
+                              beta: float = default)
 
-            def AddMatMatElements(self, alpha: float, A: DoubleMatrixBase, B: DoubleMatrixBase, beta: float)
+            def AddMatMatElements(self, alpha: float, A: DoubleMatrixBase,
+                                  B: DoubleMatrixBase, beta: float)
 
             # FIXME:
             # Missing SpMatrix definition
             # def AddSp(self, alpha: float, S:SpDoubleMatrix)
 
-            def AddMatMat(self, alpha: float, A: DoubleMatrixBase, transA: MatrixTransposeType, B: DoubleMatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddMatMat(self, alpha: float, A: DoubleMatrixBase,
+                          transA: MatrixTransposeType, B: DoubleMatrixBase,
+                          transB: MatrixTransposeType, beta: float)
 
-            def SetMatMatDivMat(self, A: DoubleMatrixBase, B: DoubleMatrixBase, C: DoubleMatrixBase)
+            def SetMatMatDivMat(self, A: DoubleMatrixBase, B: DoubleMatrixBase,
+                                C: DoubleMatrixBase)
 
-            def AddMatSmat(self, alpha: float, A: DoubleMatrixBase, transA: MatrixTransposeType, B: DoubleMatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddMatSmat(self, alpha: float, A: DoubleMatrixBase,
+                           transA: MatrixTransposeType, B: DoubleMatrixBase,
+                           transB: MatrixTransposeType, beta: float)
 
-            def AddSmatMat(self, alpha: float, A: DoubleMatrixBase, transA: MatrixTransposeType, B: DoubleMatrixBase, transB: MatrixTransposeType, beta: float)
+            def AddSmatMat(self, alpha: float, A: DoubleMatrixBase,
+                           transA: MatrixTransposeType, B: DoubleMatrixBase,
+                           transB: MatrixTransposeType, beta: float)
 
-            def AddMatMatMat(self, alpha: float, A: DoubleMatrixBase, transA: MatrixTransposeType, B: DoubleMatrixBase, transB: MatrixTransposeType, C: DoubleMatrixBase, transC: MatrixTransposeType, beta: float)
+            def AddMatMatMat(self, alpha: float, A: DoubleMatrixBase,
+                             transA: MatrixTransposeType, B: DoubleMatrixBase,
+                             transB: MatrixTransposeType, C: DoubleMatrixBase,
+                             transC: MatrixTransposeType, beta: float)
 
             # FIXME:
             # Missing definitions
-            # def AddSpMat(self, alpha: float, A:SpDoubleMatrix, B: DoubleMatrixBase, transB: MatrixTransposeType, beta: float)
-            # def AddTpMat(self, alpha: float, A:TpDoubleMatrix, transA: MatrixTransposeType, B: DoubleMatrixBase, transB: MatrixTransposeType, beta: float)
-            # def AddMatSp(self, alpha: float, A: DoubleMatrixBase, transA: MatrixTransposeType, B:SpDoubleMatrix, beta: float)
-            # def AddMatTp(self, alpha: float, A: DoubleMatrixBase, transA: MatrixTransposeType, B:TpDoubleMatrix, transB: MatrixTransposeType, beta: float)
+            # def AddSpMat(self, alpha: float, A:SpDoubleMatrix,
+            #              B: DoubleMatrixBase, transB: MatrixTransposeType,
+            #              beta: float)
+            # def AddTpMat(self, alpha: float, A:TpDoubleMatrix,
+            #              transA: MatrixTransposeType, B: DoubleMatrixBase,
+            #              transB: MatrixTransposeType, beta: float)
+            # def AddMatSp(self, alpha: float, A: DoubleMatrixBase,
+            #              transA: MatrixTransposeType, B:SpDoubleMatrix,
+            #              beta: float)
+            # def AddMatTp(self, alpha: float, A: DoubleMatrixBase,
+            #              transA: MatrixTransposeType, B:TpDoubleMatrix,
+            #              transB: MatrixTransposeType, beta: float)
             # def AddTpTp
             # def AddSpSp
 
@@ -601,26 +666,29 @@ from "matrix/kaldi-matrix.h":
 
             def OrthogonalizeRows(self)
 
-            # Note (VM): nothing to do here
-            # void Read(std::istream & in, bool binary, bool add = false);
-            # void Write(std::ostream & out, bool binary) const;
+            def Read(self, is: istream, binary: bool, add: bool = default)
+
+            def Write(self, os: ostream, binary: bool)
 
         class `Matrix<double>` as DoubleMatrix(DoubleMatrixBase):
 
             @add__init__
-            def `Matrix` as NewWithSize(self, r:int, c:int, resize_type:MatrixResizeType = default, stride_type:MatrixStrideType = default)
+            def `Matrix` as NewWithSize(self, r:int, c:int,
+                                        resize_type:MatrixResizeType = default,
+                                        stride_type:MatrixStrideType = default)
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
-                  # MatrixTransposeType trans = kNoTrans);
+            #                 MatrixTransposeType trans = kNoTrans)
 
             def Swap(self, other:DoubleMatrix)
 
             # TODO:
-            # void Swap(CuMatrix<Real> *mat);
+            # void Swap(CuMatrix<Real> *mat)
 
             @add__init__
-            def `Matrix` as NewWithDoubleMatrix(self, M:DoubleMatrixBase, trans:MatrixTransposeType = default)
+            def `Matrix` as NewWithDoubleMatrix(
+                self, M:DoubleMatrixBase, trans:MatrixTransposeType = default)
 
             # TODO:
             # @add__init__
@@ -628,11 +696,10 @@ from "matrix/kaldi-matrix.h":
             # @add__init__
             # def `Matrix` as FromSpDoubleMatrix(self, M:SpDoubleMatrix)
             # @add__init__
-            # def `Matrix` as FromTpMatrix(self, M:TpDoubleMatrix, trans:MatrixTransposeType = default)
+            # def `Matrix` as FromTpMatrix(self, M:TpDoubleMatrix,
+            #                              trans:MatrixTransposeType = default)
 
-            # Note (VM):
-            # Are we implementing this?
-            # void Read(std::istream & in, bool binary, bool add = false);
+            def Read(self, is: istream, binary: bool, add: bool = default)
 
             def RemoveRow(self, i:int)
 
@@ -642,16 +709,6 @@ from "matrix/kaldi-matrix.h":
                        resize_type:MatrixResizeType = default,
                        stride_type:MatrixStrideType = default)
 
-            # Todo (VM):
-            # <strikethrough>Check if this actually works</strikethrough>
-            # Better to do it in python
-            # def `operator=` as __copy__(self, other:DoubleMatrixBase) -> DoubleMatrix
-
-            # NOTE (VM):
-            # This is actually a private method,
-            # so it might not be a good idea to wrap it
-            # def `Init` as __init__(self, r:int, c:int)
-
             # NOTE:
             # We cannot wrap Row here since SubVector is wrapped elsewhere.
             # We implement it in Python by constructing a SubVector object.
@@ -660,7 +717,8 @@ from "matrix/kaldi-matrix.h":
             # NOTE:
             # We cannot wrap *Range here since SubMatrix is wrapped elsewhere.
             # We implement them in Python by constructing SubMatrix objects.
-            # def Range(self, row_offset:int, num_rows:int, col_offset:int, num_cols: int) -> SubMatrix
+            # def Range(self, row_offset:int, num_rows:int, col_offset:int,
+            #           num_cols: int) -> SubMatrix
             #
             # def RowRange(self, row_offset: int, num_rows: int) -> SubMatrix
             #
@@ -670,30 +728,39 @@ from "matrix/kaldi-matrix.h":
 
         def `TraceMat` as TraceDoubleMat(A: DoubleMatrixBase) -> float
 
-        def `TraceMatMat` as TraceDoubleMatMat(A: DoubleMatrixBase, B: DoubleMatrixBase, trans:MatrixTransposeType = default) -> float
+        def `TraceMatMat` as TraceDoubleMatMat(
+            A: DoubleMatrixBase, B: DoubleMatrixBase,
+            trans:MatrixTransposeType = default) -> float
 
-        def `TraceMatMatMat` as TraceDoubleMatMatMat(A: DoubleMatrixBase, transA: MatrixTransposeType,
-                                               B: DoubleMatrixBase, transB: MatrixTransposeType,
-                                               C: DoubleMatrixBase, transC: MatrixTransposeType) -> float
+        def `TraceMatMatMat` as TraceDoubleMatMatMat(
+            A: DoubleMatrixBase, transA: MatrixTransposeType,
+            B: DoubleMatrixBase, transB: MatrixTransposeType,
+            C: DoubleMatrixBase, transC: MatrixTransposeType) -> float
 
-        def `TraceMatMatMatMat` as TraceDoubleMatMatMatMat(A: DoubleMatrixBase, transA: MatrixTransposeType,
-                                                     B: DoubleMatrixBase, transB: MatrixTransposeType,
-                                                     C: DoubleMatrixBase, transC: MatrixTransposeType,
-                                                     D: DoubleMatrixBase, transD: MatrixTransposeType) -> float
+        def `TraceMatMatMatMat` as TraceDoubleMatMatMatMat(
+            A: DoubleMatrixBase, transA: MatrixTransposeType,
+            B: DoubleMatrixBase, transB: MatrixTransposeType,
+            C: DoubleMatrixBase, transC: MatrixTransposeType,
+            D: DoubleMatrixBase, transD: MatrixTransposeType) -> float
 
-        def `ApproxEqual` as ApproxEqualDoubleMatrix(A:DoubleMatrixBase, B:DoubleMatrixBase, tol:`double` as float = default) -> bool
+        def `ApproxEqual` as ApproxEqualDoubleMatrix(
+            A:DoubleMatrixBase, B:DoubleMatrixBase,
+            tol:`double` as float = default) -> bool
 
-        def `AssertEqual` as AssertEqualDoubleMatrix(A:DoubleMatrixBase, B:DoubleMatrixBase, tol:`double` as float = default)
+        def `AssertEqual` as AssertEqualDoubleMatrix(
+            A:DoubleMatrixBase, B:DoubleMatrixBase,
+            tol:`double` as float = default)
 
-        def `SortSvd` as SortDoubleSvd(s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase = default, sort_on_absolute_value: bool = default)
+        def `SortSvd` as SortDoubleSvd(
+            s: DoubleVectorBase, U: DoubleMatrixBase,
+            Vt: DoubleMatrixBase = default,
+            sort_on_absolute_value: bool = default)
 
-        def `CreateEigenvalueMatrix` as CreateEigenvalueDoubleMatrix(real:DoubleVectorBase, imag:DoubleVectorBase, D:DoubleMatrixBase)
+        def `CreateEigenvalueMatrix` as CreateEigenvalueDoubleMatrix(
+            real:DoubleVectorBase, imag:DoubleVectorBase, D:DoubleMatrixBase)
 
-        # def `operator<<` as Write(out: ostream, M: DoubleMatrixBase) -> ostream
-        # def `operator>>` as Write(in: istream, M: DoubleMatrixBase) -> istream
-        # def `operator>>` as Write(in: istream, M: DoubleMatrix) -> istream
-
-        def `SameDim` as SameDimDoubleMatrix(M: DoubleMatrixBase, N: DoubleMatrixBase) -> bool
+        def `SameDim` as SameDimDoubleMatrix(M: DoubleMatrixBase,
+                                             N: DoubleMatrixBase) -> bool
 
 
         class HtkHeader:
@@ -702,13 +769,8 @@ from "matrix/kaldi-matrix.h":
             mSampleSize: int
             mSampleKind: int
 
-        # template<typename Real>
-        # bool ReadHtk(std::istream &is, Matrix<Real> *M, HtkHeader *header_ptr);
+        def ReadHtk(is: istream, M: Matrix, header: HtkHeader) -> bool
 
-        # // Write (HTK format) features to file from matrix.
-        # template<typename Real>
-        # bool WriteHtk(std::ostream &os, const MatrixBase<Real> &M, HtkHeader htk_hdr);
+        def WriteHtk(os: ostream , M: MatrixBase, header: HtkHeader) -> bool
 
-        # // Write (CMUSphinx format) features to file from matrix.
-        # template<typename Real>
-        # bool WriteSphinx(std::ostream &os, const MatrixBase<Real> &M);
+        def WriteSphinx(os: ostream, M: MatrixBase) -> bool

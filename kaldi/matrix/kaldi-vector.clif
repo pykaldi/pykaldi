@@ -1,3 +1,4 @@
+from "util/iostream-clifwrap.h" import *
 from "matrix/matrix-common-clifwrap.h" import *
 
 from "matrix/kaldi-vector.h":
@@ -7,7 +8,7 @@ from "matrix/kaldi-vector.h":
 
       def IsZero(self, cutoff: float = default) -> bool
 
-      def `Set` as fill_(self, f: float)
+      def `Set` as Fill(self, f: float)
 
       def SetRandn(self)
 
@@ -19,7 +20,9 @@ from "matrix/kaldi-vector.h":
 
       def `Dim` as size(self) -> int
 
-      def `SizeInBytes` as size_in_bytes(self) -> int
+      def Dim(self) -> int
+
+      def SizeInBytes(self) -> int
 
       # NOTE:
       # It is probably a bad idea to expose the Data method in Python since its
@@ -32,11 +35,9 @@ from "matrix/kaldi-vector.h":
       #
       # def Data(self) -> float
 
-      @sequential
-      def `operator()` as __getitem__(self, index: int) -> float
+      def `operator()` as Get(self, index: int) -> float
 
-      @sequential
-      def `Set` as __setitem__(self, index: int, value: float)
+      def Set(self, index: int, value: float)
 
       # NOTE:
       # We wrap this in Python by constructing a new SubVector.
@@ -56,7 +57,7 @@ from "matrix/kaldi-vector.h":
 
       def ApplyAbs(self)
 
-      def `ApplyFloor` as floor_(self, floor: float) -> int
+      def ApplyFloor(self, floor: float) -> int
 
       def ApplyCeiling(self, ceiling: float) -> int
 
@@ -163,11 +164,11 @@ from "matrix/kaldi-vector.h":
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def CopyDiagFromTp(self, M: TpMatrix)
 
-      def `Max` as max(self) -> float
+      def Max(self) -> float
 
       def `Max` as MaxIndex(self) -> (value: float, index: int)
 
-      def `Min` as min(self) -> float
+      def Min(self) -> float
 
       def `Min` as MinIndex(self) -> (value: float, index: int)
 
@@ -200,12 +201,12 @@ from "matrix/kaldi-vector.h":
       #                   N: MatrixBase, transN: MatrixTransposeType,
       #                   beta: `float` as float = default)
 
-      # TODO(Dogan): Wrap istream.
-      # def Read(in: istream, binary: bool, add: bool = false);
+      def Read(self, is: istream, binary: bool, add: bool = default)
 
-      # TODO(Dogan): Wrap ostream.
-      # def Write(in: ostream, binary: bool);
+      def Write(self, os: ostream, binary: bool)
 
+    # Note: SubVector is wrapped manually. See matrix-ext.cc
+    #
     # class `SubVector<float>` as SubVector(VectorBase):
     #   def __init__(self, t: VectorBase, offset: int, length: int)
     #
@@ -223,8 +224,6 @@ from "matrix/kaldi-vector.h":
     #   # def `SubVector` as CopyFromMatrixRow(self, M: MatrixBase, row: int)
     #
     #   def Range(self, offset: int, length: int) -> SubVector
-    #
-    #   # def Attach(self, v: VectorBase, offset: int, length: int)
 
 
     class `Vector<float>` as Vector(VectorBase):
@@ -244,8 +243,7 @@ from "matrix/kaldi-vector.h":
 
       def Swap(self, other: Vector)
 
-      # TODO(Dogan): Wrap istream.
-      # def Read(in: istream, binary: bool, add: bool = false);
+      def Read(self, is: istream, binary: bool, add: bool = default)
 
       # NOTE:
       # We cannot wrap Range here since SubVector is wrapped elsewhere. We
@@ -256,17 +254,12 @@ from "matrix/kaldi-vector.h":
 
       def RemoveElement(self, index: int)
 
-    # TODO(Dogan): Wrap iostream and look into wrapping stream ops in Python.
-    # def `operator<<` as Write(out: ostream, v: VectorBase) -> ostream
-    # def `operator>>` as Write(in: istream, v: VectorBase) -> istream
-    # def `operator>>` as Write(in: istream, v: Vector) -> istream
-
     # NOTE:
     # Explicit mention of compatible type `float` is needed for template
     # deduction. CLIF defaults to `double` for Python float.
     # These functions were renamed to avoid possible name conflicts.
-    def `ApproxEqual` as ApproxEqualVector(a: VectorBase, b: VectorBase,
-                                           tol: `float` as float = default) -> bool
+    def `ApproxEqual` as ApproxEqualVector(
+        a: VectorBase, b: VectorBase, tol: `float` as float = default) -> bool
 
     def `AssertEqual` as AssertEqualVector(a: VectorBase, b: VectorBase,
                                            tol: `float` as float = default)
@@ -283,7 +276,7 @@ from "matrix/kaldi-vector.h":
 
       def IsZero(self, cutoff: float = default) -> bool
 
-      def `Set` as fill_(self, f: float)
+      def `Set` as Fill(self, f: float)
 
       def SetRandn(self)
 
@@ -295,7 +288,9 @@ from "matrix/kaldi-vector.h":
 
       def `Dim` as size(self) -> int
 
-      def `SizeInBytes` as size_in_bytes(self) -> int
+      def Dim(self) -> int
+
+      def SizeInBytes(self) -> int
 
       # NOTE:
       # It is probably a bad idea to expose the Data method in Python since its
@@ -308,11 +303,9 @@ from "matrix/kaldi-vector.h":
       #
       # def Data(self) -> float
 
-      @sequential
-      def `operator()` as __getitem__(self, index: int) -> float
+      def `operator()` as Get(self, index: int) -> float
 
-      @sequential
-      def `Set` as __setitem__(self, index: int, value: float)
+      def Set(self, index: int, value: float)
 
       # NOTE:
       # We wrap this in Python by constructing a new SubVector.
@@ -332,11 +325,12 @@ from "matrix/kaldi-vector.h":
 
       def ApplyAbs(self)
 
-      def `ApplyFloor` as floor_(self, floor: float) -> int
+      def ApplyFloor(self, floor: float) -> int
 
       def ApplyCeiling(self, ceiling: float) -> int
 
-      def `ApplyFloor` as ApplyFloorVector(self, floor: DoubleVectorBase) -> int
+      def `ApplyFloor` as ApplyFloorVector(self,
+                                           floor: DoubleVectorBase) -> int
 
       def ApplySoftMax(self) -> float
 
@@ -352,7 +346,8 @@ from "matrix/kaldi-vector.h":
 
       def Norm(self, p: float) -> float
 
-      def ApproxEqual(self, other: DoubleVectorBase, tol: float = default) -> bool
+      def ApproxEqual(self, other: DoubleVectorBase,
+                      tol: float = default) -> bool
 
       def InvertElements(self)
 
@@ -439,11 +434,11 @@ from "matrix/kaldi-vector.h":
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def CopyDiagFromTp(self, M: TpMatrix)
 
-      def `Max` as max(self) -> float
+      def Max(self) -> float
 
       def `Max` as MaxIndex(self) -> (value: float, index: int)
 
-      def `Min` as min(self) -> float
+      def Min(self) -> float
 
       def `Min` as MinIndex(self) -> (value: float, index: int)
 
@@ -476,11 +471,9 @@ from "matrix/kaldi-vector.h":
       #                   N: MatrixBase, transN: MatrixTransposeType,
       #                   beta: `double` as float = default)
 
-      # TODO(Dogan): Wrap istream.
-      # def Read(in: istream, binary: bool, add: bool = false);
+      def Read(self, is: istream, binary: bool, add: bool = default)
 
-      # TODO(Dogan): Wrap ostream.
-      # def Write(in: ostream, binary: bool);
+      def Write(self, os: ostream, binary: bool)
 
     class `Vector<double>` as DoubleVector(DoubleVectorBase):
       @add__init__
@@ -499,8 +492,7 @@ from "matrix/kaldi-vector.h":
 
       def Swap(self, other: DoubleVector)
 
-      # TODO(Dogan): Wrap istream.
-      # def Read(in: istream, binary: bool, add: bool = false);
+      def Read(self, is: istream, binary: bool, add: bool = default)
 
       # NOTE:
       # We cannot wrap Range here since SubVector is wrapped elsewhere. We
@@ -511,23 +503,23 @@ from "matrix/kaldi-vector.h":
 
       def RemoveElement(self, index: int)
 
-    # TODO(Dogan): Wrap iostream and look into wrapping stream ops in Python.
-    # def `operator<<` as Write(out: ostream, v: DoubleVectorBase) -> ostream
-    # def `operator>>` as Write(in: istream, v: DoubleVectorBase) -> istream
-    # def `operator>>` as Write(in: istream, v: DoubleVector) -> istream
-
     # NOTE:
     # Explicit mention of compatible type `double` is needed for template
     # deduction. CLIF defaults to `double` for Python float.
     # These functions were renamed to avoid possible name conflicts.
-    def `ApproxEqual` as ApproxEqualDoubleVector(a: DoubleVectorBase, b: DoubleVectorBase,
-                                           tol: `double` as float = default) -> bool
+    def `ApproxEqual` as ApproxEqualDoubleVector(
+        a: DoubleVectorBase, b: DoubleVectorBase,
+        tol: `double` as float = default) -> bool
 
-    def `AssertEqual` as AssertEqualDoubleVector(a: DoubleVectorBase, b: DoubleVectorBase,
-                                           tol: `double` as float = default)
+    def `AssertEqual` as AssertEqualDoubleVector(
+        a: DoubleVectorBase, b: DoubleVectorBase,
+        tol: `double` as float = default)
 
-    def `VecVec` as DoubleVecVec(v1: DoubleVectorBase, v2: DoubleVectorBase) -> float
+    def `VecVec` as DoubleVecVec(v1: DoubleVectorBase,
+                                 v2: DoubleVectorBase) -> float
 
     # NOTE:
     # We cannot wrap this here since MatrixBase is not defined yet.
-    # def `VecMatVec` as DoubleVecMatVec(v1: DoubleVectorBase, M: DoubleMatrixBase, v2: DoubleVectorBase) -> float
+    # def `VecMatVec` as DoubleVecMatVec(v1: DoubleVectorBase,
+    #                                    M: DoubleMatrixBase,
+    #                                    v2: DoubleVectorBase) -> float
