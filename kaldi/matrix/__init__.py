@@ -531,7 +531,7 @@ class Vector(VectorBase, kaldi_vector.Vector):
     type.
     """
 
-    def __init__(self, length=None):
+    def __init__(self, length=None, resize_type=MatrixResizeType.SET_ZERO):
         """Initializes a new vector.
 
         If length is not `None`, initializes the vector to the specified length.
@@ -539,11 +539,12 @@ class Vector(VectorBase, kaldi_vector.Vector):
 
         Args:
             length (int): Length of the new vector.
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         super(Vector, self).__init__()
         if length is not None:
             if isinstance(length, int) and length >= 0:
-                self.resize_(length, MatrixResizeType.UNDEFINED)
+                self.resize_(length, resize_type)
             else:
                 raise ValueError("length should be a non-negative integer.")
 
@@ -590,8 +591,7 @@ class Vector(VectorBase, kaldi_vector.Vector):
 
         Args:
             length (int): Size of new vector.
-            resize_type (:data:`MatrixResizeType`): Resize type.
-                Defaults to `MatrixResizeType.SET_ZERO`.
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         self.Resize(length, resize_type)
         return self
@@ -1092,7 +1092,8 @@ class Matrix(MatrixBase, kaldi_matrix.Matrix):
     This class defines a more Pythonic user facing API for the Kaldi Matrix
     type.
     """
-    def __init__(self, num_rows=None, num_cols=None):
+    def __init__(self, num_rows=None, num_cols=None,
+                 resize_type=MatrixResizeType.SET_ZERO):
         """Initializes a new matrix.
 
         If num_rows and num_cols are not None, initializes the matrix to the
@@ -1101,6 +1102,7 @@ class Matrix(MatrixBase, kaldi_matrix.Matrix):
         Args:
             num_rows (int): Number of rows of the new matrix.
             num_cols (int): Number of cols of the new matrix.
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         super(Matrix, self).__init__()
         if num_rows is not None or num_cols is not None:
@@ -1113,7 +1115,7 @@ class Matrix(MatrixBase, kaldi_matrix.Matrix):
                 if not (num_rows == 0 and num_cols == 0):
                     raise IndexError("num_rows and num_cols should both be "
                                      "positive or they should both be 0.")
-            self.resize_(num_rows, num_cols, MatrixResizeType.UNDEFINED)
+            self.resize_(num_rows, num_cols, resize_type)
 
     @classmethod
     def new(cls, obj, row_start=0, num_rows=None, col_start=0, num_cols=None):
@@ -1180,9 +1182,7 @@ class Matrix(MatrixBase, kaldi_matrix.Matrix):
             num_rows (int): Number of rows of new matrix.
             num_cols (int): Number of columns of new matrix.
             resize_type (:class:`MatrixResizeType`): Resize type.
-                Defaults to MatrixResizeType.SET_ZERO.
             stride_type (:class:`MatrixStrideType`): Stride type.
-                Defaults to MatrixStrideType.DEFAULT.
 
         Raises:
             ValueError: If matrices do not own their data.
@@ -1293,7 +1293,7 @@ class PackedMatrix(packed_matrix.PackedMatrix):
 
     This class defines the user facing API for PackedMatrix type.
     """
-    def __init__(self, num_rows=None):
+    def __init__(self, num_rows=None, resize_type=MatrixResizeType.SET_ZERO):
         """Initializes a new packed matrix.
 
         If num_rows is not None, initializes the packed matrix to the specified
@@ -1301,16 +1301,14 @@ class PackedMatrix(packed_matrix.PackedMatrix):
 
         Args:
             num_rows (int): Number of rows
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         super(PackedMatrix, self).__init__()
         if num_rows is not None:
             if isinstance(num_rows, int) and num_rows >= 0:
-                self.resize_(num_rows, MatrixResizeType.UNDEFINED)
+                self.resize_(num_rows, resize_type)
             else:
                 raise ValueError("num_rows should be a non-negative integer.")
-
-    def __len__(self):
-        return self.num_rows
 
     def size(self):
         """Returns size as a tuple.
@@ -1321,14 +1319,12 @@ class PackedMatrix(packed_matrix.PackedMatrix):
         """
         return self.num_rows, self.num_cols
 
-    def resize_(self, num_rows,
-                resize_type = MatrixResizeType.SET_ZERO):
+    def resize_(self, num_rows, resize_type = MatrixResizeType.SET_ZERO):
         """Sets packed matrix to specified size.
 
         Args:
             num_rows (int): Number of rows of the new packed matrix.
-            resize_type (MatrixResizeType): Resize type.
-                Defaults to MatrixResizeType.SET_ZERO.
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         self.Resize(num_rows, resize_type)
 
@@ -1357,7 +1353,7 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
 
     This class defines the user facing API for Triangular Matrix.
     """
-    def __init__(self, num_rows = None):
+    def __init__(self, num_rows = None, resize_type=MatrixResizeType.SET_ZERO):
         """Initializes a new tpmatrix.
 
         If num_rows is not None, initializes the triangular matrix to the
@@ -1365,71 +1361,20 @@ class TpMatrix(tp_matrix.TpMatrix, PackedMatrix):
 
         Args:
             num_rows (int): Number of rows
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         tp_matrix.TpMatrix.__init__(self)
         if num_rows is not None:
             if isinstance(num_rows, int) and num_rows >= 0:
-                self.resize_(num_rows, MatrixResizeType.UNDEFINED)
+                self.resize_(num_rows, resize_type)
             else:
                 raise ValueError("num_rows should be a non-negative integer.")
 
-    @classmethod
-    def new(cls, obj, trans = MatrixTransposeType.NO_TRANS):
-        """Creates a new TpMatrix from obj.
-
-        Args:
-            obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data
-                from.
-            trans (MatrixTransposeType): Only used when obj is Matrix_like.
-                Defaults to MatrixTransposeType.NO_TRANS.
-
-        Returns:
-            New TpMatrix from obj.
-        """
-        instance = cls.__new__(cls)
-        if isinstance(obj, TpMatrix):
-            instance = clone(obj)
-        elif isinstance(obj, PackedMatrix):
-            instance.CopyFromPacked(obj)
-        else:
-            # Try to convert it to a matrix
-            m = Matrix.new(obj)
-            if m.size()[0] != m.size()[1]:
-                raise ValueError("obj is not a square matrix.")
-            # tmp = TpMatrix()
-            # tmp.resize_(m.size()[0])
-            instance.resize_(m.size()[0])
-            instance.CopyFromMat(m, trans)
-            # instance = tmp
-        return instance
-
-    @classmethod
-    def cholesky(cls, spmatrix):
-        """Cholesky decomposition
-        Returns a new TPMatrix X such that
-
-        spmatrix = X * X^T
-
-        Arguments:
-            spmatrix (SpMatrix): Matrix to decompose
-
-        Returns:
-            Cholesky decomposition of spmatrix.
-        """
-        if not isinstance(spmatrix, SpMatrix):
-            raise ValueError("spmatrix object of type {} is not a SpMatrix"
-                             .format(type(spmatrix)))
-
-        instance = TpMatrix(len(spmatrix))
-        instance.Cholesky(spmatrix)
-        return instance
-
     def clone(self):
-        """
+        """ Returns a copy of this triangular matrix.
 
         Returns:
-            copy of this TpMatrix.
-
+            A new :class:`TpMatrix` that is a copy of this triangular matrix.
         """
         clone = TpMatrix(len(self))
         clone.CopyFromTp(self)
@@ -1441,7 +1386,7 @@ class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
 
     This class defines the user facing API for Kaldi Simetric Matrix.
     """
-    def __init__(self, num_rows = None):
+    def __init__(self, num_rows = None, resize_type=MatrixResizeType.SET_ZERO):
         """Initializes a new SpMatrix.
 
         If num_rows is not None, initializes the SpMatrix to the specified size.
@@ -1449,41 +1394,20 @@ class SpMatrix(PackedMatrix, sp_matrix.SpMatrix):
 
         Args:
             num_rows (int): Number of rows
+            resize_type (:class:`MatrixResizeType`): Resize type.
         """
         sp_matrix.SpMatrix.__init__(self)
         if num_rows is not None:
             if isinstance(num_rows, int) and num_rows >= 0:
-                self.resize_(num_rows, MatrixResizeType.UNDEFINED)
+                self.resize_(num_rows, resize_type)
             else:
                 raise ValueError("num_rows should be a non-negative integer.")
 
-    @classmethod
-    def new(cls, obj):
-        """Creates a new SpMatrix from obj.
-
-        Args:
-            obj (TpMatrix or PackedMatrix or Matrix_like): obj to copy data
-                from. If Matrix_like, make sure its symetric by taking the mean
-                (obj + obj^T)/2
-
-        Returns:
-            New SpMatrix from obj.
-        """
-        instance = cls.__new__(cls)
-        if isinstance(obj, SpMatrix):
-            instance = clone(obj)
-        elif isinstance(obj, PackedMatrix):
-            instance.CopyFromPacked(obj)
-        elif isinstance(obj, Matrix):
-            instance.CopyFromMat(Matrix.new(obj), SpCopyType.TAKE_MEAN)
-        return instance
-
     def clone(self):
-        """
+        """ Returns a copy of this symmetric matrix.
 
         Returns:
-            Copy of this SpMatrix.
-
+            A new :class:`SpMatrix` that is a copy of this symmetric matrix.
         """
         clone = SpMatrix(len(self))
         clone.CopyFromTp(self)

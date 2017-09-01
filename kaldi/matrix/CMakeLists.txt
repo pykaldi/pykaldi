@@ -21,8 +21,9 @@ add_pyclif_library("sparse_matrix" sparse-matrix.clif
   RPATH $ORIGIN/../util:$ORIGIN/../cudamatrix
 )
 add_pyclif_library("packed_matrix" packed-matrix.clif
-  CLIF_DEPS kaldi_matrix
+  CLIF_DEPS iostream kaldi_matrix
   LIBRARIES kaldi-matrix
+  RPATH $ORIGIN/../util
 )
 add_pyclif_library("sp_matrix" sp-matrix.clif
   CLIF_DEPS packed_matrix

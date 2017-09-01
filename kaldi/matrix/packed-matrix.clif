@@ -1,3 +1,4 @@
+from "util/iostream-clifwrap.h" import *
 from "matrix/matrix-common-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
@@ -10,13 +11,11 @@ from "matrix/packed-matrix.h":
       num_cols: int = property(`NumCols`)
 
       @add__init__
-      def `PackedMatrix` as NewWithSize(self, r:int,
-                                        resize_type:MatrixResizeType = default)
+      def `PackedMatrix` as NewWithSize(
+          self, r:int, resize_type: MatrixResizeType = default)
 
-      # TODO:
-      # Add fix in kaldi
-      # @add__init__
-      # def `PackedMatrix` as NewWithOther(self, orig:PackedMatrix)
+      @add__init__
+      def `PackedMatrix` as NewWithOther(self, orig: PackedMatrix)
 
       def SetZero(self)
 
@@ -26,7 +25,7 @@ from "matrix/packed-matrix.h":
 
       def Trace(self) -> float
 
-      def Resize(self, num_rows:int, resize_type:MatrixResizeType = default)
+      def Resize(self, num_rows:int, resize_type: MatrixResizeType = default)
 
       def AddToDiag(self, r: float)
 
@@ -34,10 +33,11 @@ from "matrix/packed-matrix.h":
 
       def SetDiag(self, alpha: float)
 
-      def CopyFromPacked(self, orig:PackedMatrix)
+      def CopyFromPacked(self, orig: PackedMatrix)
 
-      # FIXME
-      # def CopyFromVec(self, orig:SubVector)
+      def CopyFromVec(self, orig: SubVector)
+
+      def `NumRows` as __len__(self) -> int
 
       def NumRows(self) -> int
 
@@ -45,9 +45,7 @@ from "matrix/packed-matrix.h":
 
       def SizeInBytes(self) -> int
 
-      # TODO:
-      # Do it in python
-      # def operator() as __getitem__
+      def `operator()` as Get(self, r: int, c: int) -> float
 
       def Max(self) -> float
 
@@ -55,10 +53,10 @@ from "matrix/packed-matrix.h":
 
       def Scale(self, c:float)
 
-      # TODO
-      # def Read(self, in:)
-      # def Write(self, out:)
+      def Read(self, is: istream, binary: bool, add: bool = default)
 
-      def `Swap` as SwapWithPacked(self, other:PackedMatrix)
+      def Write(self, os: ostream, binary: bool)
 
-      def `Swap` as SwapWithMatrix(self, other:Matrix)
+      def `Swap` as SwapWithPacked(self, other: PackedMatrix)
+
+      def `Swap` as SwapWithMatrix(self, other: Matrix)

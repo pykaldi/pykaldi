@@ -10,7 +10,8 @@ from "matrix/tp-matrix.h":
     class `TpMatrix<float>` as TpMatrix(PackedMatrix):
 
       @add__init__
-      def `TpMatrix` as New(self, r: int, resize_type: MatrixResizeType = default)
+      def `TpMatrix` as New(self, r: int,
+                            resize_type: MatrixResizeType = default)
 
       @add__init__
       def `TpMatrix` as NewWithOther(self, orig:TpMatrix)
@@ -18,7 +19,7 @@ from "matrix/tp-matrix.h":
       # TODO:
       # def `TpMatrix` as WithCU(cu:CuTpMatrix)
 
-      # def operator() -> __getitem__
+      def `operator()` as Get(self, r: int, c: int) -> float
 
       def Cholesky(self, orig:SpMatrix)
 
