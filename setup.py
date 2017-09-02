@@ -10,7 +10,6 @@ import setuptools.extension
 
 import os
 from subprocess import check_output, check_call
-from queue import Queue
 
 import numpy
 
@@ -93,8 +92,6 @@ class KaldiExtension(setuptools.extension.Extension):
     def __init__(self, name):
         setuptools.extension.Extension.__init__(self, name, [])
         self._needs_stub = False
-#    def __eq__(self, other):
-#        return isinstance(other, KaldiExtension) and other.name == self.name
     def __str__(self):
         return "KaldiExtension({})".format(self.name)
 
