@@ -78,7 +78,16 @@ class VectorBase(object):
             True if self.size() == other.size() and ||self - other|| < tol.
             False otherwise.
         """
-        return self.size() == other.size() and self.ApproxEqual(other, tol)
+        if not isinstance(other, VectorBase):
+            return False
+
+        if self.size() != other.size():
+            return False
+
+        return self.ApproxEqual(other, tol)
+
+    def __eq__(self, other):
+        return self.equal(other)
 
     def numpy(self):
         """Returns a new 1-D numpy array backed by this vector.
@@ -102,7 +111,9 @@ class VectorBase(object):
         return SubVector(self, start, length)
 
     def add_mat_vec(self, alpha, M, trans, v, beta):
-        """Adds matrix M times vector v to this vector and returns it.
+        """Adds matrix times vector.
+
+        self <-- beta * self + alpha * M * v 
 
         Args:
             alpha (int): Coefficient for matrix M
@@ -524,7 +535,6 @@ class VectorBase(object):
         else:
             self.numpy().__setitem__(index, value)
 
-
 class Vector(VectorBase, kaldi_vector.Vector):
     """Python wrapper for kaldi::Vector<float>.
 
@@ -734,14 +744,14 @@ class MatrixBase(object):
             True if self.size() == other.size() and ||self - other|| < tol.
             False otherwise.
         """
+        if not isinstance(other, MatrixBase):
+            return False
         if self.size() != other.size():
             return False
         return self.ApproxEqual(other, tol)
 
     def __eq__(self, other):
-        """True if self equals other."""
-        if not isinstance(other, Matrix):
-            return False
+        """Magic method for :meth:`equal`"""
         return self.equal(other)
 
     def numpy(self):

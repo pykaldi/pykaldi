@@ -1,53 +1,131 @@
 from __future__ import division
 import unittest
 import numpy as np 
-from kaldi.matrix import Vector
+from kaldi.matrix import Vector, SubVector
 
-class TestKaldiVector(unittest.TestCase):
+class TestVector(unittest.TestCase):
 
-    def _test_str(self, v):
-        # Test __str__ of kaldi.Vector
-        try:
-            v.__str__()
-        except:
-            raise AssertionError("__str__ of Vector failed")
+    def test_copy(self):
+        v = Vector(5)
+        with self.assertRaises(ValueError):
+            v1 = Vector().copy_(v)
+        
+        v.SetZero()
+        v1 = Vector(len(v)).copy_(v)
+        self.assertEqual(len(v), len(v1))
+
+        # Make sure modifying original
+        # doesn't break new one
+        v[0] = 1.0
+        v[1] = 2.0
+        v[2] = 3.0
+
+        self.assertNotEqual(v[0], v1[0])
+        self.assertNotEqual(v[1], v1[1])
+        self.assertNotEqual(v[2], v1[2])
+
+        # Check copy works with data
+        v1 = Vector(len(v)).copy_(v)
+
+        self.assertEqual(v[0], v1[0])
+        self.assertEqual(v[1], v1[1])
+        self.assertEqual(v[2], v1[2])
+
+    def test_clone(self):
+
+        # Empty clone
+        v = Vector()
+        v2 = v.clone()
+
+        # Clone with data
+        v = Vector.new(np.array([3, 5, 7]))
+        v2 = v.clone()
+    
+        self.assertEqual(v[0], v2[0])
+        self.assertEqual(v[1], v2[1])
+        self.assertEqual(v[2], v2[2])
+
+        # Make sure modifying original
+        # doesn't break new one
+        v.SetZero()
+        self.assertNotEqual(v[0], v2[0])
+        self.assertNotEqual(v[1], v2[1])
+        self.assertNotEqual(v[2], v2[2])
+
+    def test_shape(self):
+        v = Vector()
+        self.assertTupleEqual((0,), v.shape)
+        
+        v = Vector(5)
+        self.assertTupleEqual((5,), v.shape)
+
+    def test_equal(self):
+        v = Vector()
+        v1 = Vector()
+        self.assertEqual(v, v1)
+
+        v = Vector(5)
+        v1 = Vector(4)
+        self.assertNotEqual(v, v1)
+
+        v = Vector(5)
+        v1 = Vector(5)
+
+        v[0] = 10.0
+        v1[0] = 11.0
+        self.assertNotEqual(v, v1)
+
+        v[0] = v1[0]
+        self.assertTrue(v == v1)
+
+    def test_numpy(self):
+        v = Vector()
+        v1 = v.numpy()
+        self.assertTupleEqual((0, ), v1.shape)
+
+        v = Vector(5)
+        v1 = v.numpy()
+        self.assertTupleEqual((5, ), v1.shape)
+
+        v = Vector.new([1.0, 2.0, 3.0])
+        v1 = v.numpy()
+        self.assertTrue(np.all(np.array([1.0, 2.0, 3.0]) == v1))
+
+    def test_range(self):
+        v = Vector.new(np.array([3, 5, 7, 11, 13]))
+        v1 = v.range(1, 2)
+
+        self.assertTrue(isinstance(v1, SubVector))
+        self.assertTrue(2, v1.size())
+        v2 = Vector.new([5, 7])
+        self.assertEqual(v2, v1)
+
+        # What happens if we modify v?
+        v[0] = -1.0
+        self.assertEqual(v2, v1)
+        self.assertNotEqual(v.range(1, 2), v2)
 
     def test_empty(self):
-
         # Test empty kaldi.Vector
         v = Vector()
         self.assertIsNotNone(v)
-        self.assertTrue(v.own_data)
         self.assertEqual(0, v.size())
-        self._test_str(v)
 
-        with self.assertRaises(IndexError):
-            v = Vector.new([])
-        # self.assertIsNotNone(v)
-        # self.assertFalse(v.own_data)
-        # self.assertEqual(0, v.size())
-        # self._test_str(v)
-
+        v = Vector.new([])
+        
     def test_nonempty(self):
-
         v = Vector(100)
         self.assertIsNotNone(v)
-        self.assertTrue(v.own_data)
         self.assertEqual(100, v.size())
-        self._test_str(v)
 
     def test_new(self):
         v = Vector.new([3, 5, 7, 11, 13])
-        self.assertFalse(v.own_data)
         self.assertEqual(5, v.size())
         self.assertAlmostEqual(15015.0, v.numpy().prod())
-        self._test_str(v)
         
         v2 = Vector.new(np.array([3, 5, 7, 11, 13]))
-        self.assertFalse(v2.own_data)
         self.assertEqual(5, v2.size())
         self.assertAlmostEqual(15015.0, v2.numpy().prod())
-        self._test_str(v2)
 
         self.assertTrue(v.equal(v2))
         self.assertTrue(v2.equal(v))
@@ -90,35 +168,8 @@ class TestKaldiVector(unittest.TestCase):
             del v[0]
 
         v = Vector.new([3, 5, 7, 11, 13])
-
-        # v does not own its data 
-        with self.assertRaises(ValueError):
-            del v[0]
-
-        v = v.clone()
         del v[0]
         self.assertAlmostEqual(5005.0, v.numpy().prod())
-
-    def test_range(self):
-        v2 = Vector.new(np.array([3, 5, 7, 11, 13]))
-        v3 = v2.range(1, 2)
-        self.assertFalse(v3.own_data)
-        self.assertTrue(2, v3.size())
-        self.assertAlmostEqual(35.0, v3.numpy().prod())
-        self._test_str(v3)
-
-        self.assertTrue(np.all(v3.numpy() == v2[1:3].numpy()))
-
-    def test_clone(self):
-        v = Vector()
-        v2 = v.clone()
-        self.assertTrue(v2.own_data)
-
-        v = Vector.new(np.array([3, 5, 7]))
-        v2 = v.clone()
-        self.assertTrue(v2.own_data)
-        self.assertAlmostEqual(105, v2.numpy().prod())
-        self._test_str(v2)
 
 if __name__ == '__main__':
     unittest.main()
