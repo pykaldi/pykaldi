@@ -42,4 +42,8 @@ add_pyclif_library("full_gmm_ext" full-gmm-ext.clif
   CLIF_DEPS full_gmm diag_gmm
   LIBRARIES kaldi-gmm
 )
-add_subdirectory("tests")
+add_pyclif_library("model_test_common" model-test-common.clif
+  CLIF_DEPS diag_gmm full_gmm kaldi_vector kaldi_matrix tp_matrix sp_matrix
+  LIBRARIES kaldi-gmm
+  RPATH $ORIGIN/..:$ORIGIN/../matrix
+)
