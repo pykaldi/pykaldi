@@ -19,11 +19,26 @@ class WaveData(wave_reader.WaveData):
         """Initializes a new wave data structure."""
         super(WaveData, self).__init__()
 
-    def Data(self):
-        """
-        Getter method for WaveData.Data(). Wraps the result in :class:`~kaldi.matrix.Matrix`
-        
+    def data(self):
+        """Getter method for wave data.
+
+        Wraps the data with a :class:`~kaldi.matrix.Matrix`.
+
         Returns:
-            Matrix with WaveData
+            A :class:`~kaldi.matrix.Matrix` holding the wave data.
         """
-        return Matrix.new(super(WaveData, self).Data())
+        return Matrix().swap_(self.Data())
+
+    def swap_(self, other):
+        """Swaps the contents of wave data structures. Shallow swap.
+
+        Args:
+            other (WaveData): Wave data to swap contents with.
+
+        Raises:
+            TypeError: if other is not a :class:`WaveData` instance.
+        """
+        if not isinstance(other, wave_reader.WaveData):
+            raise TypeError("other should be a WaveData instance.")
+        self.Swap(other)
+        return self

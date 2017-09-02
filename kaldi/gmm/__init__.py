@@ -13,17 +13,18 @@ class FullGmm(full_gmm.FullGmm):
     Provides a more pythonic access to the C++ methods.
 
     Args:
-        nmix (int): number of gaussian to mix 
+        nmix (int): number of gaussian to mix
         dim (int): dimension of each gaussian
 
     Raises:
         ValueError if nmix or dimension are not positive integers.
     """
     def __init__(self, nmix = 0, dim = 0):
-        """Creates a new FullGmm with specified number of gaussian mixtures and dimensions.
+        """Creates a new FullGmm with specified number of gaussian mixtures and
+        dimensions.
 
         Args:
-            nmix (int): number of gaussian to mix 
+            nmix (int): number of gaussian to mix
             dim (int): dimension
         """
         full_gmm.FullGmm.__init__(self)
@@ -31,10 +32,10 @@ class FullGmm(full_gmm.FullGmm):
             raise ValueError("nmix and dimension must be a positive integer.")
         if nmix > 0 and dim > 0:
             self.Resize(nmix, dim)
-        
+
     def copy(self, src):
         """Copies data from src into this FullGmm and returns this FullGmm.
-        
+
         Args:
             src (FullGmm or DiagGmm): Source Gmm to copy
 
@@ -50,20 +51,24 @@ class FullGmm(full_gmm.FullGmm):
         return self
 
     def component_posteriors(self, data):
-        """Computes the posterior probabilities of all Gaussian components given a data point.
+        """Computes the posterior probabilities of all Gaussian components given
+         a data point.
 
         Args:
-            data (Vector_like): Data point with the same dimension as each component.
+            data (Vector_like): Data point with the same dimension as each
+                component.
 
         Returns:
             - loglike (float): Log-likelihood
-            - posteriors (:class:~`kaldi.matrix.Vector`): Vector with the posterior probabilities
-        
+            - posteriors (:class:~`kaldi.matrix.Vector`): Vector with the
+                posterior probabilities
+
         Raises:
             ValueError if data is not consistent with this components dimension.
         """
         if data.size() != self.Dim():
-            raise ValueError("data point is not consistent with component dimension.")
+            raise ValueError("data point is not consistent with the component "
+                             "dimension.")
         posteriors = Vector(self.NumGauss())
         loglike = self.ComponentPosteriors(data, posteriors)
         return loglike, posteriors
@@ -73,14 +78,14 @@ class FullGmm(full_gmm.FullGmm):
         Returns:
             Mixure weights
         """
-        return Vector.new(self.weights_)
+        return SubVector(self.weights_)
 
     def means(self):
         """
         Returns:
             Component means
         """
-        return Matrix.new(self.GetMeans())
+        return SubMatrix(self.GetMeans())
 
     def covars(self):
         """
@@ -88,6 +93,7 @@ class FullGmm(full_gmm.FullGmm):
             Component Co-variances
         """
         return self.GetCovars()
+
 
 class DiagGmm(diag_gmm.DiagGmm):
     """Python wrapper for Kaldi::DiagGmm<float>.
@@ -99,10 +105,11 @@ class DiagGmm(diag_gmm.DiagGmm):
         dim (int): Dimension of each component
     """
     def __init__(self, nmix = 0, dim = 0):
-        """Creates a new DiagGmm with specified number of gaussian mixtures and dimensions.
+        """Creates a new DiagGmm with specified number of gaussian mixtures
+         and dimensions.
 
         Args:
-            nMix (int): number of gaussian to mix 
+            nMix (int): number of gaussian to mix
             dim (int): dimension
         """
         diag_gmm.DiagGmm.__init__(self)
