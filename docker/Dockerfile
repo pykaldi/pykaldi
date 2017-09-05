@@ -21,12 +21,13 @@ RUN apt-get update \
     make=4.1-6 \
     g++=4:5.3.1-1ubuntu1 \
     unzip=6.0-20ubuntu1 \
-    python-dev=2.7.11-1 \
-    build-essential=12.1ubuntu2 \
     python3=3.5.1-3 \
     python3-pip=8.1.1-2ubuntu0.4 \
+    python3-dev=3.5.1-3 \
     python=2.7.11-1 \
-    python-pip=8.1.1-2ubuntu0.4 \
+    # python-pip=8.1.1-2ubuntu0.4 \
+    # python-dev=2.7.11-1 \
+    build-essential=12.1ubuntu2 \
     virtualenv=15.0.1+ds-3ubuntu1 \
     libatlas3-base=3.10.2-9 \
     wget=1.17.1-1ubuntu1.2 \
@@ -34,15 +35,14 @@ RUN apt-get update \
     subversion=1.9.3-2ubuntu1.1 \
     pkg-config=0.29.1-0ubuntu1
 
-
 # Upgrade pip
-RUN pip2 install --upgrade pip
+RUN pip3 install --upgrade pip
 
 # install necessary python packages
-RUN pip2 install \
+RUN pip3 install \
     numpy==1.13.1 \
     setuptools==27.2.0 \
-    jupyter==1.0.0
+    jupyter
 
 # Install protobuf with python package
 RUN git clone $PROTOBUF_GIT \
@@ -53,21 +53,20 @@ RUN git clone $PROTOBUF_GIT \
     && make install \
     && ldconfig \
     && cd python \
-    && python2 setup.py build \
-    && python2 setup.py install \
     && python3 setup.py build \
     && python3 setup.py install
 
 # Install ninja
 RUN git clone $NINJA_GIT \
     && cd ninja \
-    && ./configure.py --bootstrap \
+    && python3 configure.py --bootstrap \
     && cp ninja /usr/local/bin
 
 # Install clif
 RUN git clone $CLIF_GIT \
     && cd clif \
-    && ./INSTALL.sh $(which python2)
+    && ./INSTALL.sh $(which python3) \
+    && pip3 install .
 
 # # NOTE (VM): Args invalidate cache, thus from this point forward
 # #              everything happens every build
@@ -80,6 +79,7 @@ ENV KALDI_GIT https://$githubuser:$githubpasswd@github.com/usc-sail/kaldi-pykald
 ENV PYKALDI https://$githubuser:$githubpasswd@github.com/usc-sail/pykaldi.git
 
 # Install (our) kaldi
+# Requires python 2.7
 RUN git clone $KALDI_GIT kaldi \
     && cd kaldi/tools \
     && ./extras/check_dependencies.sh \
@@ -91,8 +91,9 @@ RUN git clone $KALDI_GIT kaldi \
     && make -j4
 
 # # set env variables
-ENV PATH "/root/opt/clif/bin:$PATH"
+ENV PATH "$PATH:/root/opt/clif/bin"
 ENV KALDI_DIR "/root/kaldi"
+ENV PYCLIF "/root/opt/clif/bin/pyclif"
 ENV LD_LIBRARY_PATH "/root/protobuf/lib:${LD_LIBRARY_PATH}"
 ENV CLIF_CXX_FLAGS "-I$CLIF_DIR/clang/lib/clang/5.0.0/include"
 ENV DEBUG 1
@@ -100,7 +101,7 @@ ENV DEBUG 1
 # Download pykaldi from git and install
 RUN git clone $PYKALDI pykaldi \
     && cd pykaldi \
-    && python2 setup.py install
+    && python3 setup.py install
 
 # Overwrite variables so that binary doesn't keep password
 ENV KALDI_GIT ""
