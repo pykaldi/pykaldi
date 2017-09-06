@@ -1,8 +1,10 @@
 
-
-
 from "base/kaldi-math.h":
   namespace `kaldi`:
+
+    # kLogZeroFloat:float = default
+    # kLogZeroDouble:float = default
+    # kLogZeroBaseFloat:float = default
 
     class RandomState:
       seed: int
@@ -19,10 +21,14 @@ from "base/kaldi-math.h":
 
     def RandPoisson(lambda: float, state: RandomState = default) -> int
 
-    # FIXME:
+    # NOTE (VM):
+    # This were included in kaldi-math-ext.h
     # def RandGauss2(a:float, b:float, state: RandomState = default)
     # def LogAdd(x:float, y:float) -> float
+    # def Hypot(x:float, y:float) -> float
 
+    def `RandPrune` as _FloatRandPrune(post:float, prune_tresh:float, state: RandomState = default) -> float
+    
     def ApproxEqual(a:float, b:float, relative_tolerance:float = default) -> bool
 
     def RoundUpToNearestPowerOfTwo(n:int) -> int 
@@ -31,9 +37,6 @@ from "base/kaldi-math.h":
 
     def `Gcd` as Gcd(m:int, n:int) -> int 
 
-    def `Lcm` as Lcm(m:int, n:int) -> int 
+    def `Lcm` as _Lcm(m:int, n:int) -> int 
 
-    def `Factorize` as Factorize(m:int) -> (factors:list<int>)
-
-    # FIXME
-    # def Hypot(x:float, y:float) -> float
+    def `Factorize` as _Factorize(m:int) -> (factors:list<int>)

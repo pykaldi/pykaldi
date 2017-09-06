@@ -1,0 +1,55 @@
+from "base/kaldi_math/kaldi-math-clifwrap.h" import *
+
+from "base/kaldi_math/kaldi-math-ext.h":
+	
+	def `FLOAT_KALDI_ISNAN` as KALDI_ISNAN(arg: float) -> bool
+
+	def DOUBLE_KALDI_ISNAN(arg:float) -> bool 
+
+	def `FLOAT_KALDI_ISINF` as KALDI_ISINF(arg: float) -> bool 
+
+	def DOUBLE_KALDI_ISINF(arg: float) -> bool 
+
+	def `FLOAT_KALDI_ISFINITE` as KALDI_ISFINITE(arg: float) -> bool 
+
+	def DOUBLE_KALDI_ISFINITE(arg: float) -> bool 
+
+	def `FLOAT_KALDI_SQR` as KALDI_SQR(x: float) -> float 
+
+	def DOUBLE_KALDI_SQR(x: float) -> float
+
+	namespace `kaldi`:
+
+		def GetkLogZeroFloat() -> float 
+
+		def GetkLogZeroDouble() -> float
+
+		def `FloatExp` as Exp(x:float) -> float 
+
+		def DoubleExp(x:float) -> float 
+
+		def `FloatLog` as Log(x:float) -> float 
+
+		def DoubleLog(x: float) -> float 
+
+		def `FloatLog1p` as Log1p(x: float) -> float 
+
+		def DoubleLog1p(x: float) -> float 
+
+		# FIXME (VM):
+
+		# def `FloatRandGauss2` as RandGauss2(state: RandomState = default) -> (a:float, b:float)
+
+		# def DoubleRandGauss2(state: RandomState = default) -> (a:float, b:float)
+
+		def `FloatLogAdd` as LogAdd(x:float, y:float) -> float 
+
+		def DoubleLogAdd(x: float, y: float) -> float 
+
+		def `FloatLogSub` as LogSub(x: float, y: float) -> float 
+
+		def DoubleLogSub(x: float, y: float) -> float 
+
+		def `FloatHypot` as Hypot(x: float, y: float) -> float 
+
+		def DoubleHypot(x: float, y: float) -> float 
