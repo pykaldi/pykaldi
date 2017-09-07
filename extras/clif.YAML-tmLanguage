@@ -9,6 +9,7 @@ patterns:
   - include: '#comments'
   - include: '#types'
   - include: '#keywords'
+  - include: '#multiline_string'
   - include: '#string_quoted_double'
 
   - comment: Clif namespace
@@ -78,12 +79,15 @@ patterns:
       - include: '#types'
 
     - name: meta.other.clif 
-      begin: (\=\s*(property)\s*\()
+      begin: (\=\s*(property))
       beginCaptures:
         '1': {name: support.function.clif}
-      end: (\))
+      end: (\))|(\n)
+      endCaptures:
+        '1': {name: punctuation.definition.parameters.end.clif}
+        '2': {name: invalid.illegal.clif}
       patterns:
-      - include: '#cfunction'
+        - include: '#cclass'
 
   - comment: Clif constant
     name: meta.other.clif 
@@ -242,6 +246,17 @@ repository:
         '1': {name: punctuation.definition.string.end.clif}
         '2': {name: meta.empty-string.double.clif}
         '3': {name: invalid.illegal.unclosed-string.clif}
+
+  multiline_string:
+    patterns:
+    - comment: multi-line strings 
+      name: string.quoted.triple.multi-line.clif
+      begin: (\"\"\")
+      beginCaptures:
+        '1': {name: punctuation.definition.string.begin.clif}
+      end: (\"\"\")
+      endCaptures:
+        '1': {name: punctuation.definition.string.end.clif}
 
   comments:
     patterns:
