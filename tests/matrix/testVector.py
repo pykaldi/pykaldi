@@ -103,7 +103,7 @@ class TestVector(unittest.TestCase):
         # What happens if we modify v?
         v[0] = -1.0
         self.assertEqual(v2, v1)
-        self.assertNotEqual(v.range(1, 2), v2)
+        self.assertEqual(v.range(1, 2), v2)
 
     def test_empty(self):
         # Test empty kaldi.Vector

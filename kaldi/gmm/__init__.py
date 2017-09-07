@@ -5,7 +5,7 @@ from .full_gmm import *
 from .full_gmm_normal import *
 from .full_gmm_ext import CopyFromDiagGmm
 from .mle_full_gmm import AccumFullGmm
-from ..matrix import Vector, Matrix
+from ..matrix import Vector, Matrix, SubVector, SubMatrix
 
 class FullGmm(full_gmm.FullGmm):
     """Python wrapper for Kaldi::FullGmm<Float>
@@ -80,12 +80,30 @@ class FullGmm(full_gmm.FullGmm):
         """
         return SubVector(self.weights_)
 
+    def set_weights(self, weights):
+        """
+            Converts weights to a :class:`~kaldi.matrix.Vector` before
+            setting this FullGmm weights.
+        """
+        if not isinstance(weights, Vector):
+            weights = Vector.new(weights)
+        self._SetWeights(weights)
+
     def means(self):
         """
         Returns:
             Component means
         """
-        return SubMatrix(self.GetMeans())
+        return SubMatrix(Matrix.new(self.GetMeans()))
+
+    def set_means(self, means):
+        """
+            Converts means to a :class:`~kaldi.matrix.Matrix` before
+            setting this FullGmm means.
+        """
+        if not isinstance(means, Matrix):
+            means = Matrix.new(means)
+        self._SetMeans(means)
 
     def covars(self):
         """
@@ -93,7 +111,6 @@ class FullGmm(full_gmm.FullGmm):
             Component Co-variances
         """
         return self.GetCovars()
-
 
 class DiagGmm(diag_gmm.DiagGmm):
     """Python wrapper for Kaldi::DiagGmm<float>.

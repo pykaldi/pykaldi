@@ -9,6 +9,10 @@ from "matrix/kaldi-matrix.h":
             num_cols: int = property(`NumCols`)
             stride: int = property(`Stride`)
 
+            def NumRows(self) -> int 
+
+            def NumCols(self) -> int
+
             def SizeInBytes(self) -> int
 
             # Note: It is probably a bad idea to expose these in Python.

@@ -3,7 +3,7 @@ import unittest
 import numpy as np 
 from kaldi.matrix import Matrix, SubMatrix, SpMatrix
 
-class TestKaldiMatrix(unittest.TestCase):
+class TestMatrix(unittest.TestCase):
 
     def test_copy_(self):
         m = Matrix()
@@ -202,6 +202,21 @@ class TestKaldiMatrix(unittest.TestCase):
         self.assertTupleEqual((1, 2), m.size())
         self.assertAlmostEqual(7, m[0,0])
         self.assertAlmostEqual(11, m[0,1])
+
+class testSubMatrix(unittest.TestCase):
+
+    def test__init__(self):
+        m = Matrix()
+        sb = SubMatrix(m)
+
+        m = Matrix(5, 5)
+        sb = SubMatrix(m)
+
+        for i in range(100):
+            m.SetRandn()
+            self.assertAlmostEqual(m.Sum(), sb.Sum())
+
+        
 
 if __name__ == '__main__':
     unittest.main()

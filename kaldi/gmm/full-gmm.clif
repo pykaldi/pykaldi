@@ -58,9 +58,9 @@ from "gmm/full-gmm.h":
             means_invcovars_: Matrix = property(`means_invcovars`)
             inv_covars_: list<SpMatrix> = property(`inv_covars`, `SetInvCovars`)
 
-            def SetWeights(self, w: Vector)
+            def `SetWeights` as _SetWeights(self, w: Vector)
 
-            def SetMeans(self, m: Matrix)
+            def `SetMeans` as _SetMeans(self, m: Matrix)
 
             def SetInvCovarsAndMeans(self, invcovars:list<SpMatrix>, means:Matrix)
 

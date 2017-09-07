@@ -36,7 +36,8 @@ def RandPosdefSpMatrix(dim):
     matrix = SpMatrix(dim)
     matrix.AddMat2(1.0, tmp, MatrixTransposeType.NO_TRANS, 0.0)
 
-    matrix_sqrt = TpMatrix.cholesky(matrix)
+    matrix_sqrt = TpMatrix(len(matrix))
+    matrix_sqrt = matrix_sqrt.Cholesky(matrix)
     logdet_out = matrix.LogPosDefDet()
 
     return matrix, matrix_sqrt, logdet_out
@@ -122,7 +123,7 @@ class TestFullGmm(unittest.TestCase):
 
         # new Gmm 
         gmm = FullGmm(nMix, dim)
-        gmm.SetWeights(weights)
+        gmm.set_weights(weights)
         gmm.SetInvCovarsAndMeans(invcovars, means)
         gmm.ComputeGconsts()
 
@@ -139,8 +140,8 @@ class TestFullGmm(unittest.TestCase):
 
         # Set all params one-by-one to new model
         gmm2 = FullGmm(gmm.NumGauss(), gmm.Dim())
-        gmm2.SetWeights(weights_bak)
-        gmm2.SetMeans(means_bak)
+        gmm2.set_weights(weights_bak)
+        gmm2.set_means(means_bak)
         gmm2.inv_covars_ = invcovars_bak
         gmm2.ComputeGconsts()
 
@@ -156,11 +157,11 @@ class TestFullGmm(unittest.TestCase):
 
         # Simple component mean accessor + mutator
         gmm3 = FullGmm(gmm.NumGauss(), gmm.Dim())
-        gmm3.SetWeights(weights_bak)
+        gmm3.set_weights(weights_bak)
         means_bak.SetZero()
         for i in range(nMix):
             gmm.GetComponentMean(i, means_bak[i,:])
-        gmm3.SetMeans(means_bak)
+        gmm3.set_means(means_bak)
         gmm3.inv_covars_ = invcovars_bak
         gmm3.ComputeGconsts()
 
@@ -168,7 +169,7 @@ class TestFullGmm(unittest.TestCase):
         self.assertAlmostEqual(loglike1, loglike_gmm3, delta = 0.01)
 
         gmm4 = FullGmm(gmm.NumGauss(), gmm.Dim())
-        gmm4.SetWeights(weights_bak)
+        gmm4.set_weights(weights_bak)
         invcovars_bak, means_bak = gmm.GetCovarsAndMeans()
         for i in range(nMix):
             invcovars_bak[i].InvertDouble()
@@ -206,7 +207,7 @@ class TestFullGmm(unittest.TestCase):
         # means1 = Matrix.new(means[0,:])
         # invcovars1 = [invcovars[0]]
         # gmm1 = FullGmm(1, dim)
-        # gmm1.SetWeights(weights1)
+        # gmm1.set_weights(weights1)
         # gmm1.SetInvCovarsAndMeans(invcovars1, means1)
         # gmm1.ComputeGconsts()
 
