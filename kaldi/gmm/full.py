@@ -1,7 +1,7 @@
 from . import _full_gmm
 from ._full_gmm import *
 from ._full_gmm_ext import *
-from .diag_gmm import DiagGmm
+from .diag import DiagGmm
 from ..matrix import Vector, Matrix, SubVector, SubMatrix
 
 class FullGmm(_full_gmm.FullGmm):

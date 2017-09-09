@@ -1,6 +1,6 @@
 from . import _diag_gmm
 from ._diag_gmm import *
-from .full_gmm import FullGmm
+from .full import FullGmm
 
 
 class DiagGmm(_diag_gmm.DiagGmm):
