@@ -5,21 +5,21 @@
 #include "matrix/kaldi-matrix.h"
 #include "clif/python/postconv.h"
 
-namespace kaldi__vector_clifwrap {
+namespace __kaldi__vector_clifwrap {
 
 namespace pyVectorBase {
   extern PyTypeObject wrapper_Type;
 }
 
-}  // namespace kaldi__vector_clifwrap
+}  // namespace __kaldi__vector_clifwrap
 
-namespace kaldi__matrix_clifwrap {
+namespace __kaldi__matrix_clifwrap {
 
 namespace pyMatrixBase {
   extern PyTypeObject wrapper_Type;
 }
 
-}  // namespace kaldi__matrix_clifwrap
+}  // namespace __kaldi__matrix_clifwrap
 
 namespace kaldi {
 using namespace ::clif;
@@ -47,5 +47,5 @@ PyObject* Clif_PyObjFrom(const ::kaldi::SubMatrix<float>&, py::PostConv);
 
 }  // namespace kaldi
 
-// CLIF init_module if (PyObject* m = PyImport_ImportModule("matrix_ext")) Py_DECREF(m);
+// CLIF init_module if (PyObject* m = PyImport_ImportModule("_matrix_ext")) Py_DECREF(m);
 // CLIF init_module else goto err;

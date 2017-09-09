@@ -1,7 +1,5 @@
-from .kaldi_math import *
-from .kaldi_math_ext import *
-
-from .kaldi_math import _Lcm, _Factorize
+from ._kaldi_math import *
+from ._kaldi_math_ext import *
 
 DBL_EPSILON = 2.2204460492503131e-16
 
@@ -55,3 +53,9 @@ def factorize(x):
     if x <= 0:
         raise ValueError("Parameter x must be a positive integer.")
     return _Factorize(x)
+
+################################################################################
+
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')]

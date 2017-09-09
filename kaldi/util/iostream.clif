@@ -1,18 +1,31 @@
+"""C++ std::iostream wrapper.
+
+This module provides the wrappers needed for working with C++ std::iostream
+instances. The wrappers for input and/or output stream types do not expose any
+members since we do not want to work with them directly in Python. They can be
+used for wrapping methods and functions that accept or return stream objects.
+The get_* utility functions provide the handles for the standard C++ streams.
+"""
+
 from "util/iostream-ext.h":
   namespace `::std`:
     class istream:
-      def get(self) -> int
+      """Input stream."""
+      def `good` as _good(self) -> bool
 
     class ostream:
-      def tellp(self) -> int
+      """Output stream."""
+      def `good` as _good(self) -> bool
 
     class iostream(istream):
-      def get(self) -> int
+      """Input/output stream."""
+      pass
 
-    def `GetStdinPtr` as get_stdin() -> istream
+    def `GetStdinPtr` as get_stdin() -> istream:
+      """Get standard input stream."""
 
-    def `GetStdoutPtr` as get_stdout() -> ostream
+    def `GetStdoutPtr` as get_stdout() -> ostream:
+      """Get standard output stream."""
 
-    def `GetStderrPtr` as get_stderr() -> ostream
-
-    def `GetStdlogPtr` as get_stdlog() -> ostream
+    def `GetStderrPtr` as get_stderr() -> ostream:
+      """Get standard error stream."""

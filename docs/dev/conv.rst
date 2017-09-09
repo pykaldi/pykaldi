@@ -1,10 +1,11 @@
-Developer's Conventions
-***********************
+Contributor Guide
+=======================
 
-While developing **pyKaldi**, we try our best to adhere to the following conventions:
+Coding Conventions
+------------------
 
-Code
-----
+While developing PyKaldi, we try our best to adhere to the following
+conventions:
 
 C++
 ~~~
@@ -16,7 +17,10 @@ Python
 
 Documentation
 -------------
-Python documentation follows Google Python Style Guide. Docstrings may extend over multiple lines.  Sections are created with a section header and a colon followed by a block of indented text. Sphinx extension, Napoleon, recognizes the following parameters in the docstrings:
+Python documentation follows Google Python Style Guide. Docstrings may extend
+over multiple lines.  Sections are created with a section header and a colon
+followed by a block of indented text. Sphinx extension, Napoleon, recognizes the
+following parameters in the docstrings:
 
 - Args, Arguments, Params, Parameters
 - Attributes
@@ -37,7 +41,7 @@ For example,::
 		Args:
 			arg1 (int or float): Argument number 1
 			arg2 (int or float): Argument number 2
-			
+
 		Returns:
 			Mean of arg1 and arg2
 

@@ -1,3 +1,9 @@
-from .hmm_topology import *
+from .topology import *
 from .transition_model import *
 from .posterior import *
+
+################################################################################
+
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')]

@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 __version__ = '0.0.2'
 
@@ -9,3 +9,5 @@ for entry in os.listdir(root):
     path = os.path.join(root, entry)
     if os.path.isdir(path):
         sys.path.append(path)
+
+del os, sys

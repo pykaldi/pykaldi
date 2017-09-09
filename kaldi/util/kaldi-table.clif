@@ -4,6 +4,9 @@ from "matrix/compressed-matrix-clifwrap.h" import *
 from "feat/wave-reader-clifwrap.h" import *
 from "nnet3/nnet-example-clifwrap.h" import *
 
+from kaldi.matrix import construct_vector
+from kaldi.matrix import construct_matrix
+
 from "util/kaldi-table.h":
   namespace `kaldi`:
     def ReadScriptFile(rxfilename: str, print_warnings:bool)
@@ -26,7 +29,8 @@ from "util/kaldi-table.h":
 
       def FreeCurrent(self)
 
-      def Value(self) -> Vector
+      def Value(self) -> Vector:
+        return construct_vector(...)
 
       def Next(self)
 
@@ -50,7 +54,8 @@ from "util/kaldi-table.h":
 
       def FreeCurrent(self)
 
-      def Value(self) -> Matrix
+      def Value(self) -> Matrix:
+        return construct_matrix(...)
 
       def Next(self)
 
@@ -284,7 +289,8 @@ from "util/kaldi-table.h":
 
       def HasKey(self, key: str) -> bool
 
-      def Value(self, key: str) -> Vector
+      def Value(self, key: str) -> Vector:
+        return construct_vector(...)
 
       def IsOpen(self) -> bool
 
@@ -302,7 +308,8 @@ from "util/kaldi-table.h":
 
       def HasKey(self, key: str) -> bool
 
-      def Value(self, key: str) -> Matrix
+      def Value(self, key: str) -> Matrix:
+        return construct_matrix(...)
 
       def IsOpen(self) -> bool
 
@@ -484,7 +491,8 @@ from "util/kaldi-table.h":
 
       def HasKey(self, key: str) -> bool
 
-      def Value(self, key: str) -> Vector
+      def Value(self, key: str) -> Vector:
+        return construct_vector(...)
 
       def IsOpen(self) -> bool
 
@@ -503,7 +511,8 @@ from "util/kaldi-table.h":
 
       def HasKey(self, key: str) -> bool
 
-      def Value(self, key: str) -> Matrix
+      def Value(self, key: str) -> Matrix:
+        return construct_matrix(...)
 
       def IsOpen(self) -> bool
 

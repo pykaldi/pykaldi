@@ -1,12 +1,11 @@
-try:
-    from .cu_device import *
-    def cuda_available():
-        return True
-except ImportError:
-    def cuda_available():
-        return False
+from .device import *
+from .matrixdim import *
+from .array import *
+from .vector import *
+from .matrix import *
 
-from .cu_matrixdim import *
-from .cu_array import *
-from .cu_vector import *
-from .cu_matrix import *
+################################################################################
+
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')]

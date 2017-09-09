@@ -3,62 +3,66 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "util/iostream-clifwrap.h" import *
 
 from "util/kaldi-io.h":
-    namespace `kaldi`:
-        enum OutputType with:
-          `kNoOutput` as NO_OUTPUT
-          `kFileOutput` as FILEOUTPUT
-          `kStandardOutput` as STANDARDOUTPUT
-          `kPipeOutput` as PIPEOUTPUT
+  namespace `kaldi`:
+    enum OutputType with:
+      `kNoOutput` as NO_OUTPUT
+      `kFileOutput` as FILE_OUTPUT
+      `kStandardOutput` as STANDARD_OUTPUT
+      `kPipeOutput` as PIPE_OUTPUT
 
-        def ClassifyWxfilename(wxfilename:str) -> OutputType
+    def ClassifyWxfilename(wxfilename: str) -> OutputType
 
-        enum InputType with:
-          `kNoInput` as NO_INPUT
-          `kFileInput` as FILEINPUT
-          `kStandardInput` as STANDARDINPUT
-          `kPipeInput` as PIPEINPUT
+    enum InputType with:
+      `kNoInput` as NO_INPUT
+      `kFileInput` as FILE_INPUT
+      `kStandardInput` as STANDARD_INPUT
+      `kOffsetFileInput` as OFFSET_FILE_INPUT
+      `kPipeInput` as PIPE_INPUT
 
-        def ClassifyRxfilename(rxfilename:str) -> InputType
+    def ClassifyRxfilename(rxfilename: str) -> InputType
 
-        class Output:
-            @add__init__
-            def `Output` as New(self, wxfilename:str, binary:bool, write_header:bool = default)
+    class Output:
+      @add__init__
+      def `Output` as New(self, wxfilename: str, binary: bool,
+                          write_header: bool = default)
 
-            def Open(self, wxfilename:str, binary:bool, write_header:bool) -> bool
+      def Open(self, wxfilename: str, binary: bool, write_header: bool) -> bool
 
-            def IsOpen(self) -> bool
+      def IsOpen(self) -> bool
 
-            def `StreamPtr` as Stream(self) -> ostream
+      def `StreamPtr` as Stream(self) -> ostream
 
-            def Close(self) -> bool
+      def Close(self) -> bool
 
-        class Input:
-            @add__init__
-            def `Input` as New(self, rxfilename:str, contents_binary:bool = default)
+    class Input:
+      @add__init__
+      def `Input` as New(self, rxfilename: str,
+                         contents_binary: bool = default)
 
-            def Open(self, rxfilename:str, contents_binary:bool = default) -> bool
+      def Open(self, rxfilename: str, contents_binary: bool = default) -> bool
 
-            def OpenTextMode(self, rxfilename:str) -> bool
+      def OpenTextMode(self, rxfilename: str) -> bool
 
-            def IsOpen(self) -> bool
+      def IsOpen(self) -> bool
 
-            def Close(self) -> int
+      def Close(self) -> int
 
-            def `StreamPtr` as Stream(self) -> istream
+      def `StreamPtr` as Stream(self) -> istream
 
-        # Read/Write matrices #
+    # Read/Write matrices #
 
-        def `ReadKaldiObject` as ReadKaldiMatrix(filename:str, m:Matrix)
+    def `ReadKaldiObject` as ReadKaldiMatrix(filename: str, m: Matrix)
 
-        def `WriteKaldiObject` as WriteKaldiMatrix(c:Matrix, filename:str, binary:bool)
+    def `WriteKaldiObject` as WriteKaldiMatrix(c: Matrix, filename: str,
+                                               binary: bool)
 
-        # Read/Write vectors #
+    # Read/Write vectors #
 
-        def `ReadKaldiObject` as ReadKaldiVector(filename:str, c:Vector)
+    def `ReadKaldiObject` as ReadKaldiVector(filename: str, c: Vector)
 
-        def `WriteKaldiObject` as WriteKaldiVector(c:Vector, filename:str, binary:bool)
+    def `WriteKaldiObject` as WriteKaldiVector(c: Vector, filename: str,
+                                               binary: bool)
 
+    def PrintableRxfilename(rxfilename: str) -> str
 
-        def PrintableRxfilename(rxfilename:str) -> str
-
-        def PrintableWxfilename(rxfilename:str) -> str
+    def PrintableWxfilename(rxfilename: str) -> str

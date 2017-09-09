@@ -3,41 +3,41 @@
 
 from __future__ import print_function
 
-# Relative or fully qualified absolute import of weight does not work in Python
-# 3. For some reason, enums are assigned to the module importlib._bootstrap ???
-from .properties import *
-from weight import *
-from .float_weight import *
-from .lattice_weight import *
-from .lattice_utils import *
-from .arc import *
-from .symbol_table import *
-from .fst import NO_STATE_ID, NO_LABEL
-from .expanded_fst import CountStdFstStates
-from . import mutable_fst
-from .vector_fst import LatticeVectorFst, CompactLatticeVectorFst
-from .fst_ext import *
-from .kaldi_fst_io import *
-from .fstext_utils import *
-from .drawer import *
-from .printer import *
-from .compiler import *
-# Relative or fully qualified absolute import of getters does not work in Python
-# 3. For some reason, enums are assigned to the module importlib._bootstrap ???
-from getters import *
-from .encode import StdEncode, StdDecode
-from .fst_operations import *
-
-from ..util.fstream import ofstream
-from ..util.sstream import ostringstream, stringstream
-
 import subprocess
 import sys
 
+# Relative or fully qualified absolute import of _getters and _weight modules do
+# not work in Python 3. For some reason, enums are assigned to the module
+# importlib._bootstrap ???
+from _getters import *
+from _weight import *
 
-class StdEncodeMapper(encode.StdEncodeMapper):
+from ._properties import *
+from ._float_weight import *
+from ._lattice_weight import *
+from ._lattice_utils import *
+from ._arc import *
+from ._symbol_table import *
+from ._fst import NO_STATE_ID, NO_LABEL
+from ._expanded_fst import CountStdFstStates
+from . import _mutable_fst
+from ._vector_fst import LatticeVectorFst, CompactLatticeVectorFst
+from ._fst_ext import *
+from ._kaldi_fst_io import *
+from ._fstext_utils import *
+from ._drawer import *
+from ._printer import *
+from ._compiler import *
+from ._encode import StdEncode, StdDecode
+from ._fst_operations import *
+
+from ..util._fstream import ofstream
+from ..util._sstream import ostringstream, stringstream
+
+
+class StdEncodeMapper(_encode.StdEncodeMapper):
     """
-    Arc encoder class, wrapping encode.StdEncodeMapper.
+    Arc encoder class, wrapping _encode.StdEncodeMapper.
 
     This class provides an object which can be used to encode or decode FST
     arcs. This is most useful to convert an FST to an unweighted acceptor, on
@@ -107,7 +107,7 @@ class _StdFstBase(object):
             self.Properties(ACCEPTOR, True) == ACCEPTOR,
             "", 8.5, 11, True, False, 0.4, 0.25, 14, 5, "g", False)
         fstdrawer.Draw(sstrm, "_repr_svg")
-        (sout, serr) = proc.communicate(sstrm.str().encode("utf8"))
+        (sout, serr) = proc.communicate(sstrm.to_str().encode("utf8"))
         if proc.returncode != 0:  # Just to be explicit.
             raise subprocess.CalledProcessError(proc.returncode, "dot -Tsvg")
         return sout.decode("utf8")
@@ -122,11 +122,6 @@ class _StdFstBase(object):
              vertical=False, ranksep=0.4, nodesep=0.25, fontsize=14,
              precision=5, float_format="g", show_weight_one=False):
         """
-        draw(self, filename, isymbols=None, osymbols=None, ssymbols=None,
-             acceptor=False, title="", width=8.5, height=11, portrait=False,
-             vertical=False, ranksep=0.4, nodesep=0.25, fontsize=14,
-             precision=5, float_format="g", show_weight_one=False):
-
         Writes out the FST in Graphviz text format.
 
         This method writes out the FST in the dot graph description language.
@@ -176,9 +171,6 @@ class _StdFstBase(object):
     def text(self, isymbols=None, osymbols=None, ssymbols=None, acceptor=False,
              show_weight_one=False, missing_symbol=""):
         """
-        text(self, isymbols=None, osymbols=None, ssymbols=None, acceptor=False,
-             show_weight_one=False, missing_sym="")
-
         Produces a human-readable string representation of the FST.
 
         This method generates a human-readable string representation of the FST.
@@ -210,7 +202,7 @@ class _StdFstBase(object):
             self, isymbols, osymbols, ssymbols,
             acceptor, show_weight_one, "\t", missing_symbol)
         fstprinter.Print(sstrm, "text")
-        return sstrm.str()
+        return sstrm.to_str()
 
     def _valid_state_id(self, s):
         if not self.Properties(EXPANDED, True):
@@ -883,16 +875,16 @@ class _StdMutableFstBase(_StdFstBase):
         return self
 
 
-class StdFst(_StdFstBase, fst.StdFst):
+class StdFst(_StdFstBase, _fst.StdFst):
     pass
 
-class StdExpandedFst(_StdFstBase, expanded_fst.StdExpandedFst):
+class StdExpandedFst(_StdFstBase, _expanded_fst.StdExpandedFst):
     pass
 
-class StdMutableFst(_StdMutableFstBase, mutable_fst.StdMutableFst):
+class StdMutableFst(_StdMutableFstBase, _mutable_fst.StdMutableFst):
     pass
 
-class StdVectorFst(_StdMutableFstBase, vector_fst.StdVectorFst):
+class StdVectorFst(_StdMutableFstBase, _vector_fst.StdVectorFst):
     pass
 
 
@@ -1636,7 +1628,7 @@ class StdVectorFstCompiler(object):
 
     Compiler options (symbol tables, etc.) are set at construction time.
 
-        compiler = fst.Compiler(isymbols=ascii_syms, osymbols=ascii_syms)
+        compiler = Compiler(isymbols=ascii_syms, osymbols=ascii_syms)
 
     Once constructed, Compiler instances behave like a file handle opened for
     writing:
@@ -1710,7 +1702,7 @@ class StdVectorFstCompiler(object):
         This method adds a line to the compiler string buffer. It is normally
         invoked using the right shift operator, like so:
 
-            compiler = fst.Compiler()
+            compiler = Compiler()
             print >> compiler, "0 0 49 49"
             print >> compiler, "0"
 
@@ -1718,3 +1710,13 @@ class StdVectorFstCompiler(object):
             expression: A string expression to add to compiler string buffer.
         """
         WriteString(expression, self._sstrm)
+
+################################################################################
+
+_exclude_list = ['subprocess', 'sys', 'print_function',
+                'ofstream', 'ostringstream', 'stringstream']
+
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')
+           and not name in _exclude_list]

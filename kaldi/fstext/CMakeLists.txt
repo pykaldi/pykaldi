@@ -1,73 +1,80 @@
-add_pyclif_library("properties" properties.clif
+add_pyclif_library("_properties" properties.clif
 )
-add_pyclif_library("symbol_table" symbol-table.clif
+add_pyclif_library("_symbol_table" symbol-table.clif
   LIBRARIES -lfst
 )
-add_pyclif_library("weight" weight.clif)
-add_pyclif_library("float_weight" float-weight.clif
-  CLIF_DEPS weight
+add_pyclif_library("_weight" weight.clif)
+add_pyclif_library("_float_weight" float-weight.clif
+  CLIF_DEPS _weight
 )
-add_pyclif_library("lattice_weight" lattice-weight.clif
+add_pyclif_library("_lattice_weight" lattice-weight.clif
   NAMESPACES fst
-  CLIF_DEPS float_weight
+  CLIF_DEPS _float_weight
   LIBRARIES kaldi-base
 )
-add_pyclif_library("lattice_utils" lattice-utils.clif)
-add_pyclif_library("arc" arc.clif
+add_pyclif_library("_lattice_utils" lattice-utils.clif)
+add_pyclif_library("_arc" arc.clif
   NAMESPACES fst
-  CLIF_DEPS lattice_weight
+  CLIF_DEPS _lattice_weight
 )
-add_pyclif_library("fst" fst.clif
+add_pyclif_library("_fst" fst.clif
   NAMESPACES fst
-  CLIF_DEPS arc symbol_table
+  CLIF_DEPS _arc _symbol_table
 )
-add_pyclif_library("expanded_fst" expanded-fst.clif
+add_pyclif_library("_expanded_fst" expanded-fst.clif
   NAMESPACES fst
-  CLIF_DEPS fst
-  BASETYPES fst_clifwrap::pyStdFst fst_clifwrap::pyLogFst fst_clifwrap::pyLatticeFst fst_clifwrap::pyCompactLatticeFst
+  CLIF_DEPS _fst
+  BASETYPES __fst_clifwrap::pyStdFst __fst_clifwrap::pyLogFst
+            __fst_clifwrap::pyLatticeFst __fst_clifwrap::pyCompactLatticeFst
 )
-add_pyclif_library("mutable_fst" mutable-fst.clif
+add_pyclif_library("_mutable_fst" mutable-fst.clif
   NAMESPACES fst
-  CLIF_DEPS expanded_fst
-  BASETYPES expanded__fst_clifwrap::pyStdExpandedFst expanded__fst_clifwrap::pyLogExpandedFst expanded__fst_clifwrap::pyLatticeExpandedFst expanded__fst_clifwrap::pyCompactLatticeExpandedFst
+  CLIF_DEPS _expanded_fst
+  BASETYPES __expanded__fst_clifwrap::pyStdExpandedFst
+            __expanded__fst_clifwrap::pyLogExpandedFst
+            __expanded__fst_clifwrap::pyLatticeExpandedFst
+            __expanded__fst_clifwrap::pyCompactLatticeExpandedFst
 )
-add_pyclif_library("vector_fst" vector-fst.clif
+add_pyclif_library("_vector_fst" vector-fst.clif
   NAMESPACES fst
-  CLIF_DEPS mutable_fst
-  BASETYPES mutable__fst_clifwrap::pyStdMutableFst mutable__fst_clifwrap::pyLogMutableFst mutable__fst_clifwrap::pyLatticeMutableFst mutable__fst_clifwrap::pyCompactLatticeMutableFst
+  CLIF_DEPS _mutable_fst
+  BASETYPES __mutable__fst_clifwrap::pyStdMutableFst
+            __mutable__fst_clifwrap::pyLogMutableFst
+            __mutable__fst_clifwrap::pyLatticeMutableFst
+            __mutable__fst_clifwrap::pyCompactLatticeMutableFst
 )
-add_pyclif_library("fst_ext" fst-ext.clif
-  CLIF_DEPS vector_fst iostream
+add_pyclif_library("_fst_ext" fst-ext.clif
+  CLIF_DEPS _vector_fst _iostream
   LIBRARIES kaldi-fstext
   RPATH $ORIGIN/../util
 )
-add_pyclif_library("kaldi_fst_io" kaldi-fst-io.clif
-  CLIF_DEPS vector_fst
+add_pyclif_library("_kaldi_fst_io" kaldi-fst-io.clif
+  CLIF_DEPS _vector_fst
   LIBRARIES kaldi-fstext
 )
-add_pyclif_library("fstext_utils" fstext-utils.clif
-  CLIF_DEPS vector_fst
+add_pyclif_library("_fstext_utils" fstext-utils.clif
+  CLIF_DEPS _vector_fst
   LIBRARIES kaldi-fstext
 )
-add_pyclif_library("drawer" drawer.clif
-  CLIF_DEPS fst iostream
+add_pyclif_library("_drawer" drawer.clif
+  CLIF_DEPS _fst _iostream
   RPATH $ORIGIN/../util
 )
-add_pyclif_library("printer" printer.clif
-  CLIF_DEPS fst iostream
+add_pyclif_library("_printer" printer.clif
+  CLIF_DEPS _fst _iostream
   RPATH $ORIGIN/../util
 )
-add_pyclif_library("compiler" compiler.clif
-  CLIF_DEPS vector_fst iostream
+add_pyclif_library("_compiler" compiler.clif
+  CLIF_DEPS _vector_fst _iostream
   RPATH $ORIGIN/../util
 )
-add_pyclif_library("getters" getters.clif
+add_pyclif_library("_getters" getters.clif
   LIBRARIES -lfstscript
 )
-add_pyclif_library("encode" encode.clif
-  CLIF_DEPS mutable_fst getters
+add_pyclif_library("_encode" encode.clif
+  CLIF_DEPS _mutable_fst _getters
 )
-add_pyclif_library("fst_operations" fst-operations.clif
-  CLIF_DEPS mutable_fst getters
+add_pyclif_library("_fst_operations" fst-operations.clif
+  CLIF_DEPS _mutable_fst _getters
   NAMESPACES fst
 )
