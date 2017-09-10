@@ -10,21 +10,36 @@ endif
 " Keywords {{{
 " ============
 
-" Namespace
+    " Namespace
     syn keyword clifStatement namespace nextgroup=clifNamespace skipwhite
     syn region clifNamespace start=+`+ end=+`+ end=+$+ keepend
 
-" Class definition
+    " Class definition
     syn keyword clifStatement class nextgroup=clifClass skipwhite
 
     syn match clifClass "\%(\%(class\s\)\s*\)\@<=\h\w*" contained nextgroup=clifClassVars
-    syn region clifClassVars start=+(+ end=+)+ contained contains=clifClassParameters transparent keepend
-    syn match clifClassParameters "[^,\*]*" contained contains=clifBuiltinObj skipwhite
+    syn region clifClassVars start="(" end=")" contained contains=clifClassParameters transparent keepend
+    syn match clifClassParameters "[^,\*]*" contained contains=clifBuiltinObj,clifBuiltinTypes skipwhite
 
     syn match clifCRename "\%(\%(as\s\)\s*\)\@<=\h\w*"
-    
+
+    " Function definition
+    syn keyword clifStatement def nextgroup=clifFunction skipwhite
+    syn match clifFunction "\%(\%(def\s\)\s*\)\@<=\h\w*" contained nextgroup=clifFunctionVars
+    syn region clifFunctionVars start="(" end=")" contained contains=clifFunctionParameters transparent keepend
+    syn match clifFunctionParameters "[^,]*" contained contains=clifParam skipwhite
+    syn match clifParam "[^,]*" contained contains=clifBuiltinObj,clifBuiltinTypes,clifComment,clifCRename,clifSelf,clifBuiltinDefault
+    syn match clifBrackets "{[(|)]}" contained skipwhite 
+
 " }}}
 
+" Decorators {{{
+" ==============
+
+    syn match clifDecorator "@" display nextgroup=clifName skipwhite
+    syn match clifName "\h\w*" display contained
+
+" }}}
 
 
 " Comments {{{
@@ -59,6 +74,8 @@ syn keyword clifTodo TODO FIXME XXX contained
     syn keyword clifBuiltinObj enum const
     syn keyword clifBuiltinTypes int bytes str bool float list tuple set dict object
     syn keyword clifBuiltinFunc property
+    syn keyword clifSelf self cls
+    syn keyword clifBuiltinDefault default
 
 " }}}
 
@@ -69,6 +86,8 @@ syn keyword clifTodo TODO FIXME XXX contained
     hi def link clifBuiltinObj Structure
     hi def link clifBuiltinTypes Type 
     hi def link clifBuiltinFunc Function
+    hi def link clifBuiltinDefault Identifier
+    hi def link clifSelf Identifier
 
     hi def link clifString String
     hi def link clifDocstring String
@@ -85,4 +104,14 @@ syn keyword clifTodo TODO FIXME XXX contained
     hi def link clifClassRename Structure 
     hi def link clifClassParameters Normal
     hi def link clifCRename Function
+
+    hi def link clifFunction Function
+    hi def link clifFunctionVars Normal
+    hi def link clifFunctionParameters Normal
+    hi def link clifParam Normal
+    hi def link clifBrackets Normal
+
+    hi def link clifDecorator Define
+    hi def link clifName Function
+
 " }}}
