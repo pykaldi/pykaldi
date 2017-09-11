@@ -9,6 +9,7 @@ endif
 
 " Keywords {{{
 " ============
+    syn match clifBrackets "{[(|)]}" contained skipwhite 
 
     " Namespace
     syn keyword clifStatement namespace nextgroup=clifNamespace skipwhite
@@ -16,20 +17,23 @@ endif
 
     " Class definition
     syn keyword clifStatement class nextgroup=clifClass skipwhite
-
     syn match clifClass "\%(\%(class\s\)\s*\)\@<=\h\w*" contained nextgroup=clifClassVars
     syn region clifClassVars start="(" end=")" contained contains=clifClassParameters transparent keepend
     syn match clifClassParameters "[^,\*]*" contained contains=clifBuiltinObj,clifBuiltinTypes skipwhite
 
-    syn match clifCRename "\%(\%(as\s\)\s*\)\@<=\h\w*"
+    " Clif renaming of C classes
+    syn match clifCRename "\%(\%(as\s\)\s*\)\@<=\h\w*" nextgroup=clifFunctionVars
 
     " Function definition
     syn keyword clifStatement def nextgroup=clifFunction skipwhite
     syn match clifFunction "\%(\%(def\s\)\s*\)\@<=\h\w*" contained nextgroup=clifFunctionVars
     syn region clifFunctionVars start="(" end=")" contained contains=clifFunctionParameters transparent keepend
-    syn match clifFunctionParameters "[^,]*" contained contains=clifParam skipwhite
-    syn match clifParam "[^,]*" contained contains=clifBuiltinObj,clifBuiltinTypes,clifComment,clifCRename,clifSelf,clifBuiltinDefault
-    syn match clifBrackets "{[(|)]}" contained skipwhite 
+    syn match clifFunctionParameters "[^,]*" contained contains=clifParam skipwhite nextgroup=clifReturnValues
+    syn match clifParam "[^,]*" contained contains=clifNamedParam,clifBuiltinObj,clifBuiltinTypes,clifComment,clifCRename,clifSelf,clifBuiltinDefault
+    syn match clifNamedParam "\%(\h\w*\s*:\s*\)\@<=\h\w*" contained
+
+    " Enum definition
+    syn match clifEnum "\%(\%(enum\s\)\s*\)\@<=\h\w*"
 
 " }}}
 
@@ -70,7 +74,7 @@ syn keyword clifTodo TODO FIXME XXX contained
 " Builtins {{{
 " ============
     syn keyword clifInclude from import
-    syn keyword clifStatement pass as
+    syn keyword clifStatement pass as with
     syn keyword clifBuiltinObj enum const
     syn keyword clifBuiltinTypes int bytes str bool float list tuple set dict object
     syn keyword clifBuiltinFunc property
@@ -101,7 +105,6 @@ syn keyword clifTodo TODO FIXME XXX contained
     hi def link clifNamespace Structure
 
     hi def link clifClass Function
-    hi def link clifClassRename Structure 
     hi def link clifClassParameters Normal
     hi def link clifCRename Function
 
@@ -109,9 +112,11 @@ syn keyword clifTodo TODO FIXME XXX contained
     hi def link clifFunctionVars Normal
     hi def link clifFunctionParameters Normal
     hi def link clifParam Normal
+    hi def link clifNamedParam Structure
     hi def link clifBrackets Normal
 
     hi def link clifDecorator Define
     hi def link clifName Function
+    hi def link clifEnum Function
 
 " }}}
