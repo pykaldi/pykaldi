@@ -7,7 +7,7 @@ WORKDIR /root
 
 ENV PROTOBUF_GIT "https://github.com/google/protobuf.git"
 ENV NINJA_GIT "https://github.com/ninja-build/ninja.git"
-ENV CLIF_GIT "https://github.com/google/clif.git"
+ENV CLIF_GIT "-b docstring https://github.com/dogancan/clif"
 
 # update ubuntu and install essentials
 RUN apt-get update \
