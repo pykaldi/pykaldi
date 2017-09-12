@@ -8,7 +8,7 @@
     'softTabs': true
     'preferredLineLength': 79
     'autoIndentOnPaste': false
-    'increaseIndentPattern': '^\\s*(from|namespace|class|staticmethods|enum)\\b.*:\\s*$'
+    'increaseIndentPattern': '^\\s*(from|namespace|class|staticmethods|enum|def)\\b.*:\\s*$'
   'bracket-matcher':
     autocompleteCharacters: [
       '()'
