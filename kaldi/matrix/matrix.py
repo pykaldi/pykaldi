@@ -11,7 +11,7 @@ from . import _kaldi_matrix_ext
 from . import _matrix_ext
 from ._matrix_ext import matrix_to_numpy
 from . import _str
-from .vector import VectorBase
+from . import vector
 
 ################################################################################
 # Define Matrix Classes
@@ -218,7 +218,7 @@ class MatrixBase(object):
             if ret.ndim == 2:
                 return SubMatrix(ret)
             elif ret.ndim == 1:
-                return SubVector(ret)
+                return vector.SubVector(ret)
             else:
                 raise ValueError("indexing operation returned a numpy array "
                                  " with {} dimensions.".format(ret.ndim))
@@ -230,7 +230,7 @@ class MatrixBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(value, (MatrixBase, VectorBase)):
+        if isinstance(value, (MatrixBase, vector.VectorBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)

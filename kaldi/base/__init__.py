@@ -1,10 +1,5 @@
-# from .timer import *
 from . import timer
-
-# from .io import *
 from . import io 
-
-# from .math import *
 from . import math
 
 

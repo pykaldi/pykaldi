@@ -2,7 +2,8 @@ from ._kaldi_math import *
 from ._kaldi_math_ext import *
 
 # Must be imported explicitly
-from ._kaldi_math import _Lcm, _Factorize, _WithProb
+from ._kaldi_math import _Lcm, _Factorize,\
+                         _WithProb, _RoundUpToNearestPowerOfTwo
 
 DBL_EPSILON = 2.2204460492503131e-16
 
@@ -60,7 +61,7 @@ def factorize(x):
 def with_prob(prob):
     """
     Returns a true with probability 'prob'.
-    
+
     Args:
             prob (int): probability of True, 0 <= prob <= 1
 
@@ -71,6 +72,20 @@ def with_prob(prob):
         return _WithProb(prob)
 
     raise ValueError("Probability prob should be positive and less than 1.0")
+
+def RoundUpToNearestPowerOfTwo(n):
+    """
+    Does the obvious thing.
+
+    Args:
+        n (int): Positive integer
+
+    Raises:
+        ValueError if n <= 0.0
+    """
+    if n <= 0.0:
+        raise ValueError("n should be a positive integer")
+    return _RoundUpToNearestPowerOfTwo(n)
 
 ################################################################################
 # Import only float ops when calling import *

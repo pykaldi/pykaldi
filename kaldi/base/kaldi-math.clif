@@ -21,7 +21,8 @@ from "base/kaldi-math.h":
 
     def RandGauss(state: RandomState = default) -> float
 
-    def RandPoisson(lambda: float, state: RandomState = default) -> int
+    def RandPoisson(lambda: float, state: RandomState = default) -> int:
+        """Returns poisson-distributed random number."""
 
     # NOTE (VM):
     # This were included in kaldi-math-ext.h
@@ -29,11 +30,14 @@ from "base/kaldi-math.h":
     # def LogAdd(x:float, y:float) -> float
     # def Hypot(x:float, y:float) -> float
 
-    def `RandPrune` as _FloatRandPrune(post:float, prune_tresh:float, state: RandomState = default) -> float
-    
-    def ApproxEqual(a:float, b:float, relative_tolerance:float = default) -> bool
+    def `RandPrune` as _FloatRandPrune(post:float, prune_tresh:float, state: RandomState = default) -> float:
+        """Randomized pruning mechanism that preserves expectations, typically used to prune posteriors."""
 
-    def RoundUpToNearestPowerOfTwo(n:int) -> int 
+    def ApproxEqual(a:float, b:float, relative_tolerance:float = default) -> bool:
+        """Return abs(a - b) <= relative_tolerance * (abs(a) + abs(b))"""
+
+    def `RoundUpToNearestPowerOfTwo` as _RoundUpToNearestPowerOfTwo(n:int) -> int:
+        """Should not be called directly. Instead call it using RoundUpToNearestPowerOfTwo(n) from math.py"""
 
     def DivideRoundingDown(a:int, b:int) -> int:
         """Returns the division"""

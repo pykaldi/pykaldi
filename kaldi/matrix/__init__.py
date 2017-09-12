@@ -1,7 +1,13 @@
 from .common import *
-from .vector import *
-from .matrix import *
-from .packed import *
+
+from . import vector
+from .vector import Vector, SubVector, construct_vector
+
+from . import matrix
+from .matrix import Matrix, SubMatrix, construct_matrix
+
+from .packed import TpMatrix, SpMatrix, PackedMatrix
+
 from .sparse import *
 from .compressed import *
 from .functions import *
