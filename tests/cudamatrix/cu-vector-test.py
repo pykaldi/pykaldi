@@ -1,7 +1,6 @@
-from kaldi.base import kaldi_math
+from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, TpMatrix
-from kaldi.cudamatrix.cu_vector import *
-from kaldi.cudamatrix.cu_device import CuDevice
+from kaldi.cudamatrix import *
 
 import unittest
 import numpy as np 
@@ -62,7 +61,8 @@ class TestCuVector(unittest.TestCase):
 
         for i in range(10):
             dim = 10 * i 
-            A = Vector.random(dim)
+            A = Vector(dim)
+            A.SetRandn()
             D = CuVector.new_from_size(dim)
             D.CopyFromVec(A)
             self.assertEqual(A.Sum(), D.Sum())
@@ -80,7 +80,7 @@ class TestCuVector(unittest.TestCase):
             vec.SetRandn()
 
             subvec1 = CuSubVector(vec, M1, M2)
-            subvec2 = vec.range(M1, M2)
+            # subvec2 = vec.range(M1, M2)
 
             f1, f2, f3 = vec[M1 + m], subvec1[m], subvec2[m]
             self.assertEqual(f1, f2)

@@ -1,6 +1,7 @@
 import re 
 import os
 import kaldi.util
+from kaldi.feat import WaveData
 from kaldi.matrix import Matrix 
 import numpy as np 
 
@@ -55,7 +56,7 @@ class WaveExampleMixin:
     def writeExample(self, outpt):
         m = Matrix.new(np.arange(9).reshape((3, 3)))
         with kaldi.util.WaveWriter('ark:/tmp/temp.ark') as writer:
-            writer['one'] = kaldi.util.WaveData.New(1.0, m)
+            writer['one'] = WaveData.New(1.0, m)
 
 class IntExampleMixin:
     def writeExample(self, outpt):
