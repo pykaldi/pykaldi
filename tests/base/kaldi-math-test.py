@@ -1,6 +1,7 @@
-from kaldi.base import kaldi_math 
+from kaldi.base import math as kaldi_math
 import math
 import unittest
+
 
 class testKaldiMath(unittest.TestCase):
 
@@ -50,7 +51,7 @@ class testKaldiMath(unittest.TestCase):
 			b = 0
 			while b == 0:
 				b = kaldi_math.RandInt(-100, 100)
-				self.assertEqual(int(math.floor(float(a) / float(b))), kaldi_math.DivideRoundingDown(a, b))
+			self.assertEqual(int(math.floor(float(a) / float(b))), kaldi_math.DivideRoundingDown(a, b))
 
 	@unittest.skip("TODO")
 	def testRand(self):
@@ -79,29 +80,33 @@ class testKaldiMath(unittest.TestCase):
 		self.assertAlmostEqual(0.0, kaldi_math.Exp(kaldi_math.kLogZeroFloat))
 		self.assertAlmostEqual(0.0, kaldi_math.Exp(kaldi_math.kLogZeroDouble))
 
-		den = 0.0
-		self.assertTrue(kaldi_math.KALDI_ISNAN(0.0 / den))
-		self.assertFalse(kaldi_math.KALDI_ISINF(0.0 / den))
-		self.assertFalse(kaldi_math.KALDI_ISFINITE(0.0 / den))
-		self.assertFalse(kaldi_math.KALDI_ISNAN(1.0 / den))
-		self.assertTrue(kaldi_math.KALDI_ISINF(1.0 / den))
-		self.assertFalse(kaldi_math.KALDI_ISFINITE(1.0 / den))
-		self.assertTrue(kaldi_math.KALDI_ISFINITE(0.0))
-		self.assertFalse(kaldi_math.KALDI_ISINF(0.0))
-		self.assertFalse(kaldi_math.KALDI_ISNAN(0.0))
+		# TODO: 
+		# How to test these in Python?
 
-		self.assertNotEqual(1.0, 1.0 + DBL_EPSILON)
-		self.assertEqual(1.0, 1.0 + 0.5 * DBL_EPSILON)
-		self.assertNotEqual(1.0, 1.0 + FLT_EPSILON)
-		self.assertEqual(1.0, 1.0 + 0.5 * FLT_EPSILON)
-		
-		self.assertAlmostEqual(0.0, math.fabs(math.sin(M_PI)))
-		self.assertAlmostEqual(-1.0, math.fabs(math.cos(M_PI)))
-		self.assertAlmostEqual(0.0, math.fabs(math.sin(M_2PI)))
-		self.assertAlmostEqual(1.0, math.fabs(math.cos(M_2PI)))
+		# den = 0.0
+		# self.assertTrue(kaldi_math.KALDI_ISNAN(0.0 / den))
+		# self.assertFalse(kaldi_math.KALDI_ISINF(0.0 / den))
+		# self.assertFalse(kaldi_math.KALDI_ISFINITE(0.0 / den))
+		# self.assertFalse(kaldi_math.KALDI_ISNAN(1.0 / den))
+		# self.assertTrue(kaldi_math.KALDI_ISINF(1.0 / den))
+		# self.assertFalse(kaldi_math.KALDI_ISFINITE(1.0 / den))
+		# self.assertTrue(kaldi_math.KALDI_ISFINITE(0.0))
+		# self.assertFalse(kaldi_math.KALDI_ISINF(0.0))
+		# self.assertFalse(kaldi_math.KALDI_ISNAN(0.0))
 
-		self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.Exp(M_LOG_2PI))))
-		self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.Exp(M_LOG_2PI))))
+		with self.subTest():
+			self.assertTrue(1.0 != 1.0 + kaldi_math.DBL_EPSILON)
+			self.assertTrue(1.0 == 1.0 + 0.5 * kaldi_math.DBL_EPSILON)
+			# self.assertNotAlmostEqual(1.0, 1.0 + kaldi_math.FLT_EPSILON, places = 7)
+			# self.assertAlmostEqual(1.0, 1.0 + 0.5 * kaldi_math.FLT_EPSILON, places = 6)
+			
+			self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.M_PI)))
+			self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.M_PI)))
+			self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.M_2PI)))
+			self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.M_2PI)))
+
+			self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.Exp(kaldi_math.M_LOG_2PI))), places = 5)
+			self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.Exp(kaldi_math.M_LOG_2PI))), places = 5)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,9 @@
 from ._kaldi_math import *
 from ._kaldi_math_ext import *
 
+# Must be imported explicitly
+from ._kaldi_math import _Lcm, _Factorize, _WithProb
+
 DBL_EPSILON = 2.2204460492503131e-16
 
 FLT_EPSILON = 1.19209290e-7
@@ -54,8 +57,23 @@ def factorize(x):
         raise ValueError("Parameter x must be a positive integer.")
     return _Factorize(x)
 
-################################################################################
+def with_prob(prob):
+    """
+    Returns a true with probability 'prob'.
+    
+    Args:
+            prob (int): probability of True, 0 <= prob <= 1
 
-__all__ = [name for name in dir()
-           if name[0] != '_'
-           and not name.endswith('Base')]
+    Raises:
+        If prob is negative or greater than 1.0.
+    """
+    if 0.0 <= prob <= 1.0:
+        return _WithProb(prob)
+
+    raise ValueError("Probability prob should be positive and less than 1.0")
+
+################################################################################
+# Import only float ops when calling import *
+
+# __all__ = [f for f in dir()
+#              if "Double" not in f.lower()]

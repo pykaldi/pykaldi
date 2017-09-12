@@ -1,23 +1,25 @@
-
+"""
+Wrapper for functions and definitions in :kaldi:`kaldi::kaldi-math`
+"""
 from "base/kaldi-math.h":
   namespace `kaldi`:
-
-    # kLogZeroFloat:float = default
-    # kLogZeroDouble:float = default
-    # kLogZeroBaseFloat:float = default
 
     class RandomState:
       seed: int
 
-    def Rand(state: RandomState = default) -> int
+    def Rand(state: RandomState = default) -> int:
+        """Returns a random integer between 0 and RAND_MAX, inclusive."""
 
-    def RandInt(first: int, last: int, state: RandomState = default) -> int 
+    def RandInt(first: int, last: int, state: RandomState = default) -> int:
+        """Returns a random integer between first and last inclusive."""
 
-    def WithProb(prob:float, state: RandomState = default) -> bool
+    def `WithProb` as _WithProb(prob:float, state: RandomState = default) -> bool:
+        """This function should not be called directly, instead call it using with_prob from math.py"""
 
-    def RandUniform(state: RandomState = default) -> float 
+    def RandUniform(state: RandomState = default) -> float:
+        """Returns a random number strictly between 0 and 1."""
 
-    def RandGauss(state: RandomState = default) -> float 
+    def RandGauss(state: RandomState = default) -> float
 
     def RandPoisson(lambda: float, state: RandomState = default) -> int
 
@@ -33,10 +35,16 @@ from "base/kaldi-math.h":
 
     def RoundUpToNearestPowerOfTwo(n:int) -> int 
 
-    def DivideRoundingDown(a:int, b:int) -> int
+    def DivideRoundingDown(a:int, b:int) -> int:
+        """Returns the division"""
 
-    def `Gcd` as Gcd(m:int, n:int) -> int 
+    def `Gcd` as Gcd(m:int, n:int) -> int:
+        """Returns the greatest common divisor of two integers."""
 
-    def `Lcm` as _Lcm(m:int, n:int) -> int 
+    def `Lcm` as _Lcm(m:int, n:int) -> int:
+        """Returns the least common multiple of two integers. 
+        This function should not be called directly, instead call it using lcm(x, y) from math.py"""
 
-    def `Factorize` as _Factorize(m:int) -> (factors:list<int>)
+    def `Factorize` as _Factorize(m:int) -> (factors:list<int>):
+        """Returns the decomposiion of m into its prime factors.
+        This function should not be called directly, instead call it using factorize(x) from math.py"""
