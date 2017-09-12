@@ -8,252 +8,251 @@ from "matrix/tp-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-ext.h":
   namespace `kaldi`:
     def AddMatVec(self: VectorBase, alpha: float, M: MatrixBase,
-                  trans: MatrixTransposeType, v: VectorBase, beta: float)
-    """Scale self and add a matrix*vector, e.g. self = beta*self + alpha*M*v.
+                  trans: MatrixTransposeType, v: VectorBase, beta: float):
+        """Scale self and add a matrix*vector, e.g. self = beta*self + alpha*M*v.
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A Matrix
-        trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
-        v(VectorBase): A vector
-        beta(float): A scaling constant.
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(VectorBase): A vector
+            beta(float): A scaling constant.
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+        Raises:
+            Error in case of dimension mismatch
+        """
 
     def AddMatSvec(self: VectorBase, alpha: float, M: MatrixBase,
-                   trans: MatrixTransposeType, v: VectorBase, beta: float)
-    """Same as AddMatVec, but optimized when v contains a lot of zeros.
+                   trans: MatrixTransposeType, v: VectorBase, beta: float):
+        """Same as AddMatVec, but optimized when v contains a lot of zeros.
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A Matrix
-        trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
-        v(VectorBase): A vector
-        beta(float): A scaling constant
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(VectorBase): A vector
+            beta(float): A scaling constant
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+        Raises:
+            Error in case of dimension mismatch
+        """
 
     def AddSpVec(self: VectorBase, alpha: float, M: SpMatrix,
-                 v: VectorBase, beta: float)
-    """Same as AddMatVec, but optimized when M is symmetric positive definite.
+                 v: VectorBase, beta: float):
+        """Same as AddMatVec, but optimized when M is symmetric positive definite.
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A Matrix
-        trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
-        v(VectorBase): A vector
-        beta(float): A scaling constant
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(VectorBase): A vector
+            beta(float): A scaling constant
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+        Raises:
+            Error in case of dimension mismatch
+        """
 
     def AddTpVec(self: VectorBase, alpha: float, M: TpMatrix,
-                 trans: MatrixTransposeType, v: VectorBase, beta: float)
+                 trans: MatrixTransposeType, v: VectorBase, beta: float):
+        """Same as AddMatVec, but optimized when M is triangular.
 
-    """Same as AddMatVec, but optimized when M is triangular.
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(VectorBase): A vector
+            beta(float): A scaling constant
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A Matrix
-        trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
-        v(VectorBase): A vector
-        beta(float): A scaling constant
+        Raises:
+            Error in case of dimension mismatch
+        """
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+    def MulTp(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType):
+        """ Multiplies this vector by lower-triangular matrix: self = self*M
 
-    def MulTp(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType)
-    """ Multiplies this vector by lower-triangular matrix: self = self*M
+        Args:
+            M(MatrixBase): A lower triangularMatrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
 
-    Args:
-        M(MatrixBase): A lower triangularMatrix
-        trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
+        Raises:
+            Error in case of dimension mismatch
+        """
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+    def Solve(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType):
+        """If trans == kNoTrans, solves M*x = b, where b is the value of self input
+           and x is the value of self at output. If trans == kTrans, solves M'*x = b.
+           Does not test for M being singular or near-singular.
 
-    def Solve(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType)
-    """If trans == kNoTrans, solves M*x = b, where b is the value of self input
-       and x is the value of self at output. If trans == kTrans, solves M'*x = b.
-       Does not test for M being singular or near-singular.
+        Args:
+            M(MatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
 
-    Args:
-        M(MatrixBase): A Matrix
-        trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
+        Raises:
+            Error in case of dimension mismatch
+        """
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+    def CopyRowsFromMat(self: VectorBase, M: MatrixBase):
+        """Stacks all the rows of matrix M into a vector and copies it to self
 
-    def CopyRowsFromMat(self: VectorBase, M: MatrixBase)
-    """Stacks all the rows of matrix M into a vector and copies it to self
+        Args:
+            M(MatrixBase): The matrix whose rows will be stacked into a vector
 
-    Args:
-        M(MatrixBase): The matrix whose rows will be stacked into a vector
+        Raises:
+            Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
+        """
 
-    Raises:
-        Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
-    """
+    def CopyColsFromMat(self: VectorBase, M: MatrixBase):
+        """Stacks all the columns of matrix M into a vector and copies it to self
 
-    def CopyColsFromMat(self: VectorBase, M: MatrixBase)
-    """Stacks all the columns of matrix M into a vector and copies it to self
+        Args:
+            M(MatrixBase): The matrix whose columns will be stacked into a vector
 
-    Args:
-        M(MatrixBase): The matrix whose columns will be stacked into a vector
+        Raises:
+            Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
+        """
 
-    Raises:
-        Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
-    """
+    def CopyRowFromMat(self: VectorBase, M: MatrixBase, row: int):
+        """Extracts a row of the matrix M and copies it to self.
 
-    def CopyRowFromMat(self: VectorBase, M: MatrixBase, row: int)
-    """Extracts a row of the matrix M and copies it to self.
+        Args:
+            M(MatrixBase): The matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
 
-    Args:
-        M(MatrixBase): The matrix from which we will extract a row
-        row(int): An index to the row of the matrix. Indexing starts from 0
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
 
-    Raises:
-        Error in case of dimension mismatch or if row>=M.rows
-    """
+    def CopyColFromMat(self: VectorBase, M: MatrixBase, col: int):
+        """Extracts a column of the matrix M and copies it to self.
 
-    def CopyColFromMat(self: VectorBase, M: MatrixBase, col: int)
-    """Extracts a column of the matrix M and copies it to self.
+        Args:
+            M(MatrixBase): The matrix from which we will extract a column
+            col(int): An index to the column of the matrix. Indexing starts from 0
 
-    Args:
-        M(MatrixBase): The matrix from which we will extract a column
-        col(int): An index to the column of the matrix. Indexing starts from 0
+        Raises:
+            Error in case of dimension mismatch or if col>=M.cols
+        """
 
-    Raises:
-        Error in case of dimension mismatch or if col>=M.cols
-    """
+    def CopyDiagFromMat(self: VectorBase, M: MatrixBase):
+        """Extracts the diagonal of the matrix M and copies it to self.
 
-    def CopyDiagFromMat(self: VectorBase, M: MatrixBase)
-    """Extracts the diagonal of the matrix M and copies it to self.
+        Args:
+            M(MatrixBase): The matrix from which we will extract its diagonal
 
-    Args:
-        M(MatrixBase): The matrix from which we will extract its diagonal
+        Raises:
+            Error if self.dim != min(M.rows, M.cols)
+        """
 
-    Raises:
-        Error if self.dim != min(M.rows, M.cols)
-    """
+    def CopyFromPacked(self: VectorBase, M: PackedMatrix):
+        """Copy data from a Packed Matrix(triangular or symmetric)
 
-    def CopyFromPacked(self: VectorBase, M: PackedMatrix)
-    """Copy data from a Packed Matrix(triangular or symmetric)
+        Args:
+            M(PackedMatrix): A triangular or symmetric matrix
+        """
 
-    Args:
-        M(PackedMatrix): A triangular or symmetric matrix
-    """
+    def CopyDiagFromPacked(self: VectorBase, M: PackedMatrix):
+        """Extracts the diagonal of the packed matrix M and copies it to self.
 
-    def CopyDiagFromPacked(self: VectorBase, M: PackedMatrix)
-    """Extracts the diagonal of the packed matrix M and copies it to self.
+        Args:
+            M(MatrixBase): A triangular or symmetric matrix
 
-    Args:
-        M(MatrixBase): A triangular or symmetric matrix
+        Raises:
+            Error if self.dim !=  M.cols
+        """
 
-    Raises:
-        Error if self.dim !=  M.cols
-    """
+    def CopyDiagFromSp(self: VectorBase, M: SpMatrix):
+        """Extracts the diagonal of the symmetric matrix M and copies it to self.
 
-    def CopyDiagFromSp(self: VectorBase, M: SpMatrix)
-    """Extracts the diagonal of the symmetric matrix M and copies it to self.
+        Args:
+            M(MatrixBase): A symmetric matrix
 
-    Args:
-        M(MatrixBase): A symmetric matrix
+        Raises:
+            Error if self.dim !=  M.cols
+        """
 
-    Raises:
-        Error if self.dim !=  M.cols
-    """
+    def CopyDiagFromTp(self: VectorBase, M: TpMatrix):
+        """Extracts the diagonal of the symmetric matrix M and copies it to self.
 
-    def CopyDiagFromTp(self: VectorBase, M: TpMatrix)
-    """Extracts the diagonal of the symmetric matrix M and copies it to self.
+        Args:
+            M(MatrixBase): A symmetric matrix
 
-    Args:
-        M(MatrixBase): A symmetric matrix
-
-    Raises:
-        Error if self.dim !=  M.cols
-    """
+        Raises:
+            Error if self.dim !=  M.cols
+        """
 
     def AddRowSumMat(self: VectorBase, alpha: float, M: MatrixBase,
-                     beta: float = default)
-    """Performs the operation self = alpha * (sum of rows of M) + beta * self
+                     beta: float = default):
+        """Performs the operation self = alpha * (sum of rows of M) + beta * self
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A matrix
-        beta(float): A scaling constant
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A matrix
+            beta(float): A scaling constant
 
-    Raises:
-        Error in case of self.dim != M.cols
-    """
+        Raises:
+            Error in case of self.dim != M.cols
+        """
 
     def AddColSumMat(self: VectorBase, alpha: float, M: MatrixBase,
-                     beta: float = default)
-    """Performs the operation self = alpha * (sum of cols of M) + beta * self
+                     beta: float = default):
+        """Performs the operation self = alpha * (sum of cols of M) + beta * self
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A matrix
-        beta(float): A scaling constant
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A matrix
+            beta(float): A scaling constant
 
-    Raises:
-        Error in case of self.dim != M.rows
-    """
+        Raises:
+            Error in case of self.dim != M.rows
+        """
 
     def AddDiagMat2(self: VectorBase, alpha: float,
                     M: MatrixBase, trans: MatrixTransposeType = default,
-                    beta: float = default)
-    """Perform the operation self = alpha*diag(M*M^T) + beta*self (if trans == kNoTrans),
-       or self = alpha*diag(M^T*M) + beta*self (if trans == kTrans).
+                    beta: float = default):
+        """Perform the operation self = alpha*diag(M*M^T) + beta*self (if trans == kNoTrans),
+           or self = alpha*diag(M^T*M) + beta*self (if trans == kTrans).
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A matrix
-        trans(MatrixTransposeType): kNoTrans(default) or kTrans
-        beta(float): A scaling constant
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A matrix
+            trans(MatrixTransposeType): kNoTrans(default) or kTrans
+            beta(float): A scaling constant
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+        Raises:
+            Error in case of dimension mismatch
+        """
 
     def AddDiagMatMat(self: VectorBase, alpha: float,
                       M: MatrixBase, transM: MatrixTransposeType,
                       N: MatrixBase, transN: MatrixTransposeType,
-                      beta: float = default)
-    """Perform the operation self = alpha*diag(M*N) + beta*self.
+                      beta: float = default):
+        """Perform the operation self = alpha*diag(M*N) + beta*self.
 
-    Args:
-        alpha(float): A scaling constant
-        M(MatrixBase): A matrix
-        N(MatrixBase): A matrix
-        transM(MatrixTransposeType): kNoTrans(default) or kTrans, denotes if we are going to use matrix M or its transpose
-        transN(MatrixTransposeType): kNoTrans(default) or kTrans, denotes if we are going to use matrix N or its transpose
-        beta(float): A scaling constant
+        Args:
+            alpha(float): A scaling constant
+            M(MatrixBase): A matrix
+            N(MatrixBase): A matrix
+            transM(MatrixTransposeType): kNoTrans(default) or kTrans, denotes if we are going to use matrix M or its transpose
+            transN(MatrixTransposeType): kNoTrans(default) or kTrans, denotes if we are going to use matrix N or its transpose
+            beta(float): A scaling constant
 
-    Raises:
-        Error in case of dimension mismatch
-    """
+        Raises:
+            Error in case of dimension mismatch
+        """
 
-    def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float
-    """Performs the operation v1'*M*v2
+    def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float:
+        """Performs the operation v1'*M*v2
 
-    Args:
-        v1(VectorBase): a vector
-        M(MatrixBase): a matrix
-        v2(VectorBase): a vector
+        Args:
+            v1(VectorBase): a vector
+            M(MatrixBase): a matrix
+            v2(VectorBase): a vector
 
-    Returns:
-       The outcome of v1'*M*v2
+        Returns:
+           The outcome of v1'*M*v2
 
-    Raises:
-       Error in case of dimension mismatch
-    """
+        Raises:
+           Error in case of dimension mismatch
+        """
 
 
