@@ -10,13 +10,13 @@ from "matrix/kaldi-matrix.h":
             stride: int = property(`Stride`)
 
             def NumRows(self) -> int
-            """Returns the number of rows"""
+              """Returns the number of rows"""
 
             def NumCols(self) -> int
-            """Returns the number of columns"""
+              """Returns the number of columns"""
 
             def SizeInBytes(self) -> int
-            """Returns the size in memory of the matrix, in bytes."""
+              """Returns the size in memory of the matrix, in bytes."""
 
             # Note: It is probably a bad idea to expose these in Python.
             # def Data(self) -> float*
@@ -28,15 +28,15 @@ from "matrix/kaldi-matrix.h":
             # Note: operator() functionality is provided in Python with the
             # __getitem__ method. This wrapper is for completeness.
             def `operator()` as Get(self, r:int, c:int) -> float
-            """Indexing operator.
-
-            Args:
-                r(int): The row
-                c(int): The column
-
-            Returns:
-                The value of the indexed element
-            """
+              """Indexing operator.
+  
+              Args:
+                  r(int): The row. Indexing starts from 0
+                  c(int): The column. Indexing starts from 0
+  
+              Returns:
+                  The value of the indexed element
+              """
 
             # Note: Set functionality is provided in Python with the
             # __setitem__ method.
@@ -46,31 +46,31 @@ from "matrix/kaldi-matrix.h":
 #           def Set(self, r:int, c:int, v:float)
 
             def SetZero(self)
-            """Set all elements to zero."""
+              """Set all elements to zero."""
 
             def SetUnit(self)
-            """Sets all elements to zero, and fill the diagonal with ones,
-               works for non-square matrices too"""
+              """Sets all elements to zero, and fill the diagonal with ones,
+                 works for non-square matrices too"""
 
             def SetRandn(self)
-            """Sets the elements to random values of a normal distribution."""
+              """Sets the elements to random values of a normal distribution."""
 
             def SetRandUniform(self)
-            """Sets the elements to random values of a uniform(0,1) distribution."""
+              """Sets the elements to random values of a uniform(0,1) distribution."""
 
             # Copy methods
             def CopyFromMat(self, M:MatrixBase,
                             trans:MatrixTransposeType = default)
-            """Copy data from another matrix of the same size
+              """Copy data from another matrix of the same size
 
-            Args:
-                M(MatrixBase): The matrix to copy from.
-                trans(MatrixTransposeType): kTrans if the matrix is to be transposed
-                or kNoTrans(default otherwise)
+              Args:
+                  M(MatrixBase): The matrix to copy from.
+                  trans(MatrixTransposeType): kTrans if the matrix is to be transposed
+                  or kNoTrans(default otherwise)
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # def `CopyFromMat` as CopyFromCudaMat(
             #     self, M:CuMatrixBase, trans:MatrixTransposeType = default)
@@ -85,63 +85,63 @@ from "matrix/kaldi-matrix.h":
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
             def CopyRowsFromVec(self, v:VectorBase)
-            """This function has two modes of operation. If v.size == rows * cols,
-               then it treats the vector as a row-by-row concatenation of a matrix
-               and copies to self. if v.size == cols, it sets each row of self
-               to a copy of v.
-
-            Args:
-                v(VectorBase): The vector to copy from
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """This function has two modes of operation. If v.size == rows * cols,
+                 then it treats the vector as a row-by-row concatenation of a matrix
+                 and copies to self. if v.size == cols, it sets each row of self
+                 to a copy of v.
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyColsFromVec(self, v:VectorBase)
-            """This function has two modes of operation. If v.size == rows * cols,
-               then it treats the vector as a col-by-col concatenation of a matrix
-               and copies to self. if v.size == rows, it sets each col of self
-               to a copy of v.
-
-            Args:
-                v(VectorBase): The vector to copy from
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """This function has two modes of operation. If v.size == rows * cols,
+                 then it treats the vector as a col-by-col concatenation of a matrix
+                 and copies to self. if v.size == rows, it sets each col of self
+                 to a copy of v.
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyColFromVec(self, v:VectorBase, col:int)
-            """Copy vector into specific column of matrix.
+              """Copy vector into specific column of matrix.
 
-            Args:
-                v(VectorBase): The vector to copy from
-                col(int): Indexes the column of the matrix. Indexing starts from 0
+              Args:
+                  v(VectorBase): The vector to copy from
+                  col(int): Indexes the column of the matrix. Indexing starts from 0
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyRowFromVec(self, v:VectorBase, row:int)
-            """Copy vector into specific row of matrix.
+              """Copy vector into specific row of matrix.
 
-            Args:
-                v(VectorBase): The vector to copy from
-                col(int): Indexes the column of the matrix. Indexing starts from 0
+              Args:
+                  v(VectorBase): The vector to copy from
+                  col(int): Indexes the column of the matrix. Indexing starts from 0
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyDiagFromVec(self, v:VectorBase)
-            """Copy vector into diagonal of matrix
-
-            Args:
-                v(VectorBase): The vector to copy from
-
-            Raises:
-                Error in case of dimension mismatch
-            """
-
+              """Copy vector into diagonal of matrix
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
+  
             # Accessing sub-parts of matrix #
             # Note (VM):
             # Implemented in child class Matrix<Real>
@@ -149,109 +149,109 @@ from "matrix/kaldi-matrix.h":
             # Special functions #
 
             def Sum(self) -> float
-            """Returns sum of all elements in matrix."""
+              """Returns sum of all elements in matrix."""
 
             def Trace(self, check_square: bool = default) -> float
-            """Returns the trace of the matrix. If matrix is not square
-               it will return the trace of the square matrix formed from
-               the minimum dimension, e.g. if the matrix is 3x5 it will
-               calculate the trace of the submatrix 3x3.
-
-            Args:
-                check_square(bool): True(default) if matrix is square
-
-            Raises:
-                Error if the matrix is not square and you have set check_square as True
-            """
+              """Returns the trace of the matrix. If matrix is not square
+                 it will return the trace of the square matrix formed from
+                 the minimum dimension, e.g. if the matrix is 3x5 it will
+                 calculate the trace of the submatrix 3x3.
+  
+              Args:
+                  check_square(bool): True(default) if matrix is square
+  
+              Raises:
+                  Error if the matrix is not square and you have set check_square as True
+              """
 
             def Max(self) -> float
-            """Returns maximum element of matrix."""
+              """Returns maximum element of matrix."""
 
             def Min(self) -> float
-            """Returns minimum element of matrix."""
+              """Returns minimum element of matrix."""
 
             def MulElements(self, A: MatrixBase)
-            """Element by element multiplication with matrix A.
+              """Element by element multiplication with matrix A.
 
-            Args:
-                A(MatrixBase): A matrix
+              Args:
+                  A(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def DivElements(self, A: MatrixBase)
-            """Element by element division with matrix A,
-               e.g. self(i,j) = self(i,j)/A(i,j) for all i,j.
-
-            Args:
-                A(MatrixBase): A matrix
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Element by element division with matrix A,
+                 e.g. self(i,j) = self(i,j)/A(i,j) for all i,j.
+  
+              Args:
+                  A(MatrixBase): A matrix
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def Scale(self, alpha: float)
-            """Scale all elements of the matrix by alpha
-
-            Args:
-                alpha(float): A scaling constant
-            """
+              """Scale all elements of the matrix by alpha
+  
+              Args:
+                  alpha(float): A scaling constant
+              """
 
             def `Max` as MaxWithMat(self, A: MatrixBase)
-            """Performs the elementwise operation self(i,j) = max(self(i,j), A(i,j)) for every i,j.
+              """Performs the elementwise operation self(i,j) = max(self(i,j), A(i,j)) for every i,j.
 
-            Args:
-                A(MatrixBase): A matrix
+              Args:
+                  A(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def `Min` as MinWithMat(self, A: MatrixBase)
-            """Performs the elementwise operation
-               self(i,j) = min(self(i,j), A(i,j)) for every i,j.
+              """Performs the elementwise operation
+                 self(i,j) = min(self(i,j), A(i,j)) for every i,j.
 
-            Args:
-                A(MatrixBase): A matrix
+              Args:
+                  A(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def MulColsVec(self, scale: VectorBase)
-            """Performs self = self * diag(scale). Scales each column by
-               a scalar taken from that dimension of the vector.
-
-            Args:
-                scale(VectorBase): A scaling vector
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs self = self * diag(scale). Scales each column by
+                 a scalar taken from that dimension of the vector.
+  
+              Args:
+                  scale(VectorBase): A scaling vector
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def MulRowsVec(self, scale: VectorBase)
-            """Performs self = diag(scale)*self. Scales each row by
-               a scalar taken from that dimension of the vector.
-
-            Args:
-                scale(VectorBase): A scaling vector
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs self = diag(scale)*self. Scales each row by
+                 a scalar taken from that dimension of the vector.
+  
+              Args:
+                  scale(VectorBase): A scaling vector
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def MulRowsGroupMat(self, src: MatrixBase)
-            """Divide each row of self into src.num_cols equal groups,
-               and then scale i'th row's j'th group of elements by src(i, j).
-
-            Args:
-                src(MatrixBase): A scaling Matrix
-
-            Raises:
-                Error if self.num_rows != scr.num_rows || self.num_cols % src.num_cols !=0
-            """
-
+              """Divide each row of self into src.num_cols equal groups,
+                 and then scale i'th row's j'th group of elements by src(i, j).
+  
+              Args:
+                  src(MatrixBase): A scaling Matrix
+  
+              Raises:
+                  Error if self.num_rows != scr.num_rows || self.num_cols % src.num_cols !=0
+              """
+  
 #            FIXME(Pavlos):
 #            Need C++ wrappers for these functions. Moreover they do not feel like ``pythonic''
 #
@@ -307,53 +307,53 @@ from "matrix/kaldi-matrix.h":
             # void AddToRows(Real alpha, Real *const *dst) const;
 
             def ApplyFloor(self, floor_val: float)
-            """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
+              """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
 
-            Args:
-                floor(float): The floor value to check against.
-            """
+              Args:
+                  floor(float): The floor value to check against.
+              """
 
             def ApplyCeiling(self, ceiling_val: float)
-            """Applies floor to all elements. If self(i,j)>ceiling then self(i,j)=ceiling.
+              """Applies floor to all elements. If self(i,j)>ceiling then self(i,j)=ceiling.
 
-            Args:
-                ceiling(float): The ceiling value to check against.
-            """
+              Args:
+                  ceiling(float): The ceiling value to check against.
+              """
 
             def ApplyLog(self)
-            """Apply natural log to all elements."""
+              """Apply natural log to all elements."""
 
             def ApplyExp(self)
-            """Apply exponential to each value in vector."""
+              """Apply exponential to each value in vector."""
 
             def ApplyPow(self, power: float)
-            """Take all elements of matrix to a power.
+              """Take all elements of matrix to a power.
 
-            Args:
-                power(float): The power which we apply to all elements of self
+              Args:
+                  power(float): The power which we apply to all elements of self
 
-            Raises:
-                Error if you try to handle imaginary numbers
-                (e.g. square root of a negative) or in case of overflow.
-            """
+              Raises:
+                  Error if you try to handle imaginary numbers
+                  (e.g. square root of a negative) or in case of overflow.
+              """
 
             def ApplyPowAbs(self, power: float, include_sign: bool = default)
-            """Take the absolute value of all elements of a vector to a power.
-               Include the sign of the input element if include_sign == true.
-               For example, if self=(-3,2) then for power=2 and include_sign=true
-               we would have self=(-9,4). If power is negative and the
-               input value is zero, the output is set zero.
+              """Take the absolute value of all elements of a vector to a power.
+                 Include the sign of the input element if include_sign == true.
+                 For example, if self=(-3,2) then for power=2 and include_sign=true
+                 we would have self=(-9,4). If power is negative and the
+                 input value is zero, the output is set zero.
 
-            Args:
-                power(float): The power which we apply to all alements of self
-                include_sign(bool): True if we include the sign of the input element.
+              Args:
+                  power(float): The power which we apply to all alements of self
+                  include_sign(bool): True if we include the sign of the input element.
 
-            Raises:
-                Error if we have overflows or underflows.
-            """
+              Raises:
+                  Error if we have overflows or underflows.
+              """
 
             def ApplyHeaviside(self)
-            """Applies the Heaviside step function (x > 0 ? 1 : 0) to all matrix elements."""
+              """Applies the Heaviside step function (x > 0 ? 1 : 0) to all matrix elements."""
 
 #            FIXME(pavlos):
 #            Need C++ wrappers for this
@@ -380,20 +380,20 @@ from "matrix/kaldi-matrix.h":
 #            """
 #
             def Power(self, pow: float) -> bool
-            """The Power method attempts to take the matrix to a power
-               (e.g P^3=P*P*P) using a method that works in general for fractional
-               and negative powers. The input matrix must be invertible and have
-               reasonable condition (or we don't guarantee the results. The method is
-               based on the eigenvalue decomposition. It will return false and
-               leave the matrix unchanged, if at entry the matrix had real negative
-               eigenvalues (or if it had zero eigenvalues and the power was negative).
+              """The Power method attempts to take the matrix to a power
+                 (e.g P^3=P*P*P) using a method that works in general for fractional
+                 and negative powers. The input matrix must be invertible and have
+                 reasonable condition (or we don't guarantee the results. The method is
+                 based on the eigenvalue decomposition. It will return false and
+                 leave the matrix unchanged, if at entry the matrix had real negative
+                 eigenvalues (or if it had zero eigenvalues and the power was negative).
 
-            Args:
-                pow(float): The power which we will apply
+              Args:
+                  pow(float): The power which we will apply
 
-            Returns:
-                True if operation was successful
-            """
+              Returns:
+                  True if operation was successful
+              """
 
 #            FIXME(pavlos):
 #            Need C++ wrappers for this
@@ -445,7 +445,7 @@ from "matrix/kaldi-matrix.h":
 #            """
 
             def MinSingularValue(self) -> float
-            """Returns the smallest singular value."""
+              """Returns the smallest singular value."""
 
 #           FIXME(pavlos):
 #            This does nothing, it's designed to trigger Valgrind errors in kaldi.
@@ -454,135 +454,135 @@ from "matrix/kaldi-matrix.h":
 #            def TestUninitialized(self)
 
             def Cond(self) -> float
-            """Returns the condition number of the SVD computation."""
+              """Returns the condition number of the SVD computation."""
 
             def IsSymmetric(self, cutoff: float = default) -> bool
-            """Returns True if the matrix is symmetric."""
+              """Returns True if the matrix is symmetric."""
 
             def IsDiagonal(self, cutoff: float = default) -> bool
-            """Checks if the matrix is diagonal. The nondiagonal elements
-               must be less or equal to cutoff value.
+              """Checks if the matrix is diagonal. The nondiagonal elements
+                 must be less or equal to cutoff value.
 
-            Args:
-                cutoff(float): A cutoff value. Default is 1.0e-05
+              Args:
+                  cutoff(float): A cutoff value. Default is 1.0e-05
 
-            Returns:
-                True if sum(digonal_elements)*cutoff > sum(nondiagonal_elements),
-                otherwise false
-            """
+              Returns:
+                  True if sum(digonal_elements)*cutoff > sum(nondiagonal_elements),
+                  otherwise false
+              """
 
             def IsUnit(self, cutoff: float = default) -> bool
-            """Checks if the matrix is identity-like. It does not have to be square.
-               The nondiagonal elements must be less or equal to cutoff value,
-               while the diagonal ones must be one.
+              """Checks if the matrix is identity-like. It does not have to be square.
+                 The nondiagonal elements must be less or equal to cutoff value,
+                 while the diagonal ones must be one.
 
-            Args:
-                cutoff(float): A cutoff value. Default is 1.0e-05
+              Args:
+                  cutoff(float): A cutoff value. Default is 1.0e-05
 
-            Returns:
-                True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
-            """
+              Returns:
+                  True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
+              """
 
             def IsZero(self, cutoff: float = default) -> bool
-            """Checks if all elements are 0 (where 0 is the cutoff value).
-
-            Args:
-                cutoff(float): A cutoff value. Default is 1.0e-05
-
-            Returns:
-                True if it is a zero matrix
-            """
+              """Checks if all elements are 0 (where 0 is the cutoff value).
+  
+              Args:
+                  cutoff(float): A cutoff value. Default is 1.0e-05
+  
+              Returns:
+                  True if it is a zero matrix
+              """
 
             def FrobeniusNorm(self) -> float
-            """Returns the FrobeniusNorm of the matrix"""
-
+              """Returns the FrobeniusNorm of the matrix"""
+ 
             def ApproxEqual(self, other: MatrixBase, tol: float = default)
                 -> bool
-            """Checks if self is equal with other by calculating the Frobenius
-               norm of their difference.
+              """Checks if self is equal with other by calculating the Frobenius
+                 norm of their difference.
 
-            Args:
-                other(MatrixBase): The matrix to check against
-                tol(float): the tolerance
+              Args:
+                  other(MatrixBase): The matrix to check against
+                  tol(float): the tolerance
 
-            Returns:
-                True if ||(self-other)||_F <= tol * ||self||_F
-            """
+              Returns:
+                  True if ||(self-other)||_F <= tol * ||self||_F
+              """
 
             def Equal(self, other: MatrixBase) -> bool
-            """Tests for exact equality
+              """Tests for exact equality
 
-            Args:
-                other(MatrixBase): The matrix to check against
+              Args:
+                  other(MatrixBase): The matrix to check against
 
-            Returns:
-                True if self(i,j)=other(i,j) for all i,j
-            """
+              Returns:
+                  True if self(i,j)=other(i,j) for all i,j
+              """
 
             def LargestAbsElem(self) -> float
-            """Returns the largest absolute value of the matrix's elements"""
+              """Returns the largest absolute value of the matrix's elements"""
 
             def LogSumExp(self, prune: float = default) -> float
-            """Returns log(sum(exp())) without exp overflow. If prune > 0.0, it uses
-               a pruning beam, discarding terms less than (max - prune).
+              """Returns log(sum(exp())) without exp overflow. If prune > 0.0, it uses
+                 a pruning beam, discarding terms less than (max - prune).
 
-            Args:
-                prune(float): A pruning value
+              Args:
+                  prune(float): A pruning value
 
-            Returns:
-               The log(sum(exp())) where the summation is over all the
-               elements of the matrix
-            """
+              Returns:
+                 The log(sum(exp())) where the summation is over all the
+                 elements of the matrix
+              """
 
             def ApplySoftMax(self) -> float
-            """Apply the softmax function to every element of the matrix.
+              """Apply the softmax function to every element of the matrix.
 
-            Returns:
-               The normalization of the softmax, i.e. sum(exp(self(i,j)))
-            """
+              Returns:
+                 The normalization of the softmax, i.e. sum(exp(self(i,j)))
+              """
 
             def Sigmoid(self, src: MatrixBase)
-            """Set each element to the sigmoid of the corresponding element of src.
+              """Set each element to the sigmoid of the corresponding element of src.
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def Heaviside(self, src: MatrixBase)
-            """Set each element to the heaviside of the corresponding element of src.
+              """Set each element to the heaviside of the corresponding element of src.
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def SoftHinge(self, src: MatrixBase)
-            """Set each element of self as self(i,j) = log(1 + exp(src(i,j)))
-
-            Args:
-                src(MatrixBase): A matrix
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Set each element of self as self(i,j) = log(1 + exp(src(i,j)))
+  
+              Args:
+                  src(MatrixBase): A matrix
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def GroupPnorm(self, src: MatrixBase, power: float)
-            """See Also:
-               :kaldi:`kaldi::GroupPnorm`
-            """
+              """See Also:
+                 :kaldi:`kaldi::GroupPnorm`
+              """
 
             # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase,
             #                     power: float)
 
             def GroupMax(self, src: MatrixBase)
-            """See Also:
-               :kaldi:`kaldi::GroupMax`
-            """
+              """See Also:
+                 :kaldi:`kaldi::GroupMax`
+              """
 
 #            FIXME(pavlos):
 #            This needs a C++ wrapper
@@ -593,14 +593,14 @@ from "matrix/kaldi-matrix.h":
 #            """
 
             def Tanh(self, src: MatrixBase)
-            """Set each element to the tanh of the corresponding element of src.
+              """Set each element to the tanh of the corresponding element of src.
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
 #            FIXME(pavlos):
 #            This needs a C++ wrapper
@@ -613,132 +613,131 @@ from "matrix/kaldi-matrix.h":
 #                                 check_thresh: float = default)
 
             def Add(self, alpha: float)
-            """Add a scalar alpha to each element of the matrix.
+              """Add a scalar alpha to each element of the matrix.
 
-            Args:
-               alpha(float): A scalar
-            """
+              Args:
+                 alpha(float): A scalar
+              """
 
             def AddToDiag(self, alpha: float)
-            """Add a scalar alpha to the diagonal elements of the matrix.
+              """Add a scalar alpha to the diagonal elements of the matrix.
 
-            Args:
-               alpha(float): A scalar
-            """
+              Args:
+                 alpha(float): A scalar
+              """
 
             def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase)
-            """Performs the operation self = self + alpha*a*b^T
+              """Performs the operation self = self + alpha*a*b^T
 
-            Args:
-                alpha(float): A scaling constant
-                a(VectorBase): A vector
-                b(VectorBase): A vector
-            """
+              Args:
+                  alpha(float): A scaling constant
+                  a(VectorBase): A vector
+                  b(VectorBase): A vector
+              """
 
             def AddVecToRows(self, alpha: float, v: VectorBase)
-            """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
+              """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
 
-            Args:
-                alpha(float): A scaling constant
-                v(VectorBase): A vector
+              Args:
+                  alpha(float): A scaling constant
+                  v(VectorBase): A vector
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddVecToCols(self, alpha: float, v: VectorBase)
-            """Performs the operation self(:,i) = self(:,i)+alpha*v for all i
+              """Performs the operation self(:,i) = self(:,i)+alpha*v for all i
 
-            Args:
-                alpha(float): A scaling constant
-                v(VectorBase): A vector
+              Args:
+                  alpha(float): A scaling constant
+                  v(VectorBase): A vector
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMat(self, alpha: float, M: MatrixBase,
                        transA: MatrixTransposeType = default)
-            """Performs the operation self = self+alpha*M or self = self+alpha*M^T
+              """Performs the operation self = self+alpha*M or self = self+alpha*M^T
 
-            Args:
-                alpha(float): A scaling constant
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
+              Args:
+                  alpha(float): A scaling constant
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def SymAddMat2(self, alpha: float, M: MatrixBase,
                            transA: MatrixTransposeType, beta: float)
-            """Performs the operation self = beta*self+alpha*M*M^T, for symmetric matrices.
-               It only updates the lower triangle of *this. It will leave the
-               matrix asymmetric; if you need it symmetric as a regular matrix,
-               do CopyLowerToUpper().
+              """Performs the operation self = beta*self+alpha*M*M^T, for symmetric matrices.
+                 It only updates the lower triangle of *this. It will leave the
+                 matrix asymmetric; if you need it symmetric as a regular matrix,
+                 do CopyLowerToUpper().
 
-            Args:
-                alpha(float): A scaling constant
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase,
                               transM: MatrixTransposeType,
                               beta: float = default)
-            """Perform the operation self = beta*self+alpha*diag(v)*M
+              """Perform the operation self = beta*self+alpha*diag(v)*M
 
-            Args:
-                alpha(float): A scaling constant
-                v(VectorBase): A vector
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  v(VectorBase): A vector
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
 
             def AddMatDiagVec(self, alpha: float, M: MatrixBase,
                               transM: MatrixTransposeType, v: VectorBase,
                               beta: float = default)
-            """Performs the operation self = beta*self+alpha*M*diag(v)
-
-            Args:
-                alpha(float): A scaling constant
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-                v(VectorBase): A vector
-                beta(float): A scaling constant
-
-            Raises:
-                Error in case of dimension mismatch
-            """
-
-
+              """Performs the operation self = beta*self+alpha*M*diag(v)
+  
+              Args:
+                  alpha(float): A scaling constant
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+                  v(VectorBase): A vector
+                  beta(float): A scaling constant
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
+  
             def AddMatMatElements(self, alpha: float, A: MatrixBase,
                                   B: MatrixBase, beta: float)
-            """Performs the operation self = beta*self + alpha*A.*B
-               where ``.*'' is element by element multiplication.
+              """Performs the operation self = beta*self + alpha*A.*B
+                 where ``.*'' is element by element multiplication.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                B(MatrixBase): A matrix
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  B(MatrixBase): A matrix
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # Note (VM):
             # Move to kaldi-matrix-ext.h
@@ -747,101 +746,101 @@ from "matrix/kaldi-matrix.h":
             def AddMatMat(self, alpha: float, A: MatrixBase,
                           transA: MatrixTransposeType, B: MatrixBase,
                           transB: MatrixTransposeType, beta: float)
-            """Performs the operation self = beta*self+alpha*A*B.
+              """Performs the operation self = beta*self+alpha*A*B.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase,
                                 C: MatrixBase)
-            """Performs the operation self = A.*B./C, where ``.*'' and ``./''
-               are elementwise multiplication and division. If c(i,j)==0
-               then self(i,j) remains intact.
+              """Performs the operation self = A.*B./C, where ``.*'' and ``./''
+                 are elementwise multiplication and division. If c(i,j)==0
+                 then self(i,j) remains intact.
 
-            Args:
-                A(MatrixBase): A matrix
-                B(MatrixBase): B matrix
-                C(MatrixBase): C matrix
+              Args:
+                  A(MatrixBase): A matrix
+                  B(MatrixBase): B matrix
+                  C(MatrixBase): C matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMatSmat(self, alpha: float, A: MatrixBase,
                            transA: MatrixTransposeType, B: MatrixBase,
                            transB: MatrixTransposeType, beta: float)
-            """A version of AddMatMat specialized for when B
-               contains a lot of zeroes.
+              """A version of AddMatMat specialized for when B
+                 contains a lot of zeroes.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddSmatMat(self, alpha: float, A: MatrixBase,
                            transA: MatrixTransposeType, B: MatrixBase,
                            transB: MatrixTransposeType, beta: float)
 
-            """A version of AddMatMat specialized for when A
-               contains a lot of zeroes.
+              """A version of AddMatMat specialized for when A
+                 contains a lot of zeroes.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
 
             def AddMatMatMat(self, alpha: float, A: MatrixBase,
                              transA: MatrixTransposeType, B: MatrixBase,
                              transB: MatrixTransposeType, C: MatrixBase,
                              transC: MatrixTransposeType, beta: float)
-            """Performs the operation self = beta*self+alpha*A*B*C.
+              """Performs the operation self = beta*self+alpha*A*B*C.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                C(MatrixBase): A matrix
-                transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
-                                             if kTrans transpose C before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  C(MatrixBase): A matrix
+                  transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                               if kTrans transpose C before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # Note (VM):
             # Move to kaldi-matrix-ext.h
@@ -860,45 +859,45 @@ from "matrix/kaldi-matrix.h":
             # def AddSpSp
 
             def CopyLowerToUpper(self)
-            """Copy lower triangle to upper triangle (symmetrize).
+              """Copy lower triangle to upper triangle (symmetrize).
 
-            Raises:
-                Error if matrix is not square.
-            """
+              Raises:
+                  Error if matrix is not square.
+              """
 
             def CopyUpperToLower(self)
-            """Copy upper triangle to lower triangle (symmetrize)
+              """Copy upper triangle to lower triangle (symmetrize)
 
-            Raises:
-                Error if matrix is not square.
-            """
+              Raises:
+                  Error if matrix is not square.
+              """
 
             def OrthogonalizeRows(self)
-            """This function orthogonalizes the rows of a matrix using
-               the Gram-Schmidt process. It will use random number generation
-               to fill in rows with something nonzero, in cases where the
-               original matrix was of deficient row rank.
+              """This function orthogonalizes the rows of a matrix using
+                 the Gram-Schmidt process. It will use random number generation
+                 to fill in rows with something nonzero, in cases where the
+                 original matrix was of deficient row rank.
 
-            Raises:
-                Error if self.num_rows > num_cols.
-            """
+              Raises:
+                  Error if self.num_rows > num_cols.
+              """
 
             def Read(self, is: istream, binary: bool, add: bool = default)
-            """Reads from C++ stream.
+              """Reads from C++ stream.
 
-            Args:
-                is(istream): The input straem.
-                binary(bool): If the stream is binary.
-                add(bool): True if you want to add the stream to self.
-            """
+              Args:
+                  is(istream): The input straem.
+                  binary(bool): If the stream is binary.
+                  add(bool): True if you want to add the stream to self.
+              """
 
             def Write(self, os: ostream, binary: bool)
-            """Writes to C++ stream.
+              """Writes to C++ stream.
 
-            Args:
-                os(ostream): The output straem.
-                binary(bool): If the stream is binary.
-            """
+              Args:
+                  os(ostream): The output straem.
+                  binary(bool): If the stream is binary.
+              """
 
         # Note: SubMatrix is wrapped manually. See matrix-ext.cc
         #
@@ -934,26 +933,26 @@ from "matrix/kaldi-matrix.h":
             def `Matrix` as NewWithSize(self, r:int, c:int,
                                         resize_type:MatrixResizeType = default,
                                         stride_type:MatrixStrideType = default)
-            """Create a new matrix with r rows and c columns. If the resize_type is kSetZero,
-               the new data will be zero. If the resize type is kUndefined,
-               the new data will be undefined. Finally if the resize type is kCopyData,
-               the new data will be the same as the old data in any shared positions,
-               and zero elsewhere. stride_type defines how data will be read from memory,
-               we advise to let it in its default value.
+              """Create a new matrix with r rows and c columns. If the resize_type is kSetZero,
+                 the new data will be zero. If the resize type is kUndefined,
+                 the new data will be undefined. Finally if the resize type is kCopyData,
+                 the new data will be the same as the old data in any shared positions,
+                 and zero elsewhere. stride_type defines how data will be read from memory,
+                 we advise to let it in its default value.
 
-            Args:
-                r(int): The number of rows
-                c(int): The number of columns
-                resize_type(MatrixResizeType): Determines the initial values of the vector.
-                stride_type(MatrixStrideType): Determines how data are read from memery.
-            """
+              Args:
+                  r(int): The number of rows
+                  c(int): The number of columns
+                  resize_type(MatrixResizeType): Determines the initial values of the vector.
+                  stride_type(MatrixStrideType): Determines how data are read from memery.
+              """
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
             #                 MatrixTransposeType trans = kNoTrans);
 
             def Swap(self, other:Matrix)
-            """Swaps the contents of self and other. Shallow swap."""
+              """Swaps the contents of self and other. Shallow swap."""
 
             # TODO:
             # void Swap(CuMatrix<Real> *mat);
@@ -961,13 +960,13 @@ from "matrix/kaldi-matrix.h":
             @add__init__
             def `Matrix` as NewWithMatrix(self, M:MatrixBase,
                                           trans:MatrixTransposeType = default)
-            """Create matrix and copy the elements M.
+              """Create matrix and copy the elements M.
 
-            Args:
-                M(MatrixBase): A matrix
-                trans(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                            if kTrans transpose A before operation
-            """
+              Args:
+                  M(MatrixBase): A matrix
+                  trans(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                              if kTrans transpose A before operation
+              """
 
             # TODO:
             # @add__init__
@@ -979,43 +978,43 @@ from "matrix/kaldi-matrix.h":
             #     self, M:TpMatrix, trans:MatrixTransposeType = default)
 
             def Read(self, is: istream, binary: bool, add: bool = default)
-            """Reads from C++ stream.
+              """Reads from C++ stream.
 
-            Args:
-                is(istream): The input straem.
-                binary(bool): If the stream is binary.
-                add(bool): True if you want to add the stream to self.
-            """
+              Args:
+                  is(istream): The input straem.
+                  binary(bool): If the stream is binary.
+                  add(bool): True if you want to add the stream to self.
+              """
 
             def RemoveRow(self, i:int)
-            """Removes a row from matrix.
+              """Removes a row from matrix.
 
-            Args:
-                i(int): Indexes which row will be removed. Indexing starts at 0
+              Args:
+                  i(int): Indexes which row will be removed. Indexing starts at 0
 
-            Raises:
-                Error if i> num_rows
-            """
+              Raises:
+                  Error if i> num_rows
+              """
 
             def Transpose(self)
-            """Transposes the matrix"""
+              """Transposes the matrix"""
 
             def Resize(self, r:int, c:int,
                        resize_type:MatrixResizeType = default,
                        stride_type:MatrixStrideType = default)
-            """Resizes a matrix. If the resize_type is kSetZero,
-               the new data will be zero. If the resize type is kUndefined,
-               the new data will be undefined. Finally if the resize type is kCopyData,
-               the new data will be the same as the old data in any shared positions,
-               and zero elsewhere. stride_type defines how data will be read from memory,
-               we advise to let it in its default value.
+              """Resizes a matrix. If the resize_type is kSetZero,
+                 the new data will be zero. If the resize type is kUndefined,
+                 the new data will be undefined. Finally if the resize type is kCopyData,
+                 the new data will be the same as the old data in any shared positions,
+                 and zero elsewhere. stride_type defines how data will be read from memory,
+                 we advise to let it in its default value.
 
-            Args:
-                r(int): The new number of rows
-                c(int): The new number of columns
-                resize_type(MatrixResizeType): Determines the initial values of the vector.
-                stride_type(MatrixStrideType): Determines how data are read from memery.
-            """
+              Args:
+                  r(int): The new number of rows
+                  c(int): The new number of columns
+                  resize_type(MatrixResizeType): Determines the initial values of the vector.
+                  stride_type(MatrixStrideType): Determines how data are read from memery.
+              """
 
             # NOTE:
             # We cannot wrap Row here since SubVector is wrapped elsewhere.
@@ -1033,114 +1032,114 @@ from "matrix/kaldi-matrix.h":
             # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
         def TraceMat(A: MatrixBase) -> float
-        """Returns the trace of a matrix.
-
-        Args:
-            A(MatrixBase): A matrix
-
-        Returns:
-            The trace of A
-        """
+          """Returns the trace of a matrix.
+  
+          Args:
+              A(MatrixBase): A matrix
+  
+          Returns:
+              The trace of A
+          """
 
         def TraceMatMat(A: MatrixBase, B: MatrixBase,
                         trans: MatrixTransposeType = default) -> float
-        """Calculates the trace of A*B
-
-        Args:
-            A(MatrixBase): A matrix
-            B(MatrixBase): A matrix
-            trans(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                        if kTrans transpose B before operation
-
-        Returns:
-            The trace of A*B or A*B^T depending on the value of trans
-
-        Raises:
-            Error in case of dimension mismatch
-        """
+          """Calculates the trace of A*B
+  
+          Args:
+              A(MatrixBase): A matrix
+              B(MatrixBase): A matrix
+              trans(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                          if kTrans transpose B before operation
+  
+          Returns:
+              The trace of A*B or A*B^T depending on the value of trans
+  
+          Raises:
+              Error in case of dimension mismatch
+          """
 
         def TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
                            B: MatrixBase, transB: MatrixTransposeType,
                            C: MatrixBase, transC: MatrixTransposeType) -> float
-        """Calculates the trace of A*B*C
-
-        Args:
-            A(MatrixBase): A matrix
-            transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose A before operation
-            B(MatrixBase): A matrix
-            transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose B before operation
-            C(MatrixBase): A matrix
-            transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
-                                         if kTrans transpose C before operation
-
-        Returns:
-            The trace of A*B*C
-
-        Raises:
-            Error in case of dimension mismatch
-        """
+          """Calculates the trace of A*B*C
+  
+          Args:
+              A(MatrixBase): A matrix
+              transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose A before operation
+              B(MatrixBase): A matrix
+              transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose B before operation
+              C(MatrixBase): A matrix
+              transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                           if kTrans transpose C before operation
+  
+          Returns:
+              The trace of A*B*C
+  
+          Raises:
+              Error in case of dimension mismatch
+          """
 
         def TraceMatMatMatMat(
             A: MatrixBase, transA: MatrixTransposeType,
             B: MatrixBase, transB: MatrixTransposeType,
             C: MatrixBase, transC: MatrixTransposeType,
             D: MatrixBase, transD: MatrixTransposeType) -> float
-        """Calculates the trace of A*B*C*D
-
-        Args:
-            A(MatrixBase): A matrix
-            transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose A before operation
-            B(MatrixBase): A matrix
-            transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose B before operation
-            C(MatrixBase): A matrix
-            transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
-                                         if kTrans transpose C before operation
-            D(MatrixBase): A matrix
-            transD(MatrixTransposeType): if kNoTrans(default) treat D as is,
-                                         if kTrans transpose D before operation
-
-        Returns:
-            The trace of A*B*C
-
-        Raises:
-            Error in case of dimension mismatch
-        """
+          """Calculates the trace of A*B*C*D
+  
+          Args:
+              A(MatrixBase): A matrix
+              transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose A before operation
+              B(MatrixBase): A matrix
+              transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose B before operation
+              C(MatrixBase): A matrix
+              transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                           if kTrans transpose C before operation
+              D(MatrixBase): A matrix
+              transD(MatrixTransposeType): if kNoTrans(default) treat D as is,
+                                           if kTrans transpose D before operation
+  
+          Returns:
+              The trace of A*B*C
+  
+          Raises:
+              Error in case of dimension mismatch
+          """
 
         def `ApproxEqual` as ApproxEqualMatrix(
             A:MatrixBase, B:MatrixBase, tol:`float` as float = default) -> bool
-        """Computes the Frobenius norm of the difference of matrix A and B
-           and returns True if it is less or equal than tol.
-
-        Args:
-            A(MatrixBase): A matrix
-            B(MatrixBase): A matrix
-            tol(float): The tolerance.
-
-        Returns:
-            True ||A-B||_F <= tol
-
-        Raises:
-            Error if size of a is different than size of b.
-        """
+          """Computes the Frobenius norm of the difference of matrix A and B
+             and returns True if it is less or equal than tol.
+  
+          Args:
+              A(MatrixBase): A matrix
+              B(MatrixBase): A matrix
+              tol(float): The tolerance.
+  
+          Returns:
+              True ||A-B||_F <= tol
+  
+          Raises:
+              Error if size of a is different than size of b.
+          """
 
         def `AssertEqual` as AssertEqualMatrix(
             A:MatrixBase, B:MatrixBase, tol:`float` as float = default)
-        """Computes the Frobenius norm of the difference of matrix A and B
-           and checks if it is less or equal than tol. If the condition is
-           not satisfied it will raise an error.
-
-        Args:
-            A(MatrixBase): A matrix
-            B(MatrixBase): A matrix
-            tol(float): The tolerance.
-
-        Raises:
-            Error if ||A-B||_F > tol
-        """
+          """Computes the Frobenius norm of the difference of matrix A and B
+             and checks if it is less or equal than tol. If the condition is
+             not satisfied it will raise an error.
+  
+          Args:
+              A(MatrixBase): A matrix
+              B(MatrixBase): A matrix
+              tol(float): The tolerance.
+  
+          Raises:
+              Error if ||A-B||_F > tol
+          """
 
 #        FIXME(pavlos):
 #        This needs a C++ wrapper
@@ -1155,15 +1154,15 @@ from "matrix/kaldi-matrix.h":
 #        def AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
 
         def `SameDim` as SameDimMatrix(M: MatrixBase, N: MatrixBase) -> bool
-        """Checks if M and N have the same dimensions.
-
-        Args:
-            M(MatrixBase): A matrix
-            N(MatrixBase): A matrix
-
-        Returns:
-            True if M.num_rows==N.num_rows && M.num_cols==N.num_cols
-        """
+          """Checks if M and N have the same dimensions.
+  
+          Args:
+              M(MatrixBase): A matrix
+              N(MatrixBase): A matrix
+  
+          Returns:
+              True if M.num_rows==N.num_rows && M.num_cols==N.num_cols
+          """
 
         class `MatrixBase<double>` as DoubleMatrixBase:
             num_rows: int = property(`NumRows`)
@@ -1171,7 +1170,7 @@ from "matrix/kaldi-matrix.h":
             stride: int = property(`Stride`)
 
             def SizeInBytes(self) -> int
-            """Returns the number of rows"""
+              """Returns the number of rows"""
 
             # def Data(self) -> float*
             # def RowData(self) -> float*
@@ -1185,46 +1184,46 @@ from "matrix/kaldi-matrix.h":
             # __getitem__ takes only two arguments (self, index), but
             # here we need three (self, row, col).
             def `operator()` as Get(self, r:int, c:int) -> float
-            """Indexing operator.
+              """Indexing operator.
 
-            Args:
-                r(int): The row
-                c(int): The column
+              Args:
+                  r(int): The row. Indexing starts from 0
+                  c(int): The column. Indexing starts from 0
 
-            Returns:
-                The value of the indexed element
-            """
+              Returns:
+                  The value of the indexed element
+              """
 
 #           FIXME(pavlos):
 #           Deprecated in new kaldi versions
 #           def Set(self, r:int, c:int, v:float)
 
             def SetZero(self)
-            """Set all elements to zero."""
+              """Set all elements to zero."""
 
             def SetUnit(self)
-            """Sets all elements to zero, and fill the diagonal with ones,
-               works for non-square matrices too"""
+              """Sets all elements to zero, and fill the diagonal with ones,
+                 works for non-square matrices too"""
 
             def SetRandn(self)
-            """Sets the elements to random values of a normal distribution."""
+              """Sets the elements to random values of a normal distribution."""
 
             def SetRandUniform(self)
-            """Sets the elements to random values of a uniform(0,1) distribution."""
+              """Sets the elements to random values of a uniform(0,1) distribution."""
 
             # Copy methods
             def CopyFromMat(self, M:DoubleMatrixBase,
-                            trans:MatrixTransposeType = default)
-            """Copy data from another matrix of the same size
+                              trans:MatrixTransposeType = default)
+              """Copy data from another matrix of the same size
 
-            Args:
-                M(MatrixBase): The matrix to copy from.
-                trans(MatrixTransposeType): kTrans if the matrix is to be transposed
-                or kNoTrans(default otherwise)
+              Args:
+                  M(MatrixBase): The matrix to copy from.
+                  trans(MatrixTransposeType): kTrans if the matrix is to be transposed
+                  or kNoTrans(default otherwise)
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # FIXME (VM): Missing definitions
             # def `CopyFromMat` as CopyFromCudaMat(
@@ -1238,62 +1237,62 @@ from "matrix/kaldi-matrix.h":
             #                                             v:CuDoubleVector)
 
             def CopyRowsFromVec(self, v:VectorBase)
-            """This function has two modes of operation. If v.size == rows * cols,
-               then it treats the vector as a row-by-row concatenation of a matrix
-               and copies to self. if v.size == cols, it sets each row of self
-               to a copy of v.
+              """This function has two modes of operation. If v.size == rows * cols,
+                 then it treats the vector as a row-by-row concatenation of a matrix
+                 and copies to self. if v.size == cols, it sets each row of self
+                 to a copy of v.
 
-            Args:
-                v(VectorBase): The vector to copy from
+              Args:
+                  v(VectorBase): The vector to copy from
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyColsFromVec(self, v:VectorBase)
-            """This function has two modes of operation. If v.size == rows * cols,
-               then it treats the vector as a col-by-col concatenation of a matrix
-               and copies to self. if v.size == rows, it sets each col of self
-               to a copy of v.
-
-            Args:
-                v(VectorBase): The vector to copy from
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """This function has two modes of operation. If v.size == rows * cols,
+                 then it treats the vector as a col-by-col concatenation of a matrix
+                 and copies to self. if v.size == rows, it sets each col of self
+                 to a copy of v.
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyColFromVec(self, v:VectorBase, col:int)
-            """Copy vector into specific column of matrix.
-
-            Args:
-                v(VectorBase): The vector to copy from
-                col(int): Indexes the column of the matrix. Indexing starts from 0
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Copy vector into specific column of matrix.
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+                  col(int): Indexes the column of the matrix. Indexing starts from 0
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyRowFromVec(self, v:VectorBase, row:int)
-            """Copy vector into specific row of matrix.
-
-            Args:
-                v(VectorBase): The vector to copy from
-                col(int): Indexes the column of the matrix. Indexing starts from 0
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Copy vector into specific row of matrix.
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+                  col(int): Indexes the column of the matrix. Indexing starts from 0
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def CopyDiagFromVec(self, v:DoubleVectorBase)
-            """Copy vector into diagonal of matrix
-
-            Args:
-                v(VectorBase): The vector to copy from
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Copy vector into diagonal of matrix
+  
+              Args:
+                  v(VectorBase): The vector to copy from
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # Accessing sub-parts of matrix #
             # Note (VM):
@@ -1302,107 +1301,108 @@ from "matrix/kaldi-matrix.h":
             # Special functions #
 
             def Sum(self) -> float
-            """Returns sum of all elements in matrix."""
+              """Returns sum of all elements in matrix."""
 
             def Trace(self, check_square: bool = default) -> float
-            """Returns the trace of the matrix. If matrix is not square
-               it will return the trace of the square matrix formed from
-               the minimum dimension, e.g. if the matrix is 3x5 it will
-               calculate the trace of the submatrix 3x3.
+              """Returns the trace of the matrix. If matrix is not square
+                 it will return the trace of the square matrix formed from
+                 the minimum dimension, e.g. if the matrix is 3x5 it will
+                 calculate the trace of the submatrix 3x3.
 
-            Args:
-                check_square(bool): True(default) if matrix is square
+              Args:
+                  check_square(bool): True(default) if matrix is square
 
-            Raises:
-                Error if the matrix is not square and you have set check_square as True
-            """
+              Raises:
+                  Error if the matrix is not square and you have set check_square as True
+              """
 
             def Max(self) -> float
-            """Returns maximum element of matrix."""
+              """Returns maximum element of matrix."""
 
             def Min(self) -> float
-            """Returns minimum element of matrix."""
+              """Returns minimum element of matrix."""
 
             def MulElements(self, A: MatrixBase)
-            """Element by element multiplication with matrix A.
+              """Element by element multiplication with matrix A.
 
-            Args:
-                A(MatrixBase): A matrix
+              Args:
+                  A(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def DivElements(self, A: MatrixBase)
-            """Element by element division with matrix A,
-               e.g. self(i,j) = self(i,j)/A(i,j) for all i,j.
+              """Element by element division with matrix A,
+                 e.g. self(i,j) = self(i,j)/A(i,j) for all i,j.
 
-            Args:
-                A(MatrixBase): A matrix
+              Args:
+                  A(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def Scale(self, alpha: float)
-            """Scale all elements of the matrix by alpha
+              """Scale all elements of the matrix by alpha
 
-            Args:
-                alpha(float): A scaling constant
-            """
+              Args:
+                  alpha(float): A scaling constant
+              """
+
             def `Max` as MaxWithMat(self, A: MatrixBase)
-            """Performs the elementwise operation self(i,j) = max(self(i,j), A(i,j)) for every i,j.
-
-            Args:
-                A(MatrixBase): A matrix
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs the elementwise operation self(i,j) = max(self(i,j), A(i,j)) for every i,j.
+  
+              Args:
+                  A(MatrixBase): A matrix
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def `Min` as MinWithMat(self, A: MatrixBase)
-            """Performs the elementwise operation
-               self(i,j) = min(self(i,j), A(i,j)) for every i,j.
-
-            Args:
-                A(MatrixBase): A matrix
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs the elementwise operation
+                 self(i,j) = min(self(i,j), A(i,j)) for every i,j.
+  
+              Args:
+                  A(MatrixBase): A matrix
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def MulColsVec(self, scale: VectorBase)
-            """Performs self = self * diag(scale). Scales each column by
-               a scalar taken from that dimension of the vector.
-
-            Args:
-                scale(VectorBase): A scaling vector
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs self = self * diag(scale). Scales each column by
+                 a scalar taken from that dimension of the vector.
+  
+              Args:
+                  scale(VectorBase): A scaling vector
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def MulRowsVec(self, scale: VectorBase)
-            """Performs self = diag(scale)*self. Scales each row by
-               a scalar taken from that dimension of the vector.
-
-            Args:
-                scale(VectorBase): A scaling vector
-
-            Raises:
-                Error in case of dimension mismatch
-            """
-
+              """Performs self = diag(scale)*self. Scales each row by
+                 a scalar taken from that dimension of the vector.
+  
+              Args:
+                  scale(VectorBase): A scaling vector
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
+  
             def MulRowsGroupMat(self, src: MatrixBase)
-            """Divide each row of self into src.num_cols equal groups,
-               and then scale i'th row's j'th group of elements by src(i, j).
-
-            Args:
-                src(MatrixBase): A scaling Matrix
-
-            Raises:
-                Error if self.num_rows != scr.num_rows || self.num_cols % src.num_cols !=0
-            """
+              """Divide each row of self into src.num_cols equal groups,
+                 and then scale i'th row's j'th group of elements by src(i, j).
+  
+              Args:
+                  src(MatrixBase): A scaling Matrix
+  
+              Raises:
+                  Error if self.num_rows != scr.num_rows || self.num_cols % src.num_cols !=0
+              """
 
 #            FIXME(Pavlos):
 #            Need C++ wrappers for these functions. Moreover they do not feel like ``pythonic''
@@ -1438,10 +1438,10 @@ from "matrix/kaldi-matrix.h":
 #            """
 
             def InvertElements(self)
-            """Inverts all the elements of the matrix. self(i,j)=1/self(i,j)."""
+              """Inverts all the elements of the matrix. self(i,j)=1/self(i,j)."""
 
             def Transpose(self)
-            """Transposes the elements of the matrix. self(i,j)=self(j,i)."""
+              """Transposes the elements of the matrix. self(i,j)=self(j,i)."""
 
             # FIXME(Pavlos):
             # Indices should not be int, they are supposed to be an array
@@ -1459,53 +1459,53 @@ from "matrix/kaldi-matrix.h":
             # void AddToRows(Real alpha, Real *const *dst) const;
 
             def ApplyFloor(self, floor_val: float)
-            """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
+              """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
 
-            Args:
-                floor(float): The floor value to check against.
-            """
+              Args:
+                  floor(float): The floor value to check against.
+              """
 
             def ApplyCeiling(self, ceiling_val: float)
-            """Applies floor to all elements. If self(i,j)>ceiling then self(i,j)=ceiling.
+              """Applies floor to all elements. If self(i,j)>ceiling then self(i,j)=ceiling.
 
-            Args:
-                ceiling(float): The ceiling value to check against.
-            """
+              Args:
+                  ceiling(float): The ceiling value to check against.
+              """
 
             def ApplyLog(self)
-            """Apply natural log to all elements."""
+              """Apply natural log to all elements."""
 
             def ApplyExp(self)
-            """Apply exponential to each value in vector."""
+              """Apply exponential to each value in vector."""
 
             def ApplyPow(self, power: float)
-            """Take all elements of matrix to a power.
+              """Take all elements of matrix to a power.
 
-            Args:
-                power(float): The power which we apply to all elements of self
+              Args:
+                  power(float): The power which we apply to all elements of self
 
-            Raises:
-                Error if you try to handle imaginary numbers
-                (e.g. square root of a negative) or in case of overflow.
-            """
+              Raises:
+                  Error if you try to handle imaginary numbers
+                  (e.g. square root of a negative) or in case of overflow.
+              """
 
             def ApplyPowAbs(self, power: float, include_sign: bool = default)
-            """Take the absolute value of all elements of a vector to a power.
-               Include the sign of the input element if include_sign == true.
-               For example, if self=(-3,2) then for power=2 and include_sign=true
-               we would have self=(-9,4). If power is negative and the
-               input value is zero, the output is set zero.
+              """Take the absolute value of all elements of a vector to a power.
+                 Include the sign of the input element if include_sign == true.
+                 For example, if self=(-3,2) then for power=2 and include_sign=true
+                 we would have self=(-9,4). If power is negative and the
+                 input value is zero, the output is set zero.
 
-            Args:
-                power(float): The power which we apply to all alements of self
-                include_sign(bool): True if we include the sign of the input element.
+              Args:
+                  power(float): The power which we apply to all alements of self
+                  include_sign(bool): True if we include the sign of the input element.
 
-            Raises:
-                Error if we have overflows or underflows.
-            """
+              Raises:
+                  Error if we have overflows or underflows.
+              """
 
             def ApplyHeaviside(self)
-            """Applies the Heaviside step function (x > 0 ? 1 : 0) to all matrix elements."""
+              """Applies the Heaviside step function (x > 0 ? 1 : 0) to all matrix elements."""
 
 #            FIXME(pavlos):
 #            Need C++ wrappers for this
@@ -1532,20 +1532,20 @@ from "matrix/kaldi-matrix.h":
 #            """
 #
             def Power(self, pow: float) -> bool
-            """The Power method attempts to take the matrix to a power
-               (e.g P^3=P*P*P) using a method that works in general for fractional
-               and negative powers. The input matrix must be invertible and have
-               reasonable condition (or we don't guarantee the results. The method is
-               based on the eigenvalue decomposition. It will return false and
-               leave the matrix unchanged, if at entry the matrix had real negative
-               eigenvalues (or if it had zero eigenvalues and the power was negative).
-
-            Args:
-                pow(float): The power which we will apply
-
-            Returns:
-                True if operation was successful
-            """
+              """The Power method attempts to take the matrix to a power
+                 (e.g P^3=P*P*P) using a method that works in general for fractional
+                 and negative powers. The input matrix must be invertible and have
+                 reasonable condition (or we don't guarantee the results. The method is
+                 based on the eigenvalue decomposition. It will return false and
+                 leave the matrix unchanged, if at entry the matrix had real negative
+                 eigenvalues (or if it had zero eigenvalues and the power was negative).
+  
+              Args:
+                  pow(float): The power which we will apply
+  
+              Returns:
+                  True if operation was successful
+              """
 
 #            FIXME(pavlos):
 #            Need C++ wrappers for this
@@ -1597,7 +1597,7 @@ from "matrix/kaldi-matrix.h":
 #            """
 
             def MinSingularValue(self) -> float
-            """Returns the smallest singular value."""
+              """Returns the smallest singular value."""
 
 #           FIXME(pavlos):
 #            This does nothing, it's designed to trigger Valgrind errors in kaldi.
@@ -1606,127 +1606,127 @@ from "matrix/kaldi-matrix.h":
 #            def TestUninitialized(self)
 
             def Cond(self) -> float
-            """Returns the condition number of the SVD computation."""
+              """Returns the condition number of the SVD computation."""
 
             def IsSymmetric(self, cutoff: float = default) -> bool
-            """Returns True if the matrix is symmetric."""
+              """Returns True if the matrix is symmetric."""
 
             def IsDiagonal(self, cutoff: float = default) -> bool
-            """Checks if the matrix is diagonal. The nondiagonal elements
-               must be less or equal to cutoff value.
+              """Checks if the matrix is diagonal. The nondiagonal elements
+                 must be less or equal to cutoff value.
 
-            Args:
-                cutoff(float): A cutoff value. Default is 1.0e-05
+              Args:
+                  cutoff(float): A cutoff value. Default is 1.0e-05
 
-            Returns:
-                True if sum(digonal_elements)*cutoff > sum(nondiagonal_elements),
-                otherwise false
-            """
+              Returns:
+                  True if sum(digonal_elements)*cutoff > sum(nondiagonal_elements),
+                  otherwise false
+              """
 
             def IsUnit(self, cutoff: float = default) -> bool
-            """Checks if the matrix is identity-like. It does not have to be square.
-               The nondiagonal elements must be less or equal to cutoff value,
-               while the diagonal ones must be one.
+              """Checks if the matrix is identity-like. It does not have to be square.
+                 The nondiagonal elements must be less or equal to cutoff value,
+                 while the diagonal ones must be one.
 
-            Args:
-                cutoff(float): A cutoff value. Default is 1.0e-05
+              Args:
+                  cutoff(float): A cutoff value. Default is 1.0e-05
 
-            Returns:
-                True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
-            """
+              Returns:
+                  True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
+              """
 
             def IsZero(self, cutoff: float = default) -> bool
-            """Checks if all elements are 0 (where 0 is the cutoff value).
-
-            Args:
-                cutoff(float): A cutoff value. Default is 1.0e-05
-
-            Returns:
-                True if it is a zero matrix
-            """
+              """Checks if all elements are 0 (where 0 is the cutoff value).
+  
+              Args:
+                  cutoff(float): A cutoff value. Default is 1.0e-05
+  
+              Returns:
+                  True if it is a zero matrix
+              """
 
             def FrobeniusNorm(self) -> float
-            """Returns the FrobeniusNorm of the matrix"""
+              """Returns the FrobeniusNorm of the matrix"""
 
             def ApproxEqual(self, other: MatrixBase, tol: float = default)
                 -> bool
-            """Checks if self is equal with other by calculating the Frobenius
-               norm of their difference.
+              """Checks if self is equal with other by calculating the Frobenius
+                 norm of their difference.
 
-            Args:
-                other(MatrixBase): The matrix to check against
-                tol(float): the tolerance
+              Args:
+                  other(MatrixBase): The matrix to check against
+                  tol(float): the tolerance
 
-            Returns:
-                True if ||(self-other)||_F <= tol * ||self||_F
-            """
+              Returns:
+                  True if ||(self-other)||_F <= tol * ||self||_F
+              """
 
             def Equal(self, other: MatrixBase) -> bool
-            """Tests for exact equality
+              """Tests for exact equality
 
-            Args:
-                other(MatrixBase): The matrix to check against
+              Args:
+                  other(MatrixBase): The matrix to check against
 
-            Returns:
-                True if self(i,j)=other(i,j) for all i,j
-            """
+              Returns:
+                  True if self(i,j)=other(i,j) for all i,j
+              """
 
             def LargestAbsElem(self) -> float
-            """Returns the largest absolute value of the matrix's elements"""
+              """Returns the largest absolute value of the matrix's elements"""
 
             def LogSumExp(self, prune: float = default) -> float
-            """Returns log(sum(exp())) without exp overflow. If prune > 0.0, it uses
-               a pruning beam, discarding terms less than (max - prune).
+              """Returns log(sum(exp())) without exp overflow. If prune > 0.0, it uses
+                 a pruning beam, discarding terms less than (max - prune).
 
-            Args:
-                prune(float): A pruning value
+              Args:
+                  prune(float): A pruning value
 
-            Returns:
-               The log(sum(exp())) where the summation is over all the
-               elements of the matrix
-            """
+              Returns:
+                 The log(sum(exp())) where the summation is over all the
+                 elements of the matrix
+              """
 
             def ApplySoftMax(self) -> float
-            """Apply the softmax function to every element of the matrix.
+              """Apply the softmax function to every element of the matrix.
 
-            Returns:
-               The normalization of the softmax, i.e. sum(exp(self(i,j)))
-            """
+              Returns:
+                 The normalization of the softmax, i.e. sum(exp(self(i,j)))
+              """
 
             def Sigmoid(self, src: MatrixBase)
-            """Set each element to the sigmoid of the corresponding element of src.
+              """Set each element to the sigmoid of the corresponding element of src.
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def Heaviside(self, src: MatrixBase)
-            """Set each element to the heaviside of the corresponding element of src.
+              """Set each element to the heaviside of the corresponding element of src.
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def SoftHinge(self, src: MatrixBase)
-            """Set each element of self as self(i,j) = log(1 + exp(src(i,j)))
+              """Set each element of self as self(i,j) = log(1 + exp(src(i,j)))
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def GroupPnorm(self, src: MatrixBase, power: float)
-            """See Also:
-               :kaldi:`kaldi::GroupPnorm`
-            """
+              """See Also:
+                 :kaldi:`kaldi::GroupPnorm`
+              """
 
 #            FIXME(pavlos):
 #            This needs a C++ wrapper
@@ -1737,14 +1737,14 @@ from "matrix/kaldi-matrix.h":
 #            """
 
             def Tanh(self, src: MatrixBase)
-            """Set each element to the tanh of the corresponding element of src.
+              """Set each element to the tanh of the corresponding element of src.
 
-            Args:
-                src(MatrixBase): A matrix
+              Args:
+                  src(MatrixBase): A matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
 #            FIXME(pavlos):
 #            This needs a C++ wrapper
@@ -1757,132 +1757,130 @@ from "matrix/kaldi-matrix.h":
 #                                 check_thresh: float = default)
 
             def Add(self, alpha: float)
-            """Add a scalar alpha to each element of the matrix.
-
-            Args:
-               alpha(float): A scalar
-            """
+              """Add a scalar alpha to each element of the matrix.
+  
+              Args:
+                 alpha(float): A scalar
+              """
 
             def AddToDiag(self, alpha: float)
-            """Add a scalar alpha to the diagonal elements of the matrix.
-
-            Args:
-               alpha(float): A scalar
-            """
+              """Add a scalar alpha to the diagonal elements of the matrix.
+  
+              Args:
+                 alpha(float): A scalar
+              """
 
             def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase)
-            """Performs the operation self = self + alpha*a*b^T
-
-            Args:
-                alpha(float): A scaling constant
-                a(VectorBase): A vector
-                b(VectorBase): A vector
-            """
+              """Performs the operation self = self + alpha*a*b^T
+  
+              Args:
+                  alpha(float): A scaling constant
+                  a(VectorBase): A vector
+                  b(VectorBase): A vector
+              """
 
             def AddVecToRows(self, alpha: float, v: VectorBase)
-            """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
-
-            Args:
-                alpha(float): A scaling constant
-                v(VectorBase): A vector
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
+  
+              Args:
+                  alpha(float): A scaling constant
+                  v(VectorBase): A vector
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddVecToCols(self, alpha: float, v: VectorBase)
-            """Performs the operation self(:,i) = self(:,i)+alpha*v for all i
-
-            Args:
-                alpha(float): A scaling constant
-                v(VectorBase): A vector
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs the operation self(:,i) = self(:,i)+alpha*v for all i
+  
+              Args:
+                  alpha(float): A scaling constant
+                  v(VectorBase): A vector
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMat(self, alpha: float, M: MatrixBase,
                        transA: MatrixTransposeType = default)
-            """Performs the operation self = self+alpha*M or self = self+alpha*M^T
-
-            Args:
-                alpha(float): A scaling constant
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs the operation self = self+alpha*M or self = self+alpha*M^T
+  
+              Args:
+                  alpha(float): A scaling constant
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def SymAddMat2(self, alpha: float, M: MatrixBase,
                            transA: MatrixTransposeType, beta: float)
-            """Performs the operation self = beta*self+alpha*M*M^T, for symmetric matrices.
-               It only updates the lower triangle of *this. It will leave the
-               matrix asymmetric; if you need it symmetric as a regular matrix,
-               do CopyLowerToUpper().
-
-            Args:
-                alpha(float): A scaling constant
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-                beta(float): A scaling constant
-
-            Raises:
-                Error in case of dimension mismatch
-            """
+              """Performs the operation self = beta*self+alpha*M*M^T, for symmetric matrices.
+                 It only updates the lower triangle of *this. It will leave the
+                 matrix asymmetric; if you need it symmetric as a regular matrix,
+                 do CopyLowerToUpper().
+  
+              Args:
+                  alpha(float): A scaling constant
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+                  beta(float): A scaling constant
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase,
                               transM: MatrixTransposeType,
                               beta: float = default)
-            """Perform the operation self = beta*self+alpha*diag(v)*M
-
-            Args:
-                alpha(float): A scaling constant
-                v(VectorBase): A vector
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-                beta(float): A scaling constant
-
-            Raises:
-                Error in case of dimension mismatch
-            """
-
+              """Perform the operation self = beta*self+alpha*diag(v)*M
+  
+              Args:
+                  alpha(float): A scaling constant
+                  v(VectorBase): A vector
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+                  beta(float): A scaling constant
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMatDiagVec(self, alpha: float, M: MatrixBase,
                               transM: MatrixTransposeType, v: VectorBase,
                               beta: float = default)
-            """Performs the operation self = beta*self+alpha*M*diag(v)
-
-            Args:
-                alpha(float): A scaling constant
-                M(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
-                                             if kTrans transpose M before operation
-                v(VectorBase): A vector
-                beta(float): A scaling constant
-
-            Raises:
-                Error in case of dimension mismatch
-            """
-
+              """Performs the operation self = beta*self+alpha*M*diag(v)
+  
+              Args:
+                  alpha(float): A scaling constant
+                  M(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
+                                               if kTrans transpose M before operation
+                  v(VectorBase): A vector
+                  beta(float): A scaling constant
+  
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMatMatElements(self, alpha: float, A: MatrixBase,
                                   B: MatrixBase, beta: float)
-            """Performs the operation self = beta*self + alpha*A.*B
-               where ``.*'' is element by element multiplication.
+              """Performs the operation self = beta*self + alpha*A.*B
+                 where ``.*'' is element by element multiplication.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                B(MatrixBase): A matrix
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  B(MatrixBase): A matrix
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # FIXME:
             # Missing SpMatrix definition
@@ -1891,101 +1889,100 @@ from "matrix/kaldi-matrix.h":
             def AddMatMat(self, alpha: float, A: MatrixBase,
                           transA: MatrixTransposeType, B: MatrixBase,
                           transB: MatrixTransposeType, beta: float)
-            """Performs the operation self = beta*self+alpha*A*B.
+              """Performs the operation self = beta*self+alpha*A*B.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase,
                                 C: MatrixBase)
-            """Performs the operation self = A.*B./C, where ``.*'' and ``./''
-               are elementwise multiplication and division. If c(i,j)==0
-               then self(i,j) remains intact.
+              """Performs the operation self = A.*B./C, where ``.*'' and ``./''
+                 are elementwise multiplication and division. If c(i,j)==0
+                 then self(i,j) remains intact.
 
-            Args:
-                A(MatrixBase): A matrix
-                B(MatrixBase): B matrix
-                C(MatrixBase): C matrix
+              Args:
+                  A(MatrixBase): A matrix
+                  B(MatrixBase): B matrix
+                  C(MatrixBase): C matrix
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMatSmat(self, alpha: float, A: MatrixBase,
                            transA: MatrixTransposeType, B: MatrixBase,
                            transB: MatrixTransposeType, beta: float)
-            """A version of AddMatMat specialized for when B
-               contains a lot of zeroes.
+              """A version of AddMatMat specialized for when B
+                 contains a lot of zeroes.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddSmatMat(self, alpha: float, A: MatrixBase,
                            transA: MatrixTransposeType, B: MatrixBase,
                            transB: MatrixTransposeType, beta: float)
 
-            """A version of AddMatMat specialized for when A
-               contains a lot of zeroes.
+              """A version of AddMatMat specialized for when A
+                 contains a lot of zeroes.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
-
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             def AddMatMatMat(self, alpha: float, A: MatrixBase,
                              transA: MatrixTransposeType, B: MatrixBase,
                              transB: MatrixTransposeType, C: MatrixBase,
                              transC: MatrixTransposeType, beta: float)
-            """Performs the operation self = beta*self+alpha*A*B*C.
+              """Performs the operation self = beta*self+alpha*A*B*C.
 
-            Args:
-                alpha(float): A scaling constant
-                A(MatrixBase): A matrix
-                transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                             if kTrans transpose A before operation
-                B(MatrixBase): A matrix
-                transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                             if kTrans transpose B before operation
-                C(MatrixBase): A matrix
-                transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
-                                             if kTrans transpose C before operation
-                beta(float): A scaling constant
+              Args:
+                  alpha(float): A scaling constant
+                  A(MatrixBase): A matrix
+                  transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                               if kTrans transpose A before operation
+                  B(MatrixBase): A matrix
+                  transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                               if kTrans transpose B before operation
+                  C(MatrixBase): A matrix
+                  transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                               if kTrans transpose C before operation
+                  beta(float): A scaling constant
 
-            Raises:
-                Error in case of dimension mismatch
-            """
+              Raises:
+                  Error in case of dimension mismatch
+              """
 
             # FIXME:
             # Missing definitions
@@ -2005,45 +2002,45 @@ from "matrix/kaldi-matrix.h":
             # def AddSpSp
 
             def CopyLowerToUpper(self)
-            """Copy lower triangle to upper triangle (symmetrize).
+              """Copy lower triangle to upper triangle (symmetrize).
 
-            Raises:
-                Error if matrix is not square.
-            """
+              Raises:
+                  Error if matrix is not square.
+              """
 
             def CopyUpperToLower(self)
-            """Copy upper triangle to lower triangle (symmetrize)
+              """Copy upper triangle to lower triangle (symmetrize)
 
-            Raises:
-                Error if matrix is not square.
-            """
+              Raises:
+                  Error if matrix is not square.
+              """
 
             def OrthogonalizeRows(self)
-            """This function orthogonalizes the rows of a matrix using
-               the Gram-Schmidt process. It will use random number generation
-               to fill in rows with something nonzero, in cases where the
-               original matrix was of deficient row rank.
+              """This function orthogonalizes the rows of a matrix using
+                 the Gram-Schmidt process. It will use random number generation
+                 to fill in rows with something nonzero, in cases where the
+                 original matrix was of deficient row rank.
 
-            Raises:
-                Error if self.num_rows > num_cols.
-            """
+              Raises:
+                  Error if self.num_rows > num_cols.
+              """
 
             def Read(self, is: istream, binary: bool, add: bool = default)
-            """Reads from C++ stream.
+              """Reads from C++ stream.
 
-            Args:
-                is(istream): The input straem.
-                binary(bool): If the stream is binary.
-                add(bool): True if you want to add the stream to self.
-            """
+              Args:
+                  is(istream): The input straem.
+                  binary(bool): If the stream is binary.
+                  add(bool): True if you want to add the stream to self.
+              """
 
             def Write(self, os: ostream, binary: bool)
-            """Writes to C++ stream.
+              """Writes to C++ stream.
 
-            Args:
-                os(ostream): The output straem.
-                binary(bool): If the stream is binary.
-            """
+              Args:
+                  os(ostream): The output straem.
+                  binary(bool): If the stream is binary.
+              """
 
         class `Matrix<double>` as DoubleMatrix(DoubleMatrixBase):
 
@@ -2051,26 +2048,26 @@ from "matrix/kaldi-matrix.h":
             def `Matrix` as NewWithSize(self, r:int, c:int,
                                         resize_type:MatrixResizeType = default,
                                         stride_type:MatrixStrideType = default)
-            """Create a new matrix with r rows and c columns. If the resize_type is kSetZero,
-               the new data will be zero. If the resize type is kUndefined,
-               the new data will be undefined. Finally if the resize type is kCopyData,
-               the new data will be the same as the old data in any shared positions,
-               and zero elsewhere. stride_type defines how data will be read from memory,
-               we advise to let it in its default value.
+              """Create a new matrix with r rows and c columns. If the resize_type is kSetZero,
+                 the new data will be zero. If the resize type is kUndefined,
+                 the new data will be undefined. Finally if the resize type is kCopyData,
+                 the new data will be the same as the old data in any shared positions,
+                 and zero elsewhere. stride_type defines how data will be read from memory,
+                 we advise to let it in its default value.
 
-            Args:
-                r(int): The number of rows
-                c(int): The number of columns
-                resize_type(MatrixResizeType): Determines the initial values of the vector.
-                stride_type(MatrixStrideType): Determines how data are read from memery.
-            """
+              Args:
+                  r(int): The number of rows
+                  c(int): The number of columns
+                  resize_type(MatrixResizeType): Determines the initial values of the vector.
+                  stride_type(MatrixStrideType): Determines how data are read from memery.
+              """
 
             # TODO:
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
             #                 MatrixTransposeType trans = kNoTrans);
 
             def Swap(self, other:Matrix)
-            """Swaps the contents of self and other. Shallow swap."""
+              """Swaps the contents of self and other. Shallow swap."""
 
             # TODO:
             # void Swap(CuMatrix<Real> *mat);
@@ -2078,13 +2075,13 @@ from "matrix/kaldi-matrix.h":
             @add__init__
             def `Matrix` as NewWithMatrix(self, M:MatrixBase,
                                           trans:MatrixTransposeType = default)
-            """Create matrix and copy the elements M.
+              """Create matrix and copy the elements M.
 
-            Args:
-                M(MatrixBase): A matrix
-                trans(MatrixTransposeType): if kNoTrans(default) treat A as is,
-                                            if kTrans transpose A before operation
-            """
+              Args:
+                  M(MatrixBase): A matrix
+                  trans(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                             if kTrans transpose A before operation
+              """ 
 
             # TODO:
             # @add__init__
@@ -2096,43 +2093,43 @@ from "matrix/kaldi-matrix.h":
             #                              trans:MatrixTransposeType = default)
 
             def Read(self, is: istream, binary: bool, add: bool = default)
-            """Reads from C++ stream.
+              """Reads from C++ stream.
 
-            Args:
-                is(istream): The input straem.
-                binary(bool): If the stream is binary.
-                add(bool): True if you want to add the stream to self.
-            """
+              Args:
+                  is(istream): The input straem.
+                  binary(bool): If the stream is binary.
+                  add(bool): True if you want to add the stream to self.
+              """
 
             def RemoveRow(self, i:int)
-            """Removes a row from matrix.
+              """Removes a row from matrix.
 
-            Args:
-                i(int): Indexes which row will be removed. Indexing starts at 0
+              Args:
+                  i(int): Indexes which row will be removed. Indexing starts at 0
 
-            Raises:
-                Error if i> num_rows
-            """
+              Raises:
+                  Error if i> num_rows
+              """
 
             def Transpose(self)
-            """Transposes the matrix"""
+              """Transposes the matrix"""
 
             def Resize(self, r:int, c:int,
                        resize_type:MatrixResizeType = default,
                        stride_type:MatrixStrideType = default)
-            """Resizes a matrix. If the resize_type is kSetZero,
-               the new data will be zero. If the resize type is kUndefined,
-               the new data will be undefined. Finally if the resize type is kCopyData,
-               the new data will be the same as the old data in any shared positions,
-               and zero elsewhere. stride_type defines how data will be read from memory,
-               we advise to let it in its default value.
+              """Resizes a matrix. If the resize_type is kSetZero,
+                 the new data will be zero. If the resize type is kUndefined,
+                 the new data will be undefined. Finally if the resize type is kCopyData,
+                 the new data will be the same as the old data in any shared positions,
+                 and zero elsewhere. stride_type defines how data will be read from memory,
+                 we advise to let it in its default value.
 
-            Args:
-                r(int): The new number of rows
-                c(int): The new number of columns
-                resize_type(MatrixResizeType): Determines the initial values of the vector.
-                stride_type(MatrixStrideType): Determines how data are read from memery.
-            """
+              Args:
+                  r(int): The new number of rows
+                  c(int): The new number of columns
+                  resize_type(MatrixResizeType): Determines the initial values of the vector.
+                  stride_type(MatrixStrideType): Determines how data are read from memery.
+              """
 
             # NOTE:
             # We cannot wrap Row here since SubVector is wrapped elsewhere.
@@ -2150,118 +2147,118 @@ from "matrix/kaldi-matrix.h":
             # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
         def `TraceMat` as TraceDoubleMat(A: DoubleMatrixBase) -> float
-        """Returns the trace of a matrix.
+          """Returns the trace of a matrix.
 
-        Args:
-            A(MatrixBase): A matrix
+          Args:
+              A(MatrixBase): A matrix
 
-        Returns:
-            The trace of A
-        """
+          Returns:
+              The trace of A
+          """
 
         def `TraceMatMat` as TraceDoubleMatMat(
             A: DoubleMatrixBase, B: DoubleMatrixBase,
             trans:MatrixTransposeType = default) -> float
-        """Calculates the trace of A*B
+          """Calculates the trace of A*B
 
-        Args:
-            A(MatrixBase): A matrix
-            B(MatrixBase): A matrix
-            trans(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                        if kTrans transpose B before operation
+          Args:
+              A(MatrixBase): A matrix
+              B(MatrixBase): A matrix
+              trans(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                          if kTrans transpose B before operation
 
-        Returns:
-            The trace of A*B or A*B^T depending on the value of trans
+          Returns:
+              The trace of A*B or A*B^T depending on the value of trans
 
-        Raises:
-            Error in case of dimension mismatch
-        """
+          Raises:
+              Error in case of dimension mismatch
+          """
 
         def `TraceMatMatMat` as TraceDoubleMatMatMat(
             A: DoubleMatrixBase, transA: MatrixTransposeType,
             B: DoubleMatrixBase, transB: MatrixTransposeType,
             C: DoubleMatrixBase, transC: MatrixTransposeType) -> float
-        """Calculates the trace of A*B*C
+          """Calculates the trace of A*B*C
 
-        Args:
-            A(MatrixBase): A matrix
-            transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose A before operation
-            B(MatrixBase): A matrix
-            transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose B before operation
-            C(MatrixBase): A matrix
-            transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
-                                         if kTrans transpose C before operation
+          Args:
+              A(MatrixBase): A matrix
+              transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose A before operation
+              B(MatrixBase): A matrix
+              transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose B before operation
+              C(MatrixBase): A matrix
+              transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                           if kTrans transpose C before operation
 
-        Returns:
-            The trace of A*B*C
+          Returns:
+              The trace of A*B*C
 
-        Raises:
-            Error in case of dimension mismatch
-        """
+          Raises:
+              Error in case of dimension mismatch
+          """
 
         def `TraceMatMatMatMat` as TraceDoubleMatMatMatMat(
             A: DoubleMatrixBase, transA: MatrixTransposeType,
             B: DoubleMatrixBase, transB: MatrixTransposeType,
             C: DoubleMatrixBase, transC: MatrixTransposeType,
             D: DoubleMatrixBase, transD: MatrixTransposeType) -> float
-        """Calculates the trace of A*B*C*D
+          """Calculates the trace of A*B*C*D
 
-        Args:
-            A(MatrixBase): A matrix
-            transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose A before operation
-            B(MatrixBase): A matrix
-            transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
-                                         if kTrans transpose B before operation
-            C(MatrixBase): A matrix
-            transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
-                                         if kTrans transpose C before operation
-            D(MatrixBase): A matrix
-            transD(MatrixTransposeType): if kNoTrans(default) treat D as is,
-                                         if kTrans transpose D before operation
+          Args:
+              A(MatrixBase): A matrix
+              transA(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose A before operation
+              B(MatrixBase): A matrix
+              transB(MatrixTransposeType): if kNoTrans(default) treat B as is,
+                                           if kTrans transpose B before operation
+              C(MatrixBase): A matrix
+              transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                           if kTrans transpose C before operation
+              D(MatrixBase): A matrix
+              transD(MatrixTransposeType): if kNoTrans(default) treat D as is,
+                                           if kTrans transpose D before operation
 
-        Returns:
-            The trace of A*B*C
+          Returns:
+              The trace of A*B*C
 
-        Raises:
-            Error in case of dimension mismatch
-        """
+          Raises:
+              Error in case of dimension mismatch
+          """
 
         def `ApproxEqual` as ApproxEqualDoubleMatrix(
             A:DoubleMatrixBase, B:DoubleMatrixBase,
             tol:`double` as float = default) -> bool
-        """Computes the Frobenius norm of the difference of matrix A and B
-           and returns True if it is less or equal than tol.
+          """Computes the Frobenius norm of the difference of matrix A and B
+             and returns True if it is less or equal than tol.
 
-        Args:
-            A(MatrixBase): A matrix
-            B(MatrixBase): A matrix
-            tol(float): The tolerance.
+          Args:
+              A(MatrixBase): A matrix
+              B(MatrixBase): A matrix
+              tol(float): The tolerance.
 
-        Returns:
-            True ||A-B||_F <= tol
+          Returns:
+              True ||A-B||_F <= tol
 
-        Raises:
-            Error if size of a is different than size of b.
-        """
+          Raises:
+              Error if size of a is different than size of b.
+          """
 
         def `AssertEqual` as AssertEqualDoubleMatrix(
             A:DoubleMatrixBase, B:DoubleMatrixBase,
             tol:`double` as float = default)
-        """Computes the Frobenius norm of the difference of matrix A and B
-           and checks if it is less or equal than tol. If the condition is
-           not satisfied it will raise an error.
+          """Computes the Frobenius norm of the difference of matrix A and B
+             and checks if it is less or equal than tol. If the condition is
+             not satisfied it will raise an error.
 
-        Args:
-            A(MatrixBase): A matrix
-            B(MatrixBase): A matrix
-            tol(float): The tolerance.
+          Args:
+              A(MatrixBase): A matrix
+              B(MatrixBase): A matrix
+              tol(float): The tolerance.
 
-        Raises:
-            Error if ||A-B||_F > tol
-        """
+          Raises:
+              Error if ||A-B||_F > tol
+          """
 
 #        FIXME(pavlos):
 #        This needs a C++ wrapper
@@ -2276,16 +2273,16 @@ from "matrix/kaldi-matrix.h":
 
         def `SameDim` as SameDimDoubleMatrix(M: DoubleMatrixBase,
                                              N: DoubleMatrixBase) -> bool
-        """Checks if M and N have the same dimensions.
-
-        Args:
-            M(MatrixBase): A matrix
-            N(MatrixBase): A matrix
-
-        Returns:
-            True if M.num_rows==N.num_rows && M.num_cols==N.num_cols
-        """
-
+          """Checks if M and N have the same dimensions.
+  
+          Args:
+              M(MatrixBase): A matrix
+              N(MatrixBase): A matrix
+  
+          Returns:
+              True if M.num_rows==N.num_rows && M.num_cols==N.num_cols
+          """
+  
         class HtkHeader:
             mNSamples: int
             mSamplePeriod: int

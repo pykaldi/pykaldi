@@ -28,12 +28,23 @@ from "matrix/sp-matrix.h":
       def CopyFromMat(self, orig:MatrixBase, copy_type:SpCopyType = default)
 
       def `operator()` as Get(self, r: int, c: int) -> float
+        """Indexing operator.
+
+        Args:
+            r(int): The row. Indexing starts from 0
+            c(int): The column. Indexing starts from 0
+
+        Returns:
+            The value of the indexed element
+        """
 
       def Invert(self)
+        """Invert the matrix."""
 
       def InvertDouble(self)
 
       def Cond(self) -> float
+        """Returns the condition number of the SVD computation."""
 
       def ApplyPow(self, exponent: float)
 
