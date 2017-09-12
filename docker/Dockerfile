@@ -109,6 +109,8 @@ ENV PYKALDI ""
 
 # # Add run permission to startup script
 RUN chmod +x pykaldi/docker/start_jupyter_notebook.sh 
+RUN chmod +x pykaldi/docker/update_kaldi.sh 
+RUN chmod +x pykaldi/docker/update_pykaldi.sh 
 
 # # Define the starting command for this container and expose its running port
 CMD sh -c '/root/pykaldi/docker/start_jupyter_notebook.sh 9000'
