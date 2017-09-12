@@ -1,7 +1,9 @@
+name: "CLIF"
+scopeName: "source.clif"
 fileTypes: [
   "clif"
 ]
-name: "Clif"
+uuid: "67b6678b-acbd-4efc-9cd0-99484cd09ab5"
 patterns: [
   {
     include: "#comments"
@@ -19,18 +21,18 @@ patterns: [
     include: "#string_quoted_double"
   }
   {
+    comment: "CLIF namespace"
+    name: "meta.namespace.clif"
     begin: "\\b(namespace)\\s+"
     beginCaptures:
       "1":
         name: "storage.type.namespace.clif"
-    comment: "Clif namespace"
     end: "(\\:)|\\s*($\\n?|#.*$\\n?)"
     endCaptures:
       "1":
         name: "punctuation.section.namespace.begin.clif"
       "2":
         name: "invalid.illegal.incorrect-namespace-name.clif"
-    name: "meta.namespace.clif"
     patterns: [
       {
         include: "#namespace"
@@ -38,16 +40,16 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF static methods"
+    name: "meta.staticmethods.clif"
     begin: "\\b(staticmethods\\s+from)\\s+"
     beginCaptures:
       "1":
         name: "storage.type.staticmethods.clif"
-    comment: "Clif static methods"
     end: "(\\:)|\\s*($\\n?|#.*$\\n?)"
     endCaptures:
       "1":
         name: "punctuation.section.namespace.begin.clif"
-    name: "meta.staticmethods.clif"
     patterns: [
       {
         include: "#namespace"
@@ -55,6 +57,8 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF capsule"
+    match: "^\\s*(capsule)\\s+(\\`[A-Za-z_][A-Za-z0-9_]*\\`\\s*(as))?\\s*([A-Za-z_][A-Za-z0-9_]*)"
     captures:
       "1":
         name: "keyword.other.clif"
@@ -64,16 +68,14 @@ patterns: [
         name: "keyword.other.clif"
       "4":
         name: "variable.clif"
-    comment: "Clif capsule"
-    match: "^\\s*(capsule)\\s+(\\`[A-Za-z_][A-Za-z0-9_]*\\`\\s*(as))?\\s*([A-Za-z_][A-Za-z0-9_]*)"
   }
   {
+    comment: "CLIF use"
+    contentName: "entity.name.type.clif"
     begin: "^\\s*(use)"
     beginCaptures:
       "1":
         name: "keyword.other.clif"
-    comment: "Clif use"
-    contentName: "entity.name.type.clif"
     end: "$\\n?"
     patterns: [
       {
@@ -89,6 +91,8 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF variable"
+    name: "meta.other.clif"
     begin: "^\\s*(\\`[A-Za-z_][A-Za-z0-9_]*\\`\\s*(as))?\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\:)"
     beginCaptures:
       "1":
@@ -97,13 +101,11 @@ patterns: [
         name: "keyword.other.clif"
       "3":
         name: "variable.clif"
-    comment: "Clif variable"
     end: "$\\n?"
-    name: "meta.other.clif"
     patterns: [
       {
-        begin: "(\\:)"
         contentName: "entity.name.type.clif"
+        begin: "(\\:)"
         end: "(?=\\=|$\\n?)"
         patterns: [
           {
@@ -120,6 +122,7 @@ patterns: [
         ]
       }
       {
+        name: "meta.other.clif"
         begin: "(\\=\\s*(property))"
         beginCaptures:
           "1":
@@ -130,7 +133,6 @@ patterns: [
             name: "punctuation.definition.parameters.end.clif"
           "2":
             name: "invalid.illegal.clif"
-        name: "meta.other.clif"
         patterns: [
           {
             include: "#cclass"
@@ -140,13 +142,13 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF constant"
+    name: "meta.other.clif"
     begin: "^\\s*(const)"
     beginCaptures:
       "1":
         name: "storage.modifier.clif"
-    comment: "Clif constant"
     end: "($\\n?)"
-    name: "meta.other.clif"
     patterns: [
       {
         match: "\\`[A-Za-z_][A-Za-z0-9_]*\\`"
@@ -181,16 +183,16 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF enum"
+    name: "meta.other.clif"
     begin: "\\b(enum)\\b"
     beginCaptures:
       "1":
         name: "keyword.other.clif"
-    comment: "Clif enum"
     end: "((with)\\s*:) | ($\\n?)"
     endCaptures:
       "2":
         name: "keyword.other.clif"
-    name: "meta.other.clif"
     patterns: [
       {
         include: "#cclass"
@@ -206,6 +208,9 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF enum values"
+    name: "meta.other.clif"
+    match: "^\\s*(\\`[A-Za-z_][A-Za-z0-9_]*\\`)\\s*(as)\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*$"
     captures:
       "1":
         name: "constant.numeric.clif"
@@ -213,23 +218,20 @@ patterns: [
         name: "keyword.other.clif"
       "3":
         name: "constant.numeric.clif"
-    comment: "Clif enum values"
-    match: "^\\s*(\\`[A-Za-z_][A-Za-z0-9_]*\\`)\\s*(as)\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*$"
-    name: "meta.other.clif"
   }
   {
+    comment: "CLIF class"
+    name: "meta.class.clif"
     begin: "^\\s*(class)\\s+"
     beginCaptures:
       "1":
         name: "storage.type.class.clif"
-    comment: "Clif class"
     end: "(\\:)|\\s*($\\n?|#.*$\\n?)"
     endCaptures:
       "1":
         name: "punctuation.section.class.begin.clif"
       "2":
         name: "invalid.illegal.missing-section-begin.clif"
-    name: "meta.class.clif"
     patterns: [
       {
         include: "#cclass"
@@ -249,16 +251,16 @@ patterns: [
         ]
       }
       {
+        name: "meta.class.inheritance.clif"
         begin: "(\\()"
         beginCaptures:
           "1":
             name: "punctuation.definition.inheritance.begin.clif"
         end: "(?=\\)|:)"
-        name: "meta.class.inheritance.clif"
         patterns: [
           {
-            begin: "(?<=\\(|,)\\s*"
             contentName: "entity.other.inherited-class.clif"
+            begin: "(?<=\\(|,)\\s*"
             end: "\\s*(?:(,)|(?=\\)))"
             endCaptures:
               "1":
@@ -274,13 +276,13 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF function"
+    name: "meta.function.clif"
     begin: "\\b(def)\\s+"
     beginCaptures:
       "1":
         name: "storage.type.function.clif"
-    comment: "Clif functions"
     end: "($\\n?)"
-    name: "meta.function.clif"
     patterns: [
       {
         include: "#cfunction"
@@ -303,13 +305,13 @@ patterns: [
         include: "#tuples"
       }
       {
-        begin: "(-\\>)"
-        beginCaptures:
-          "1":
-            name: "support.class.clif"
-        end: "(?=$\\n?)"
         name: "meta.function.returnvalue.clif"
+        begin: "(-\\>)"
+        end: "(?=$\\n?)"
         patterns: [
+          {
+            include: "#types"
+          }
           {
             include: "#cclass"
           }
@@ -318,7 +320,14 @@ patterns: [
             name: "keyword.other.clif"
           }
           {
-            include: "#types"
+            begin: "(?=[A-Za-z_][A-Za-z0-9_]*)"
+            contentName: "entity.name.type.class.clif"
+            end: "(?![A-Za-z0-9_])"
+            patterns: [
+              {
+                include: "#entity_name_class"
+              }
+            ]
           }
           {
             include: "#tuples"
@@ -328,13 +337,13 @@ patterns: [
     ]
   }
   {
+    comment: "CLIF decorator"
+    name: "meta.function.decorator.clif"
     begin: "(\\@[A-Za-z_][A-Za-z0-9_]*)"
     beginCaptures:
       "1":
         name: "entity.name.function.decorator.clif"
-    comment: "Clif decorator"
     end: "($\\n?)"
-    name: "meta.function.decorator.clif"
   }
 ]
 repository:
@@ -342,14 +351,14 @@ repository:
     patterns: [
       {
         match: "(\\`\\s*[A-Za-z_][A-Za-z0-9_]*\\s*(<\\s*([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)\\s*(,\\s*[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\\s*)*>\\s*)?\\`)"
-        name: "string.quoted.single.clif"
+        name: "entity.name.type.class.c.clif"
       }
     ]
   cfunction:
     patterns: [
       {
         match: "\\`\\s*(([A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*)|(operator([-*&<>=+!]|\\(\\)|\\[\\])))\\s*\\`"
-        name: "string.quoted.single.clif"
+        name: "entity.name.function.c.clif"
       }
     ]
   comments:
@@ -427,7 +436,7 @@ repository:
     patterns: [
       {
         match: "(\\`[A-Za-z_][A-Za-z0-9_]*(::[A-Za-z_][A-Za-z0-9_]*)*\\`)"
-        name: "string.quoted.single.clif"
+        name: "entity.name.type.namespace.clif"
       }
     ]
   string_quoted_double:
@@ -454,13 +463,13 @@ repository:
     beginCaptures:
       "1":
         name: "punctuation.definition.parameters.begin.clif"
-    comment: "Clif tuples / parameter list"
+    comment: "CLIF tuples / parameter list"
     end: "(\\))"
     name: "meta.function.parameters.clif"
     patterns: [
       {
         match: "(self)"
-        name: "variable.parameter.parameter.function.language.clif"
+        name: "variable.language.self.clif"
       }
       {
         match: "(,)"
@@ -477,6 +486,9 @@ repository:
         end: "\\s*(?=(,)|\\))"
         patterns: [
           {
+            include: "#types"
+          }
+          {
             include: "#cclass"
           }
           {
@@ -484,7 +496,14 @@ repository:
             name: "keyword.other.clif"
           }
           {
-            include: "#types"
+            begin: "(?=[A-Za-z_][A-Za-z0-9_]*)"
+            contentName: "entity.name.type.class.clif"
+            end: "(?![A-Za-z0-9_])"
+            patterns: [
+              {
+                include: "#entity_name_class"
+              }
+            ]
           }
           {
             begin: "\\s*(\\=)\\s*"
@@ -495,7 +514,7 @@ repository:
             patterns: [
               {
                 match: "(default)"
-                name: "variable.parameter.parameter.function.language.clif"
+                name: "variable.language.default.clif"
               }
               {
                 match: "([A-Za-z_][A-Za-z0-9_]*)"
@@ -510,7 +529,6 @@ repository:
     patterns: [
       {
         match: "(?x)\\b(int|bytes|str|bool|float|list|tuple|set|dict|object)\\b"
-        name: "support.type.clif"
+        name: "support.function.clif"
       }
     ]
-scopeName: "source.clif"
