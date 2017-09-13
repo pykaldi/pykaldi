@@ -18,45 +18,102 @@ from "matrix/packed-matrix.h":
       def `PackedMatrix` as NewWithOther(self, orig: PackedMatrix)
 
       def SetZero(self)
+        """Set all elements to zero."""
 
       def SetUnit(self)
+        """Sets all elements to zero, and fill the diagonal with ones."""
 
       def SetRandn(self)
+        """Sets the elements to random values of a normal distribution."""
 
       def Trace(self) -> float
+        """Return the trace of the matrix"""
 
       def Resize(self, num_rows:int, resize_type: MatrixResizeType = default)
 
       def AddToDiag(self, r: float)
+        """Add a constant r to the diagonal of the matrix.
+
+        Args:
+            r(float): A constant
+        """
 
       def ScaleDiag(self, alpha: float)
+        """Scale the diagonal of the matrix by alpha.
+
+        Args:
+            alpha(float): A scaling constant
+        """
 
       def SetDiag(self, alpha: float)
 
       def CopyFromPacked(self, orig: PackedMatrix)
+        """Copy data from a packed matrix.
+
+           Args:
+               orig(PackedMatrix): The packed matrix whose data we will copy
+        
+           Raises:
+               Error in case of dimension mismatch
+        """
 
       def CopyFromVec(self, orig: SubVector)
 
       def `NumRows` as __len__(self) -> int
+        """Return the number of rows."""
 
       def NumRows(self) -> int
+        """Return the number of rows."""
 
       def NumCols(self) -> int
+        """Return the number of columns."""
 
       def SizeInBytes(self) -> int
+        """Return the size of the matrix in memory, in bytes."""
 
       def `operator()` as Get(self, r: int, c: int) -> float
+        """Indexing operator.
+
+        Args:
+            r(int): The index for row. Indexing starts from 0
+            c(int): The index for column. Indexing starts from 0
+ 
+        Returns:
+            The indexed element
+
+        Raises:
+            Error if r>num_rows || c>num_cols
+        """
 
       def Max(self) -> float
+        """Return the maximum elememnt of the matrix""".
 
       def Min(self) -> float
+        """Return the minimum  elememnt of the matrix""".
 
       def Scale(self, c:float)
 
       def Read(self, is: istream, binary: bool, add: bool = default)
+        """Reads from C++ stream.
+
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+            add(bool): True if you want to add the stream to self.
+        """
 
       def Write(self, os: ostream, binary: bool)
+        """Writis to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
 
       def `Swap` as SwapWithPacked(self, other: PackedMatrix)
+        """Swaps the contents of self and other, where other is a
+           a Packed Matrix. Shallow swap."""
 
       def `Swap` as SwapWithMatrix(self, other: Matrix)
+        """Swaps the contents of self and other, where other is a
+           a Matrix. Shallow swap."""

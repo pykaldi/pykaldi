@@ -29,13 +29,21 @@ from "matrix/compressed-matrix.h":
 
       def CopyFromMat(self, mat: MatrixBase,
                       method: CompressionMethod = default)
+        """Copy data from another matrix to self.
 
+        Args:
+            mat(MatrixBase): The matrix from which we will copy the data
+            method(CompresssionMethod): Which compression method to use
+        """ 
+      
       def CopyToMat(self, mat: MatrixBase,
                     method: MatrixTransposeType = default)
 
       def NumRows(self) -> int
+        """Returns the number of rows."""
 
       def NumCols(self) -> int
+        """Returns the number of columns."""
 
       def CopyRowToVec(self, row: int, v: VectorBase)
 
@@ -45,6 +53,14 @@ from "matrix/compressed-matrix.h":
                                          col_offset: int, dest: MatrixBase)
 
       def Swap(self, other: CompressedMatrix)
+        """Swap elements with another compressed matrix. Shallow swap.
+
+        Args:
+            other(CompressedMatrix): A compressed matrix
+
+        Raises:
+            Error in case od dimension mismatch.
+        """
 
       def Clear(self)
 

@@ -1494,7 +1494,6 @@ from "matrix/kaldi-matrix.h":
                    For example, if self=(-3,2) then for power=2 and include_sign=true
                    we would have self=(-9,4). If power is negative and the
                    input value is zero, the output is set zero.
-
               Args:
                   power(float): The power which we apply to all alements of self
                   include_sign(bool): True if we include the sign of the input element.
@@ -1778,13 +1777,13 @@ from "matrix/kaldi-matrix.h":
                   b(VectorBase): A vector
               """
 
-            def AddVecToRows(self, alpha: float, v: DoubleVectorBase):
+            def AddVecToRows(self, alpha: float, v: VectorBase)
               """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
-
+  
               Args:
                   alpha(float): A scaling constant
                   v(VectorBase): A vector
-
+  
               Raises:
                   Error in case of dimension mismatch
               """
@@ -1809,7 +1808,6 @@ from "matrix/kaldi-matrix.h":
                   M(MatrixBase): A matrix
                   transA(MatrixTransposeType): if kNoTrans(default) treat M as is,
                                                if kTrans transpose M before operation
-
               Raises:
                   Error in case of dimension mismatch
               """
@@ -1866,7 +1864,6 @@ from "matrix/kaldi-matrix.h":
               Raises:
                   Error in case of dimension mismatch
               """
-
 
             def AddMatMatElements(self, alpha: float, A: DoubleMatrixBase,
                                   B: DoubleMatrixBase, beta: float):
@@ -1960,7 +1957,6 @@ from "matrix/kaldi-matrix.h":
               Raises:
                   Error in case of dimension mismatch
               """
-
 
             def AddMatMatMat(self, alpha: float, A: DoubleMatrixBase,
                              transA: MatrixTransposeType, B: DoubleMatrixBase,
