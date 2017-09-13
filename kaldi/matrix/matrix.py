@@ -4,14 +4,15 @@ import numpy
 # Relative or fully qualified absolute import of _matrix_common does not work
 # in Python 3. For some reason, symbols in _matrix_common are assigned to the
 # module importlib._bootstrap ????
-from _matrix_common import *
+from _matrix_common import (MatrixResizeType, MatrixTransposeType,
+                            MatrixStrideType)
 from . import _kaldi_matrix
 from ._kaldi_matrix import *
 from . import _kaldi_matrix_ext
 from . import _matrix_ext
 from ._matrix_ext import matrix_to_numpy
 from . import _str
-from . import vector
+from . import vector as _vector
 
 ################################################################################
 # Define Matrix Classes
@@ -230,7 +231,7 @@ class MatrixBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(value, (MatrixBase, vector.VectorBase)):
+        if isinstance(value, (MatrixBase, _vector.VectorBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)
@@ -666,7 +667,8 @@ def construct_matrix(matrix):
 
 ################################################################################
 
-_exclude_list = ['sys', 'numpy']
+_exclude_list = ['sys', 'numpy', 'MatrixResizeType', 'MatrixTransposeType',
+                 'MatrixStrideType']
 
 __all__ = [name for name in dir()
            if name[0] != '_'

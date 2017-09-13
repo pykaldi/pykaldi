@@ -4,7 +4,7 @@ import numpy
 # Relative or fully qualified absolute import of _matrix_common does not work
 # in Python 3. For some reason, symbols in _matrix_common are assigned to the
 # module importlib._bootstrap ????
-from _matrix_common import *
+from _matrix_common import MatrixResizeType, MatrixTransposeType
 from . import _kaldi_vector
 from ._kaldi_vector import *
 from . import _kaldi_vector_ext
@@ -12,7 +12,7 @@ from ._kaldi_vector_ext import VecMatVec
 from . import _matrix_ext
 from ._matrix_ext import vector_to_numpy
 from . import _str
-from .matrix import MatrixBase
+from . import matrix as _matrix
 
 ################################################################################
 # Define Vector Classes
@@ -524,7 +524,7 @@ class VectorBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(value, (VectorBase, MatrixBase)):
+        if isinstance(value, (VectorBase, _matrix.MatrixBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)
@@ -692,7 +692,7 @@ def construct_vector(vector):
 
 ################################################################################
 
-_exclude_list = ['sys', 'numpy']
+_exclude_list = ['sys', 'numpy', 'MatrixResizeType', 'MatrixTransposeType']
 
 __all__ = [name for name in dir()
            if name[0] != '_'

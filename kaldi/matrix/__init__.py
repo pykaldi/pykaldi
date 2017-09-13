@@ -1,14 +1,10 @@
-from . import common
-from .common import *
-
-from . import vector
-from .vector import Vector, SubVector, construct_vector
-
+from . import compressed
 from . import matrix
-from .matrix import Matrix, SubMatrix, construct_matrix
-
 from . import packed
 from . import sparse
-from . import compressed
-from . import functions
-from . import optimization
+from . import vector
+
+from ._matrix_common import *
+from ._str import set_printoptions
+from .matrix import Matrix, SubMatrix, construct_matrix
+from .vector import Vector, SubVector, construct_vector
