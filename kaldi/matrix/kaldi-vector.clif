@@ -206,7 +206,7 @@ from "matrix/kaldi-vector.h":
         Args:
             power(float): The power which we apply to all alements of self
             include_sign(bool): True if we include the sign of the input element
-
+  
         Raises:
             Error if we have overflows or underflows.
         """
@@ -617,7 +617,6 @@ from "matrix/kaldi-vector.h":
       Raises:
           Error if size of v1 is different than size of v2.
       """
-
     # NOTE:
     # We cannot wrap this here since MatrixBase is not defined yet.
     # def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float
@@ -956,7 +955,7 @@ from "matrix/kaldi-vector.h":
             v(VectorBase): a vector
             r(VectorBase): a vector
             beta(float): a scaling constant
-
+  
         Raises:
             Error if dimensions do not match
         """
@@ -971,7 +970,7 @@ from "matrix/kaldi-vector.h":
             v(VectorBase): a vector
             r(VectorBase): a vector
             beta(float): a scaling constant
-
+  
         Raises:
             Error if dimensions do not match
         """
@@ -1084,7 +1083,6 @@ from "matrix/kaldi-vector.h":
             add(bool): True if you want to add the stream to self.
         """
 
-
       def Write(self, os: ostream, binary: bool):
         """Writes to C++ stream.
 
@@ -1138,7 +1136,6 @@ from "matrix/kaldi-vector.h":
             binary(bool): If the stream is binary.
             add(bool): True if you want to add the stream to self.
         """
-
       # NOTE:
       # We cannot wrap Range here since SubVector is wrapped elsewhere. We
       # implement the Range method in Python by constructing a SubVector.
@@ -1179,7 +1176,7 @@ from "matrix/kaldi-vector.h":
           tol(float): The tolerance.
 
       Returns:
-          True ||a-b||_p <= tol
+          True if ||a-b||_p <= tol
 
       Raises:
           Error if size of a is different than size of b.
