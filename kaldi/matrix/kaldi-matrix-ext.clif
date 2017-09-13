@@ -8,7 +8,7 @@ from "matrix/compressed-matrix-clifwrap.h" import *
 
 from "matrix/kaldi-matrix-ext.h":
   namespace `kaldi`:
-    def CopyFromMat(self: MatrixBase, M: CompressedMatrix)
+    def CopyFromMat(self: MatrixBase, M: CompressedMatrix):
       """Copy data to self from a compressed matrix.
     
       Args:
@@ -18,7 +18,7 @@ from "matrix/kaldi-matrix-ext.h":
           Error in case of dimension mismatch
       """
 
-    def CopyFromSp(self: MatrixBase, M: SpMatrix)
+    def CopyFromSp(self: MatrixBase, M: SpMatrix):
       """Copy data to self from a symmetric positive definite matrix.
     
       Args:
@@ -28,7 +28,7 @@ from "matrix/kaldi-matrix-ext.h":
           Error in case of dimension mismatch
       """
 
-    def CopyFromTp(self: MatrixBase, M: TpMatrix)
+    def CopyFromTp(self: MatrixBase, M: TpMatrix):
       """Copy data to self from a symmetric positive definite matrix.
     
       Args:

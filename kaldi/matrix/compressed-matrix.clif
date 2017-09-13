@@ -28,7 +28,7 @@ from "matrix/compressed-matrix.h":
       def `CompressedMatrix` as NewWithOther(self, mat: CompressedMatrix)
 
       def CopyFromMat(self, mat: MatrixBase,
-                      method: CompressionMethod = default)
+                      method: CompressionMethod = default):
         """Copy data from another matrix to self.
 
         Args:
@@ -39,10 +39,10 @@ from "matrix/compressed-matrix.h":
       def CopyToMat(self, mat: MatrixBase,
                     method: MatrixTransposeType = default)
 
-      def NumRows(self) -> int
+      def NumRows(self) -> int:
         """Returns the number of rows."""
 
-      def NumCols(self) -> int
+      def NumCols(self) -> int:
         """Returns the number of columns."""
 
       def CopyRowToVec(self, row: int, v: VectorBase)
@@ -52,7 +52,7 @@ from "matrix/compressed-matrix.h":
       def `CopyToMat` as CopyToMatOffset(self, row_offset: int,
                                          col_offset: int, dest: MatrixBase)
 
-      def Swap(self, other: CompressedMatrix)
+      def Swap(self, other: CompressedMatrix):
         """Swap elements with another compressed matrix. Shallow swap.
 
         Args:

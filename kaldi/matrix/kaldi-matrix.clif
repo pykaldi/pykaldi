@@ -1777,7 +1777,7 @@ from "matrix/kaldi-matrix.h":
                   b(VectorBase): A vector
               """
 
-            def AddVecToRows(self, alpha: float, v: VectorBase)
+            def AddVecToRows(self, alpha: float, v: VectorBase):
               """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
   
               Args:

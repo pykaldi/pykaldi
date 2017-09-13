@@ -8,10 +8,10 @@ from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "matrix/sparse-matrix.h":
   namespace `kaldi`:
     class `SparseVector<float>` as SparseVector:
-      def Dim(self) -> int
+      def Dim(self) -> int:
         """Returns the size of the sparse vector."""
 
-      def Sum(self) -> float
+      def Sum(self) -> float:
         """Returns the summation of the elements."""
 
       def CopyElementsToVec(self, vec: VectorBase)

@@ -19,7 +19,7 @@ from "matrix/tp-matrix.h":
       # TODO:
       # def `TpMatrix` as WithCU(cu:CuTpMatrix)
 
-      def `operator()` as Get(self, r: int, c: int) -> float
+      def `operator()` as Get(self, r: int, c: int) -> float:
         """Indexing operator.
    
          Args:
@@ -32,24 +32,24 @@ from "matrix/tp-matrix.h":
 
       def Cholesky(self, orig:SpMatrix)
 
-      def Invert(self)
+      def Invert(self):
         """Invert the matrix"""
 
       def InvertDouble(self)
 
-      def Swap(self, other: TpMatrix)
+      def Swap(self, other: TpMatrix):
         """Swap the contents of self with ``other''. Shllow swap.
 
         Args:
             other(TpMatrix): A triangular matrix.
       """
 
-      def Determinant(self) -> float
+      def Determinant(self) -> float:
         """Return the determinant of the matrix."""
 
       def CopyFromMat(self, M:MatrixBase, Trans:MatrixTransposeType = default)
 
-      def CopyFromTp(self, other:TpMatrix)
+      def CopyFromTp(self, other:TpMatrix):
         """Copy data from another triangular matrix of the same size
 
         Args:

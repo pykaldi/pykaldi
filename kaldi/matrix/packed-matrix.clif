@@ -17,28 +17,28 @@ from "matrix/packed-matrix.h":
       @add__init__
       def `PackedMatrix` as NewWithOther(self, orig: PackedMatrix)
 
-      def SetZero(self)
+      def SetZero(self):
         """Set all elements to zero."""
 
-      def SetUnit(self)
+      def SetUnit(self):
         """Sets all elements to zero, and fill the diagonal with ones."""
 
-      def SetRandn(self)
+      def SetRandn(self):
         """Sets the elements to random values of a normal distribution."""
 
-      def Trace(self) -> float
+      def Trace(self) -> float:
         """Return the trace of the matrix"""
 
       def Resize(self, num_rows:int, resize_type: MatrixResizeType = default)
 
-      def AddToDiag(self, r: float)
+      def AddToDiag(self, r: float):
         """Add a constant r to the diagonal of the matrix.
 
         Args:
             r(float): A constant
         """
 
-      def ScaleDiag(self, alpha: float)
+      def ScaleDiag(self, alpha: float):
         """Scale the diagonal of the matrix by alpha.
 
         Args:
@@ -47,7 +47,7 @@ from "matrix/packed-matrix.h":
 
       def SetDiag(self, alpha: float)
 
-      def CopyFromPacked(self, orig: PackedMatrix)
+      def CopyFromPacked(self, orig: PackedMatrix):
         """Copy data from a packed matrix.
 
            Args:
@@ -59,19 +59,19 @@ from "matrix/packed-matrix.h":
 
       def CopyFromVec(self, orig: SubVector)
 
-      def `NumRows` as __len__(self) -> int
+      def `NumRows` as __len__(self) -> int:
         """Return the number of rows."""
 
-      def NumRows(self) -> int
+      def NumRows(self) -> int:
         """Return the number of rows."""
 
-      def NumCols(self) -> int
+      def NumCols(self) -> int:
         """Return the number of columns."""
 
-      def SizeInBytes(self) -> int
+      def SizeInBytes(self) -> int:
         """Return the size of the matrix in memory, in bytes."""
 
-      def `operator()` as Get(self, r: int, c: int) -> float
+      def `operator()` as Get(self, r: int, c: int) -> float:
         """Indexing operator.
 
         Args:
@@ -82,18 +82,18 @@ from "matrix/packed-matrix.h":
             The indexed element
 
         Raises:
-            Error if r>num_rows || c>num_cols
+            Error if r > num_rows or c > num_cols
         """
 
-      def Max(self) -> float
-        """Return the maximum elememnt of the matrix""".
+      def Max(self) -> float:
+        """Return the maximum elememnt of the matrix"""
 
-      def Min(self) -> float
-        """Return the minimum  elememnt of the matrix""".
+      def Min(self) -> float:
+        """Return the minimum  elememnt of the matrix"""
 
       def Scale(self, c:float)
 
-      def Read(self, is: istream, binary: bool, add: bool = default)
+      def Read(self, is: istream, binary: bool, add: bool = default):
         """Reads from C++ stream.
 
         Args:
@@ -102,18 +102,18 @@ from "matrix/packed-matrix.h":
             add(bool): True if you want to add the stream to self.
         """
 
-      def Write(self, os: ostream, binary: bool)
-        """Writis to C++ stream.
+      def Write(self, os: ostream, binary: bool):
+        """Writes to C++ stream.
 
         Args:
             os(ostream): The output straem.
             binary(bool): If the stream is binary.
         """
 
-      def `Swap` as SwapWithPacked(self, other: PackedMatrix)
+      def `Swap` as SwapWithPacked(self, other: PackedMatrix):
         """Swaps the contents of self and other, where other is a
            a Packed Matrix. Shallow swap."""
 
-      def `Swap` as SwapWithMatrix(self, other: Matrix)
+      def `Swap` as SwapWithMatrix(self, other: Matrix):
         """Swaps the contents of self and other, where other is a
            a Matrix. Shallow swap."""
