@@ -1,4 +1,8 @@
-from .options import OptionsItf
-from .context_dep import ContextDependencyInterface
-from .decodable import DecodableInterface
-from .online_feature import OnlineFeatureInterface, OnlineBaseFeature
+from ._options_itf import *
+from ._context_dep_itf import *
+from ._decodable_itf import *
+from ._online_feature_itf import *
+
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')]

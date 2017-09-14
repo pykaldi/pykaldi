@@ -2,8 +2,6 @@ kaldi\.feat
 ===========
 
 .. automodule:: kaldi.feat
-   :no-members:
-   :no-inherited-members:
 
    
    
@@ -16,38 +14,322 @@ kaldi\.feat
    
    
    
-.. include:: kaldi.feat.common.rst
+kaldi\.feat\.fbank
+------------------
 
+.. automodule:: kaldi.feat.fbank
 
-.. include:: kaldi.feat.fbank.rst
+   
+   
+   
 
+   
+   
+   .. rubric:: Classes
 
-.. include:: kaldi.feat.functions.rst
+   .. autosummary::
+   
+      Fbank
+      FbankComputer
+      FbankOptions
+   
+   
 
+   
+   
+   
+kaldi\.feat\.functions
+----------------------
 
-.. include:: kaldi.feat.mel.rst
+.. automodule:: kaldi.feat.functions
 
+   
+   
+   .. rubric:: Functions
 
-.. include:: kaldi.feat.mfcc.rst
+   .. autosummary::
+   
+      ComputeDeltas
+      ComputePowerSpectrum
+      ComputeShiftedDeltas
+      InitIdftBases
+      ReverseFrames
+      SlidingWindowCmn
+      SpliceFrames
+   
+   
 
+   
+   
+   .. rubric:: Classes
 
-.. include:: kaldi.feat.online.rst
+   .. autosummary::
+   
+      DeltaFeatures
+      DeltaFeaturesOptions
+      ShiftedDeltaFeatures
+      ShiftedDeltaFeaturesOptions
+      SlidingWindowCmnOptions
+   
+   
 
+   
+   
+   
+kaldi\.feat\.mel
+----------------
 
-.. include:: kaldi.feat.pitch.rst
+.. automodule:: kaldi.feat.mel
 
+   
+   
+   .. rubric:: Functions
 
-.. include:: kaldi.feat.plp.rst
+   .. autosummary::
+   
+      ComputeLifterCoeffs
+      ComputeLpc
+      GetEqualLoudnessVector
+   
+   
 
+   
+   
+   .. rubric:: Classes
 
-.. include:: kaldi.feat.signal.rst
+   .. autosummary::
+   
+      MelBanks
+      MelBanksOptions
+   
+   
 
+   
+   
+   
+kaldi\.feat\.mfcc
+-----------------
 
-.. include:: kaldi.feat.spectrogram.rst
+.. automodule:: kaldi.feat.mfcc
 
+   
+   
+   
 
-.. include:: kaldi.feat.wave.rst
+   
+   
+   .. rubric:: Classes
 
+   .. autosummary::
+   
+      Mfcc
+      MfccComputer
+      MfccOptions
+   
+   
 
-.. include:: kaldi.feat.window.rst
+   
+   
+   
+kaldi\.feat\.online
+-------------------
 
+.. automodule:: kaldi.feat.online
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      OnlineAppendFeature
+      OnlineCacheFeature
+      OnlineCmvn
+      OnlineCmvnOptions
+      OnlineCmvnState
+      OnlineDeltaFeature
+      OnlineFbank
+      OnlineMatrixFeature
+      OnlineMfcc
+      OnlinePlp
+      OnlineSpliceFrames
+      OnlineSpliceOptions
+      OnlineTransform
+   
+   
+
+   
+   
+   
+kaldi\.feat\.pitch
+------------------
+
+.. automodule:: kaldi.feat.pitch
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ComputeAndProcessKaldiPitch
+      ComputeKaldiPitch
+      ProcessPitch
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      OnlinePitchFeature
+      OnlineProcessPitch
+      PitchExtractionOptions
+      ProcessPitchOptions
+   
+   
+
+   
+   
+   
+kaldi\.feat\.plp
+----------------
+
+.. automodule:: kaldi.feat.plp
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Plp
+      PlpComputer
+      PlpOptions
+   
+   
+
+   
+   
+   
+kaldi\.feat\.signal
+-------------------
+
+.. automodule:: kaldi.feat.signal
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ConvolveSignals
+      DownsampleWaveForm
+      FFTbasedBlockConvolveSignals
+      FFTbasedConvolveSignals
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ArbitraryResample
+      LinearResample
+   
+   
+
+   
+   
+   
+kaldi\.feat\.spectrogram
+------------------------
+
+.. automodule:: kaldi.feat.spectrogram
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Spectrogram
+      SpectrogramComputer
+      SpectrogramOptions
+   
+   
+
+   
+   
+   
+kaldi\.feat\.wave
+-----------------
+
+.. automodule:: kaldi.feat.wave
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      WaveData
+   
+   
+
+   
+   
+   
+kaldi\.feat\.window
+-------------------
+
+.. automodule:: kaldi.feat.window
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      Dither
+      ExtractWaveformRemainder
+      FirstSampleOfFrame
+      NumFrames
+      Preemphasize
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FeatureWindowFunction
+      FrameExtractionOptions
+   
+   
+
+   
+   
+   

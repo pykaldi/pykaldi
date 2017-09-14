@@ -1779,11 +1779,11 @@ from "matrix/kaldi-matrix.h":
 
             def AddVecToRows(self, alpha: float, v: VectorBase):
               """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
-  
+
               Args:
                   alpha(float): A scaling constant
                   v(VectorBase): A vector
-  
+
               Raises:
                   Error in case of dimension mismatch
               """

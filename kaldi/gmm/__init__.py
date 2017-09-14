@@ -6,3 +6,7 @@ from . import full
 from . import full_normal
 from . import mle_diag
 from . import mle_full
+
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')]

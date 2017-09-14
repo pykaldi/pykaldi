@@ -2,8 +2,6 @@ kaldi\.decoder
 ==============
 
 .. automodule:: kaldi.decoder
-   :no-members:
-   :no-inherited-members:
 
    
    
@@ -16,5 +14,26 @@ kaldi\.decoder
    
    
    
-.. include:: kaldi.decoder.faster.rst
+kaldi\.decoder\.faster
+----------------------
 
+.. automodule:: kaldi.decoder.faster
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FasterDecoder
+      FasterDecoderOptions
+   
+   
+
+   
+   
+   

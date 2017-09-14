@@ -2,8 +2,43 @@ kaldi\.matrix
 =============
 
 .. automodule:: kaldi.matrix
-   :no-members:
-   :no-inherited-members:
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      construct_matrix
+      construct_vector
+      set_printoptions
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Matrix
+      MatrixResizeType
+      MatrixStrideType
+      MatrixTransposeType
+      SpCopyType
+      SubMatrix
+      SubVector
+      Vector
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.compressed
+-------------------------
+
+.. automodule:: kaldi.matrix.compressed
 
    
    
@@ -11,31 +46,251 @@ kaldi\.matrix
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CompressedMatrix
+      CompressionMethod
+   
    
 
    
    
    
-.. include:: kaldi.matrix.common.rst
+kaldi\.matrix\.functions
+------------------------
 
+.. automodule:: kaldi.matrix.functions
 
-.. include:: kaldi.matrix.compressed.rst
+   
+   
+   .. rubric:: Functions
 
+   .. autosummary::
+   
+      AssertSameDimMatrix
+   
+   
 
-.. include:: kaldi.matrix.functions.rst
+   
+   
+   .. rubric:: Classes
 
+   .. autosummary::
+   
+      MatrixExponential
+   
+   
 
-.. include:: kaldi.matrix.matrix.rst
+   
+   
+   
+kaldi\.matrix\.matrix
+---------------------
 
+.. automodule:: kaldi.matrix.matrix
 
-.. include:: kaldi.matrix.optimization.rst
+   
+   
+   .. rubric:: Functions
 
+   .. autosummary::
+   
+      ApproxEqualDoubleMatrix
+      ApproxEqualMatrix
+      AssertEqualDoubleMatrix
+      AssertEqualMatrix
+      ReadHtk
+      SameDimDoubleMatrix
+      SameDimMatrix
+      TraceDoubleMat
+      TraceDoubleMatMat
+      TraceDoubleMatMatMat
+      TraceDoubleMatMatMatMat
+      TraceMat
+      TraceMatMat
+      TraceMatMatMat
+      TraceMatMatMatMat
+      WriteHtk
+      WriteSphinx
+      construct_matrix
+      matrix_to_numpy
+   
+   
 
-.. include:: kaldi.matrix.packed.rst
+   
+   
+   .. rubric:: Classes
 
+   .. autosummary::
+   
+      DoubleMatrix
+      DoubleMatrixBase
+      HtkHeader
+      Matrix
+      MatrixBase
+      MatrixResizeType
+      MatrixStrideType
+      MatrixTransposeType
+      SubMatrix
+   
+   
 
-.. include:: kaldi.matrix.sparse.rst
+   
+   
+   
+kaldi\.matrix\.optimization
+---------------------------
 
+.. automodule:: kaldi.matrix.optimization
 
-.. include:: kaldi.matrix.vector.rst
+   
+   
+   .. rubric:: Functions
 
+   .. autosummary::
+   
+      LinearCgd
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LbfgsOptions
+      LinearCgdOptions
+      OptimizeLbfgs
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.packed
+---------------------
+
+.. automodule:: kaldi.matrix.packed
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ApproxEqualSpMatrix
+      AssertEqualSpMatrix
+      SolveDoubleQuadraticMatrixProblem
+      SolveQuadraticMatrixProblem
+      SolveQuadraticProblem
+      TraceDoubleSpSp
+      TraceMatSpMat
+      TraceMatSpMatSp
+      TraceSpMat
+      TraceSpSp
+      TraceSpSpLower
+      VecSpVec
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DoubleSpMatrix
+      Matrix
+      MatrixResizeType
+      PackedMatrix
+      SolverOptions
+      SpMatrix
+      TpMatrix
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.sparse
+---------------------
+
+.. automodule:: kaldi.matrix.sparse
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ExtractRowRangeWithPadding
+      FilterCompressedMatrixRows
+      FilterGeneralMatrixRows
+      FilterMatrixRows
+      FilterSparseMatrixRows
+      TraceMatSmat
+      VecSvec
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GeneralMatrix
+      GeneralMatrixType
+      SparseMatrix
+      SparseVector
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.vector
+---------------------
+
+.. automodule:: kaldi.matrix.vector
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ApproxEqualDoubleVector
+      ApproxEqualVector
+      AssertEqualDoubleVector
+      AssertEqualVector
+      DoubleVecVec
+      VecMatVec
+      VecVec
+      construct_vector
+      vector_to_numpy
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DoubleVector
+      DoubleVectorBase
+      MatrixResizeType
+      MatrixTransposeType
+      SubVector
+      Vector
+      VectorBase
+   
+   
+
+   
+   
+   

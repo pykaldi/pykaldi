@@ -88,7 +88,7 @@ def RoundUpToNearestPowerOfTwo(n):
     return _RoundUpToNearestPowerOfTwo(n)
 
 ################################################################################
-# Import only float ops when calling import *
 
-# __all__ = [f for f in dir()
-#              if "Double" not in f.lower()]
+__all__ = [name for name in dir()
+           if name[0] != '_'
+           and not name.endswith('Base')]

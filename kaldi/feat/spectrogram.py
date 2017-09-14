@@ -1,3 +1,4 @@
+from ._feature_common_ext import Spectrogram
 from ._feature_spectrogram import *
 
 ################################################################################

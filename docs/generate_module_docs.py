@@ -59,8 +59,7 @@ with open("api.rst", "w") as api, \
 # Call autogen
 ##################################################
 
-check_call(['sphinx-autogen', '-o', args.out_dir, '-t', '_templates',
-            'packages.rst'])
+check_call(['sphinx-autogen', '-i', '-o', args.out_dir, 'packages.rst'])
 check_call(['sphinx-autogen', '-i', '-o', args.out_dir, 'modules.rst'])
 check_call(['rm' , '-f', 'packages.rst', 'modules.rst'])
 
@@ -85,4 +84,9 @@ for importer, modname, ispkg in pkgutil.walk_packages(path=kaldi.__path__,
 
         # Include submodule in pkg.rst
         with open(pkg_path, "a") as pkg:
-            pkg.write("""\n.. include:: {}\n\n""".format(mod_file))
+            # pkg.write("""\n.. include:: {}\n\n""".format(mod_file))
+            pkg.write("\n")
+            pkg.write(open(mod_path).read())
+
+        # Remove mod.rst
+        check_call(['rm', '-f', mod_path])

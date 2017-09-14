@@ -2,8 +2,6 @@ kaldi\.cudamatrix
 =================
 
 .. automodule:: kaldi.cudamatrix
-   :no-members:
-   :no-inherited-members:
 
    
    
@@ -16,17 +14,145 @@ kaldi\.cudamatrix
    
    
    
-.. include:: kaldi.cudamatrix.array.rst
+kaldi\.cudamatrix\.array
+------------------------
 
+.. automodule:: kaldi.cudamatrix.array
 
-.. include:: kaldi.cudamatrix.device.rst
+   
+   
+   
 
+   
+   
+   .. rubric:: Classes
 
-.. include:: kaldi.cudamatrix.matrix.rst
+   .. autosummary::
+   
+      CuArray
+      CuFloatPtrArray
+      CuIntPairArray
+   
+   
 
+   
+   
+   
+kaldi\.cudamatrix\.device
+-------------------------
 
-.. include:: kaldi.cudamatrix.matrixdim.rst
+.. automodule:: kaldi.cudamatrix.device
 
+   
+   
+   .. rubric:: Functions
 
-.. include:: kaldi.cudamatrix.vector.rst
+   .. autosummary::
+   
+      cuda_available
+   
+   
 
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CuDevice
+      CuTimer
+   
+   
+
+   
+   
+   
+kaldi\.cudamatrix\.matrix
+-------------------------
+
+.. automodule:: kaldi.cudamatrix.matrix
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ApproxEqualCuMatrix
+      AssertEqualCuMatrix
+      SameDimAndStrideCuMatrix
+      SameDimCuMatrix
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CuMatrix
+      CuMatrixBase
+      CuSubMatrix
+   
+   
+
+   
+   
+   
+kaldi\.cudamatrix\.matrixdim
+----------------------------
+
+.. automodule:: kaldi.cudamatrix.matrixdim
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CuBlockMatrixData
+      IntPair
+      MatrixDim
+      MatrixElement
+   
+   
+
+   
+   
+   
+kaldi\.cudamatrix\.vector
+-------------------------
+
+.. automodule:: kaldi.cudamatrix.vector
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ApproxEqualCuVector
+      AssertEqualCuVector
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CuSubVector
+      CuVector
+      CuVectorBase
+   
+   
+
+   
+   
+   

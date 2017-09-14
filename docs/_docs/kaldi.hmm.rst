@@ -2,8 +2,6 @@ kaldi\.hmm
 ==========
 
 .. automodule:: kaldi.hmm
-   :no-members:
-   :no-inherited-members:
 
    
    
@@ -16,11 +14,95 @@ kaldi\.hmm
    
    
    
-.. include:: kaldi.hmm.posterior.rst
+kaldi\.hmm\.posterior
+---------------------
 
+.. automodule:: kaldi.hmm.posterior
 
-.. include:: kaldi.hmm.topology.rst
+   
+   
+   .. rubric:: Functions
 
+   .. autosummary::
+   
+      AlignmentToPosterior
+      ConvertPosteriorToPdfs
+      ConvertPosteriorToPhones
+      MergePosteriors
+      PosteriorEntriesAreDisjoint
+      PosteriorToMatrix
+      PosteriorToPdfMatrix
+      ReadPosterior
+      TotalPosterior
+      VectorToPosteriorEntry
+      WritePosterior
+   
+   
 
-.. include:: kaldi.hmm.transition_model.rst
+   
+   
+   .. rubric:: Classes
 
+   .. autosummary::
+   
+      GaussPostHolder
+      PosteriorHolder
+   
+   
+
+   
+   
+   
+kaldi\.hmm\.topology
+--------------------
+
+.. automodule:: kaldi.hmm.topology
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      HmmTopology
+   
+   
+
+   
+   
+   
+kaldi\.hmm\.transition\_model
+-----------------------------
+
+.. automodule:: kaldi.hmm.transition_model
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      GetPdfsForPhones
+      GetPhonesForPdfs
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MapTransitionUpdateConfig
+      MleTransitionUpdateConfig
+      TransitionModel
+   
+   
+
+   
+   
+   
