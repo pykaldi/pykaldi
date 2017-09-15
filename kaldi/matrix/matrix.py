@@ -44,7 +44,7 @@ class MatrixBase(object):
                              "into matrix with dimensions {d[0]}x{d[1]}"
                              .format(s=src.size(), d=self.size()))
         if isinstance(src, MatrixBase):
-            self.copy_from_mat(src)
+            self._copy_from_mat(src)
         elif isinstance(src, SpMatrix):
             __kaldi_matrix.ext.copy_from_sp(self, src)
         elif isinstance(src, TpMatrix):
@@ -58,7 +58,7 @@ class MatrixBase(object):
             A new :class:`Matrix` that is a copy of this matrix.
         """
         clone = Matrix(*self.size())
-        clone.copy_from_mat(self)
+        clone._copy_from_mat(self)
         return clone
 
     def size(self):
@@ -67,7 +67,7 @@ class MatrixBase(object):
         Returns:
             A tuple (num_rows, num_cols) of integers.
         """
-        return self._num_rows, self._num_cols
+        return self.num_rows, self.num_cols
 
     @property
     def shape(self):
@@ -527,7 +527,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
                 raise IndexError("num_rows and num_cols should both be "
                                  "positive or they should both be 0.")
         matrix = cls(num_rows, num_cols)
-        matrix.copy_from_mat(obj)
+        matrix._copy_from_mat(obj)
         return matrix
 
     def resize_(self, num_rows, num_cols,
@@ -572,7 +572,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
 
     def __delitem__(self, index):
         """Removes a row from the matrix."""
-        if not (0 <= index < self._num_rows):
+        if not (0 <= index < self.num_rows):
             raise IndexError("index={} should be in the range [0,{})."
                              .format(index, self.num_rows))
         self.remove_row(index)

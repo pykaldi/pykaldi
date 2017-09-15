@@ -69,7 +69,7 @@ kaldi\.matrix\.functions
 
    .. autosummary::
    
-      AssertSameDimMatrix
+      assert_same_dim_matrix
    
    
 
@@ -97,25 +97,25 @@ kaldi\.matrix\.matrix
 
    .. autosummary::
    
-      ApproxEqualDoubleMatrix
-      ApproxEqualMatrix
-      AssertEqualDoubleMatrix
-      AssertEqualMatrix
-      ReadHtk
-      SameDimDoubleMatrix
-      SameDimMatrix
-      TraceDoubleMat
-      TraceDoubleMatMat
-      TraceDoubleMatMatMat
-      TraceDoubleMatMatMatMat
-      TraceMat
-      TraceMatMat
-      TraceMatMatMat
-      TraceMatMatMatMat
-      WriteHtk
-      WriteSphinx
+      approx_equal_double_matrix
+      approx_equal_matrix
+      assert_equal_double_matrix
+      assert_equal_matrix
       construct_matrix
       matrix_to_numpy
+      read_htk
+      same_dim_double_matrix
+      same_dim_matrix
+      trace_double_mat
+      trace_double_mat_mat
+      trace_double_mat_mat_mat
+      trace_double_mat_mat_mat_mat
+      trace_mat
+      trace_mat_mat
+      trace_mat_mat_mat
+      trace_mat_mat_mat_mat
+      wrie_htk
+      wrie_sphinx
    
    
 
@@ -151,7 +151,7 @@ kaldi\.matrix\.optimization
 
    .. autosummary::
    
-      LinearCgd
+      linear_cgd
    
    
 
@@ -181,18 +181,18 @@ kaldi\.matrix\.packed
 
    .. autosummary::
    
-      ApproxEqualSpMatrix
-      AssertEqualSpMatrix
-      SolveDoubleQuadraticMatrixProblem
-      SolveQuadraticMatrixProblem
-      SolveQuadraticProblem
-      TraceDoubleSpSp
-      TraceMatSpMat
-      TraceMatSpMatSp
-      TraceSpMat
-      TraceSpSp
-      TraceSpSpLower
-      VecSpVec
+      approx_equal_sp_matrix
+      assert_equal_sp_matrix
+      solve_double_quadratic_matrix_problem
+      solve_quadratic_matrix_problem
+      solve_quadratic_problem
+      trace_double_sp_sp
+      trace_mat_sp_mat
+      trace_mat_sp_mat_sp
+      trace_sp_mat
+      trace_sp_sp
+      trace_sp_sp_lower
+      vec_sp_vec
    
    
 
@@ -226,13 +226,13 @@ kaldi\.matrix\.sparse
 
    .. autosummary::
    
-      ExtractRowRangeWithPadding
-      FilterCompressedMatrixRows
-      FilterGeneralMatrixRows
-      FilterMatrixRows
-      FilterSparseMatrixRows
-      TraceMatSmat
-      VecSvec
+      extract_row_range_with_padding
+      filter_compressed_matrix_rows
+      filter_general_matrix_rows
+      filter_matrix_rows
+      filter_sparse_matrix_rows
+      trace_mat_smat
+      vec_svec
    
    
 
@@ -263,14 +263,14 @@ kaldi\.matrix\.vector
 
    .. autosummary::
    
-      ApproxEqualDoubleVector
       ApproxEqualVector
-      AssertEqualDoubleVector
-      AssertEqualVector
-      DoubleVecVec
-      VecMatVec
-      VecVec
+      approx_equal
+      assert_equal_double_vector
+      assert_equal_vector
       construct_vector
+      double_vec_vec
+      vec_mat_vec
+      vec_vec
       vector_to_numpy
    
    
