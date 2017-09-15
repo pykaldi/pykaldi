@@ -7,47 +7,47 @@ from "matrix/matrix-ext.h" import *
 from "matrix/packed-matrix.h":
   namespace `kaldi`:
     class `PackedMatrix<float>` as PackedMatrix:
-      num_rows: int = property(`NumRows`)
-      num_cols: int = property(`NumCols`)
+      _num_rows: int = property(`NumRows`)
+      _num_cols: int = property(`NumCols`)
 
       @add__init__
-      def `PackedMatrix` as NewWithSize(
+      def `PackedMatrix` as new_with_size(
           self, r:int, resize_type: MatrixResizeType = default)
 
       @add__init__
-      def `PackedMatrix` as NewWithOther(self, orig: PackedMatrix)
+      def `PackedMatrix` as new_with_other(self, orig: PackedMatrix)
 
-      def SetZero(self):
+      def `SetZero` as set_zero(self):
         """Set all elements to zero."""
 
-      def SetUnit(self):
+      def `SetUnit` as set_unit(self):
         """Sets all elements to zero, and fill the diagonal with ones."""
 
-      def SetRandn(self):
+      def `SetRandn` as set_randn(self):
         """Sets the elements to random values of a normal distribution."""
 
-      def Trace(self) -> float:
+      def `Trace` as trace(self) -> float:
         """Return the trace of the matrix"""
 
-      def Resize(self, num_rows:int, resize_type: MatrixResizeType = default)
+      def `Resize` as resize(self, num_rows:int, resize_type: MatrixResizeType = default)
 
-      def AddToDiag(self, r: float):
+      def `AddToDiag` as add_to_diag(self, r: float):
         """Add a constant r to the diagonal of the matrix.
 
         Args:
             r(float): A constant
         """
 
-      def ScaleDiag(self, alpha: float):
+      def `ScaleDiag` as scale_diag(self, alpha: float):
         """Scale the diagonal of the matrix by alpha.
 
         Args:
             alpha(float): A scaling constant
         """
 
-      def SetDiag(self, alpha: float)
+      def `SetDiag` as set_diag(self, alpha: float)
 
-      def CopyFromPacked(self, orig: PackedMatrix):
+      def `CopyFromPacked` as copy_from_packed(self, orig: PackedMatrix):
         """Copy data from a packed matrix.
 
            Args:
@@ -57,21 +57,21 @@ from "matrix/packed-matrix.h":
                Error in case of dimension mismatch
         """
 
-      def CopyFromVec(self, orig: SubVector)
+      def `CopyFromVec` as copy_from_vec(self, orig: SubVector)
 
       def `NumRows` as __len__(self) -> int:
         """Return the number of rows."""
 
-      def NumRows(self) -> int:
+      def `NumRows` as num_rows(self) -> int:
         """Return the number of rows."""
 
-      def NumCols(self) -> int:
+      def `NumCols` as num_cols(self) -> int:
         """Return the number of columns."""
 
-      def SizeInBytes(self) -> int:
+      def `SizeInBytes` as size_in_bytes(self) -> int:
         """Return the size of the matrix in memory, in bytes."""
 
-      def `operator()` as Get(self, r: int, c: int) -> float:
+      def `operator()` as get(self, r: int, c: int) -> float:
         """Indexing operator.
 
         Args:
@@ -85,15 +85,15 @@ from "matrix/packed-matrix.h":
             Error if r > num_rows or c > num_cols
         """
 
-      def Max(self) -> float:
+      def `Max` as max(self) -> float:
         """Return the maximum elememnt of the matrix"""
 
-      def Min(self) -> float:
+      def `Min` as min(self) -> float:
         """Return the minimum  elememnt of the matrix"""
 
-      def Scale(self, c:float)
+      def `Scale` as scale(self, c:float)
 
-      def Read(self, is: istream, binary: bool, add: bool = default):
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default):
         """Reads from C++ stream.
 
         Args:
@@ -102,7 +102,7 @@ from "matrix/packed-matrix.h":
             add(bool): True if you want to add the stream to self.
         """
 
-      def Write(self, os: ostream, binary: bool):
+      def `Write` as write(self, os: ostream, binary: bool):
         """Writes to C++ stream.
 
         Args:
@@ -110,10 +110,10 @@ from "matrix/packed-matrix.h":
             binary(bool): If the stream is binary.
         """
 
-      def `Swap` as SwapWithPacked(self, other: PackedMatrix):
+      def `Swap` as swap_with_packed(self, other: PackedMatrix):
         """Swaps the contents of self and other, where other is a
            a Packed Matrix. Shallow swap."""
 
-      def `Swap` as SwapWithMatrix(self, other: Matrix):
+      def `Swap` as swap_with_matrix(self, other: Matrix):
         """Swaps the contents of self and other, where other is a
            a Matrix. Shallow swap."""

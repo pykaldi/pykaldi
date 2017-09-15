@@ -7,7 +7,7 @@ from "matrix/tp-matrix-clifwrap.h" import *
 
 from "matrix/kaldi-vector-ext.h":
   namespace `kaldi`:
-    def AddMatVec(self: VectorBase, alpha: float, M: MatrixBase,
+    def `AddMatVec` as add_mat_vec(self: VectorBase, alpha: float, M: MatrixBase,
                   trans: MatrixTransposeType, v: VectorBase, beta: float):
         """Scale self and add a matrix*vector, e.g. self = beta*self + alpha*M*v.
 
@@ -22,7 +22,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def AddMatSvec(self: VectorBase, alpha: float, M: MatrixBase,
+    def `AddMatSvec` as add_mat_svec(self: VectorBase, alpha: float, M: MatrixBase,
                    trans: MatrixTransposeType, v: VectorBase, beta: float):
         """Same as AddMatVec, but optimized when v contains a lot of zeros.
 
@@ -37,7 +37,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def AddSpVec(self: VectorBase, alpha: float, M: SpMatrix,
+    def `AddSpVec` as add_sp_vec(self: VectorBase, alpha: float, M: SpMatrix,
                  v: VectorBase, beta: float):
         """Same as AddMatVec, but optimized when M is symmetric positive definite.
 
@@ -52,7 +52,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def AddTpVec(self: VectorBase, alpha: float, M: TpMatrix,
+    def `AddTpVec` as add_tp_vec(self: VectorBase, alpha: float, M: TpMatrix,
                  trans: MatrixTransposeType, v: VectorBase, beta: float):
         """Same as AddMatVec, but optimized when M is triangular.
 
@@ -67,7 +67,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def MulTp(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType):
+    def `MulTp` as mul_tp(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType):
         """ Multiplies this vector by lower-triangular matrix: self = self*M
 
         Args:
@@ -78,7 +78,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def Solve(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType):
+    def `Solve` as solve(self: VectorBase, M: TpMatrix, trans: MatrixTransposeType):
         """If trans == kNoTrans, solves M*x = b, where b is the value of self input
            and x is the value of self at output. If trans == kTrans, solves M'*x = b.
            Does not test for M being singular or near-singular.
@@ -91,7 +91,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def CopyRowsFromMat(self: VectorBase, M: MatrixBase):
+    def `CopyRowsFromMat` as copy_rows_from_mat(self: VectorBase, M: MatrixBase):
         """Stacks all the rows of matrix M into a vector and copies it to self
 
         Args:
@@ -101,7 +101,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
         """
 
-    def CopyColsFromMat(self: VectorBase, M: MatrixBase):
+    def `CopyColsFromMat` as copy_cols_from_mat(self: VectorBase, M: MatrixBase):
         """Stacks all the columns of matrix M into a vector and copies it to self
 
         Args:
@@ -111,7 +111,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
         """
 
-    def CopyRowFromMat(self: VectorBase, M: MatrixBase, row: int):
+    def `CopyRowFromMat` as copy_row_from_mat(self: VectorBase, M: MatrixBase, row: int):
         """Extracts a row of the matrix M and copies it to self.
 
         Args:
@@ -122,7 +122,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch or if row>=M.rows
         """
 
-    def CopyColFromMat(self: VectorBase, M: MatrixBase, col: int):
+    def `CopyColFromMat` as copy_col_from_mat(self: VectorBase, M: MatrixBase, col: int):
         """Extracts a column of the matrix M and copies it to self.
 
         Args:
@@ -133,7 +133,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch or if col>=M.cols
         """
 
-    def CopyDiagFromMat(self: VectorBase, M: MatrixBase):
+    def `CopyDiagFromMat` as copy_diag_from_mat(self: VectorBase, M: MatrixBase):
         """Extracts the diagonal of the matrix M and copies it to self.
 
         Args:
@@ -143,14 +143,14 @@ from "matrix/kaldi-vector-ext.h":
             Error if self.dim != min(M.rows, M.cols)
         """
 
-    def CopyFromPacked(self: VectorBase, M: PackedMatrix):
+    def `CopyFromPacked` as copy_from_packed(self: VectorBase, M: PackedMatrix):
         """Copy data from a Packed Matrix(triangular or symmetric)
 
         Args:
             M(PackedMatrix): A triangular or symmetric matrix
         """
 
-    def CopyDiagFromPacked(self: VectorBase, M: PackedMatrix):
+    def `CopyDiagFromPacked` as copy_diag_from_packed(self: VectorBase, M: PackedMatrix):
         """Extracts the diagonal of the packed matrix M and copies it to self.
 
         Args:
@@ -160,7 +160,7 @@ from "matrix/kaldi-vector-ext.h":
             Error if self.dim !=  M.cols
         """
 
-    def CopyDiagFromSp(self: VectorBase, M: SpMatrix):
+    def `CopyDiagFromSp` as copy_diag_from_sp(self: VectorBase, M: SpMatrix):
         """Extracts the diagonal of the symmetric matrix M and copies it to self.
 
         Args:
@@ -170,7 +170,7 @@ from "matrix/kaldi-vector-ext.h":
             Error if self.dim !=  M.cols
         """
 
-    def CopyDiagFromTp(self: VectorBase, M: TpMatrix):
+    def `CopyDiagFromTp` as copy_diag_from_tp(self: VectorBase, M: TpMatrix):
         """Extracts the diagonal of the symmetric matrix M and copies it to self.
 
         Args:
@@ -180,7 +180,7 @@ from "matrix/kaldi-vector-ext.h":
             Error if self.dim !=  M.cols
         """
 
-    def AddRowSumMat(self: VectorBase, alpha: float, M: MatrixBase,
+    def `AddRowSumMat` as add_row_sum_mat(self: VectorBase, alpha: float, M: MatrixBase,
                      beta: float = default):
         """Performs the operation self = alpha * (sum of rows of M) + beta * self
 
@@ -193,7 +193,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of self.dim != M.cols
         """
 
-    def AddColSumMat(self: VectorBase, alpha: float, M: MatrixBase,
+    def `AddColSumMat` as add_col_sum_mat(self: VectorBase, alpha: float, M: MatrixBase,
                      beta: float = default):
         """Performs the operation self = alpha * (sum of cols of M) + beta * self
 
@@ -206,7 +206,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of self.dim != M.rows
         """
 
-    def AddDiagMat2(self: VectorBase, alpha: float,
+    def `AddDiagMat2` as add_diag_mat2(self: VectorBase, alpha: float,
                     M: MatrixBase, trans: MatrixTransposeType = default,
                     beta: float = default):
         """Perform the operation self = alpha*diag(M*M^T) + beta*self (if trans == kNoTrans),
@@ -222,7 +222,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def AddDiagMatMat(self: VectorBase, alpha: float,
+    def `AddDiagMatMat` as add_diag_mat_mat(self: VectorBase, alpha: float,
                       M: MatrixBase, transM: MatrixTransposeType,
                       N: MatrixBase, transN: MatrixTransposeType,
                       beta: float = default):
@@ -240,7 +240,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float:
+    def `VecMatVec` as vec_mat_vec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float:
         """Performs the operation v1'*M*v2
 
         Args:

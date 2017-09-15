@@ -5,13 +5,17 @@ from kaldi.matrix import Vector, SubVector
 
 class TestVector(unittest.TestCase):
 
+    @unittest.skip("TODO")
+    def testErrors(self):
+        pass
+
     def test_copy(self):
         v = Vector(5)
         with self.assertRaises(ValueError):
-            v1 = Vector().copy_(v)
+            v1 = Vector().copy(v)
         
-        v.SetZero()
-        v1 = Vector(len(v)).copy_(v)
+        v.set_zero()
+        v1 = Vector(len(v)).copy(v)
         self.assertEqual(len(v), len(v1))
 
         # Make sure modifying original
@@ -25,7 +29,7 @@ class TestVector(unittest.TestCase):
         self.assertNotEqual(v[2], v1[2])
 
         # Check copy works with data
-        v1 = Vector(len(v)).copy_(v)
+        v1 = Vector(len(v)).copy(v)
 
         self.assertEqual(v[0], v1[0])
         self.assertEqual(v[1], v1[1])
@@ -47,7 +51,7 @@ class TestVector(unittest.TestCase):
 
         # Make sure modifying original
         # doesn't break new one
-        v.SetZero()
+        v.set_zero()
         self.assertNotEqual(v[0], v2[0])
         self.assertNotEqual(v[1], v2[1])
         self.assertNotEqual(v[2], v2[2])

@@ -8,7 +8,7 @@ from "matrix/optimization.h":
       max_error: float
       recompute_residual_factor: float
 
-    def LinearCgd(opts: LinearCgdOptions, A: SpMatrix, b: VectorBase,
+    def `LinearCgd` as linear_cgd(opts: LinearCgdOptions, A: SpMatrix, b: VectorBase,
                   x: VectorBase) -> int
 
 
@@ -34,10 +34,10 @@ from "matrix/optimization.h":
       # def GetValue(self) -> (x: VectorBase, objf_value: float)
       # def GetProposedValue(self) -> VectorBase
 
-      def RecentStepLength(self) -> float
+      def `RecentStepLength` as recent_step_length(self) -> float
 
-      def DoStep(self, function_value: float, gradient: VectorBase)
+      def `DoStep` as do_step(self, function_value: float, gradient: VectorBase)
 
-      def `DoStep` as DoStepApproxHessian(self, function_value: float,
+      def `DoStep` as do_step_approx_hessian(self, function_value: float,
                                           gradient: VectorBase,
                                           diag_approx_2nd_deriv: VectorBase)

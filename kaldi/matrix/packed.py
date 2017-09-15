@@ -46,7 +46,7 @@ class PackedMatrix(_packed_matrix.PackedMatrix):
             num_rows (int): Number of rows of the new packed matrix.
             resize_type (:class:`MatrixResizeType`): Resize type.
         """
-        self.Resize(num_rows, resize_type)
+        self.resize(num_rows, resize_type)
 
     def swap_(self, other):
         """Swaps the contents of Matrices. Shallow swap.
@@ -61,9 +61,9 @@ class PackedMatrix(_packed_matrix.PackedMatrix):
         if m != n:
             raise ValueError("other is not a square matrix.")
         if isinstance(other, Matrix):
-            self.SwapWithMatrix(self, other)
+            self.swap_with_matrix(self, other)
         elif isinstance(other, PackedMatrix):
-            self.SwapWithPacked(self, other)
+            self.swap_with_packed(self, other)
         else:
             raise ValueError("other must be a Matrix or a PackedMatrix.")
 
@@ -97,7 +97,7 @@ class TpMatrix(_tp_matrix.TpMatrix, PackedMatrix):
             A new :class:`TpMatrix` that is a copy of this triangular matrix.
         """
         clone = TpMatrix(len(self))
-        clone.CopyFromTp(self)
+        clone.copy_from_tp(self)
         return clone
 
 
@@ -130,7 +130,7 @@ class SpMatrix(PackedMatrix, _sp_matrix.SpMatrix):
             A new :class:`SpMatrix` that is a copy of this symmetric matrix.
         """
         clone = SpMatrix(len(self))
-        clone.CopyFromTp(self)
+        clone.copy_from_tp(self)
         return clone
 
 ################################################################################

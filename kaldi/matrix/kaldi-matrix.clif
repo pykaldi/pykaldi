@@ -5,17 +5,17 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix.h":
     namespace `kaldi`:
         class `MatrixBase<float>` as MatrixBase:
-            num_rows: int = property(`NumRows`)
-            num_cols: int = property(`NumCols`)
-            stride: int = property(`Stride`)
+            _num_rows: int = property(`NumRows`)
+            _num_cols: int = property(`NumCols`)
+            _stride: int = property(`Stride`)
 
-            def NumRows(self) -> int:
+            def `NumRows` as num_rows(self) -> int:
               """Returns the number of rows"""
 
-            def NumCols(self) -> int:
+            def `NumCols` as num_cols(self) -> int:
               """Returns the number of columns"""
 
-            def SizeInBytes(self) -> int:
+            def `SizeInBytes` as size_in_bytes(self) -> int:
               """Returns the size in memory of the matrix, in bytes."""
 
             # Note: It is probably a bad idea to expose these in Python.
@@ -27,7 +27,7 @@ from "matrix/kaldi-matrix.h":
 
             # Note: operator() functionality is provided in Python with the
             # __getitem__ method. This wrapper is for completeness.
-            def `operator()` as Get(self, r:int, c:int) -> float:
+            def `operator()` as get(self, r:int, c:int) -> float:
               """Indexing operator.
 
                 Args:
@@ -45,21 +45,21 @@ from "matrix/kaldi-matrix.h":
 #           Deprecated in new kaldi versions
 #           def Set(self, r:int, c:int, v:float)
 
-            def SetZero(self):
+            def `SetZero` as set_zero(self):
               """Set all elements to zero."""
 
-            def SetUnit(self):
+            def `SetUnit` as set_unit(self):
               """Sets all elements to zero, and fill the diagonal with ones,
                    works for non-square matrices too"""
 
-            def SetRandn(self):
+            def `SetRandn` as set_randn(self):
               """Sets the elements to random values of a normal distribution."""
 
-            def SetRandUniform(self):
+            def `SetRandUniform` as set_rand_uniform(self):
               """Sets the elements to random values of a uniform(0,1) distribution."""
 
             # Copy methods
-            def CopyFromMat(self, M:MatrixBase,
+            def `CopyFromMat` as copy_from_mat(self, M:MatrixBase,
                             trans:MatrixTransposeType = default):
               """Copy data from another matrix of the same size
 
@@ -84,7 +84,7 @@ from "matrix/kaldi-matrix.h":
 
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self, v:CuVector)
 
-            def CopyRowsFromVec(self, v:VectorBase):
+            def `CopyRowsFromVec` as copy_rows_from_vec(self, v:VectorBase):
               """This function has two modes of operation. If v.size == rows * cols,
                    then it treats the vector as a row-by-row concatenation of a matrix
                    and copies to self. if v.size == cols, it sets each row of self
@@ -97,7 +97,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def CopyColsFromVec(self, v:VectorBase):
+            def `CopyColsFromVec` as copy_cols_from_vec(self, v:VectorBase):
               """This function has two modes of operation. If v.size == rows * cols,
                    then it treats the vector as a col-by-col concatenation of a matrix
                    and copies to self. if v.size == rows, it sets each col of self
@@ -110,7 +110,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def CopyColFromVec(self, v:VectorBase, col:int):
+            def `CopyColFromVec` as copy_col_from_vec(self, v:VectorBase, col:int):
               """Copy vector into specific column of matrix.
 
                 Args:
@@ -121,7 +121,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def CopyRowFromVec(self, v:VectorBase, row:int):
+            def `CopyRowFromVec` as copy_row_from_vec(self, v:VectorBase, row:int):
               """Copy vector into specific row of matrix.
 
                 Args:
@@ -132,7 +132,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def CopyDiagFromVec(self, v:VectorBase):
+            def `CopyDiagFromVec` as copy_diag_from_vec(self, v:VectorBase):
               """Copy vector into diagonal of matrix
 
                 Args:
@@ -148,10 +148,10 @@ from "matrix/kaldi-matrix.h":
 
             # Special functions #
 
-            def Sum(self) -> float:
+            def `Sum` as sum(self) -> float:
               """Returns sum of all elements in matrix."""
 
-            def Trace(self, check_square: bool = default) -> float:
+            def `Trace` as trace(self, check_square: bool = default) -> float:
               """Returns the trace of the matrix. If matrix is not square
                    it will return the trace of the square matrix formed from
                    the minimum dimension, e.g. if the matrix is 3x5 it will
@@ -164,13 +164,13 @@ from "matrix/kaldi-matrix.h":
                     Error if the matrix is not square and you have set check_square as True
               """
 
-            def Max(self) -> float:
+            def `Max` as max(self) -> float:
               """Returns maximum element of matrix."""
 
-            def Min(self) -> float:
+            def `Min` as min(self) -> float:
               """Returns minimum element of matrix."""
 
-            def MulElements(self, A: MatrixBase):
+            def `MulElements` as mul_elements(self, A: MatrixBase):
               """Element by element multiplication with matrix A.
 
                 Args:
@@ -180,7 +180,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def DivElements(self, A: MatrixBase):
+            def `DivElements` as div_elements(self, A: MatrixBase):
               """Element by element division with matrix A,
                    e.g. self(i,j) = self(i,j)/A(i,j) for all i,j.
 
@@ -191,14 +191,14 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def Scale(self, alpha: float):
+            def `Scale` as scale(self, alpha: float):
               """Scale all elements of the matrix by alpha
 
                 Args:
                     alpha(float): A scaling constant
               """
 
-            def `Max` as MaxWithMat(self, A: MatrixBase):
+            def `Max` as max_with_mat(self, A: MatrixBase):
               """Performs the elementwise operation self(i,j) = max(self(i,j), A(i,j)) for every i,j.
 
                 Args:
@@ -208,7 +208,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def `Min` as MinWithMat(self, A: MatrixBase):
+            def `Min` as min_with_mat(self, A: MatrixBase):
               """Performs the elementwise operation
                    self(i,j) = min(self(i,j), A(i,j)) for every i,j.
 
@@ -219,7 +219,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def MulColsVec(self, scale: VectorBase):
+            def `MulColsVec` as mul_cols_vec(self, scale: VectorBase):
               """Performs self = self * diag(scale). Scales each column by
                    a scalar taken from that dimension of the vector.
 
@@ -230,7 +230,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def MulRowsVec(self, scale: VectorBase):
+            def `MulRowsVec` as mul_rows_vec(self, scale: VectorBase):
               """Performs self = diag(scale)*self. Scales each row by
                    a scalar taken from that dimension of the vector.
 
@@ -241,7 +241,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def MulRowsGroupMat(self, src: MatrixBase):
+            def `MulRowsGroupMat` as mul_rows_group_mat(self, src: MatrixBase):
               """Divide each row of self into src.num_cols equal groups,
                    and then scale i'th row's j'th group of elements by src(i, j).
 
@@ -285,10 +285,10 @@ from "matrix/kaldi-matrix.h":
 #                Error if matrix is not square
 #          """
 
-            def InvertElements(self):
+            def `InvertElements` as invert_elements(self):
               """Inverts all the elements of the matrix. self(i,j)=1/self(i,j)."""
 
-            def Transpose(self):
+            def `Transpose` as transpose(self):
               """Transposes the elements of the matrix. self(i,j)=self(j,i)."""
 
             # FIXME(Pavlos):
@@ -306,27 +306,27 @@ from "matrix/kaldi-matrix.h":
             # void AddRows(Real alpha, const Real *const *src);
             # void AddToRows(Real alpha, Real *const *dst) const;
 
-            def ApplyFloor(self, floor_val: float):
+            def `ApplyFloor` as apply_floor(self, floor_val: float):
               """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
 
                 Args:
                     floor(float): The floor value to check against.
               """
 
-            def ApplyCeiling(self, ceiling_val: float):
+            def `ApplyCeiling` as apply_ceiling(self, ceiling_val: float):
               """Applies floor to all elements. If self(i,j)>ceiling then self(i,j)=ceiling.
 
                 Args:
                     ceiling(float): The ceiling value to check against.
               """
 
-            def ApplyLog(self):
+            def `ApplyLog` as apply_log(self):
               """Apply natural log to all elements."""
 
-            def ApplyExp(self):
+            def `ApplyExp` as apply_exp(self):
               """Apply exponential to each value in vector."""
 
-            def ApplyPow(self, power: float):
+            def `ApplyPow` as apply_pow(self, power: float):
               """Take all elements of matrix to a power.
 
                 Args:
@@ -337,7 +337,7 @@ from "matrix/kaldi-matrix.h":
                     (e.g. square root of a negative) or in case of overflow.
               """
 
-            def ApplyPowAbs(self, power: float, include_sign: bool = default):
+            def `ApplyPowAbs` as apply_pow_abs(self, power: float, include_sign: bool = default):
               """Take the absolute value of all elements of a vector to a power.
                    Include the sign of the input element if include_sign == true.
                    For example, if self=(-3,2) then for power=2 and include_sign=true
@@ -352,7 +352,7 @@ from "matrix/kaldi-matrix.h":
                     Error if we have overflows or underflows.
               """
 
-            def ApplyHeaviside(self):
+            def `ApplyHeaviside` as apply_heaviside(self):
               """Applies the Heaviside step function (x > 0 ? 1 : 0) to all matrix elements."""
 
 #            FIXME(pavlos):
@@ -379,7 +379,7 @@ from "matrix/kaldi-matrix.h":
 #                eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
 #          """
 #
-            def Power(self, pow: float) -> bool:
+            def `Power` as power(self, pow: float) -> bool:
               """The Power method attempts to take the matrix to a power
                    (e.g P^3=P*P*P) using a method that works in general for fractional
                    and negative powers. The input matrix must be invertible and have
@@ -444,7 +444,7 @@ from "matrix/kaldi-matrix.h":
 #                               Its length must be min(self.num_rows, self.num_cols)
 #          """
 
-            def MinSingularValue(self) -> float:
+            def `MinSingularValue` as min_singular_value(self) -> float:
               """Returns the smallest singular value."""
 
 #           FIXME(pavlos):
@@ -453,13 +453,13 @@ from "matrix/kaldi-matrix.h":
 #
 #            def TestUninitialized(self)
 
-            def Cond(self) -> float:
+            def `Cond` as cond(self) -> float:
               """Returns the condition number of the SVD computation."""
 
-            def IsSymmetric(self, cutoff: float = default) -> bool:
+            def `IsSymmetric` as issymmetric(self, cutoff: float = default) -> bool:
               """Returns True if the matrix is symmetric."""
 
-            def IsDiagonal(self, cutoff: float = default) -> bool:
+            def `IsDiagonal` as isdiagonal(self, cutoff: float = default) -> bool:
               """Checks if the matrix is diagonal. The nondiagonal elements
                    must be less or equal to cutoff value.
 
@@ -471,7 +471,7 @@ from "matrix/kaldi-matrix.h":
                     otherwise false
               """
 
-            def IsUnit(self, cutoff: float = default) -> bool:
+            def `IsUnit` as isunit(self, cutoff: float = default) -> bool:
               """Checks if the matrix is identity-like. It does not have to be square.
                    The nondiagonal elements must be less or equal to cutoff value,
                    while the diagonal ones must be one.
@@ -483,7 +483,7 @@ from "matrix/kaldi-matrix.h":
                     True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
               """
 
-            def IsZero(self, cutoff: float = default) -> bool:
+            def `IsZero` as iszero(self, cutoff: float = default) -> bool:
               """Checks if all elements are 0 (where 0 is the cutoff value).
 
                 Args:
@@ -493,10 +493,10 @@ from "matrix/kaldi-matrix.h":
                     True if it is a zero matrix
               """
 
-            def FrobeniusNorm(self) -> float:
+            def `FrobeniusNorm` as frobenius_norm(self) -> float:
               """Returns the FrobeniusNorm of the matrix"""
 
-            def ApproxEqual(self, other: MatrixBase, tol: float = default)
+            def `ApproxEqual` as approx_equal(self, other: MatrixBase, tol: float = default)
                 -> bool:
               """Checks if self is equal with other by calculating the Frobenius
                    norm of their difference.
@@ -509,7 +509,7 @@ from "matrix/kaldi-matrix.h":
                     True if ||(self-other)||_F <= tol * ||self||_F
               """
 
-            def Equal(self, other: MatrixBase) -> bool:
+            def `Equal` as equal(self, other: MatrixBase) -> bool:
               """Tests for exact equality
 
                 Args:
@@ -519,10 +519,10 @@ from "matrix/kaldi-matrix.h":
                     True if self(i,j)=other(i,j) for all i,j
               """
 
-            def LargestAbsElem(self) -> float:
+            def `LargestAbsElem` as largest_abs_elem(self) -> float:
               """Returns the largest absolute value of the matrix's elements"""
 
-            def LogSumExp(self, prune: float = default) -> float:
+            def `LogSumExp` as log_sum_exp(self, prune: float = default) -> float:
               """Returns log(sum(exp())) without exp overflow. If prune > 0.0, it uses
                    a pruning beam, discarding terms less than (max - prune).
 
@@ -534,14 +534,14 @@ from "matrix/kaldi-matrix.h":
                    elements of the matrix
               """
 
-            def ApplySoftMax(self) -> float:
+            def `ApplySoftMax` as apply_softmax(self) -> float:
               """Apply the softmax function to every element of the matrix.
 
                 Returns:
                    The normalization of the softmax, i.e. sum(exp(self(i,j)))
               """
 
-            def Sigmoid(self, src: MatrixBase):
+            def `Sigmoid` as sigmoid(self, src: MatrixBase):
               """Set each element to the sigmoid of the corresponding element of src.
 
                 Args:
@@ -551,7 +551,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def Heaviside(self, src: MatrixBase):
+            def `Heaviside` as heaviside(self, src: MatrixBase):
               """Set each element to the heaviside of the corresponding element of src.
 
                 Args:
@@ -561,7 +561,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def SoftHinge(self, src: MatrixBase):
+            def `SoftHinge` as soft_hinge(self, src: MatrixBase):
               """Set each element of self as self(i,j) = log(1 + exp(src(i,j)))
 
                 Args:
@@ -571,7 +571,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def GroupPnorm(self, src: MatrixBase, power: float):
+            def `GroupPnorm` as group_pnorm(self, src: MatrixBase, power: float):
               """See Also:
                    :kaldi:`kaldi::GroupPnorm`
               """
@@ -579,7 +579,7 @@ from "matrix/kaldi-matrix.h":
             # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase,
             #                     power: float)
 
-            def GroupMax(self, src: MatrixBase):
+            def `GroupMax` as group_max(self, src: MatrixBase):
               """See Also:
                    :kaldi:`kaldi::GroupMax`
               """
@@ -592,7 +592,7 @@ from "matrix/kaldi-matrix.h":
 #               :kaldi:`kaldi::GroupMaxDeriv`
 #          """
 
-            def Tanh(self, src: MatrixBase):
+            def `Tanh` as tanh(self, src: MatrixBase):
               """Set each element to the tanh of the corresponding element of src.
 
                 Args:
@@ -612,21 +612,21 @@ from "matrix/kaldi-matrix.h":
 #            def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase,
 #                                 check_thresh: float = default)
 
-            def Add(self, alpha: float):
+            def `Add` as add(self, alpha: float):
               """Add a scalar alpha to each element of the matrix.
 
                 Args:
                    alpha(float): A scalar
               """
 
-            def AddToDiag(self, alpha: float):
+            def `AddToDiag` as add_to_diag(self, alpha: float):
               """Add a scalar alpha to the diagonal elements of the matrix.
 
                 Args:
                    alpha(float): A scalar
               """
 
-            def AddVecVec(self, alpha: float, a: VectorBase, b: VectorBase):
+            def `AddVecVec` as add_vec_vec(self, alpha: float, a: VectorBase, b: VectorBase):
               """Performs the operation self = self + alpha*a*b^T
 
                 Args:
@@ -635,7 +635,7 @@ from "matrix/kaldi-matrix.h":
                     b(VectorBase): A vector
               """
 
-            def AddVecToRows(self, alpha: float, v: VectorBase):
+            def `AddVecToRows` as add_vec_to_rows(self, alpha: float, v: VectorBase):
               """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
 
                 Args:
@@ -646,7 +646,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def AddVecToCols(self, alpha: float, v: VectorBase):
+            def `AddVecToCols` as add_vec_to_cols(self, alpha: float, v: VectorBase):
               """Performs the operation self(:,i) = self(:,i)+alpha*v for all i
 
                 Args:
@@ -657,7 +657,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def AddMat(self, alpha: float, M: MatrixBase,
+            def `AddMat` as add_mat(self, alpha: float, M: MatrixBase,
                        transA: MatrixTransposeType = default):
               """Performs the operation self = self+alpha*M or self = self+alpha*M^T
 
@@ -671,7 +671,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def SymAddMat2(self, alpha: float, M: MatrixBase,
+            def `SymAddMat2` as sym_add_mat2(self, alpha: float, M: MatrixBase,
                            transA: MatrixTransposeType, beta: float):
               """Performs the operation self = beta*self+alpha*M*M^T, for symmetric matrices.
                    It only updates the lower triangle of *this. It will leave the
@@ -689,7 +689,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def AddDiagVecMat(self, alpha: float, v: VectorBase, M: MatrixBase,
+            def `AddDiagVecMat` as add_diag_vec_mat(self, alpha: float, v: VectorBase, M: MatrixBase,
                               transM: MatrixTransposeType,
                               beta: float = default):
               """Perform the operation self = beta*self+alpha*diag(v)*M
@@ -707,7 +707,7 @@ from "matrix/kaldi-matrix.h":
               """
 
 
-            def AddMatDiagVec(self, alpha: float, M: MatrixBase,
+            def `AddMatDiagVec` as add_mat_diag_vec(self, alpha: float, M: MatrixBase,
                               transM: MatrixTransposeType, v: VectorBase,
                               beta: float = default):
               """Performs the operation self = beta*self+alpha*M*diag(v)
@@ -725,7 +725,7 @@ from "matrix/kaldi-matrix.h":
               """
 
 
-            def AddMatMatElements(self, alpha: float, A: MatrixBase,
+            def `AddMatMatElements` as add_mat_mat_elements(self, alpha: float, A: MatrixBase,
                                   B: MatrixBase, beta: float):
               """Performs the operation self = beta*self + alpha*A.*B
                    where ``.*'' is element by element multiplication.
@@ -744,7 +744,7 @@ from "matrix/kaldi-matrix.h":
             # Move to kaldi-matrix-ext.h
             # def AddSp(self, alpha: float, S:SpMatrix)
 
-            def AddMatMat(self, alpha: float, A: MatrixBase,
+            def `AddMatMat` as add_mat_mat(self, alpha: float, A: MatrixBase,
                           transA: MatrixTransposeType, B: MatrixBase,
                           transB: MatrixTransposeType, beta: float):
               """Performs the operation self = beta*self+alpha*A*B.
@@ -763,7 +763,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def SetMatMatDivMat(self, A: MatrixBase, B: MatrixBase,
+            def `SetMatMatDivMat` as set_mat_mat_div_mat(self, A: MatrixBase, B: MatrixBase,
                                 C: MatrixBase):
               """Performs the operation self = A.*B./C, where ``.*'' and ``./''
                    are elementwise multiplication and division. If c(i,j)==0
@@ -778,7 +778,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def AddMatSmat(self, alpha: float, A: MatrixBase,
+            def `AddMatSmat` as add_mat_smat(self, alpha: float, A: MatrixBase,
                            transA: MatrixTransposeType, B: MatrixBase,
                            transB: MatrixTransposeType, beta: float):
               """A version of AddMatMat specialized for when B
@@ -798,7 +798,7 @@ from "matrix/kaldi-matrix.h":
                     Error in case of dimension mismatch
               """
 
-            def AddSmatMat(self, alpha: float, A: MatrixBase,
+            def `AddSmatMat` as add_smat_mat(self, alpha: float, A: MatrixBase,
                            transA: MatrixTransposeType, B: MatrixBase,
                            transB: MatrixTransposeType, beta: float):
               """A version of AddMatMat specialized for when A
@@ -819,7 +819,7 @@ from "matrix/kaldi-matrix.h":
               """
 
 
-            def AddMatMatMat(self, alpha: float, A: MatrixBase,
+            def `AddMatMatMat` as add_mat_mat_mat(self, alpha: float, A: MatrixBase,
                              transA: MatrixTransposeType, B: MatrixBase,
                              transB: MatrixTransposeType, C: MatrixBase,
                              transC: MatrixTransposeType, beta: float):
@@ -858,21 +858,21 @@ from "matrix/kaldi-matrix.h":
             # def AddTpTp
             # def AddSpSp
 
-            def CopyLowerToUpper(self):
+            def `CopyLowerToUpper` as copy_lower_to_upper(self):
               """Copy lower triangle to upper triangle (symmetrize).
 
                 Raises:
                     Error if matrix is not square.
               """
 
-            def CopyUpperToLower(self):
+            def `CopyUpperToLower` as copy_upper_to_lower(self):
               """Copy upper triangle to lower triangle (symmetrize)
 
                 Raises:
                     Error if matrix is not square.
               """
 
-            def OrthogonalizeRows(self):
+            def `OrthogonalizeRows` as orthogonalize_rows(self):
               """This function orthogonalizes the rows of a matrix using
                    the Gram-Schmidt process. It will use random number generation
                    to fill in rows with something nonzero, in cases where the
@@ -882,7 +882,7 @@ from "matrix/kaldi-matrix.h":
                     Error if self.num_rows > num_cols.
               """
 
-            def Read(self, is: istream, binary: bool, add: bool = default):
+            def `Read` as read(self, is: istream, binary: bool, add: bool = default):
               """Reads from C++ stream.
 
                 Args:
@@ -891,7 +891,7 @@ from "matrix/kaldi-matrix.h":
                     add(bool): True if you want to add the stream to self.
               """
 
-            def Write(self, os: ostream, binary: bool):
+            def `Write` as write(self, os: ostream, binary: bool):
               """Writes to C++ stream.
 
                 Args:
@@ -930,7 +930,7 @@ from "matrix/kaldi-matrix.h":
         class `Matrix<float>` as Matrix(MatrixBase):
 
             @add__init__
-            def `Matrix` as NewWithSize(self, r:int, c:int,
+            def `Matrix` as new_with_size(self, r:int, c:int,
                                         resize_type:MatrixResizeType = default,
                                         stride_type:MatrixStrideType = default):
               """Create a new matrix with r rows and c columns. If the resize_type is kSetZero,
@@ -951,14 +951,14 @@ from "matrix/kaldi-matrix.h":
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
             #                 MatrixTransposeType trans = kNoTrans);
 
-            def Swap(self, other:Matrix):
+            def `Swap` as swap(self, other:Matrix):
               """Swaps the contents of self and other. Shallow swap."""
 
             # TODO:
             # void Swap(CuMatrix<Real> *mat);
 
             @add__init__
-            def `Matrix` as NewWithMatrix(self, M:MatrixBase,
+            def `Matrix` as new_with_matrix(self, M:MatrixBase,
                                           trans:MatrixTransposeType = default):
               """Create matrix and copy the elements M.
 
@@ -977,7 +977,7 @@ from "matrix/kaldi-matrix.h":
             # def `Matrix` as FromCompressedMatrix(
             #     self, M:TpMatrix, trans:MatrixTransposeType = default)
 
-            def Read(self, is: istream, binary: bool, add: bool = default):
+            def `Read` as read(self, is: istream, binary: bool, add: bool = default):
               """Reads from C++ stream.
 
                 Args:
@@ -986,7 +986,7 @@ from "matrix/kaldi-matrix.h":
                     add(bool): True if you want to add the stream to self.
               """
 
-            def RemoveRow(self, i:int):
+            def `RemoveRow` as remove_row(self, i:int):
               """Removes a row from matrix.
 
                 Args:
@@ -996,10 +996,10 @@ from "matrix/kaldi-matrix.h":
                     Error if i> num_rows
               """
 
-            def Transpose(self):
+            def `Transpose` as transpose(self):
               """Transposes the matrix"""
 
-            def Resize(self, r:int, c:int,
+            def `Resize` as resize(self, r:int, c:int,
                        resize_type:MatrixResizeType = default,
                        stride_type:MatrixStrideType = default):
               """Resizes a matrix. If the resize_type is kSetZero,
@@ -1031,7 +1031,7 @@ from "matrix/kaldi-matrix.h":
             #
             # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
-        def TraceMat(A: MatrixBase) -> float:
+        def `TraceMat` as trace_mat(A: MatrixBase) -> float:
           """Returns the trace of a matrix.
 
             Args:
@@ -1041,7 +1041,7 @@ from "matrix/kaldi-matrix.h":
                 The trace of A
           """
 
-        def TraceMatMat(A: MatrixBase, B: MatrixBase,
+        def `TraceMatMat` as trace_mat_mat(A: MatrixBase, B: MatrixBase,
                         trans: MatrixTransposeType = default) -> float:
           """Calculates the trace of A*B
 
@@ -1058,7 +1058,7 @@ from "matrix/kaldi-matrix.h":
                 Error in case of dimension mismatch
           """
 
-        def TraceMatMatMat(A: MatrixBase, transA: MatrixTransposeType,
+        def `TraceMatMatMat` as trace_mat_mat_mat(A: MatrixBase, transA: MatrixTransposeType,
                            B: MatrixBase, transB: MatrixTransposeType,
                            C: MatrixBase, transC: MatrixTransposeType) -> float:
           """Calculates the trace of A*B*C
@@ -1081,7 +1081,7 @@ from "matrix/kaldi-matrix.h":
                 Error in case of dimension mismatch
           """
 
-        def TraceMatMatMatMat(
+        def `TraceMatMatMatMat` as trace_mat_mat_mat_mat(
             A: MatrixBase, transA: MatrixTransposeType,
             B: MatrixBase, transB: MatrixTransposeType,
             C: MatrixBase, transC: MatrixTransposeType,
@@ -1109,7 +1109,7 @@ from "matrix/kaldi-matrix.h":
                 Error in case of dimension mismatch
           """
 
-        def `ApproxEqual` as ApproxEqualMatrix(
+        def `ApproxEqual` as approx_equal_matrix(
             A:MatrixBase, B:MatrixBase, tol:`float` as float = default) -> bool:
           """Computes the Frobenius norm of the difference of matrix A and B
                and returns True if it is less or equal than tol.
@@ -1126,7 +1126,7 @@ from "matrix/kaldi-matrix.h":
                 Error if size of a is different than size of b.
           """
 
-        def `AssertEqual` as AssertEqualMatrix(
+        def `AssertEqual` as assert_equal_matrix(
             A:MatrixBase, B:MatrixBase, tol:`float` as float = default):
           """Computes the Frobenius norm of the difference of matrix A and B
                and checks if it is less or equal than tol. If the condition is
@@ -1153,7 +1153,7 @@ from "matrix/kaldi-matrix.h":
 #        This needs a C++ wrapper
 #        def AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
 
-        def `SameDim` as SameDimMatrix(M: MatrixBase, N: MatrixBase) -> bool:
+        def `SameDim` as same_dim_matrix(M: MatrixBase, N: MatrixBase) -> bool:
           """Checks if M and N have the same dimensions.
 
             Args:
@@ -1169,7 +1169,7 @@ from "matrix/kaldi-matrix.h":
             num_cols: int = property(`NumCols`)
             stride: int = property(`Stride`)
 
-            def SizeInBytes(self) -> int:
+            def `SizeInBytes` as size_in_bytes(self) -> int:
               """Returns the number of rows"""
 
             # def Data(self) -> float*
@@ -1183,7 +1183,7 @@ from "matrix/kaldi-matrix.h":
             # Note (VM):
             # __getitem__ takes only two arguments (self, index), but
             # here we need three (self, row, col).
-            def `operator()` as Get(self, r:int, c:int) -> float:
+            def `operator()` as get(self, r:int, c:int) -> float:
               """Indexing operator.
 
                 Args:
@@ -1198,21 +1198,21 @@ from "matrix/kaldi-matrix.h":
 #           Deprecated in new kaldi versions
 #           def Set(self, r:int, c:int, v:float)
 
-            def SetZero(self):
+            def `SetZero` as set_zero(self):
               """Set all elements to zero."""
 
-            def SetUnit(self):
+            def `SetUnit` as set_unit(self):
               """Sets all elements to zero, and fill the diagonal with ones,
                    works for non-square matrices too"""
 
-            def SetRandn(self):
+            def `SetRandn` as set_randn(self):
               """Sets the elements to random values of a normal distribution."""
 
-            def SetRandUniform(self):
+            def `SetRandUniform` as set_rand_uniform(self):
               """Sets the elements to random values of a uniform(0,1) distribution."""
 
             # Copy methods
-            def CopyFromMat(self, M:DoubleMatrixBase,
+            def `CopyFromMat` as copy_from_mat(self, M:DoubleMatrixBase,
                             trans:MatrixTransposeType = default):
               """Copy data from another matrix of the same size
 
@@ -1236,7 +1236,7 @@ from "matrix/kaldi-matrix.h":
             # def `CopyRowsFromVec` as CopyRowFromCudaVec(self,
             #                                             v:CuDoubleVector)
 
-            def CopyRowsFromVec(self, v:DoubleVectorBase):
+            def `CopyRowsFromVec` as copy_row_from_vec_double(self, v:DoubleVectorBase):
               """This function has two modes of operation. If v.size == rows * cols,
                    then it treats the vector as a row-by-row concatenation of a matrix
                    and copies to self. if v.size == cols, it sets each row of self
@@ -1249,7 +1249,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def CopyColsFromVec(self, v:DoubleVectorBase):
+            def `CopyColsFromVec` as copy_cols_from_vec(self, v:DoubleVectorBase):
               """This function has two modes of operation. If v.size == rows * cols,
                    then it treats the vector as a col-by-col concatenation of a matrix
                    and copies to self. if v.size == rows, it sets each col of self
@@ -1262,7 +1262,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def CopyColFromVec(self, v:DoubleVectorBase, col:int):
+            def `CopyColFromVec` as copy_col_from_vec(self, v:DoubleVectorBase, col:int):
               """Copy vector into specific column of matrix.
 
               Args:
@@ -1273,7 +1273,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def CopyRowFromVec(self, v:DoubleVectorBase, row:int):
+            def `CopyRowFromVec` as copy_row_from_vec(self, v:DoubleVectorBase, row:int):
               """Copy vector into specific row of matrix.
 
               Args:
@@ -1284,7 +1284,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def CopyDiagFromVec(self, v:DoubleVectorBase):
+            def `CopyDiagFromVec` as copy_diag_from_vec(self, v:DoubleVectorBase):
               """Copy vector into diagonal of matrix
 
               Args:
@@ -1300,10 +1300,10 @@ from "matrix/kaldi-matrix.h":
 
             # Special functions #
 
-            def Sum(self) -> float:
+            def `Sum` as sum(self) -> float:
               """Returns sum of all elements in matrix."""
 
-            def Trace(self, check_square: bool = default) -> float:
+            def `Trace` as trace(self, check_square: bool = default) -> float:
               """Returns the trace of the matrix. If matrix is not square
                    it will return the trace of the square matrix formed from
                    the minimum dimension, e.g. if the matrix is 3x5 it will
@@ -1316,13 +1316,13 @@ from "matrix/kaldi-matrix.h":
                   Error if the matrix is not square and you have set check_square as True
               """
 
-            def Max(self) -> float:
+            def `Max` as max(self) -> float:
               """Returns maximum element of matrix."""
 
-            def Min(self) -> float:
+            def `Min` as min(self) -> float:
               """Returns minimum element of matrix."""
 
-            def MulElements(self, A: DoubleMatrixBase):
+            def `MulElements` as mul_elements(self, A: DoubleMatrixBase):
               """Element by element multiplication with matrix A.
 
               Args:
@@ -1332,7 +1332,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def DivElements(self, A: DoubleMatrixBase):
+            def `DivElements` as div_elements(self, A: DoubleMatrixBase):
               """Element by element division with matrix A,
                    e.g. self(i,j) = self(i,j)/A(i,j) for all i,j.
 
@@ -1343,13 +1343,13 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def Scale(self, alpha: float):
+            def `Scale` as scale(self, alpha: float):
               """Scale all elements of the matrix by alpha
 
               Args:
                   alpha(float): A scaling constant
               """
-            def `Max` as MaxWithMat(self, A: DoubleMatrixBase):
+            def `Max` as max_with_mat(self, A: DoubleMatrixBase):
               """Performs the elementwise operation self(i,j) = max(self(i,j), A(i,j)) for every i,j.
 
               Args:
@@ -1359,7 +1359,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def `Min` as MinWithMat(self, A: DoubleMatrixBase):
+            def `Min` as min_with_mat(self, A: DoubleMatrixBase):
               """Performs the elementwise operation
                    self(i,j) = min(self(i,j), A(i,j)) for every i,j.
 
@@ -1370,7 +1370,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def MulColsVec(self, scale: DoubleVectorBase):
+            def `MulColsVec` as mul_cols_vec(self, scale: DoubleVectorBase):
               """Performs self = self * diag(scale). Scales each column by
                    a scalar taken from that dimension of the vector.
 
@@ -1381,7 +1381,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def MulRowsVec(self, scale: DoubleVectorBase):
+            def `MulRowsVec` as mul_rows_vec(self, scale: DoubleVectorBase):
               """Performs self = diag(scale)*self. Scales each row by
                    a scalar taken from that dimension of the vector.
 
@@ -1392,7 +1392,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def MulRowsGroupMat(self, src: DoubleMatrixBase):
+            def `MulRowsGroupMat` as mul_rows_group_mat(self, src: DoubleMatrixBase):
               """Divide each row of self into src.num_cols equal groups,
                    and then scale i'th row's j'th group of elements by src(i, j).
 
@@ -1436,10 +1436,10 @@ from "matrix/kaldi-matrix.h":
 #                Error if matrix is not square
 #          """
 
-            def InvertElements(self):
+            def `InvertElements` as invert_elements(self):
               """Inverts all the elements of the matrix. self(i,j)=1/self(i,j)."""
 
-            def Transpose(self):
+            def `Transpose` as transpose(self):
               """Transposes the elements of the matrix. self(i,j)=self(j,i)."""
 
             # FIXME(Pavlos):
@@ -1457,27 +1457,27 @@ from "matrix/kaldi-matrix.h":
             # void AddRows(Real alpha, const Real *const *src);
             # void AddToRows(Real alpha, Real *const *dst) const;
 
-            def ApplyFloor(self, floor_val: float):
+            def `ApplyFloor` as apply_floor(self, floor_val: float):
               """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
 
               Args:
                   floor(float): The floor value to check against.
               """
 
-            def ApplyCeiling(self, ceiling_val: float):
+            def `ApplyCeiling` as apply_ceiling(self, ceiling_val: float):
               """Applies floor to all elements. If self(i,j)>ceiling then self(i,j)=ceiling.
 
               Args:
                   ceiling(float): The ceiling value to check against.
               """
 
-            def ApplyLog(self):
+            def `ApplyLog` as apply_log(self):
               """Apply natural log to all elements."""
 
-            def ApplyExp(self):
+            def `ApplyExp` as apply_exp(self):
               """Apply exponential to each value in vector."""
 
-            def ApplyPow(self, power: float):
+            def `ApplyPow` as apply_pow(self, power: float):
               """Take all elements of matrix to a power.
 
               Args:
@@ -1488,7 +1488,7 @@ from "matrix/kaldi-matrix.h":
                   (e.g. square root of a negative) or in case of overflow.
               """
 
-            def ApplyPowAbs(self, power: float, include_sign: bool = default):
+            def `ApplyPowAbs` as apply_pow_abs(self, power: float, include_sign: bool = default):
               """Take the absolute value of all elements of a vector to a power.
                    Include the sign of the input element if include_sign == true.
                    For example, if self=(-3,2) then for power=2 and include_sign=true
@@ -1502,7 +1502,7 @@ from "matrix/kaldi-matrix.h":
                   Error if we have overflows or underflows.
               """
 
-            def ApplyHeaviside(self):
+            def `ApplyHeaviside` as apply_heaviside(self):
               """Applies the Heaviside step function (x > 0 ? 1 : 0) to all matrix elements."""
 
 #            FIXME(pavlos):
@@ -1529,7 +1529,7 @@ from "matrix/kaldi-matrix.h":
 #                eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
 #          """
 #
-            def Power(self, pow: float) -> bool:
+            def `Power` as power(self, pow: float) -> bool:
               """The Power method attempts to take the matrix to a power
                    (e.g P^3=P*P*P) using a method that works in general for fractional
                    and negative powers. The input matrix must be invertible and have
@@ -1594,7 +1594,7 @@ from "matrix/kaldi-matrix.h":
 #                               Its length must be min(self.num_rows, self.num_cols)
 #          """
 
-            def MinSingularValue(self) -> float:
+            def `MinSingularValue` as min_singular_value(self) -> float:
               """Returns the smallest singular value."""
 
 #           FIXME(pavlos):
@@ -1603,13 +1603,13 @@ from "matrix/kaldi-matrix.h":
 #
 #            def TestUninitialized(self)
 
-            def Cond(self) -> float:
+            def `Cond` as cond(self) -> float:
               """Returns the condition number of the SVD computation."""
 
-            def IsSymmetric(self, cutoff: float = default) -> bool:
+            def `IsSymmetric` as issymmetric(self, cutoff: float = default) -> bool:
               """Returns True if the matrix is symmetric."""
 
-            def IsDiagonal(self, cutoff: float = default) -> bool:
+            def `IsDiagonal` as isdiagonal(self, cutoff: float = default) -> bool:
               """Checks if the matrix is diagonal. The nondiagonal elements
                   must be less or equal to cutoff value.
 
@@ -1621,7 +1621,7 @@ from "matrix/kaldi-matrix.h":
                   otherwise false
               """
 
-            def IsUnit(self, cutoff: float = default) -> bool:
+            def `IsUnit` as isunit(self, cutoff: float = default) -> bool:
               """Checks if the matrix is identity-like. It does not have to be square.
                  The nondiagonal elements must be less or equal to cutoff value,
                  while the diagonal ones must be one.
@@ -1633,7 +1633,7 @@ from "matrix/kaldi-matrix.h":
                   True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
               """
 
-            def IsZero(self, cutoff: float = default) -> bool:
+            def `IsZero` as iszero(self, cutoff: float = default) -> bool:
               """Checks if all elements are 0 (where 0 is the cutoff value).
 
               Args:
@@ -1643,10 +1643,10 @@ from "matrix/kaldi-matrix.h":
                   True if it is a zero matrix
               """
 
-            def FrobeniusNorm(self) -> float:
+            def `FrobeniusNorm` as frobenius_norm(self) -> float:
               """Returns the FrobeniusNorm of the matrix"""
 
-            def ApproxEqual(self, other: DoubleMatrixBase, tol: float = default)
+            def `ApproxEqual` as approx_equal(self, other: DoubleMatrixBase, tol: float = default)
                 -> bool:
               """Checks if self is equal with other by calculating the Frobenius
                    norm of their difference.
@@ -1659,7 +1659,7 @@ from "matrix/kaldi-matrix.h":
                   True if ||(self-other)||_F <= tol * ||self||_F
               """
 
-            def Equal(self, other: DoubleMatrixBase) -> bool:
+            def `Equal` as equal(self, other: DoubleMatrixBase) -> bool:
               """Tests for exact equality
 
               Args:
@@ -1669,10 +1669,10 @@ from "matrix/kaldi-matrix.h":
                   True if self(i,j)=other(i,j) for all i,j
               """
 
-            def LargestAbsElem(self) -> float:
+            def `LargestAbsElem` as largest_abs_elem(self) -> float:
               """Returns the largest absolute value of the matrix's elements"""
 
-            def LogSumExp(self, prune: float = default) -> float:
+            def `LogSumExp` as log_sum_exp(self, prune: float = default) -> float:
               """Returns log(sum(exp())) without exp overflow. If prune > 0.0, it uses
                    a pruning beam, discarding terms less than (max - prune).
 
@@ -1684,14 +1684,14 @@ from "matrix/kaldi-matrix.h":
                  elements of the matrix
               """
 
-            def ApplySoftMax(self) -> float:
+            def `ApplySoftMax` as apply_softmax(self) -> float:
               """Apply the softmax function to every element of the matrix.
 
                 Returns:
                    The normalization of the softmax, i.e. sum(exp(self(i,j)))
               """
 
-            def Sigmoid(self, src: DoubleMatrixBase):
+            def `Sigmoid` as sigmoid(self, src: DoubleMatrixBase):
               """Set each element to the sigmoid of the corresponding element of src.
 
               Args:
@@ -1701,7 +1701,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def Heaviside(self, src: DoubleMatrixBase):
+            def `Heaviside` as heaviside(self, src: DoubleMatrixBase):
               """Set each element to the heaviside of the corresponding element of src.
 
               Args:
@@ -1711,7 +1711,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def SoftHinge(self, src: DoubleMatrixBase):
+            def `SoftHinge` as soft_hinge(self, src: DoubleMatrixBase):
               """Set each element of self as self(i,j) = log(1 + exp(src(i,j)))
 
               Args:
@@ -1721,7 +1721,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def GroupPnorm(self, src: DoubleMatrixBase, power: float):
+            def `GroupPnorm` as group_pnorm(self, src: DoubleMatrixBase, power: float):
               """See Also:
                    :kaldi:`kaldi::GroupPnorm`
               """
@@ -1734,7 +1734,7 @@ from "matrix/kaldi-matrix.h":
 #               :kaldi:`kaldi::GroupMaxDeriv`
 #          """
 
-            def Tanh(self, src: DoubleMatrixBase):
+            def `Tanh` as tanh(self, src: DoubleMatrixBase):
               """Set each element to the tanh of the corresponding element of src.
 
               Args:
@@ -1754,21 +1754,21 @@ from "matrix/kaldi-matrix.h":
 #            def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase,
 #                                 check_thresh: float = default)
 
-            def Add(self, alpha: float):
+            def `Add` as add(self, alpha: float):
               """Add a scalar alpha to each element of the matrix.
 
               Args:
                  alpha(float): A scalar
               """
 
-            def AddToDiag(self, alpha: float):
+            def `AddToDiag` as add_to_diag(self, alpha: float):
               """Add a scalar alpha to the diagonal elements of the matrix.
 
               Args:
                  alpha(float): A scalar
               """
 
-            def AddVecVec(self, alpha: float, a: DoubleVectorBase, b: DoubleVectorBase):
+            def `AddVecVec` as add_vec_vec(self, alpha: float, a: DoubleVectorBase, b: DoubleVectorBase):
               """Performs the operation self = self + alpha*a*b^T
 
               Args:
@@ -1777,7 +1777,7 @@ from "matrix/kaldi-matrix.h":
                   b(VectorBase): A vector
               """
 
-            def AddVecToRows(self, alpha: float, v: VectorBase):
+            def `AddVecToRows` as add_vec_to_rows(self, alpha: float, v: VectorBase):
               """Performs the operation self(i,:) = self(i,:)+alpha*v for all i
 
               Args:
@@ -1788,7 +1788,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddVecToCols(self, alpha: float, v: DoubleVectorBase):
+            def `AddVecToCols` as add_vec_to_cols(self, alpha: float, v: DoubleVectorBase):
               """Performs the operation self(:,i) = self(:,i)+alpha*v for all i
 
               Args:
@@ -1799,7 +1799,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddMat(self, alpha: float, M: DoubleMatrixBase,
+            def `AddMat` as add_mat(self, alpha: float, M: DoubleMatrixBase,
                        transA: MatrixTransposeType = default):
               """Performs the operation self = self+alpha*M or self = self+alpha*M^T
 
@@ -1812,7 +1812,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def SymAddMat2(self, alpha: float, M: DoubleMatrixBase,
+            def `SymAddMat2` as sym_add_mat2(self, alpha: float, M: DoubleMatrixBase,
                            transA: MatrixTransposeType, beta: float):
               """Performs the operation self = beta*self+alpha*M*M^T, for symmetric matrices.
                    It only updates the lower triangle of *this. It will leave the
@@ -1830,7 +1830,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddDiagVecMat(self, alpha: float, v: DoubleVectorBase, M: DoubleMatrixBase,
+            def `AddDiagVecMat` as add_diag_vec_mat(self, alpha: float, v: DoubleVectorBase, M: DoubleMatrixBase,
                               transM: MatrixTransposeType,
                               beta: float = default):
               """Perform the operation self = beta*self+alpha*diag(v)*M
@@ -1848,7 +1848,7 @@ from "matrix/kaldi-matrix.h":
               """
 
 
-            def AddMatDiagVec(self, alpha: float, M: DoubleMatrixBase,
+            def `AddMatDiagVec` as add_mat_diag_vec(self, alpha: float, M: DoubleMatrixBase,
                               transM: MatrixTransposeType, v: DoubleVectorBase,
                               beta: float = default):
               """Performs the operation self = beta*self+alpha*M*diag(v)
@@ -1865,7 +1865,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddMatMatElements(self, alpha: float, A: DoubleMatrixBase,
+            def `AddMatMatElements` as add_mat_mat_elements(self, alpha: float, A: DoubleMatrixBase,
                                   B: DoubleMatrixBase, beta: float):
               """Performs the operation self = beta*self + alpha*A.*B
                    where ``.*'' is element by element multiplication.
@@ -1884,7 +1884,7 @@ from "matrix/kaldi-matrix.h":
             # Missing SpMatrix definition
             # def AddSp(self, alpha: float, S:SpDoubleMatrix)
 
-            def AddMatMat(self, alpha: float, A: DoubleMatrixBase,
+            def `AddMatMat` as add_mat_mat(self, alpha: float, A: DoubleMatrixBase,
                           transA: MatrixTransposeType, B: DoubleMatrixBase,
                           transB: MatrixTransposeType, beta: float):
               """Performs the operation self = beta*self+alpha*A*B.
@@ -1903,7 +1903,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def SetMatMatDivMat(self, A: DoubleMatrixBase, B: DoubleMatrixBase,
+            def `SetMatMatDivMat` as set_mat_mat_div_mat(self, A: DoubleMatrixBase, B: DoubleMatrixBase,
                                 C: DoubleMatrixBase):
               """Performs the operation self = A.*B./C, where ``.*'' and ``./''
                    are elementwise multiplication and division. If c(i,j)==0
@@ -1918,7 +1918,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddMatSmat(self, alpha: float, A: DoubleMatrixBase,
+            def `AddMatSmat` as add_mat_smat(self, alpha: float, A: DoubleMatrixBase,
                            transA: MatrixTransposeType, B: DoubleMatrixBase,
                            transB: MatrixTransposeType, beta: float):
               """A version of AddMatMat specialized for when B
@@ -1938,7 +1938,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddSmatMat(self, alpha: float, A: DoubleMatrixBase,
+            def `AddSmatMat` as add_smat_mat(self, alpha: float, A: DoubleMatrixBase,
                            transA: MatrixTransposeType, B: DoubleMatrixBase,
                            transB: MatrixTransposeType, beta: float):
               """A version of AddMatMat specialized for when A
@@ -1958,7 +1958,7 @@ from "matrix/kaldi-matrix.h":
                   Error in case of dimension mismatch
               """
 
-            def AddMatMatMat(self, alpha: float, A: DoubleMatrixBase,
+            def `AddMatMatMat` as add_mat_mat_mat(self, alpha: float, A: DoubleMatrixBase,
                              transA: MatrixTransposeType, B: DoubleMatrixBase,
                              transB: MatrixTransposeType, C: DoubleMatrixBase,
                              transC: MatrixTransposeType, beta: float):
@@ -1998,21 +1998,21 @@ from "matrix/kaldi-matrix.h":
             # def AddTpTp
             # def AddSpSp
 
-            def CopyLowerToUpper(self):
+            def `CopyLowerToUpper` as copy_lower_to_upper(self):
               """Copy lower triangle to upper triangle (symmetrize).
 
               Raises:
                   Error if matrix is not square.
               """
 
-            def CopyUpperToLower(self):
+            def `CopyUpperToLower` as copy_upper_to_lower(self):
               """Copy upper triangle to lower triangle (symmetrize)
 
               Raises:
                   Error if matrix is not square.
               """
 
-            def OrthogonalizeRows(self):
+            def `OrthogonalizeRows` as orthogonalize_rows(self):
               """This function orthogonalizes the rows of a matrix using
                    the Gram-Schmidt process. It will use random number generation
                    to fill in rows with something nonzero, in cases where the
@@ -2022,7 +2022,7 @@ from "matrix/kaldi-matrix.h":
                   Error if self.num_rows > num_cols.
               """
 
-            def Read(self, is: istream, binary: bool, add: bool = default):
+            def `Read` as read(self, is: istream, binary: bool, add: bool = default):
               """Reads from C++ stream.
 
               Args:
@@ -2031,7 +2031,7 @@ from "matrix/kaldi-matrix.h":
                   add(bool): True if you want to add the stream to self.
               """
 
-            def Write(self, os: ostream, binary: bool):
+            def `Write` as write(self, os: ostream, binary: bool):
               """Writes to C++ stream.
 
               Args:
@@ -2042,7 +2042,7 @@ from "matrix/kaldi-matrix.h":
         class `Matrix<double>` as DoubleMatrix(DoubleMatrixBase):
 
             @add__init__
-            def `Matrix` as NewWithSize(self, r:int, c:int,
+            def `Matrix` as new_with_size(self, r:int, c:int,
                                         resize_type:MatrixResizeType = default,
                                         stride_type:MatrixStrideType = default):
               """Create a new matrix with r rows and c columns. If the resize_type is kSetZero,
@@ -2063,14 +2063,14 @@ from "matrix/kaldi-matrix.h":
             # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
             #                 MatrixTransposeType trans = kNoTrans);
 
-            def Swap(self, other: DoubleMatrix):
+            def `Swap` as swap(self, other: DoubleMatrix):
               """Swaps the contents of self and other. Shallow swap."""
 
             # TODO:
             # void Swap(CuMatrix<Real> *mat);
 
             @add__init__
-            def `Matrix` as NewWithMatrix(self, M:MatrixBase,
+            def `Matrix` as new_with_matrix(self, M:MatrixBase,
                                           trans:MatrixTransposeType = default):
               """Create matrix and copy the elements M.
 
@@ -2089,7 +2089,7 @@ from "matrix/kaldi-matrix.h":
             # def `Matrix` as FromTpMatrix(self, M:TpDoubleMatrix,
             #                              trans:MatrixTransposeType = default)
 
-            def Read(self, is: istream, binary: bool, add: bool = default):
+            def `Read` as read(self, is: istream, binary: bool, add: bool = default):
               """Reads from C++ stream.
 
               Args:
@@ -2098,7 +2098,7 @@ from "matrix/kaldi-matrix.h":
                   add(bool): True if you want to add the stream to self.
               """
 
-            def RemoveRow(self, i:int):
+            def `RemoveRow` as remove_row(self, i:int):
               """Removes a row from matrix.
 
               Args:
@@ -2108,10 +2108,10 @@ from "matrix/kaldi-matrix.h":
                   Error if i> num_rows
               """
 
-            def Transpose(self):
+            def `Transpose` as transpose(self):
               """Transposes the matrix"""
 
-            def Resize(self, r:int, c:int,
+            def `Resize` as resize(self, r:int, c:int,
                        resize_type:MatrixResizeType = default,
                        stride_type:MatrixStrideType = default):
               """Resizes a matrix. If the resize_type is kSetZero,
@@ -2143,7 +2143,7 @@ from "matrix/kaldi-matrix.h":
             #
             # def ColRange(self, col_offset: int, num_cols: int) -> SubMatrix
 
-        def `TraceMat` as TraceDoubleMat(A: DoubleMatrixBase) -> float:
+        def `TraceMat` as trace_double_mat(A: DoubleMatrixBase) -> float:
           """Returns the trace of a matrix.
 
           Args:
@@ -2153,7 +2153,7 @@ from "matrix/kaldi-matrix.h":
               The trace of A
           """
 
-        def `TraceMatMat` as TraceDoubleMatMat(
+        def `TraceMatMat` as trace_double_mat_mat(
             A: DoubleMatrixBase, B: DoubleMatrixBase,
             trans:MatrixTransposeType = default) -> float:
           """Calculates the trace of A*B
@@ -2171,7 +2171,7 @@ from "matrix/kaldi-matrix.h":
               Error in case of dimension mismatch
           """
 
-        def `TraceMatMatMat` as TraceDoubleMatMatMat(
+        def `TraceMatMatMat` as trace_double_mat_mat_mat(
             A: DoubleMatrixBase, transA: MatrixTransposeType,
             B: DoubleMatrixBase, transB: MatrixTransposeType,
             C: DoubleMatrixBase, transC: MatrixTransposeType) -> float:
@@ -2195,7 +2195,7 @@ from "matrix/kaldi-matrix.h":
               Error in case of dimension mismatch
           """
 
-        def `TraceMatMatMatMat` as TraceDoubleMatMatMatMat(
+        def `TraceMatMatMatMat` as trace_double_mat_mat_mat_mat(
             A: DoubleMatrixBase, transA: MatrixTransposeType,
             B: DoubleMatrixBase, transB: MatrixTransposeType,
             C: DoubleMatrixBase, transC: MatrixTransposeType,
@@ -2223,7 +2223,7 @@ from "matrix/kaldi-matrix.h":
               Error in case of dimension mismatch
           """
 
-        def `ApproxEqual` as ApproxEqualDoubleMatrix(
+        def `ApproxEqual` as approx_equal_double_matrix(
             A:DoubleMatrixBase, B:DoubleMatrixBase,
             tol:`double` as float = default) -> bool:
           """Computes the Frobenius norm of the difference of matrix A and B
@@ -2241,7 +2241,7 @@ from "matrix/kaldi-matrix.h":
               Error if size of a is different than size of b.
           """
 
-        def `AssertEqual` as AssertEqualDoubleMatrix(
+        def `AssertEqual` as assert_equal_double_matrix(
             A:DoubleMatrixBase, B:DoubleMatrixBase,
             tol:`double` as float = default):
           """Computes the Frobenius norm of the difference of matrix A and B
@@ -2268,7 +2268,7 @@ from "matrix/kaldi-matrix.h":
 #        def `CreateEigenvalueMatrix` as CreateEigenvalueDoubleMatrix(
 #            real:DoubleVectorBase, imag:DoubleVectorBase, D:DoubleMatrixBase)
 
-        def `SameDim` as SameDimDoubleMatrix(M: DoubleMatrixBase,
+        def `SameDim` as same_dim_double_matrix(M: DoubleMatrixBase,
                                              N: DoubleMatrixBase) -> bool:
           """Checks if M and N have the same dimensions.
 
@@ -2286,8 +2286,8 @@ from "matrix/kaldi-matrix.h":
             mSampleSize: int
             mSampleKind: int
 
-        def ReadHtk(is: istream, M: Matrix, header: HtkHeader) -> bool
+        def `ReadHtk` as read_htk(is: istream, M: Matrix, header: HtkHeader) -> bool
 
-        def WriteHtk(os: ostream , M: MatrixBase, header: HtkHeader) -> bool
+        def `WriteHtk` as wrie_htk(os: ostream , M: MatrixBase, header: HtkHeader) -> bool
 
-        def WriteSphinx(os: ostream, M: MatrixBase) -> bool
+        def `WriteSphinx` as wrie_sphinx(os: ostream, M: MatrixBase) -> bool

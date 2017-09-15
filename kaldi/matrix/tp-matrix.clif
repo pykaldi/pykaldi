@@ -10,16 +10,16 @@ from "matrix/tp-matrix.h":
     class `TpMatrix<float>` as TpMatrix(PackedMatrix):
 
       @add__init__
-      def `TpMatrix` as New(self, r: int,
+      def `TpMatrix` as new(self, r: int,
                             resize_type: MatrixResizeType = default)
 
       @add__init__
-      def `TpMatrix` as NewWithOther(self, orig:TpMatrix)
+      def `TpMatrix` as new_with_other(self, orig:TpMatrix)
 
       # TODO:
       # def `TpMatrix` as WithCU(cu:CuTpMatrix)
 
-      def `operator()` as Get(self, r: int, c: int) -> float:
+      def `operator()` as get(self, r: int, c: int) -> float:
         """Indexing operator.
    
          Args:
@@ -30,26 +30,26 @@ from "matrix/tp-matrix.h":
              The value of the indexed element
          """
 
-      def Cholesky(self, orig:SpMatrix)
+      def `Cholesky` as cholesky(self, orig:SpMatrix)
 
-      def Invert(self):
+      def `Invert` as invert(self):
         """Invert the matrix"""
 
-      def InvertDouble(self)
+      def `InvertDouble` as invert_double(self)
 
-      def Swap(self, other: TpMatrix):
+      def `Swap` as swap(self, other: TpMatrix):
         """Swap the contents of self with ``other''. Shllow swap.
 
         Args:
             other(TpMatrix): A triangular matrix.
       """
 
-      def Determinant(self) -> float:
+      def `Determinant` as determinant(self) -> float:
         """Return the determinant of the matrix."""
 
-      def CopyFromMat(self, M:MatrixBase, Trans:MatrixTransposeType = default)
+      def `CopyFromMat` as copy_from_mat(self, M:MatrixBase, Trans:MatrixTransposeType = default)
 
-      def CopyFromTp(self, other:TpMatrix):
+      def `CopyFromTp` as copy_from_tp(self, other:TpMatrix):
         """Copy data from another triangular matrix of the same size
 
         Args:
@@ -59,4 +59,4 @@ from "matrix/tp-matrix.h":
             Error in case of dimension mismatch
         """
 
-      def AddTp(self, alpha: float, M:TpMatrix)
+      def `AddTp` as add_tp(self, alpha: float, M:TpMatrix)

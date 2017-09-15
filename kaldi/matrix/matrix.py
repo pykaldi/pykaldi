@@ -44,11 +44,11 @@ class MatrixBase(object):
                              "into matrix with dimensions {d[0]}x{d[1]}"
                              .format(s=src.size(), d=self.size()))
         if isinstance(src, MatrixBase):
-            self.CopyFromMat(src)
+            self.copy_from_mat(src)
         elif isinstance(src, SpMatrix):
-            __kaldi_matrix.ext.CopyFromSp(self, src)
+            __kaldi_matrix.ext.copy_from_sp(self, src)
         elif isinstance(src, TpMatrix):
-            __kaldi_matrix.ext.CopyFromTp(self, src)
+            __kaldi_matrix.ext.copy_from_tp(self, src)
         return self
 
     def clone(self):
@@ -58,7 +58,7 @@ class MatrixBase(object):
             A new :class:`Matrix` that is a copy of this matrix.
         """
         clone = Matrix(*self.size())
-        clone.CopyFromMat(self)
+        clone.copy_from_mat(self)
         return clone
 
     def size(self):
@@ -67,7 +67,7 @@ class MatrixBase(object):
         Returns:
             A tuple (num_rows, num_cols) of integers.
         """
-        return self.num_rows, self.num_cols
+        return self._num_rows, self._num_cols
 
     @property
     def shape(self):
@@ -89,7 +89,7 @@ class MatrixBase(object):
             return False
         if self.size() != other.size():
             return False
-        return self.ApproxEqual(other, tol)
+        return self.approx_equal(other, tol)
 
     def __eq__(self, other):
         """Magic method for :meth:`equal`"""
@@ -141,7 +141,7 @@ class MatrixBase(object):
                              "matrix.")
         P = Matrix(n, n)
         r, i = Vector(n), Vector(n)
-        self.Eig(P, r, i)
+        self.eig(P, r, i)
         return P, r, i
 
     def svd(self):
@@ -165,7 +165,7 @@ class MatrixBase(object):
                              ">= self.num_cols.")
         U, Vt = Matrix(m, n), Matrix(n, n)
         s = Vector(n)
-        self.Svd(s, U, Vt)
+        self.svd(s, U, Vt)
         return U, s, Vt
 
     def singular_values(self):
@@ -175,7 +175,7 @@ class MatrixBase(object):
             A :class:`Vector` representing singular values of this matrix.
         """
         res = Vector(self.num_cols)
-        self.SingularValues(res)
+        self.singular_values(res)
         return res
 
     def __getitem__(self, index):
@@ -219,7 +219,7 @@ class MatrixBase(object):
             if ret.ndim == 2:
                 return SubMatrix(ret)
             elif ret.ndim == 1:
-                return vector.SubVector(ret)
+                return _vector.SubVector(ret)
             else:
                 raise ValueError("indexing operation returned a numpy array "
                                  " with {} dimensions.".format(ret.ndim))
@@ -268,7 +268,7 @@ class MatrixBase(object):
         """
         if Sp.size() != self.size():
             raise ValueError()
-        __kaldi_matrix.ext.AddSp(self, alpha, Sp)
+        __kaldi_matrix.ext.add_sp(self, alpha, Sp)
         return self
 
     def add_sp_mat(self, alpha, A, B, transB, beta):
@@ -298,7 +298,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.AddSpMat(self, alpha, A, transA, B, beta)
+        __kaldi_matrix.ext.add_sp_mat(self, alpha, A, transA, B, beta)
         return self
 
     def add_tp_mat(self, alpha, A, transA, B, transB, beta = 1.0):
@@ -328,7 +328,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.AddTpMat(self, alpha, A, transA, B, transB, beta)
+        __kaldi_matrix.ext.add_tp_mat(self, alpha, A, transA, B, transB, beta)
         return self
 
     def add_mat_sp(self, alpha, A, transA, B, beta = 1.0):
@@ -356,7 +356,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.AddMatSp(self, alpha, A, transA, B, beta)
+        __kaldi_matrix.ext.add_mat_sp(self, alpha, A, transA, B, beta)
         return self
 
     def add_mat_tp(self, alpha, A, transA, B, transB, beta = 1.0):
@@ -384,7 +384,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.AddMatTp(self, alpha, A, transA, B, transB, beta)
+        __kaldi_matrix.ext.add_mat_tp(self, alpha, A, transA, B, transB, beta)
         return self
 
     def add_tp_tp(self, alpha, A, transA, B, transB, beta = 1.0):
@@ -412,7 +412,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.AddTpTp(self, alpha, A, transA, B, transB, beta)
+        __kaldi_matrix.ext.add_tp_tp(self, alpha, A, transA, B, transB, beta)
         return self
 
     def add_sp_sp(self, alpha, A, B, beta = 1.0):
@@ -440,7 +440,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.AddSpSp(self, alpha, A, B, beta)
+        __kaldi_matrix.ext.add_sp_sp(self, alpha, A, B, beta)
 
 
 class Matrix(MatrixBase, _kaldi_matrix.Matrix):
@@ -498,7 +498,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
             if obj.ndim != 2:
                 raise ValueError("obj should be a 2-D matrix like object.")
             obj = SubMatrix(obj)
-        obj_num_rows, obj_num_cols = obj.num_rows, obj.num_cols
+        obj_num_rows, obj_num_cols = obj._num_rows, obj._num_cols
         if not (0 <= row_start <= obj_num_rows):
             raise IndexError("row_start={0} should be in the range [0,{1}] "
                              "when obj.num_rows={1}."
@@ -527,7 +527,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
                 raise IndexError("num_rows and num_cols should both be "
                                  "positive or they should both be 0.")
         matrix = cls(num_rows, num_cols)
-        matrix.CopyFromMat(obj)
+        matrix.copy_from_mat(obj)
         return matrix
 
     def resize_(self, num_rows, num_cols,
@@ -544,7 +544,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
         Raises:
             ValueError: If matrices do not own their data.
         """
-        self.Resize(num_rows, num_cols, resize_type, stride_type)
+        self.resize(num_rows, num_cols, resize_type, stride_type)
         return self
 
     def swap_(self, other):
@@ -558,7 +558,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
         """
         if not isinstance(other, _kaldi_matrix.Matrix):
             raise TypeError("other should be a Matrix instance.")
-        self.Swap(other)
+        self.swap(other)
         return self
 
     def transpose_(self):
@@ -567,15 +567,15 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
         Raises:
             ValueError: if matrix does not own its data.
         """
-        self.Transpose()
+        self.transpose()
         return self
 
     def __delitem__(self, index):
         """Removes a row from the matrix."""
-        if not (0 <= index < self.num_rows):
+        if not (0 <= index < self._num_rows):
             raise IndexError("index={} should be in the range [0,{})."
                              .format(index, self.num_rows))
-        self.RemoveRow(index)
+        self.remove_row(index)
 
 
 class SubMatrix(MatrixBase, _matrix_ext.SubMatrix):
@@ -615,7 +615,7 @@ class SubMatrix(MatrixBase, _matrix_ext.SubMatrix):
                 raise ValueError("obj should be a 2-D matrix like object.")
             obj_num_rows, obj_num_cols = obj.shape
         else:
-            obj_num_rows, obj_num_cols = obj.num_rows, obj.num_cols
+            obj_num_rows, obj_num_cols = obj._num_rows, obj._num_cols
         if not (0 <= row_start <= obj_num_rows):
             raise IndexError("row_start={0} should be in the range [0,{1}] "
                              "when obj.num_rows={1}."

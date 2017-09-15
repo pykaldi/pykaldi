@@ -8,30 +8,30 @@ from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "matrix/sparse-matrix.h":
   namespace `kaldi`:
     class `SparseVector<float>` as SparseVector:
-      def Dim(self) -> int:
+      def `Dim` as dim(self) -> int:
         """Returns the size of the sparse vector."""
 
-      def Sum(self) -> float:
+      def `Sum` as sum(self) -> float:
         """Returns the summation of the elements."""
 
-      def CopyElementsToVec(self, vec: VectorBase)
+      def `CopyElementsToVec` as copy_elements_to_vec(self, vec: VectorBase)
 
-      def AddToVec(self, alpha: float, vec: VectorBase)
+      def `AddToVec` as add_to_vec(self, alpha: float, vec: VectorBase)
 
-      def CopyFromSvec(self, other: SparseVector)
+      def `CopyFromSvec` as copy_from_svec(self, other: SparseVector)
 
       @add__init__
       def `SparseVector` as new_from_other(self, other: SparseVector)
 
-      def Swap(self, other: SparseVector)
+      def `Swap` as swap(self, other: SparseVector)
 
-      def Max(self) -> (value: float, index: int)
+      def `Max` as max(self) -> (value: float, index: int)
 
-      def NumElements(self) -> int
+      def `NumElements` as num_elements(self) -> int
 
-      def GetElement(self, i: int) -> tuple<int, float>
+      def `GetElement` as get_elements(self, i: int) -> tuple<int, float>
 
-      def SetRandn(self, zero_prob: float)
+      def `SetRandn` as set_randn(self, zero_prob: float)
 
       @add__init__
       def `SparseVector` as new_from_dim(self, dim: int)
@@ -40,66 +40,66 @@ from "matrix/sparse-matrix.h":
       def `SparseVector` as new_from_pairs(self, dim: int,
                                            pairs: list<tuple<int, float>>)
 
-      def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+      def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float)
 
-    def VecSvec(vec: VectorBase, svec: SparseVector) -> float
+    def `VecSvec` as vec_svec(vec: VectorBase, svec: SparseVector) -> float
 
     class `SparseMatrix<float>` as SparseMatrix:
-      def NumRows(self) -> int
+      def `NumRows` as num_rows(self) -> int
 
-      def NumCols(self) -> int
+      def `NumCols` as num_cols(self) -> int
 
-      def NumElements(self) -> int
+      def `NumElements` as num_elements(self) -> int
 
-      def Sum(self) -> float
+      def `Sum` as sum(self) -> float
 
-      def FrobeniusNorm(self) -> float
+      def `FrobeniusNorm` as frobenius_norm(self) -> float
 
-      def CopyToMat(self, other: MatrixBase, t: MatrixTransposeType = default)
+      def `CopyToMat` as copy_to_mat(self, other: MatrixBase, t: MatrixTransposeType = default)
 
-      def CopyElementsToVec(self, other: VectorBase)
+      def `CopyElementsToVec` as copy_elements_to_vec(self, other: VectorBase)
 
-      def CopyFromSmat(self, other: SparseMatrix)
+      def `CopyFromSmat` as copy_from_smat(self, other: SparseMatrix)
 
-      def AddToMat(self, alpha: float, other: MatrixBase,
+      def `AddToMat` as add_to_mat(self, alpha: float, other: MatrixBase,
                    t: MatrixTransposeType = default)
 
       @add__init__
       def `SparseMatrix` as new_from_other(self, other: SparseMatrix)
 
-      def Swap(self, other: SparseMatrix)
+      def `Swap` as swap(self, other: SparseMatrix)
 
       @add__init__
       def `SparseMatrix` as new_from_pairs(
           self, dim: int, pairs: list<list<tuple<int, float>>>)
 
-      def SetRandn(self, zero_prob: float)
+      def `SetRandn` as set_randn(self, zero_prob: float)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Row(self, r: int) -> SparseVector
+      def `Row` as row(self, r: int) -> SparseVector
 
-      def SetRow(self, r: int, vec: SparseVector)
+      def `SetRow` as set_row(self, r: int, vec: SparseVector)
 
       # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
 
       @add__init__
       def `SparseMatrix` as new_from_dims(self, num_rows: int, num_cols: int)
 
-      def Resize(self, rows: int, cols: int,
+      def `Resize` as resize(self, rows: int, cols: int,
                  resize_type: MatrixResizeType = default)
 
-      def Scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float)
 
-    def TraceMatSmat(A: MatrixBase, B: SparseMatrix,
+    def `TraceMatSmat` as trace_mat_smat(A: MatrixBase, B: SparseMatrix,
                      trans: MatrixTransposeType = default) -> float
 
     enum GeneralMatrixType with:
@@ -108,47 +108,47 @@ from "matrix/sparse-matrix.h":
       `kSparseMatrix` as SPARSE_MATRIX
 
     class GeneralMatrix:
-      def Type(self) -> GeneralMatrixType
+      def `Type` as type(self) -> GeneralMatrixType
 
-      def Compress(self)
+      def `Compress` as compress(self)
 
-      def Uncompress(self)
+      def `Uncompress` as uncompress(self)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def GetSparseMatrix(self) -> SparseMatrix
+      def `GetSparseMatrix` as get_sparse_matrix(self) -> SparseMatrix
 
-      def SwapSparseMatrix(self, smat: SparseMatrix)
+      def `SwapSparseMatrix` as swap_sparse_matrix(self, smat: SparseMatrix)
 
-      def GetCompressedMatrix(self) -> CompressedMatrix
+      def `GetCompressedMatrix` as get_compressed_matrix(self) -> CompressedMatrix
 
-      def SwapCompressedMatrix(self, cmat: CompressedMatrix)
+      def `SwapCompressedMatrix` as swap_compressed_matrix(self, cmat: CompressedMatrix)
 
-      def GetFullMatrix(self) -> Matrix
+      def `GetFullMatrix` as get_full_matrix(self) -> Matrix
 
-      def GetMatrix(self) -> Matrix
+      def `GetMatrix` as get_matrix(self) -> Matrix
 
-      def SwapFullMatrix(self, cmat: Matrix)
+      def `SwapFullMatrix` as swap_full_matrix(self, cmat: Matrix)
 
-      def CopyToMat(self, mat: MatrixBase,
+      def `CopyToMat` as copy_to_mat(self, mat: MatrixBase,
                     trans: MatrixTransposeType = default)
 
-      def `CopyToMat` as CopyToCuMat(self, cu_mat: CuMatrixBase,
+      def `CopyToMat` as copy_to_cu_mat(self, cu_mat: CuMatrixBase,
                                      trans: MatrixTransposeType = default)
 
-      def AddToMat(self, alpha: float, mat: MatrixBase,
+      def `AddToMat` as add_to_mat(self, alpha: float, mat: MatrixBase,
                    trans: MatrixTransposeType = default)
 
-      def `AddToMat` as AddToCuMat(self, alpha: float, cu_mat: CuMatrixBase,
+      def `AddToMat` as add_to_cu_mat(self, alpha: float, cu_mat: CuMatrixBase,
                                    trans: MatrixTransposeType = default)
 
-      def Scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float)
 
-      def NumRows(self) -> int
+      def `NumRows` as num_rows(self) -> int
 
-      def NumCols(self) -> int
+      def `NumCols` as num_cols(self) -> int
 
       @add__init__
       def `GeneralMatrix` as new_from_matrix(self, other: MatrixBase)
@@ -162,22 +162,22 @@ from "matrix/sparse-matrix.h":
       @add__init__
       def `GeneralMatrix` as new_from_other(self, other: GeneralMatrix)
 
-      def Clear(self)
+      def `Clear` as clear(self)
 
-      def Swap(self, other: GeneralMatrix)
+      def `Swap` as swap(self, other: GeneralMatrix)
 
     # def AppendGeneralMatrixRows(src: list<GeneralMatrix>) -> GeneralMatrix
 
-    def FilterSparseMatrixRows(in: SparseMatrix, keep_rows: list<bool>)
+    def `FilterSparseMatrixRows` as filter_sparse_matrix_rows(in: SparseMatrix, keep_rows: list<bool>)
         -> SparseMatrix
 
-    def FilterMatrixRows(in: Matrix, keep_rows: list<bool>) -> Matrix
+    def `FilterMatrixRows` as filter_matrix_rows(in: Matrix, keep_rows: list<bool>) -> Matrix
 
-    def FilterCompressedMatrixRows(in: CompressedMatrix, keep_rows: list<bool>)
+    def `FilterCompressedMatrixRows` as filter_compressed_matrix_rows(in: CompressedMatrix, keep_rows: list<bool>)
         -> Matrix
 
-    def FilterGeneralMatrixRows(in: GeneralMatrix, keep_rows: list<bool>)
+    def `FilterGeneralMatrixRows` as filter_general_matrix_rows(in: GeneralMatrix, keep_rows: list<bool>)
         -> GeneralMatrix
 
-    def ExtractRowRangeWithPadding(in: GeneralMatrix, row_offset: int,
+    def `ExtractRowRangeWithPadding` as extract_row_range_with_padding(in: GeneralMatrix, row_offset: int,
                                    num_rows: int) -> GeneralMatrix

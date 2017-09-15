@@ -1,7 +1,8 @@
 from __future__ import division
 import unittest
 import numpy as np 
-from kaldi.matrix import Matrix, SubMatrix, SpMatrix
+from kaldi.matrix import Matrix, SubMatrix
+from kaldi.matrix.packed import SpMatrix
 
 class TestMatrix(unittest.TestCase):
 
@@ -58,9 +59,9 @@ class TestMatrix(unittest.TestCase):
         self.assertTrue(m, m.clone())
 
         m = Matrix(4, 4)
-        m.SetZero()
+        m.set_zero()
         m1 = Matrix(4, 4)
-        m1.SetZero()
+        m1.set_zero()
         self.assertTrue(m, m1)
 
         m = Matrix(4, 4)
@@ -213,8 +214,8 @@ class testSubMatrix(unittest.TestCase):
         sb = SubMatrix(m)
 
         for i in range(100):
-            m.SetRandn()
-            self.assertAlmostEqual(m.Sum(), sb.Sum())
+            m.set_randn()
+            self.assertAlmostEqual(m.sum(), sb.sum())
 
         
 

@@ -15,19 +15,19 @@ from "matrix/compressed-matrix.h":
 
     class CompressedMatrix:
       @add__init__
-      def `CompressedMatrix` as New(self, mat: MatrixBase,
+      def `CompressedMatrix` as new(self, mat: MatrixBase,
                                     method: CompressionMethod = default)
 
       @add__init__
-      def `CompressedMatrix` as NewWithRange(self, mat: CompressedMatrix,
+      def `CompressedMatrix` as new_with_range(self, mat: CompressedMatrix,
                                              row_offset: int, num_rows: int,
                                              col_offset: int, num_cols:int,
                                              allow_padding: bool = default)
 
       @add__init__
-      def `CompressedMatrix` as NewWithOther(self, mat: CompressedMatrix)
+      def `CompressedMatrix` as new_with_other(self, mat: CompressedMatrix)
 
-      def CopyFromMat(self, mat: MatrixBase,
+      def `CopyFromMat` as copy_from_mat(self, mat: MatrixBase,
                       method: CompressionMethod = default):
         """Copy data from another matrix to self.
 
@@ -36,23 +36,23 @@ from "matrix/compressed-matrix.h":
             method(CompresssionMethod): Which compression method to use
         """ 
       
-      def CopyToMat(self, mat: MatrixBase,
+      def `CopyToMat` as copy_to_mat(self, mat: MatrixBase,
                     method: MatrixTransposeType = default)
 
-      def NumRows(self) -> int:
+      def `NumRows` as num_rows(self) -> int:
         """Returns the number of rows."""
 
-      def NumCols(self) -> int:
+      def `NumCols` as num_cols(self) -> int:
         """Returns the number of columns."""
 
-      def CopyRowToVec(self, row: int, v: VectorBase)
+      def `CopyRowToVec` as copy_row_to_vec(self, row: int, v: VectorBase)
 
-      def CopyColToVec(self, col: int, v: VectorBase)
+      def `CopyColToVec` as copy_col_to_vec(self, col: int, v: VectorBase)
 
-      def `CopyToMat` as CopyToMatOffset(self, row_offset: int,
+      def `CopyToMat` as copy_to_mat_offset(self, row_offset: int,
                                          col_offset: int, dest: MatrixBase)
 
-      def Swap(self, other: CompressedMatrix):
+      def `Swap` as swap(self, other: CompressedMatrix):
         """Swap elements with another compressed matrix. Shallow swap.
 
         Args:
@@ -62,6 +62,6 @@ from "matrix/compressed-matrix.h":
             Error in case od dimension mismatch.
         """
 
-      def Clear(self)
+      def `Clear` as clear(self)
 
-      def Scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float)
