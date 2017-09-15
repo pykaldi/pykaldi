@@ -3,8 +3,8 @@ from "util/iostream-clifwrap.h" import *
 from "base/io-funcs-ext.h":
   namespace `kaldi`:
 
-    def `InitKaldiOutputStreamExt` as InitKaldiOutputStream(os: ostream,
+    def `InitKaldiOutputStreamExt` as init_output_stream(os: ostream,
                                                             binary: bool)
 
-    def `InitKaldiInputStreamExt` as InitKaldiInputStream(is: istream)
+    def `InitKaldiInputStreamExt` as init_input_stream(is: istream)
         -> (success: bool, binary: bool)
