@@ -4,7 +4,7 @@ from . import packed
 from . import sparse
 from . import vector
 
-from ._matrix_common import *
+from _matrix_common import *
 from ._str import set_printoptions
 from .matrix import Matrix, SubMatrix, construct_matrix
 from .vector import Vector, SubVector, construct_vector
