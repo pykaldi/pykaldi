@@ -17,8 +17,8 @@ class ParseOptions(_options_ext.ParseOptions):
         Returns:
             A new Namespace object populated with the parsed arguments.
         """
-        self.Read(args if args else sys.argv)
-        opts = self.GetOptions()
+        self.read(args if args else sys.argv)
+        opts = self.get_options()
         arg_dict = {}
         arg_dict.update(opts.bool_map)
         arg_dict.update(opts.int_map)

@@ -2,7 +2,7 @@ from __future__ import division
 import os 
 import unittest
 
-from kaldi.matrix import *
+from kaldi.matrix import Vector, Matrix, SubMatrix, SubVector
 from kaldi.util import *
 
 from mixins import *
@@ -17,18 +17,18 @@ class _TestWriters(AuxMixin):
     def test__init__(self):
         writer = self.getImpl() # call factory method
         self.assertIsNotNone(writer)
-        self.assertFalse(writer.IsOpen())
+        self.assertFalse(writer.is_open())
 
         with self.assertRaises(Exception): 
-            writer.Close()
+            writer.close()
 
         writer = self.getImpl(self.rspecifier)
         self.assertIsNotNone(writer)
-        self.assertTrue(writer.IsOpen())
-        self.assertTrue(writer.Close())
+        self.assertTrue(writer.is_open())
+        self.assertTrue(writer.close())
 
         with self.assertRaises(RuntimeError): 
-            writer.Close()
+            writer.close()
         
         # Check that the file exists after closing the writer
         self.assertTrue(os.path.exists(self.filename))
@@ -37,10 +37,10 @@ class _TestWriters(AuxMixin):
         obj = self.getExampleObj()
 
         with self.getImpl(self.rspecifier) as writer:
-            writer.Write("myobj", obj)
+            writer.write("myobj", obj)
 
         # Check writer is closed
-        self.assertFalse(writer.IsOpen())
+        self.assertFalse(writer.is_open())
 
         # Check that the file exists after closing the writer
         self.assertTrue(os.path.exists(self.filename))
@@ -51,7 +51,7 @@ class _TestWriters(AuxMixin):
             writer["myobj"] = obj
 
         # Check writer is closed
-        self.assertFalse(writer.IsOpen())
+        self.assertFalse(writer.is_open())
 
         # Check that the file exists after closing the writer
         self.assertTrue(os.path.exists(self.filename))

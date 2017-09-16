@@ -498,7 +498,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
             if obj.ndim != 2:
                 raise ValueError("obj should be a 2-D matrix like object.")
             obj = SubMatrix(obj)
-        obj_num_rows, obj_num_cols = obj._num_rows, obj._num_cols
+        obj_num_rows, obj_num_cols = obj.shape
         if not (0 <= row_start <= obj_num_rows):
             raise IndexError("row_start={0} should be in the range [0,{1}] "
                              "when obj.num_rows={1}."
@@ -615,7 +615,7 @@ class SubMatrix(MatrixBase, _matrix_ext.SubMatrix):
                 raise ValueError("obj should be a 2-D matrix like object.")
             obj_num_rows, obj_num_cols = obj.shape
         else:
-            obj_num_rows, obj_num_cols = obj._num_rows, obj._num_cols
+            obj_num_rows, obj_num_cols = obj.shape
         if not (0 <= row_start <= obj_num_rows):
             raise IndexError("row_start={0} should be in the range [0,{1}] "
                              "when obj.num_rows={1}."
