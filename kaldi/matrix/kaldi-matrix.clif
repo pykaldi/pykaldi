@@ -1462,7 +1462,7 @@ from "matrix/kaldi-matrix.h":
               """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
 
               Args:
-                  floor(float): The floor value to check against.
+                  floor_val(float): The floor value to check against
               """
 
             def ApplyCeiling(self, ceiling_val: float)

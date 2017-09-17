@@ -4,15 +4,73 @@ from "matrix/sp-matrix-clifwrap.h" import *
 from "matrix/optimization.h":
   namespace `kaldi`:
     class LinearCgdOptions:
+      """Options for Linear CGD optimization
+
+      Args:
+          max_iters(int): The maximum number of iterations
+          max_error(float): Maximum 2 norm of the residual A*x-b
+          recompute_residual_factor(float):  Every time the residual 2-norm decreases
+          by this recompute_residual_factor since the last time it was computed from
+          scratch, recompute it from. This helps to keep the computed residual 
+          accurate even in the presence of roundof
+      """
       max_iters: int
       max_error: float
       recompute_residual_factor: float
 
     def LinearCgd(opts: LinearCgdOptions, A: SpMatrix, b: VectorBase,
                   x: VectorBase) -> int
+      """This function uses linear conjugate gradient descent to approximately solve
+         the system A*x=b. The value of x at entry corresponds to the initial guess
+         of x. The algorithm continues until the number of iterations equals b.size,
+         or until ||A*x - b||_2<= max_error, or until the number of
+         iterations equals max_iter, whichever happens sooner.  It is a requirement
+         that A be positive definite. It returns the number of iterations that were
+         actually executed.
 
+         Args:
+             opts(LinearCgdOptions): 
+             A(Sp.Matrix): A symmetric matrix. It must be positive definite
+             b(VectorBase): A vector 
+ 
+         Returns:
+             The number of iterations
+      """
 
     class LbfgsOptions:
+      """This class holds the options for the L-BFGS algorithm.
+         I pushes responsibility for determining when to stop, onto the user.
+         There is no callback here. The optimization happens through calls of
+         OptimizeLbfgs class itself. This does not implement constrained L-BFGS, 
+         but it will handle constrained problems correctly as long as the function
+         approaches +infinity (or -infinity for maximization problems) when it gets close
+         to the bound of the constraint. In these types of problems, you just let the 
+         function value be +infinity for minimization problems,
+         or -infinity for maximization problems, outside these bounds).
+
+      Args:
+          minimize(bool): if true, we're minimizing, else maximizing
+          m(int): m is the number of stored vectors L-BFGS keeps
+          first_step_learning_rate(float): The very first step of L-BFGS is like gradient descent.
+                                           If you want to configure the size of that step,
+                                           you can do it using this variable
+          first_step_length(float): If this variable is >0.0, it overrides
+                                    first_step_learning_rate; on the first step we choose an approximate
+                                    Hessian that is the multiple of the identity that would generate this
+                                    step-length, or 1.0 if the gradient is zero
+          first_step_impr(float): If this variable is >0.0, it overrides
+                                  first_step_learning_rate; on the first step we choose an approximate
+                                  Hessian that is the multiple of the identity that would generate this
+                                  amount of objective function improvement (assuming the "real" objf
+                                  was linear)
+          c1(float): A constant in Armijo rule = Wolfe condition i)
+          c2(float): A constant in Wolfe condition ii)
+          d(float): An amount > 1.0 (default 2.0) that we initially multiply or
+                    divide the step length by, in the line search
+          max_line_search_iters(int): after this many iters we restart L-BFGS
+          avg_step_length(int); number of iters to avg step length over
+      """
+
       minimize: bool
       m: int
       first_step_learning_rate: float
@@ -25,19 +83,39 @@ from "matrix/optimization.h":
       avg_step_length: int
 
       def __init__(self, minimize :bool = default)
+        """Class initialization
 
+        Args:
+            minimize(bool): True for minimization, falso for maximization. Default is True.
+        """
 
     class `OptimizeLbfgs<float>` as OptimizeLbfgs:
+      """This class handles the L-BFGS optimization"""
+
       def __init__(self, x: VectorBase, opts: LbfgsOptions)
+        """Class initilization
+
+        Args:
+            x(VectorBase): A vector
+            opts(LbfgsOptions): Options for L-BFGS
+        """
 
       # TODO: Implement C++ wrappers
       # def GetValue(self) -> (x: VectorBase, objf_value: float)
       # def GetProposedValue(self) -> VectorBase
 
       def RecentStepLength(self) -> float
+        """Returns the average magnitude of the last n steps (but not more than the number we have stored).
+           Before we have taken any steps, returns +infinity. Note: if the most recent step length was 0, 
+           it returns 0, regardless of the other step lengths. This makes it suitable as a
+           convergence test (else we'd generate NaN's).
+        """
 
-      def DoStep(self, function_value: float, gradient: VectorBase)
-
-      def `DoStep` as DoStepApproxHessian(self, function_value: float,
-                                          gradient: VectorBase,
-                                          diag_approx_2nd_deriv: VectorBase)
+#      FIXME(pavlos): Need C++ wrappers.
+#      def DoStep(self, function_value: float, gradient: VectorBase)
+#        """The user calls this function to provide the class with the function and gradient info at the point GetProposedValue().
+#If this point is outside the constraints you can set function_value to {+infinity,-infinity} for {minimization,maximization} problems. In this case the gradient, and also the second derivative (if you call the second overloaded version of this function) will be ignored.
+#        """
+#      def `DoStep` as DoStepApproxHessian(self, function_value: float,
+#                                          gradient: VectorBase,
+#                                          diag_approx_2nd_deriv: VectorBase)

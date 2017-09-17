@@ -5,6 +5,37 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/compressed-matrix.h":
   namespace `kaldi`:
     enum CompressionMethod with:
+#     kAutomaticMethod = 1 This is the default when you don't specify the
+#                         compression method.  It is a shorthand for using
+#                         kSpeechFeature if the num-rows is more than 8, and
+#                         kTwoByteAuto otherwise.
+#     kSpeechFeature = 2  This is the most complicated of the compression methods,
+#                         and was designed for speech features which have a roughly
+#                         Gaussian distribution with different ranges for each
+#                         dimension.  Each element is stored in one byte, but there
+#                         is an 8-byte header per column; the spacing of the
+#                         integer values is not uniform but is in 3 ranges.
+#     kTwoByteAuto = 3    Each element is stored in two bytes as a uint16, with
+#                         the representable range of values chosen automatically
+#                         with the minimum and maximum elements of the matrix as
+#                         its edges.
+#     kTwoByteSignedInteger = 4
+#                         Each element is stored in two bytes as a uint16, with
+#                         the representable range of value chosen to coincide with
+#                         what you'd get if you stored signed integers, i.e.
+#                         [-32768.0, 32767.0].  Suitable for waveform data that
+#                         was previously stored as 16-bit PCM.
+#     kOneByteAuto = 5    Each element is stored in one byte as a uint8, with the
+#                         representable range of values chosen automatically with
+#                         the minimum and maximum elements of the matrix as its
+#                         edges.
+#     kOneByteUnsignedInteger = 6 Each element is stored in
+#                         one byte as a uint8, with the representable range of
+#                         values equal to [0.0, 255.0].
+#     kOneByteZeroOne = 7 Each element is stored in
+#                         one byte as a uint8, with the representable range of
+#                         values equal to [0.0, 1.0].  Suitable for image data
+#                         that has previously been compressed as int8.
       `kAutomaticMethod` as AUTO
       `kSpeechFeature` as SPEECH_FEATURE
       `kTwoByteAuto` as TWO_BYTE_AUTO
@@ -13,19 +44,50 @@ from "matrix/compressed-matrix.h":
       `kOneByteUnsignedInteger` as ONE_BYTE_UNSIGNED_INTEGER
       `kOneByteZeroOne` as TWO_BYTE_ZERO_ONE
 
+
     class CompressedMatrix:
+      """A lossily compressed Matrix class"""
       @add__init__
       def `CompressedMatrix` as New(self, mat: MatrixBase,
                                     method: CompressionMethod = default)
+        """Copy the data from a MatrixBase and compress it
+           
+        Args:
+            mat(MatrixBase): A matrix
+            method(CompressionMethod): The way we will compress the matrix. 
+                                       Default is kAutomaticMethod
+        """
 
       @add__init__
       def `CompressedMatrix` as NewWithRange(self, mat: CompressedMatrix,
                                              row_offset: int, num_rows: int,
                                              col_offset: int, num_cols:int,
                                              allow_padding: bool = default)
+      """
+        Create a compressed matrix from another compressed matrix. If allow padding is true
+        you can create an "expanded" matrix by either having a negative row_offset or by
+        setting num_rows>mat.num_rows.
+
+        Args:
+            mat(CompressedMatrix): A compressed matrix
+            row_offset(int): From which row of mat to start copying. Indexing starts at 0
+            num_rows(int): How many rows of mat to copy
+            col_offset(int): From which column of mat to start copying. Indexing starts at 0
+            num_cols(int): How many columns of mat to copy
+            allow_padding(bool): Allows you to violate ``row'' dimentionality conditions
+         
+         Raises:
+            Error in case dimensionality violations (taking also allow_padding into consideration).
+      """
 
       @add__init__
       def `CompressedMatrix` as NewWithOther(self, mat: CompressedMatrix)
+      """
+         Set this matrix (self) as the other (mat)
+         
+         Args:
+             mat(CompressedMatrix): A compressed Matrix           
+      """
 
       def CopyFromMat(self, mat: MatrixBase,
                       method: CompressionMethod = default)
@@ -35,9 +97,13 @@ from "matrix/compressed-matrix.h":
             mat(MatrixBase): The matrix from which we will copy the data
             method(CompresssionMethod): Which compression method to use
         """ 
-      
-      def CopyToMat(self, mat: MatrixBase,
-                    method: MatrixTransposeType = default)
+     
+#      FIXME(Pavlos): This needs a C++ wrapper. Does not feel pythonic
+#      def CopyToMat(self, mat: MatrixBase,
+#                    method: MatrixTransposeT#ype = default)
+#      """
+#
+#      """
 
       def NumRows(self) -> int
         """Returns the number of rows."""
@@ -45,12 +111,14 @@ from "matrix/compressed-matrix.h":
       def NumCols(self) -> int
         """Returns the number of columns."""
 
-      def CopyRowToVec(self, row: int, v: VectorBase)
-
-      def CopyColToVec(self, col: int, v: VectorBase)
-
-      def `CopyToMat` as CopyToMatOffset(self, row_offset: int,
-                                         col_offset: int, dest: MatrixBase)
+#      FIXME(Pavlos): This needs a C++ wrapper. Does not feel pythonic
+#      def CopyToMat(self, mat: MatrixBase,
+#      def CopyRowToVec(self, row: int, v: VectorBase)
+#
+#      def CopyColToVec(self, col: int, v: VectorBase)
+#
+#      def `CopyToMat` as CopyToMatOffset(self, row_offset: int,
+#                                         col_offset: int, dest: MatrixBase)
 
       def Swap(self, other: CompressedMatrix)
         """Swap elements with another compressed matrix. Shallow swap.
@@ -63,5 +131,7 @@ from "matrix/compressed-matrix.h":
         """
 
       def Clear(self)
+      """Deletes the data of the matrix"""
 
       def Scale(self, alpha: float)
+      """scales all elements of matrix by alpha."""

@@ -8,6 +8,8 @@ from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "matrix/sparse-matrix.h":
   namespace `kaldi`:
     class `SparseVector<float>` as SparseVector:
+      """Defines a class for sparse vectors."""
+      
       def Dim(self) -> int
         """Returns the size of the sparse vector."""
 
@@ -15,92 +17,252 @@ from "matrix/sparse-matrix.h":
         """Returns the summation of the elements."""
 
       def CopyElementsToVec(self, vec: VectorBase)
+        """Copy the elements of self to vec.
 
-      def AddToVec(self, alpha: float, vec: VectorBase)
+        Args:
+            vec(VectorBase): A vector
+        
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+#      FIXME(pavlos): This needs a wrapper
+#      def AddToVec(self, alpha: float, vec: VectorBase)
+#        """Performs vec=vec+alpha*self
+#        
+#        Args:
+#            alpha(float): A scaling constant
+#            vec(VectorBase): A vector
+#        """
 
       def CopyFromSvec(self, other: SparseVector)
+        """Copy elements of other to self
+
+        Args:
+            other(SparseVector): A sparse vector whose elements we will copy
+       
+        Raises:
+            Error in case of dimension mismatch
+        """
 
       @add__init__
       def `SparseVector` as new_from_other(self, other: SparseVector)
+        """Initialization by copying the elements of other."""
 
       def Swap(self, other: SparseVector)
+        """Swaps the contents of self and other. Shallow swap.
+
+        Args:
+            other(VectorBase): The vector whose elements we want to swap with self.
+        """
 
       def Max(self) -> (value: float, index: int)
+        """Returns a tuple holding the maximum value(float) of the vector and its index(int)."""
 
       def NumElements(self) -> int
+        """Returns the number of nonzero elements."""
 
       def GetElement(self, i: int) -> tuple<int, float>
+        """Get an indexed element.
+
+        Returns:
+            A tuple holding the index and a float
+        """
 
       def SetRandn(self, zero_prob: float)
+        """Sets elements to zero with probability zero_prob, else normally distributed."""
 
       @add__init__
       def `SparseVector` as new_from_dim(self, dim: int)
+        """Initialization by defining the size of the vector.
+ 
+        Args:
+            dim(int): The size of the vector
+        """
 
       @add__init__
       def `SparseVector` as new_from_pairs(self, dim: int,
                                            pairs: list<tuple<int, float>>)
+        """Initialization using a list of tuples(pairs).
 
+        Args:
+            dim(int): The size of the vector
+            pairs(list<tuple<int,float>>): A list of tuples. Each tuple holds an index 
+                                           in the vector and its corresponding value
+        """
+ 
       def Resize(self, dim: int, resize_type: MatrixResizeType = default)
+        """Set vector size to length (length can be zero).
+          The default resize type is kSetZero, in which case the new data will
+          be zero. If the resize type is kUndefined, the new data will be undefined.
+          Finally if the resize type is kCopyData, the new data will be the same as
+          the old data in any shared positions, and zero elsewhere.
+
+       Args:
+           dim(int): The new size of the vector
+           resize_type(MatrixResizeType): Determines the initial values of the vector.
+       """     
 
       def Write(self, os: ostream, binary: bool)
+        """Writes to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
 
       def Read(self, is: istream, binary: bool)
+        """Reads from C++ stream.
+
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+        """
 
       def Scale(self, alpha: float)
+        """Scale the elements of the vector by alpha"""
 
-    def VecSvec(vec: VectorBase, svec: SparseVector) -> float
+#    FIXME(pavlos): This needs a C++ wrapper
+#    def VecSvec(vec: VectorBase, svec: SparseVector) -> float
 
     class `SparseMatrix<float>` as SparseMatrix:
+      """This class defines a Sparse Matrix."""
+
       def NumRows(self) -> int
+        """Returns the number of rows."""
 
       def NumCols(self) -> int
+        """Returns the number of columnds."""
 
       def NumElements(self) -> int
+        """Returns the number of nonzero elements."""
 
       def Sum(self) -> float
+        """Returns the sum of the elememts."""
 
       def FrobeniusNorm(self) -> float
+        """Computes and returns the Frobenius norm."""
 
-      def CopyToMat(self, other: MatrixBase, t: MatrixTransposeType = default)
-
-      def CopyElementsToVec(self, other: VectorBase)
+#      FIXME(pavlos): These need C++ wrapper
+#      def CopyToMat(self, other: MatrixBase, t: MatrixTransposeType = default)
+#        
+#      def CopyElementsToVec(self, other: VectorBase)
 
       def CopyFromSmat(self, other: SparseMatrix)
+        """Copy data from another matrix of the same size
+ 
+        Args:
+            other(SparseMatrix): The matrix to copy from.
+ 
+        Raises:
+            Error in case of dimension mismatch
+        """
 
+#      FIXME(pavlos): These need C++ wrapper
       def AddToMat(self, alpha: float, other: MatrixBase,
                    t: MatrixTransposeType = default)
+        """Performs other = other+alpha*self if t==kNoTrans
+        or other^T = other^T+alpha*self if t==kTrans
+ 
+        Args:
+            alpha(float): A constant
+            other(MatrixBase): A matrix
+            t(MatrixTransposeType
+        
+        Raises:
+            Error in case of dimension mismatch
+        """ 
 
       @add__init__
       def `SparseMatrix` as new_from_other(self, other: SparseMatrix)
+        """Initialization by copying the elements of another sparse matrix.
+
+        Args:
+            other(SparseMatrix): A sparse matrix
+        """
 
       def Swap(self, other: SparseMatrix)
+        """Swaps the contents of self and other. Shallow swap."""
 
       @add__init__
       def `SparseMatrix` as new_from_pairs(
           self, dim: int, pairs: list<list<tuple<int, float>>>)
+        """Initialization by a list of list of tuples. The tuples hold
+           and index for the matrix and the corresponding value. 
+
+        Args:
+            dim(int): Determines the number of columns
+            pairs(list<list<tuple<int,float>>>): Contains the element of the matrix.
+                                                 The length of the ``outer'' list determines
+                                                 the number of rows
+       """
 
       def SetRandn(self, zero_prob: float)
+        """Sets up to a pseudo-randomly initialized matrix,
+           with each element zero with probability zero_prob
+           and else normally distributed.
+        """
 
       def Write(self, os: ostream, binary: bool)
+        """Writes to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
 
       def Read(self, is: istream, binary: bool)
+        """Reads from C++ stream.
+
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+        """
 
       def Row(self, r: int) -> SparseVector
+        """Returns the row indexed by r as a sparse vector"""
 
       def SetRow(self, r: int, vec: SparseVector)
+        """Sets row r to "vec"; makes sure it has the correct dimension."""
 
       # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
 
       @add__init__
       def `SparseMatrix` as new_from_dims(self, num_rows: int, num_cols: int)
+        """Initialization by defining the dimensions.
+
+        Args:
+            num_rows(int): The number of rows
+            num_cols(int): The number of columns
+        """
 
       def Resize(self, rows: int, cols: int,
                  resize_type: MatrixResizeType = default)
+        """Resizes a matrix. If the resize_type is kSetZero,
+           the new data will be zero. If the resize type is kUndefined,
+           the new data will be undefined. Finally if the resize type is kCopyData,
+           the new data will be the same as the old data in any shared positions,
+           and zero elsewhere. stride_type defines how data will be read from memory,
+           we advise to let it in its default value.
+
+        Args:
+            rows(int): The new number of rows
+            cols(int): The new number of columns
+            resize_type(MatrixResizeType): Determines the initial values of the vector.
+        """
 
       def Scale(self, alpha: float)
-
+        """Scale the elements of the matrix by alpha."""
+ 
     def TraceMatSmat(A: MatrixBase, B: SparseMatrix,
                      trans: MatrixTransposeType = default) -> float
+      """If trans==kNoTrans compute Trace(A*B). If trans==kTrans compute Trace(A^T*B)
+      
+      Args:
+          A(MatrixBase): A matrix
+          B(SparseMatrix): A sparse matrix
+          trans(MatrixTransposeType): Determines if we use A as is or its transpose.
+      """
 
     enum GeneralMatrixType with:
       `kFullMatrix` as FULL_MATRIX
@@ -109,75 +271,216 @@ from "matrix/sparse-matrix.h":
 
     class GeneralMatrix:
       def Type(self) -> GeneralMatrixType
+        """Returns the type of the matrix: kSparseMatrix, kCompressedMatrix
+           or kFullMatrix. If this matrix is empty, returns kFullMatrix.
+        """
 
       def Compress(self)
+        """Compresses the matrix to a sparse one."""
 
       def Uncompress(self)
+        """Uncompresses the matrix to a one of class Matrix."""      
 
       def Write(self, os: ostream, binary: bool)
+        """Writes to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
 
       def Read(self, is: istream, binary: bool)
+        """Reads from C++ stream.
+   
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+            add(bool): True if you want to add the stream to self.
+        """
 
       def GetSparseMatrix(self) -> SparseMatrix
+        """Returns the contents as a SparseMatrix. 
+     
+        Raises:
+            Error if type returns something other than kSparseMatrix,
+            or NumRows() != 0
+        """
 
       def SwapSparseMatrix(self, smat: SparseMatrix)
+        """Swaps the contents of self and smat. 
+     
+        Raises: 
+            Error if type returns something other than kSparseMatrix,
+            or NumRows() != 0
+        """
 
       def GetCompressedMatrix(self) -> CompressedMatrix
+        """Returns the contents as a compressed matrix.
 
+        Raises:
+            Error if type returns something other than kCompressedMatrix,
+            or NumRows() != 0
+        """
+        
       def SwapCompressedMatrix(self, cmat: CompressedMatrix)
+        """Swaps the current compressed matrix with another(cmat)."""
 
       def GetFullMatrix(self) -> Matrix
+        """Returns the contents as an instance of class Matrix.
+
+           Raises: 
+               Error if the type is anything other than kFullMatrix
+               or NumRows() != 0
+        """
 
       def GetMatrix(self) -> Matrix
+        """Outputs the contents as an instance of class Matrix."""
 
       def SwapFullMatrix(self, cmat: Matrix)
+        """Swap the contents of self with cmat.
+          
+        Raises:
+            Error if type is anything other than kFullMatrix,
+            or if NumRows() != 0
+        """
 
-      def CopyToMat(self, mat: MatrixBase,
-                    trans: MatrixTransposeType = default)
-
-      def `CopyToMat` as CopyToCuMat(self, cu_mat: CuMatrixBase,
-                                     trans: MatrixTransposeType = default)
-
-      def AddToMat(self, alpha: float, mat: MatrixBase,
-                   trans: MatrixTransposeType = default)
-
-      def `AddToMat` as AddToCuMat(self, alpha: float, cu_mat: CuMatrixBase,
-                                   trans: MatrixTransposeType = default)
+#      FIXME(pavlos): These need C++ wrappers
+#      def CopyToMat(self, mat: MatrixBase,
+#                    trans: MatrixTransposeType = default)
+#
+#      def `CopyToMat` as CopyToCuMat(self, cu_mat: CuMatrixBase,
+#                                     trans: MatrixTransposeType = default)
+#
+#      def AddToMat(self, alpha: float, mat: MatrixBase,
+#                   trans: MatrixTransposeType = default)
+#        """Performs mat=mat+alpha*self if MatrixTransposeType==kNoTrans.
+#           Performs mat^T=mat^T+alpha*self if MatrixTransposeType==kNoTrans.
+#
+#        Args:
+#            alpha(float): A constant
+#            mat(MatrixBase): A matrix
+#            trans(MatrixTransposeType): Determines transposition of mat.
+#                                        Default is kNoTrans
+#    
+#        Raises:
+#            Error in case of dimension mismatch
+#        """
+#
+#      def `AddToMat` as AddToCuMat(self, alpha: float, cu_mat: CuMatrixBase,
+#                                   trans: MatrixTransposeType = default)
 
       def Scale(self, alpha: float)
+        """Scale all elements of the matrix by alpha."""
 
       def NumRows(self) -> int
+        """Return the number of rows."""
 
       def NumCols(self) -> int
+        """Return the number of columns."""
 
       @add__init__
       def `GeneralMatrix` as new_from_matrix(self, other: MatrixBase)
+        """Initialization of a General Matrix from matrix of class MatrixBase."""
 
       @add__init__
       def `GeneralMatrix` as new_from_compressed(self, other: CompressedMatrix)
+        """Initialization of a General Matrix from matrix of class CompressesMatrix."""
 
       @add__init__
       def `GeneralMatrix` as new_from_sparse(self, other: SparseMatrix)
+        """Initialization of a General Matrix from matrix of class SparseMatrix."""
 
       @add__init__
       def `GeneralMatrix` as new_from_other(self, other: GeneralMatrix)
+        """Initialization of a General Matrix from matrix of class GeneralMatrix."""
 
       def Clear(self)
+        """Clear the contents of self."""
 
       def Swap(self, other: GeneralMatrix)
+        """Swaps the contents of self and other. Shallow swap."""
 
     # def AppendGeneralMatrixRows(src: list<GeneralMatrix>) -> GeneralMatrix
 
     def FilterSparseMatrixRows(in: SparseMatrix, keep_rows: list<bool>)
         -> SparseMatrix
+      """Outputs a sparse matrix containing only the rows r
+         of ``in'' such that keep_rows[r] == true.
+
+      Args:
+          in(SparseMatrix): The sparse matrix to be filtered
+          keep_rows(list<bool>): A list that determines which rows will be filtered
+
+      Returns:
+          The filtered sparse matrix
+      
+      Raises:
+          Error if in.num_rows != list.length
+      """
 
     def FilterMatrixRows(in: Matrix, keep_rows: list<bool>) -> Matrix
+      """Outputs a matrix containing only the rows r
+         of ``in'' such that keep_rows[r] == true.
+
+      Args:
+          in(Matrix): The matrix to be filtered
+          keep_rows(list<bool>): A list that determines which rows will be filtered
+
+      Returns:
+          The filtered matrix
+      
+      Raises:
+          Error if in.num_rows != list.length
+      """
 
     def FilterCompressedMatrixRows(in: CompressedMatrix, keep_rows: list<bool>)
         -> Matrix
+      """Outputs a matrix containing only the rows r
+         of ``in'' such that keep_rows[r] == true.
+
+      Args:
+          in(CompressedMatrix): The compressed matrix to be filtered
+          keep_rows(list<bool>): A list that determines which rows will be filtered
+
+      Returns:
+          The filtered matrix
+      
+      Raises:
+          Error if in.num_rows != list.length
+      """
 
     def FilterGeneralMatrixRows(in: GeneralMatrix, keep_rows: list<bool>)
         -> GeneralMatrix
+      """Outputs a general matrix containing only the rows r
+         of ``in'' such that keep_rows[r] == true.
+
+      Args:
+          in(GeneralMatrix): The general matrix to be filtered
+          keep_rows(list<bool>): A list that determines which rows will be filtered
+
+      Returns:
+          The filtered general matrix
+      
+      Raises:
+          Error if in.num_rows != list.length
+      """
 
     def ExtractRowRangeWithPadding(in: GeneralMatrix, row_offset: int,
                                    num_rows: int) -> GeneralMatrix
+      """This function extracts a row-range of a GeneralMatrix and writes
+         a GeneralMatrix containing the same type of underlying matrix.
+         If the row-range is partly outside the row-range of 'in'
+         (i.e. if row_offset < 0 or row_offset + num_rows > in.NumRows()) 
+         then it will pad with copies of the first and last row as needed. 
+         This is more efficient than un-compressing and re-compressing
+         the underlying CompressedMatrix, and causes less accuracy loss
+         due to re-compression (no loss in most cases).
+
+      Args:
+          in(GeneralMatrix): A general Matrix
+          row_offset(int): The ``beginning'' index of the range. Indexing starts from 0
+          num_rows(int): How many rows to include in the range
+
+      Returns:
+          A general matrix
+      """

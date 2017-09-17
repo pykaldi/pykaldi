@@ -33,12 +33,20 @@ from "matrix/matrix-functions.h":
 
         class `MatrixExponential<float>` as MatrixExponential:
 
-            def Compute(self, M:MatrixBase, X:MatrixBase)
+#            FIXME(pavlos): Need C++ wrapper, does not feel pythonic
+#            def Compute(self, M:MatrixBase, X:MatrixBase)
+#               """Performs X=exp(M)
+#
+#               Args: 
+#                   M(MatrixBase): A matrix
+#                   X(MatrixBase): A matrix, the output
+#               """
 
             # TODO (VM):
             # def Compute(self, M:SpMatrix) -> (X:SpMatrix)
 
-            def `Backprop` as Backprop(self, hX:MatrixBase, hM:MatrixBase)
+#            FIXME(pavlos): Need C++ wrapper, does not feel pythonic
+#            def `Backprop` as Backprop(self, hX:MatrixBase, hM:MatrixBase)
 
             # TODO (VM):
             # def `Backprop` as BackpropSp(self, hX:SpMatrix) -> (hM:SpMatrix)
@@ -50,3 +58,8 @@ from "matrix/matrix-functions.h":
         # def AddOuterProductPlusMinus(alpha:float, a:VectorBase, b:VectorBase, plus:MatrixBase, minus:MatrixBase)
 
         def `AssertSameDim` as AssertSameDimMatrix(mat1:MatrixBase, mat2:MatrixBase)
+          """Checks if mat1 and mat2 have the same dimensions.
+
+          Raises:
+              Error if mat1.num_rows!=mat2.num_rows || mat1.num_cols!=mat2.num_cols
+          """
