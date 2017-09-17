@@ -1,3 +1,4 @@
+from ._feature_common_ext import Mfcc
 from ._feature_mfcc import *
 
 ################################################################################

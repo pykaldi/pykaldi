@@ -1,7 +1,12 @@
 import re 
 import os
+
+
 import kaldi.util
 from kaldi.matrix import Matrix 
+from kaldi.util.table import WaveWriter
+from kaldi.feat.wave import WaveData
+
 import numpy as np 
 
 ################################################################################################################
@@ -22,9 +27,9 @@ class AuxMixin:
     def getImpl(self, *args):
         """ Returns an instance of the self.classname class passing along the arguments for construction """
         if args:
-            return getattr(kaldi.util, self.classname)(args[0])
+            return getattr(kaldi.util.table, self.classname)(args[0])
         else:
-            return getattr(kaldi.util, self.classname)()
+            return getattr(kaldi.util.table, self.classname)()
 
     def tearDown(self):
         if os.path.exists(self.filename):
@@ -54,8 +59,8 @@ class MatrixExampleMixin:
 class WaveExampleMixin:
     def writeExample(self, outpt):
         m = Matrix.new(np.arange(9).reshape((3, 3)))
-        with kaldi.util.WaveWriter('ark:/tmp/temp.ark') as writer:
-            writer['one'] = kaldi.util.WaveData.New(1.0, m)
+        with WaveWriter('ark:/tmp/temp.ark') as writer:
+            writer['one'] = WaveData.New(1.0, m)
 
 class IntExampleMixin:
     def writeExample(self, outpt):

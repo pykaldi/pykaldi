@@ -18,11 +18,11 @@ class _TestSequentialReaders(AuxMixin):
         reader = self.getImpl()
         self.assertIsNotNone(reader)
         with self.assertRaises(RuntimeError):
-            self.assertFalse(reader.IsOpen())
-            self.assertFalse(reader.Done())
+            self.assertFalse(reader.is_open())
+            self.assertFalse(reader.done())
 
         with self.assertRaises(RuntimeError): 
-            reader.Close()
+            reader.close()
 
         # Delete file in case it exists
         if os.path.exists(self.filename):
@@ -36,8 +36,8 @@ class _TestSequentialReaders(AuxMixin):
         open(self.filename, 'w').close()
         
         reader = self.getImpl(self.rspecifier)
-        self.assertTrue(reader.IsOpen())
-        self.assertTrue(reader.Done())
+        self.assertTrue(reader.is_open())
+        self.assertTrue(reader.done())
 
     def testContextManager(self):
         # Delete file in case it exists
@@ -47,11 +47,11 @@ class _TestSequentialReaders(AuxMixin):
         # Empty reader via CM
         with self.assertRaises(RuntimeError):
             with self.getImpl() as reader:
-                self.assertFalse(reader.IsOpen())
-                self.assertFalse(reader.Done())
+                self.assertFalse(reader.is_open())
+                self.assertFalse(reader.done())
                 
-            self.assertFalse(reader.IsOpen())
-            self.assertFalse(reader.Done())
+            self.assertFalse(reader.is_open())
+            self.assertFalse(reader.done())
 
         # Reset reader so that it doesnt by default pass the next ones
         reader = None
@@ -60,12 +60,12 @@ class _TestSequentialReaders(AuxMixin):
         open(self.filename, 'w').close()
         
         with self.getImpl(self.rspecifier) as reader:
-            self.assertTrue(reader.IsOpen())
-            self.assertTrue(reader.Done())
+            self.assertTrue(reader.is_open())
+            self.assertTrue(reader.done())
         
         with self.assertRaises(RuntimeError):
-            self.assertFalse(reader.IsOpen())
-            self.assertTrue(reader.Done())
+            self.assertFalse(reader.is_open())
+            self.assertTrue(reader.done())
 
     def test__iter__(self):
         # Create a file and write an example to it
@@ -77,13 +77,13 @@ class _TestSequentialReaders(AuxMixin):
             for idx, (k, v) in enumerate(reader):
                 self.checkRead(idx, (k, v))
 
-        # Check iteration is Done
+        # Check iteration is done
         # FIXME:
         # This raises C++ exception instead of a simple True
-        # self.assertTrue(reader.Done())
+        # self.assertTrue(reader.done())
 
         # Check iterator is closed
-        self.assertFalse(reader.IsOpen())
+        self.assertFalse(reader.is_open())
 
 class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase, VectorExampleMixin):
     def checkRead(self, idx, pair):
@@ -198,10 +198,10 @@ class _TestRandomAccessReaders(AuxMixin):
     def test__init__(self):
         reader = self.getImpl()
         self.assertIsNotNone(reader)
-        self.assertFalse(reader.IsOpen())
+        self.assertFalse(reader.is_open())
 
         with self.assertRaises(RuntimeError): 
-            reader.Close()
+            reader.close()
 
         # Delete file in case it exists
         if os.path.exists(self.filename):
@@ -213,20 +213,20 @@ class _TestRandomAccessReaders(AuxMixin):
             self.assertIsNotNone(reader)
 
         # Note (VM): If the file does not exist, this is false
-        self.assertFalse(reader.IsOpen())
+        self.assertFalse(reader.is_open())
 
         # Touch file
         open(self.filename, 'w').close()
         
         reader = self.getImpl(self.rspecifier)
-        self.assertTrue(reader.IsOpen())
+        self.assertTrue(reader.is_open())
 
     def testContextManager(self):
         with self.assertRaises(RuntimeError):
             with self.getImpl() as reader:
-                self.assertFalse(reader.IsOpen())
+                self.assertFalse(reader.is_open())
                 
-            self.assertFalse(reader.IsOpen())
+            self.assertFalse(reader.is_open())
 
         # Reset reader so that it doesnt by default pass the next ones
         reader = None
@@ -235,9 +235,9 @@ class _TestRandomAccessReaders(AuxMixin):
         open(self.filename, 'w').close()
         
         with self.getImpl(self.rspecifier) as reader:
-            self.assertTrue(reader.IsOpen())
+            self.assertTrue(reader.is_open())
         
-        self.assertFalse(reader.IsOpen())
+        self.assertFalse(reader.is_open())
 
     def getValidKey(self):
         return "one"

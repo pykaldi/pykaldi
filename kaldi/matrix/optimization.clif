@@ -18,7 +18,7 @@ from "matrix/optimization.h":
       max_error: float
       recompute_residual_factor: float
 
-    def LinearCgd(opts: LinearCgdOptions, A: SpMatrix, b: VectorBase,
+    def `LinearCgd` as linear_cgd(opts: LinearCgdOptions, A: SpMatrix, b: VectorBase,
                   x: VectorBase) -> int
       """This function uses linear conjugate gradient descent to approximately solve
          the system A*x=b. The value of x at entry corresponds to the initial guess
@@ -104,7 +104,8 @@ from "matrix/optimization.h":
       # def GetValue(self) -> (x: VectorBase, objf_value: float)
       # def GetProposedValue(self) -> VectorBase
 
-      def RecentStepLength(self) -> float
+
+      def `RecentStepLength` as recent_step_length(self) -> float
         """Returns the average magnitude of the last n steps (but not more than the number we have stored).
            Before we have taken any steps, returns +infinity. Note: if the most recent step length was 0, 
            it returns 0, regardless of the other step lengths. This makes it suitable as a
@@ -112,10 +113,33 @@ from "matrix/optimization.h":
         """
 
 #      FIXME(pavlos): Need C++ wrappers.
-#      def DoStep(self, function_value: float, gradient: VectorBase)
-#        """The user calls this function to provide the class with the function and gradient info at the point GetProposedValue().
-#If this point is outside the constraints you can set function_value to {+infinity,-infinity} for {minimization,maximization} problems. In this case the gradient, and also the second derivative (if you call the second overloaded version of this function) will be ignored.
-#        """
-#      def `DoStep` as DoStepApproxHessian(self, function_value: float,
+      def `DoStep` as do_step(self, function_value: float, gradient: VectorBase)
+        """The user calls this function to provide the class with the
+           function and gradient info at the point GetProposedValue().
+           If this point is outside the constraints you can set 
+           function_value to {+infinity,-infinity} for {minimization,maximization}
+           problems. In this case the gradient, and also the second derivative
+           (if you call the second overloaded version of this function) will be ignored.
+
+        Args:
+            function_value(float): The current function value
+            gradient(VectorBase): This will store the gradient
+        """
+
+#      FIXME_U(pavlos): Need C++ wrappers.
+#      def `DoStep` as do_step_approx_hessian(self, function_value: float,
 #                                          gradient: VectorBase,
 #                                          diag_approx_2nd_deriv: VectorBase)
+#        """The user can call this version of DoStep() if it is desired
+#           to set some kind of approximate Hessian on this iteration.
+#
+#        Args:
+#            function_value(float): The current function value
+#            gradient(VectorBase): This will store the gradient
+#            diag_approx_2nd_deriv(VectorBase): A vector whose values represent 
+#                                               the diagonal of the Hessian
+#        Raises:
+#           Error if diag_approx_2nd_deriv is not strictly positive when minimizing
+#           or strictly negative when maximizing.
+#        """
+

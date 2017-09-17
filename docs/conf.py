@@ -39,6 +39,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'sphinx.ext.mathjax',
     # 'sphinx.ext.githubpages'
     'sphinxcontrib.doxylink'
     ]

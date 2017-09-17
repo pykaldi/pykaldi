@@ -1,5 +1,5 @@
 from . import _kaldi_table
-from ._kaldi_table import ReadScriptFile, WriteScriptFile
+from ._kaldi_table import read_script_file, write_script_file
 
 ################################################################################
 # Sequential Readers
@@ -23,7 +23,7 @@ class _SequentialReaderBase(object):
     def __init__(self, rspecifier=""):
         super(_SequentialReaderBase, self).__init__()
         if rspecifier != "":
-            if not self.Open(rspecifier):
+            if not self.open(rspecifier):
                 raise IOError("Error opening SequentialTableReader with "
                               "rspecifier: {}".format(rspecifier))
 
@@ -45,11 +45,11 @@ class _SequentialReaderBase(object):
         Raises:
             StopIteration if there is no more items to return.
         """
-        if self.Done():
+        if self.done():
             raise StopIteration
         else:
-            key, value = self.Key(), self.Value()
-            self.Next()
+            key, value = self.key(), self.value()
+            self._next()
             return key, value
 
 
@@ -295,7 +295,7 @@ class _RandomAccessReaderBase(object):
     def __init__(self, rspecifier=""):
         super(_RandomAccessReaderBase, self).__init__()
         if rspecifier != "":
-            if not self.Open(rspecifier):
+            if not self.open(rspecifier):
                 raise IOError("Error opening RandomAccessTableReader with "
                               "rspecifier: {}".format(rspecifier))
 
@@ -303,11 +303,11 @@ class _RandomAccessReaderBase(object):
         return self
 
     def __contains__(self, key):
-        return self.HasKey(key)
+        return self.has_key(key)
 
     def __getitem__(self, key):
-        if self.HasKey(key):
-            return self.Value(key)
+        if self.has_key(key):
+            return self.value(key)
         else:
             raise KeyError(key)
 
@@ -554,11 +554,11 @@ class _RandomAccessReaderMappedBase(object):
         return self
 
     def __contains__(self, key):
-        return self.HasKey(key)
+        return self.has_key(key)
 
     def __getitem__(self, key):
-        if self.HasKey(key):
-            return self.Value(key)
+        if self.has_key(key):
+            return self.value(key)
         else:
             raise KeyError(key)
 
@@ -642,7 +642,7 @@ class _WriterBase(object):
     def __init__(self, wspecifier=""):
         super(_WriterBase, self).__init__()
         if wspecifier != "":
-            if not self.Open(wspecifier):
+            if not self.open(wspecifier):
                 raise IOError("Error opening TableWriter with wspecifier: {}"
                               .format(wspecifier))
 
@@ -650,7 +650,7 @@ class _WriterBase(object):
         return self
 
     def __setitem__(self, key, value):
-        self.Write(key, value)
+        self.write(key, value)
 
 
 class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):

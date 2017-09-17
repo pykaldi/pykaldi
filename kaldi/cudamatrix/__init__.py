@@ -1,10 +1,8 @@
-from .device import *
-from .matrixdim import *
-from .array import *
-from .vector import *
-from .matrix import *
-
-################################################################################
+from . import device
+from . import matrixdim
+from . import array
+from . import vector
+from . import matrix
 
 __all__ = [name for name in dir()
            if name[0] != '_'

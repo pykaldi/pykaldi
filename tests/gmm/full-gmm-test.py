@@ -4,17 +4,15 @@ Python implementation of full-gmm-test.cc
 import unittest
 import numpy as np
 
-from kaldi.base import kaldi_math
+from kaldi.base import math as kaldi_math
 from kaldi.matrix import *
 from kaldi.gmm import FullGmm, DiagGmm
 
-from kaldi.matrix import kaldi_vector
-from kaldi.gmm.model_test_common import *
-from kaldi.gmm.full_gmm_normal import FullGmmNormal
-from kaldi.gmm.mle_full_gmm import AccumFullGmm
-from kaldi.gmm.model_common import GmmUpdateFlags
-from kaldi.gmm.mle_full_gmm import MleFullGmmOptions, MleFullGmmUpdate
-from kaldi.matrix.sp_matrix import VecSpVec
+from kaldi.gmm._model_test_common import *
+from kaldi.gmm.full_normal import FullGmmNormal
+from kaldi.gmm.mle_full import AccumFullGmm, MleFullGmmOptions, MleFullGmmUpdate
+from kaldi.gmm.common import GmmUpdateFlags
+from kaldi.matrix.packed import VecSpVec
 
 def RandPosdefSpMatrix(dim):
     """

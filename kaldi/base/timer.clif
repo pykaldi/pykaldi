@@ -5,6 +5,6 @@ from "base/timer.h":
       @add__init__
       def `Timer` as new(self, set_timer: bool)
 
-      def Reset(self)
+      def `Reset` as reset(self)
 
-      def Elapsed(self) -> float
+      def `Elapsed` as elapsed(self) -> float

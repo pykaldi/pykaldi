@@ -4,15 +4,15 @@ import numpy
 # Relative or fully qualified absolute import of _matrix_common does not work
 # in Python 3. For some reason, symbols in _matrix_common are assigned to the
 # module importlib._bootstrap ????
-from _matrix_common import *
+from _matrix_common import MatrixResizeType, MatrixTransposeType
 from . import _kaldi_vector
 from ._kaldi_vector import *
 from . import _kaldi_vector_ext
-from ._kaldi_vector_ext import VecMatVec
+from ._kaldi_vector_ext import vec_mat_vec
 from . import _matrix_ext
 from ._matrix_ext import vector_to_numpy
 from . import _str
-from .matrix import MatrixBase
+from . import matrix as _matrix
 
 ################################################################################
 # Define Vector Classes
@@ -27,7 +27,7 @@ class VectorBase(object):
     (No constructor.)
     """
 
-    def copy_(self, src):
+    def copy(self, src):
         """Copies the elements from src into this vector and returns this
         vector.
 
@@ -43,7 +43,7 @@ class VectorBase(object):
         if self.size() != src.size():
             raise ValueError("src with size {} cannot be copied into vector of "
                              " size {}.".format(src.size(), self.size()))
-        self.CopyFromVec(src)
+        self.copy_from_vec(src)
         return self
 
     def clone(self):
@@ -53,7 +53,7 @@ class VectorBase(object):
             A new :class:`Vector` that is a copy of this vector.
         """
         clone = Vector(self.size())
-        clone.CopyFromVec(self)
+        clone.copy_from_vec(self)
         return clone
 
     @property
@@ -78,7 +78,7 @@ class VectorBase(object):
         if self.size() != other.size():
             return False
 
-        return self.ApproxEqual(other, tol)
+        return self.approx_equal(other, tol)
 
     def __eq__(self, other):
         return self.equal(other)
@@ -130,7 +130,7 @@ class VectorBase(object):
         if self.size() != M.num_rows:
             raise ValueError("(M*v) with size {} cannot be added to this Vector"
                              " (size = {})".format(M.num_rows, self.size()))
-        _kaldi_vector_ext.AddMatVec(self, alpha, M, trans, v, beta)
+        _kaldi_vector_ext.add_mat_vec(self, alpha, M, trans, v, beta)
         return self
 
     def add_mat_svec(self, alpha, M, trans, v, beta):
@@ -143,7 +143,7 @@ class VectorBase(object):
         if self.size() != M.num_rows:
             raise ValueError("(M*v) with size {} cannot be added to this Vector"
                              " (size = {})".format(M.num_rows, self.size()))
-        _kaldi_vector_ext.AddMatSvec(self, alpha, M, trans, v, beta)
+        _kaldi_vector_ext.add_mat_svec(self, alpha, M, trans, v, beta)
         return self
 
     def add_sp_vec(self, alpha, M, v, beta):
@@ -159,7 +159,7 @@ class VectorBase(object):
         if self.size() != M.num_rows:
             raise ValueError("(M*v) with size {} cannot be added to this Vector"
                              " (size = {})".format(M.num_rows, self.size()))
-        _kaldi_vector_ext.AddSpVec(self, alpha, M, v, beta)
+        _kaldi_vector_ext.add_sp_vec(self, alpha, M, v, beta)
         return self
 
     def add_tp_vec(self, alpha, M, trans, v, beta):
@@ -175,7 +175,7 @@ class VectorBase(object):
         if self.size() != M.num_rows:
             raise ValueError("(M*v) with size {} cannot be added to this Vector"
                              " (size = {})".format(M.num_rows, self.size()))
-        _kaldi_vector_ext.AddTpVec(self, alpha, M, trans, v, beta)
+        _kaldi_vector_ext.add_tp_vec(self, alpha, M, trans, v, beta)
         return self
 
     def mul_tp(self, M, trans):
@@ -193,7 +193,7 @@ class VectorBase(object):
             raise ValueError("TpMatrix with size {}x{} cannot be multiplied "
                              "with Vector of size {}"
                              .format(M.num_rows, M.num_cols, self.size()))
-        _kaldi_vector_ext.MulTp(self, M, trans)
+        _kaldi_vector_ext.mul_tp(self, M, trans)
         return self
 
     def solve(self, M, trans):
@@ -220,7 +220,7 @@ class VectorBase(object):
             raise ValueError("The number of rows of the input TpMatrix ({}) "
                              "should match the size of this Vector ({})."
                              .format(M.num_rows, self.size()))
-        _kaldi_vector_ext.Solve(self, M, trans)
+        _kaldi_vector_ext.solve(self, M, trans)
         return self
 
     def copy_rows_from_mat(self, M):
@@ -236,7 +236,7 @@ class VectorBase(object):
             raise ValueError("The number of elements of the input Matrix ({})"
                              "should match the size of this Vector ({})."
                              .format(M.num_rows * M.num_cols, self.size()))
-        _kaldi_vector_ext.CopyRowsFromMat(self, M)
+        _kaldi_vector_ext.copy_rows_from_mat(self, M)
         return self
 
     def copy_cols_from_mat(self, M):
@@ -252,7 +252,7 @@ class VectorBase(object):
             raise ValueError("The number of elements of the input Matrix ({})"
                              "should match the size of this Vector ({})."
                              .format(M.num_rows * M.num_cols, self.size()))
-        _kaldi_vector_ext.CopyColsFromMat(self, M)
+        _kaldi_vector_ext.copy_cols_from_mat(self, M)
         return self
 
     def copy_row_from_mat(self, M, row):
@@ -272,7 +272,7 @@ class VectorBase(object):
                              .format(M.num_cols, self.size()))
         if not isinstance(int, row) and not (0 <= row < M.num_rows):
             raise IndexError()
-        _kaldi_vector_ext.CopyRowFromMat(self, M, row)
+        _kaldi_vector_ext.copy_row_from_mat(self, M, row)
         return self
 
     def copy_col_from_mat(self, M, col):
@@ -292,7 +292,7 @@ class VectorBase(object):
                              .format(M.num_rows, self.size()))
         if not instance(int, col) and not (0 <= col < M.num_cols):
             raise IndexError()
-        _kaldi_vector_ext.CopyColFromMat(self, M, col)
+        _kaldi_vector_ext.copy_col_from_mat(self, M, col)
         return self
 
     def copy_diag_from_mat(self, M):
@@ -308,7 +308,7 @@ class VectorBase(object):
             raise ValueError("The size of the input Matrix diagonal ({})"
                              "should match the size of this Vector ({})."
                              .format(min(M.size()), self.size()))
-        _kaldi_vector_ext.CopyDiagFromMat(self, M)
+        _kaldi_vector_ext.copy_diag_from_mat(self, M)
         return self
 
     def copy_from_packed(self, M):
@@ -324,7 +324,7 @@ class VectorBase(object):
             raise ValueError("The number of elements of the input PackedMatrix "
                              "({}) should match the size of this Vector ({})."
                              .format(numel, self.size()))
-        _kaldi_vector_ext.CopyFromPacked(self, M)
+        _kaldi_vector_ext.copy_from_packed(self, M)
         return self
 
     def copy_diag_from_packed(self, M):
@@ -340,7 +340,7 @@ class VectorBase(object):
             raise ValueError("The size of the input Matrix diagonal ({})"
                              "should match the size of this Vector ({})."
                              .format(M.num_rows, self.size()))
-        _kaldi_vector_ext.CopyDiagFromPacked(self, M)
+        _kaldi_vector_ext.copy_diag_from_packed(self, M)
         return self
 
     def copy_diag_from_sp(self, M):
@@ -356,7 +356,7 @@ class VectorBase(object):
             raise ValueError("The size of the input Matrix diagonal ({})"
                              "should match the size of this Vector ({})."
                              .format(M.num_rows, self.size()))
-        _kaldi_vector_ext.CopyDiagFromSp(self, M)
+        _kaldi_vector_ext.copy_diag_from_sp(self, M)
         return self
 
     def copy_diag_from_tp(self, M):
@@ -372,7 +372,7 @@ class VectorBase(object):
             raise ValueError("The size of the input Matrix diagonal ({})"
                              "should match the size of this Vector ({})."
                              .format(M.num_rows, self.size()))
-        _kaldi_vector_ext.CopyDiagFromTp(self, M)
+        _kaldi_vector_ext.copy_diag_from_tp(self, M)
         return self
 
     def add_row_sum_mat(self, alpha, M, beta=1.0):
@@ -389,7 +389,7 @@ class VectorBase(object):
         if self.size() != M.num_cols:
             raise ValueError("Cannot add sum of rows of M with size {} to "
                              "vector of size {}".format(M.num_cols, self.size()))
-        _kaldi_vector_ext.AddRowSumMat(self, alpha, M, beta)
+        _kaldi_vector_ext.add_row_sum_mat(self, alpha, M, beta)
         return self
 
     def add_col_sum_mat(self, alpha, M, beta=1.0):
@@ -406,7 +406,7 @@ class VectorBase(object):
         if self.size() != M.num_rows:
             raise ValueError("Cannot add sum of cols of M with size {} to "
                              "vector of size {}".format(M.num_rows, self.size()))
-        _kaldi_vector_ext.AddColSumMat(self, alpha, M, beta)
+        _kaldi_vector_ext.add_col_sum_mat(self, alpha, M, beta)
         return self
 
     def add_diag_mat2(self, alpha, M,
@@ -426,7 +426,7 @@ class VectorBase(object):
         if self.size() != M.num_rows:
             raise ValueError("Cannot add diagonal of M squared with size {} to "
                              "vector of size {}".format(M.num_rows, self.size()))
-        _kaldi_vector_ext.AddDiagMat2(self, alpha, M, trans, beta)
+        _kaldi_vector_ext.add_diag_mat2(self, alpha, M, trans, beta)
         return self
 
     def add_diag_mat_mat(self, alpha, M, transM, N, transN, beta=1.0):
@@ -466,7 +466,7 @@ class VectorBase(object):
                 if m != q:
                     raise ValueError("Cannot multiply M ({} by {}) with "
                                      "N ({} by {})".format(n, m, q, p))
-        _kaldi_vector_ext.AddDiagMatMat(self, alpha, M, transM, N, transN, beta)
+        _kaldi_vector_ext.add_diag_mat_mat(self, alpha, M, transM, N, transN, beta)
 
     def __repr__(self):
         return str(self)
@@ -524,7 +524,7 @@ class VectorBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        if isinstance(value, (VectorBase, MatrixBase)):
+        if isinstance(value, (VectorBase, _matrix.MatrixBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
             self.numpy().__setitem__(index, value)
@@ -550,7 +550,7 @@ class Vector(VectorBase, _kaldi_vector.Vector):
         super(Vector, self).__init__()
         if length is not None:
             if isinstance(length, int) and length >= 0:
-                self.resize_(length, resize_type)
+                self.resize(length, resize_type)
             else:
                 raise ValueError("length should be a non-negative integer.")
 
@@ -589,20 +589,20 @@ class Vector(VectorBase, _kaldi_vector.Vector):
                              "start={} and len(obj)={}."
                              .format(length, max_len, start, obj_len))
         vector = cls(length)
-        vector.CopyFromVec(obj)
+        vector.copy_from_vec(obj)
         return vector
 
-    def resize_(self, length, resize_type=MatrixResizeType.SET_ZERO):
+    def resize(self, length, resize_type=MatrixResizeType.SET_ZERO):
         """Resizes the vector to desired length.
 
         Args:
             length (int): Size of new vector.
             resize_type (:class:`MatrixResizeType`): Resize type.
         """
-        self.Resize(length, resize_type)
+        self._resize(length, resize_type)
         return self
 
-    def swap_(self, other):
+    def swap(self, other):
         """Swaps the contents of vectors. Shallow swap.
 
         Args:
@@ -613,7 +613,7 @@ class Vector(VectorBase, _kaldi_vector.Vector):
         """
         if not isinstance(other, _kaldi_vector.Vector):
             raise TypeError("other should be a Vector instance.")
-        self.Swap(other)
+        self._swap(other)
         return self
 
     def __delitem__(self, index):
@@ -621,7 +621,7 @@ class Vector(VectorBase, _kaldi_vector.Vector):
         if not (0 <= index < self.size()):
             raise IndexError("index={} should be in the range [0,{})."
                              .format(index, self.size()))
-        self.RemoveElement(index)
+        self.remove_element(index)
 
 
 class SubVector(VectorBase, _matrix_ext.SubVector):
@@ -688,11 +688,11 @@ def construct_vector(vector):
     Returns:
         A new :class:`Vector` instance.
     """
-    return Vector().swap_(vector)
+    return Vector().swap(vector)
 
 ################################################################################
 
-_exclude_list = ['sys', 'numpy']
+_exclude_list = ['sys', 'numpy', 'MatrixResizeType', 'MatrixTransposeType']
 
 __all__ = [name for name in dir()
            if name[0] != '_'

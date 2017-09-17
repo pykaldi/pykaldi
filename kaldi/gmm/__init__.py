@@ -1,13 +1,11 @@
-from .am_diag import *
-from .common import *
-from .decodable_am_diag import *
-from .diag import *
-from .full import *
-from .full_normal import *
-from .mle_diag import *
-from .mle_full import *
-
-################################################################################
+from . import am_diag
+from . import common
+from . import decodable_am_diag
+from . import diag
+from . import full
+from . import full_normal
+from . import mle_diag
+from . import mle_full
 
 __all__ = [name for name in dir()
            if name[0] != '_'

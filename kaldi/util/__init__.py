@@ -1,8 +1,6 @@
-from .options import *
-from .io import *
-from .table import *
-
-################################################################################
+from . import options
+from . import io
+from . import table
 
 __all__ = [name for name in dir()
            if name[0] != '_'

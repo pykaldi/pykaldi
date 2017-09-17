@@ -1,0 +1,250 @@
+kaldi\.nnet3
+============
+
+.. automodule:: kaldi.nnet3
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      AddNnet
+      AddNnetComponents
+      AppendCindexes
+      CheckComputation
+      CollapseModel
+      ComponentDotProducts
+      ComputeCommandAttributes
+      ComputeComputationPhases
+      ComputeExampleComputationRequestSimple
+      ComputeGraphTranspose
+      ComputeMatrixAccesses
+      ComputeMatrixToSubmatrix
+      ComputeNnetComputationEpochs
+      ComputeObjectiveFunction
+      ComputeSimpleNnetContext
+      ComputeTopSortOrder
+      ComputeVariableAccesses
+      ConsolidateIoOperations
+      ConsolidateModelUpdate
+      ConvertAdditionToAssignment
+      ConvertRepeatedToBlockAffine
+      DescriptorTokenize
+      DotProduct
+      ErrorContext
+      ErrorContextFromStream
+      EvaluateComputationRequest
+      ExampleApproxEqual
+      ExpandComputation
+      FindOrphanComponents
+      FindOrphanNodes
+      FindSccs
+      FixGotoLabel
+      FreezeNaturalGradient
+      GenerateConfigSequence
+      GenerateConfigSequenceCompositeBlock
+      GenerateRandomSimpleComponent
+      GenerateSimpleNnetTrainingExample
+      GetCommandsOfType
+      GetComputationRequest
+      GetNnetExampleSize
+      GraphHasCycles
+      HasBatchnorm
+      IdentifySubmatrixArgs
+      IdentifySubmatrixArgsInComputation
+      IsSimpleNnet
+      IsValidName
+      LimitDerivativeTimes
+      MakeSccGraph
+      MaxOutputTimeInRequest
+      MergeExamples
+      MoveSizingCommands
+      NnetInfo
+      NnetIsRecurrent
+      NnetParametersAreIdentical
+      NnetToDirectedGraph
+      NumInputNodes
+      NumOutputNodes
+      NumParameters
+      NumUpdatableComponents
+      Optimize
+      OptimizeLoopedComputation
+      ParseConfigLines
+      PerturbParams
+      PrintCindex
+      PrintCindexes
+      PrintCommandAttributes
+      PrintGraphToString
+      PrintIndexes
+      PrintIntegerVector
+      PrintMatrixAccesses
+      PrintParameterMatrixStats
+      PrintParameterVectorStats
+      PrintVectorPerUpdatableComponent
+      ReadCindexVector
+      ReadConfigLines
+      ReadEditConfig
+      ReadIndexVector
+      ReadVectorAsChar
+      RecomputeStats
+      RemoveNoOps
+      RemoveUnnecessaryAllocation
+      RemoveUnnecessaryZeroing
+      RenumberComputation
+      ReplaceRowWithMatrixOps
+      RequestIsDecomposable
+      ResetGenerators
+      ScaleNnet
+      SetBatchnormTestMode
+      SetDropoutProportion
+      SetDropoutTestMode
+      SetLearningRate
+      SetNnetAsGradient
+      SnipRowOps
+      SummarizeVector
+      UnVectorizeNnet
+      UpdateNnetWithMaxChange
+      VariableMergingOptimization
+      VectorizeNnet
+      WriteCindexVector
+      WriteIndexVector
+      WriteVectorAsChar
+      ZeroComponentStats
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Access
+      AccessType
+      AffineComponent
+      AmNnetSimple
+      Analyzer
+      BackpropTruncationComponent
+      BackpropTruncationComponentPrecomputedIndexes
+      BatchNormComponent
+      BinarySumDescriptor
+      BlockAffineComponent
+      CachingOptimizingCompiler
+      CachingOptimizingCompilerOptions
+      CheckComputationOptions
+      ChunkTimeInfo
+      CindexSet
+      ClipGradientComponent
+      CollapseModelConfig
+      CommandAttributes
+      CommandType
+      Compiler
+      CompilerOptions
+      Component
+      ComponentPrecomputedIndexes
+      ComponentProperties
+      CompositeComponent
+      ComputationAnalysis
+      ComputationChecker
+      ComputationGraph
+      ComputationGraphBuilder
+      ComputationRequest
+      ComputationVariables
+      ConfigLine
+      ConstantComponent
+      ConstantFunctionComponent
+      DecodableAmNnetLoopedOnline
+      DecodableAmNnetSimple
+      DecodableAmNnetSimpleLooped
+      DecodableAmNnetSimpleParallel
+      DecodableNnetLoopedOnline
+      DecodableNnetSimple
+      DecodableNnetSimpleLooped
+      DecodableNnetSimpleLoopedInfo
+      DerivativeTimeLimiter
+      Descriptor
+      DistributeComponent
+      DistributeComponentPrecomputedIndexes
+      DropoutComponent
+      DropoutMaskComponent
+      ElementwiseProductComponent
+      ExampleGenerationConfig
+      ExampleMerger
+      ExampleMergingConfig
+      ExampleMergingStats
+      FixedAffineComponent
+      FixedBiasComponent
+      FixedScaleComponent
+      ForwardingDescriptor
+      GeneralDescriptor
+      Index
+      IndexSet
+      IoSpecification
+      LogSoftmaxComponent
+      LstmNonlinearityComponent
+      MatrixAccesses
+      MiscComputationInfo
+      NaturalGradientAffineComponent
+      NaturalGradientPerElementScaleComponent
+      NaturalGradientRepeatedAffineComponent
+      NetworkNode
+      Nnet
+      NnetCombineConfig
+      NnetCombiner
+      NnetComputation
+      NnetComputeOptions
+      NnetComputeProb
+      NnetComputeProbOptions
+      NnetComputer
+      NnetExample
+      NnetGenerationOptions
+      NnetIo
+      NnetOptimizeOptions
+      NnetSimpleComputationOptions
+      NnetSimpleLoopedComputationOptions
+      NnetTrainer
+      NnetTrainerOptions
+      NoOpComponent
+      NodeType
+      NonlinearComponent
+      NormalizeComponent
+      ObjectiveFunctionInfo
+      ObjectiveType
+      OffsetForwardingDescriptor
+      OnlineNaturalGradient
+      OptionalSumDescriptor
+      PerDimObjectiveInfo
+      PerElementOffsetComponent
+      PerElementScaleComponent
+      PermuteComponent
+      PnormComponent
+      RandomComponent
+      RectifiedLinearComponent
+      RepeatedAffineComponent
+      ReplaceIndexForwardingDescriptor
+      RoundingForwardingDescriptor
+      SigmoidComponent
+      SimpleForwardingDescriptor
+      SimpleObjectiveInfo
+      SimpleSumDescriptor
+      SoftmaxComponent
+      StatisticsExtractionComponent
+      StatisticsExtractionComponentPrecomputedIndexes
+      StatisticsPoolingComponent
+      StatisticsPoolingComponentPrecomputedIndexes
+      SumBlockComponent
+      SumDescriptor
+      SumGroupComponent
+      SwitchingForwardingDescriptor
+      TanhComponent
+      TimeHeightConvolutionComponent
+      UpdatableComponent
+      UtteranceSplitter
+      VariableMergingOptimizer
+   
+   
+
+   
+   
+   

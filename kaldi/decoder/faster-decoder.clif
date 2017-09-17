@@ -14,25 +14,42 @@ from "decoder/faster-decoder.h":
       beam_delta: float
       hash_ratio: float
 
-      def Register(self, opts: OptionsItf, full: bool)
+      def `Register` as register(self, opts: OptionsItf, full: bool):
+        """If 'full' use obscure options too."""
 
     class FasterDecoder:
       def __init__(self, fst: StdFst, config: FasterDecoderOptions)
 
-      def SetOptions(self, config: FasterDecoderOptions)
+      def `SetOptions` as set_options(self, config: FasterDecoderOptions)
 
       @async
-      def Decode(self, decodable: DecodableInterface)
+      def `Decode` as decode(self, decodable: DecodableInterface)
 
-      def ReachedFinal(self) -> bool
+      def `ReachedFinal` as reached_final(self) -> bool:
+        """
+        Returns:
+          true if a final state was active on the last frame.
+        """
 
-      def GetBestPath(self, fst_out: LatticeMutableFst,
-                      use_final_probs: bool = default) -> bool
+      def `GetBestPath` as get_best_path(self, fst_out: LatticeMutableFst,
+                      use_final_probs: bool = default) -> bool:
+        """ Gets the decoding traceback.
+        if 'use_final_probs' is true and we reached a final state, it limits itself to final states; otherwise it gets the most likely token not taking into account final-probs.
 
-      def InitDecoding(self)
+        Returns:
+          True if the output best path was not the empty FST (will only return false in ususual circumstances where no tokens survived).
+        """          
+
+      def `InitDecoding` as init_decoding(self):
+        """As a new alternative to `:meth:decode`, you can call init_decoding and then (posible multiple times) `:meth:advance_decoding`."""
 
       @async
-      def AdvanceDecoding(self, decodable: DecodableInterface,
-                          max_num_frames: int = default)
+      def `AdvanceDecoding` as advance_decoding(self, decodable: DecodableInterface,
+                          max_num_frames: int = default):
+        """This will decode until there are no more frames ready in the decodable object, but if max_num_frames >= 0 it will decode no more than that many frames."""
 
-      def NumFramesDecoded(self) -> int
+      def `NumFramesDecoded` as num_frames_decoded(self) -> int:
+        """
+        Returns:
+         the number of frames already decoded.
+        """

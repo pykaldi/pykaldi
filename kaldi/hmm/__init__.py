@@ -1,8 +1,6 @@
-from .topology import *
-from .transition_model import *
-from .posterior import *
-
-################################################################################
+from . import topology
+from . import transition_model
+from . import posterior
 
 __all__ = [name for name in dir()
            if name[0] != '_'

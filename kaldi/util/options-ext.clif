@@ -38,9 +38,9 @@ from "util/options-ext.h":
         type: OptionType
         def __init__(self, doc: str, type: OptionType)
 
-      def GetOptionInfoList(self) -> list<tuple<str, OptionInfo>>
+      def `GetOptionInfoList` as get_option_info_list(self) -> list<tuple<str, OptionInfo>>
 
-      def GetOptionType(self, key: str) -> (success: bool, type: OptionType)
+      def `GetOptionType` as get_option_type(self, key: str) -> (success: bool, type: OptionType)
 
     class `ParseOptionsExt` as ParseOptions(OptionsItf):
       def __init__(self, usage: str)
@@ -55,16 +55,16 @@ from "util/options-ext.h":
       def `RegisterDouble` as register_double(self, name: str, value: `double` as float, doc: str)
       def `RegisterString` as register_str(self, name: str, value: str, doc: str)
 
-      def DisableOption(self, name: str)
-      def Read(self, argv: list<str>) -> int
-      def PrintUsage(self, print_command_line: bool = default)
+      def `DisableOption` as disable_option(self, name: str)
+      def `Read` as read(self, argv: list<str>) -> int
+      def `PrintUsage` as print_usage(self, print_command_line: bool = default)
 
-      def PrintConfig(self)
-      def ReadConfigFile(self, filename: str)
+      def `PrintConfig` as print_config(self)
+      def `ReadConfigFile` as read_config_file(self, filename: str)
 
-      def NumArgs(self) -> int
-      def GetArg(self, param: int) -> str
-      def GetOptArg(self, param: int) -> str
+      def `NumArgs` as num_args(self) -> int
+      def `GetArg` as get_arg(self, param: int) -> str
+      def `GetOptArg` as get_opt_arg(self, param: int) -> str
 
       class Options:
         bool_map: `std::map` as dict<str, bool>
@@ -74,7 +74,7 @@ from "util/options-ext.h":
         double_map: `std::map` as dict<str, float>
         str_map: `std::map` as dict<str, str>
 
-      def GetOptions(self) -> Options
+      def `GetOptions` as get_options(self) -> Options
 
       @classmethod
-      def Escape(cls, str: str) -> str
+      def `Escape` as escape(cls, str: str) -> str

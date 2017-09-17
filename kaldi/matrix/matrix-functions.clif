@@ -32,21 +32,37 @@ from "matrix/matrix-functions.h":
         # def `ComplexImExp` as ComplexImExp(x:float) -> (a_re:`float` as float, a_im:`float` as float)
 
         class `MatrixExponential<float>` as MatrixExponential:
+          """This class allows you to compute the matrix exponential function
+             B = I + A + 1/2! A^2 + 1/3! A^3 + ...
+             This method is most accurate where the result is of the same order of
+             magnitude as the unit matrix (it will typically not work well when
+             the answer has almost-zero eigenvalues or is close to zero).
+             It also provides a function that allows you do back-propagate the
+             derivative of a scalar function through this calculation.
+          """
 
-#            FIXME(pavlos): Need C++ wrapper, does not feel pythonic
-#            def Compute(self, M:MatrixBase, X:MatrixBase)
-#               """Performs X=exp(M)
-#
-#               Args: 
-#                   M(MatrixBase): A matrix
-#                   X(MatrixBase): A matrix, the output
-#               """
+#         FIXME(pavlos): Need C++ wrapper, does not feel pythonic
+          def Compute(self, M:MatrixBase, X:MatrixBase)
+            """Performs X=exp(M)
+
+            Args: 
+                M(MatrixBase): A matrix
+                X(MatrixBase): A matrix, the output
+            """
 
             # TODO (VM):
             # def Compute(self, M:SpMatrix) -> (X:SpMatrix)
 
-#            FIXME(pavlos): Need C++ wrapper, does not feel pythonic
-#            def `Backprop` as Backprop(self, hX:MatrixBase, hM:MatrixBase)
+#         FIXME(pavlos): Need C++ wrapper, does not feel pythonic
+          def `Backprop` as backprop(self, hX:MatrixBase, hM:MatrixBase)
+            """The the gradient of a scalar function f backwards through
+               this operation, i.e.: if the parameter dX represents df/dX
+               (with no transpose, so element i, j of dX is the derivative of
+               f w.r.t. E(i, j)), it sets dM to df/dM, again with no
+               transpose (of course, only the part thereof that comes through
+               the effect of A on B). This applies to the values of A and E
+               that were called most recently with Compute().
+            """
 
             # TODO (VM):
             # def `Backprop` as BackpropSp(self, hX:SpMatrix) -> (hM:SpMatrix)
@@ -57,9 +73,9 @@ from "matrix/matrix-functions.h":
         # Cannot be implemented as plus, minus is both in/out
         # def AddOuterProductPlusMinus(alpha:float, a:VectorBase, b:VectorBase, plus:MatrixBase, minus:MatrixBase)
 
-        def `AssertSameDim` as AssertSameDimMatrix(mat1:MatrixBase, mat2:MatrixBase)
+        def `AssertSameDim` as assert_same_dim_matrix(mat1:MatrixBase, mat2:MatrixBase)
           """Checks if mat1 and mat2 have the same dimensions.
-
+ 
           Raises:
               Error if mat1.num_rows!=mat2.num_rows || mat1.num_cols!=mat2.num_cols
           """

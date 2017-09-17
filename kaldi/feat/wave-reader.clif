@@ -1,21 +1,31 @@
 from "matrix/kaldi-matrix-clifwrap.h" import *
-
-from kaldi.matrix import wrap_matrix
+from kaldi.matrix import construct_matrix
 
 from "feat/wave-reader.h":
   namespace `kaldi`:
 
     class WaveData:
+      """This class is to read in Wave files."""
 
       @add__init__
       def `WaveData` as New(self, samp_freq:float, data:Matrix)
 
       def Data(self) -> Matrix:
-        return wrap_matrix(...)
+        """
+          Wrapper function for :kaldi:`kaldi::WaveData::Data`
+          This function returns the wave data-- 
+          it's in a matrix because there may be multiple channels.
+          In the normal case there's just one channel so Data() will have one row.
+
+        Returns:
+          :class:`kaldi.matrix.Matrix` with the wave data.
+        """
+        return construct_matrix(...)
 
       def SampFreq(self) -> float
 
-      def Duration(self) -> float
+      def Duration(self) -> float:
+        """Returns the duration in seconds."""
 
       def CopyFrom(self, other:WaveData)
 

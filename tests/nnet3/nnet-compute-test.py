@@ -3,12 +3,12 @@
 import random
 import unittest
 
-from kaldi.cudamatrix import cuda_available
-from kaldi.cudamatrix.cu_matrix import *
-from kaldi.matrix import ApproxEqualVector, Matrix, Vector
+from kaldi.cudamatrix import *
+from kaldi.matrix import Matrix, Vector
+from kaldi.matrix.vector import ApproxEqualVector
 from kaldi.nnet3 import *
-from kaldi.util.sstream import *
-
+from kaldi.util.io import stringstream as sstream
+from kaldi.util.io import istringstream, ostringstream
 
 class TestNnetCompute(unittest.TestCase):
 
@@ -45,7 +45,7 @@ class TestNnetCompute(unittest.TestCase):
         ostrm = ostringstream()
         computation.Print(ostrm, nnet)
         print("Generated computation:")
-        print(ostrm.str())
+        print(ostrm.to_str())
 
         check_config = CheckComputationOptions()
         check_config.check_rewrite = True
@@ -59,7 +59,7 @@ class TestNnetCompute(unittest.TestCase):
             ostrm = ostringstream()
             computation.Print(ostrm, nnet)
             print("Optimized computation:")
-            print(ostrm.str())
+            print(ostrm.to_str())
 
         compute_opts = NnetComputeOptions()
         compute_opts.debug = random.choice([True, False])
@@ -157,7 +157,7 @@ class TestNnetCompute(unittest.TestCase):
 if __name__ == '__main__':
     for i in range(2):
         if cuda_available():
-            from kaldi.cudamatrix.cu_device import CuDevice
+            from kaldi.cudamatrix import CuDevice
             CuDevice.Instantiate().SetDebugStrideMode(True)
             if i == 0:
                 CuDevice.Instantiate().SelectGpuId("no")

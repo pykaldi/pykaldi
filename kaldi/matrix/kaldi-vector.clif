@@ -4,10 +4,10 @@ from "matrix/matrix-common-clifwrap.h" import *
 from "matrix/kaldi-vector.h":
   namespace `kaldi`:
     class `VectorBase<float>` as VectorBase:
-      def SetZero(self)
+      def `SetZero` as set_zero(self):
         """Set all elements to zero."""
 
-      def IsZero(self, cutoff: float = default) -> bool
+      def `IsZero` as is_zero(self, cutoff: float = default) -> bool:
         """Return True if the max element is smaller than cutoff value.
 
         Args:
@@ -17,20 +17,20 @@ from "matrix/kaldi-vector.h":
             True if max(self) < cutoff
         """
 
-      def `Set` as Fill(self, f: float)
+      def `Set` as fill(self, f: float):
         """Assign the value f to every element in the vector.
 
         Args:
             f(float): The value to assign
         """
 
-      def SetRandn(self)
+      def `SetRandn` as set_randn(self):
         """Set vector to random normally-distributed noise."""
 
-      def SetRandUniform(self)
+      def `SetRandUniform` as set_randn_uniform(self):
         """Sets vector elements to numbers uniformly distributed on (0,1)."""
 
-      def RandCategorical(self) -> int
+      def `RandCategorical` as rand_categorical(self) -> int:
         """This function returns a random index into this vector, chosen with
            probability proportional to the corresponding element. It requires the minimum
            value of the vector to be greater or equal to zero and the sum to
@@ -40,16 +40,16 @@ from "matrix/kaldi-vector.h":
             Error if min(self)<0 || sum(self)<=0
         """
 
-      def `Dim` as __len__(self) -> int
+      def `Dim` as __len__(self) -> int:
         """Returns the dimension of the vector."""
 
-      def `Dim` as size(self) -> int
+      def `Dim` as size(self) -> int:
         """Returns the dimension of the vector."""
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int:
         """Returns the dimension of the vector."""
 
-      def SizeInBytes(self) -> int
+      def `SizeInBytes` as size_in_bytes(self) -> int:
         """Returns the size in memory of the vector, in bytes."""
 
       # NOTE:
@@ -63,7 +63,7 @@ from "matrix/kaldi-vector.h":
       #
       # def Data(self) -> float
 
-      def `operator()` as Get(self, index: int) -> float
+      def `operator()` as get(self, index: int) -> float:
         """Indexing operator.
 
         Args:
@@ -73,7 +73,7 @@ from "matrix/kaldi-vector.h":
             The value of the indexed element
         """
 
-      def Set(self, index: int, value: float)
+      def `Set` as set(self, index: int, value: float):
         """Assign value to index, v(index)=value.
 
         Args:
@@ -85,7 +85,7 @@ from "matrix/kaldi-vector.h":
       # We wrap this in Python by constructing a new SubVector.
       # def Range(self, o: int, l: int) -> SubVector
 
-      def CopyFromVec(self, v: VectorBase)
+      def `CopyFromVec` as copy_from_vec(self, v: VectorBase):
         """Copy data from another vector v of the same size.
 
         Args:
@@ -99,19 +99,19 @@ from "matrix/kaldi-vector.h":
       # We cannot wrap this here since PackedMatrix is not defined yet.
       # def CopyFromPacked(self, M: PackedMatrix)
 
-      def ApplyLog(self)
+      def `ApplyLog` as apply_log(self):
         """Apply natural log to all elements."""
 
-      def ApplyLogAndCopy(self, v: VectorBase)
+      def `ApplyLogAndCopy` as apply_log_and_copy(self, v: VectorBase):
         """Apply natural log to vector v and copy the results to this one."""
 
-      def ApplyExp(self)
+      def `ApplyExp` as apply_exp(self):
         """Apply exponential to each value in vector."""
 
-      def ApplyAbs(self)
+      def `ApplyAbs` as apply_abs(self):
         """Apply absolute value to each value in vector."""
 
-      def ApplyFloor(self, floor: float) -> int
+      def `ApplyFloor` as apply_floor(self, floor: float) -> int:
         """Applies floor to all elements. Returns number of elements floored.
            If self(i)<floor then self(i)=floor.
 
@@ -122,7 +122,7 @@ from "matrix/kaldi-vector.h":
             The number of elements changed.
         """
 
-      def ApplyCeiling(self, ceiling: float) -> int
+      def `ApplyCeiling` as apply_ceiling(self, ceiling: float) -> int:
         """Applies floor to all elements. Returns number of elements ceiled.
            If self(i)>ceiling then self(i)=ceiling.
 
@@ -133,10 +133,10 @@ from "matrix/kaldi-vector.h":
             The number of elements changed
         """
 
-      def `ApplyFloor` as ApplyFloorVector(self, floor: VectorBase) -> int
+      def `ApplyFloor` as apply_floor_vector(self, floor: VectorBase) -> int:
         """Applies floor with respect to the elements of ``floor''.
-         For example, for every element of this vector if
-         v(i) < floor(i) then v(i)=floor(i).
+           For example, for every element of this vector if
+           v(i) < floor(i) then v(i)=floor(i).
 
         Args:
             floor(VectorBase): The vector to check against
@@ -145,7 +145,7 @@ from "matrix/kaldi-vector.h":
             The number of elements changed
         """
 
-      def ApplySoftMax(self) -> float
+      def `ApplySoftMax` as apply_softmax(self) -> float:
         """Apply the softmax operator to the vector and return
            normalizer (log sum of exponentials).
            x(i) = exp(x_i)/Sum(exp(x_i))
@@ -154,7 +154,7 @@ from "matrix/kaldi-vector.h":
            log(Sum(exp(x_i)))
         """
 
-      def ApplyLogSoftMax(self) -> float
+      def `ApplyLogSoftMax` as apply_log_softmax(self) -> float:
         """Apply the softmax operator to the vector and return
            normalizer (log sum of exponentials).
            x(i) = exp(x_i) - log(Sum(exp(x_i))).
@@ -163,46 +163,46 @@ from "matrix/kaldi-vector.h":
            -log(Sum(exp(x_i)))
         """
 
-      def Tanh(self, src: VectorBase)
+      def `Tanh` as tanh(self, src: VectorBase):
         """Sets each element of self to the tanh of the corresponding element of src.
-  
+
         Args:
             src(VectorBase): The vector whose elements will be used
                              to calculate tanh and copy to self
-  
+
         Raises:
             Error if src has different size than self
         """
 
-      def Sigmoid(self, src: VectorBase)
+      def `Sigmoid` as sigmoid(self, src: VectorBase):
         """Sets each element of self to the sigmoid of the corresponding element of src.
-  
+
         Args:
             src(VectorBase): The vector whose elements will be used to
                              calculate sigmoid and copy to self.
-  
+
         Raises:
             Error if src has different size than self
         """
 
-      def ApplyPow(self, power: float)
+      def `ApplyPow` as apply_pow(self, power: float):
         """Take all elements of vector to a power.
-  
+
         Args:
             power(float): The power which we apply to all elements of self
-  
+
         Raises:
             Error if you try to handle imaginary numbers
             (e.g. square root of a negative) or in case of overflow.
         """
 
-      def ApplyPowAbs(self, power: float, include_sign: bool = default)
+      def `ApplyPowAbs` as apply_pow_abs(self, power: float, include_sign: bool = default):
         """Take the absolute value of all elements of a vector to a power.
            Include the sign of the input element if include_sign == true.
            For example, if self=(-3,2) then for power=2 and include_sign=true
            we would have self=(-9,4). If power is negative and the input
            value is zero, the output is set zero.
-  
+
         Args:
             power(float): The power which we apply to all alements of self
             include_sign(bool): True if we include the sign of the input element
@@ -211,42 +211,42 @@ from "matrix/kaldi-vector.h":
             Error if we have overflows or underflows.
         """
 
-      def Norm(self, p: float) -> float
+      def `Norm` as norm(self, p: float) -> float:
         """Compute the p-th norm of the vector.
-  
+
         Args:
             p(float): Defines which norm order to use. It must be p>=0
-  
+
         Returns:
             A float, the norm.
-  
+
         Raises:
             Error if p<0 or we have overflows/underflows.
         """
 
-      def ApproxEqual(self, other: VectorBase, tol: float = default) -> bool
+      def `ApproxEqual` as approx_equal(self, other: VectorBase, tol: float = default) -> bool:
         """Returns true if the 2nd norm of the difference of
            this vector and other is less or equal than tol.
-  
+
         Args:
             other(VectorBase): The vector to check against
             tol(float): The tolerance
-  
+
         Returns:
             True if ||self-other||_p <=tol
-  
+
         Raises:
             Error if size of other is different than size of self, or if tol<0.
         """
 
-      def InvertElements(self)
+      def `InvertElements` as invert_elements(self):
         """Invert all elements. x(i) = 1/x(i).
 
         Raises:
             Error if at least one x(i) is 0
         """
 
-      def AddVec(self, alpha: float, v: VectorBase)
+      def `AddVec` as add_vec(self, alpha: float, v: VectorBase):
         """Vector addition. self = self + alpha * v.
 
         Args:
@@ -257,7 +257,7 @@ from "matrix/kaldi-vector.h":
             Error if the size of v is different than the size of self
         """
 
-      def AddVec2(self, alpha: float, v: VectorBase)
+      def `AddVec2` as add_vec2(self, alpha: float, v: VectorBase):
         """Vector addition. self = self + alpha * v^2.
 
         Args:
@@ -291,7 +291,7 @@ from "matrix/kaldi-vector.h":
       #              trans: MatrixTransposeType, v: VectorBase,
       #              beta: `float` as float)
 
-      def ReplaceValue(self, orig: float, changed: float)
+      def `ReplaceValue` as replace_value(self, orig: float, changed: float):
         """Replace every every element with value orig with changed.
            If v(i)==orig then v(i)=changed, for all i.
 
@@ -300,7 +300,7 @@ from "matrix/kaldi-vector.h":
             changed(float): The value we want to assign
         """
 
-      def MulElements(self, v: VectorBase)
+      def `MulElements` as mul_elements(self, v: VectorBase):
         """Multipy element-by-element by another vector.
 
         Args:
@@ -310,7 +310,7 @@ from "matrix/kaldi-vector.h":
             Error if the size of v is different than the size of self.
         """
 
-      def DivElements(self, v: VectorBase)
+      def `DivElements` as div_elements(self, v: VectorBase):
         """Divide element-by-element by a vector
 
         Args:
@@ -320,15 +320,15 @@ from "matrix/kaldi-vector.h":
             Error if the size of v is different than the size of self.
         """
 
-      def Add(self, constant: float)
+      def `Add` as add(self, constant: float):
         """Add a constant to each element of a vector. self = self+constant.
 
         Args:
             constant(float): The constant which we will add to the vector.
         """
 
-      def AddVecVec(self, alpha: float, v: VectorBase,
-                    r: VectorBase, beta: float)
+      def `AddVecVec` as add_vec_vec(self, alpha: float, v: VectorBase,
+                    r: VectorBase, beta: float):
         """Elementwise addition of product of vectors to self.
            self = alpha*v*r + beta*self
 
@@ -342,24 +342,24 @@ from "matrix/kaldi-vector.h":
             Error if dimensions do not match
         """
 
-      def AddVecDivVec(self, alpha: float, v: VectorBase,
-                       r: VectorBase, beta: float)
+      def `AddVecDivVec` as add_vec_div_vec(self, alpha: float, v: VectorBase,
+                       r: VectorBase, beta: float):
         """Elementwise addition of quotient of vectors to self.
            self = alpha*v./r + beta*self.
-  
+
         Args:
             alpha(float): a scaling constant
             v(VectorBase): a vector
             r(VectorBase): a vector
             beta(float): a scaling constant
-  
+
         Raises:
             Error if dimensions do not match
         """
 
-      def Scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float):
         """Multiplies all elements by this constant. self=self*alpha.
-  
+
         Args:
             alpha(float): A constant to scale the vector.
         """
@@ -404,27 +404,27 @@ from "matrix/kaldi-vector.h":
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def CopyDiagFromTp(self, M: TpMatrix)
 
-      def Max(self) -> float
+      def `Max` as max(self) -> float:
         """Returns the maximum value of the vector."""
 
-      def `Max` as MaxIndex(self) -> (value: float, index: int)
+      def `Max` as max_index(self) -> (value: float, index: int):
         """Returns the maximum value of the vector, and the associated index."""
 
-      def Min(self) -> float
+      def `Min` as min(self) -> float:
         """Returns the minimum value of the vector."""
 
-      def `Min` as MinIndex(self) -> (value: float, index: int)
+      def `Min` as min_index(self) -> (value: float, index: int):
         """Returns the minimum value of the vector, and the associated index."""
 
-      def Sum(self) -> float
+      def `Sum` as sum(self) -> float:
         """Return the sum of the elements of the vector."""
 
-      def SumLog(self) -> float
+      def `SumLog` as sum_log(self) -> float:
         """Returns sum of the logs of the elements.
            Will return NaN if any elements are negative.
         """
 
-      def LogSumExp(self, prune: float = default) -> float
+      def `LogSumExp` as log_sum_exp(self, prune: float = default) -> float:
         """Returns log(sum(exp())) without exp overflow.
            If prune > 0.0, ignores terms less than the max - prune.
 
@@ -458,18 +458,19 @@ from "matrix/kaldi-vector.h":
       #                   N: MatrixBase, transN: MatrixTransposeType,
       #                   beta: `float` as float = default)
 
-      def Read(self, is: istream, binary: bool, add: bool = default)
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default):
         """Reads from C++ stream.
-  
+
         Args:
             is(istream): The input straem.
             binary(bool): If the stream is binary.
             add(bool): True if you want to add the stream to self.
         """
 
-      def Write(self, os: ostream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool):
         """Writes to C++ stream.
-  
+
         Args:
             os(ostream): The output straem.
             binary(bool): If the stream is binary.
@@ -498,8 +499,8 @@ from "matrix/kaldi-vector.h":
 
     class `Vector<float>` as Vector(VectorBase):
       @add__init__
-      def `Vector` as NewWithSize(self, size: int,
-                                  resize_type: MatrixResizeType = default)
+      def `Vector` as new_with_size(self, size: int,
+                                  resize_type: MatrixResizeType = default):
         """Create a new vector of length size. If the size type is kSetZero,
            the new data will be zero. If the resize type is kUndefined,
            the new data will be undefined. Finally if the resize type is kCopyData,
@@ -519,21 +520,21 @@ from "matrix/kaldi-vector.h":
       # def `Vector` as NewWithVector(self, v: Vector)
 
       @add__init__
-      def `Vector` as NewWithVector(self, v: VectorBase)
+      def `Vector` as new_with_vector(self, v: VectorBase):
         """Create vector and copy the elements of v.
 
         Args:
             v(VectorBase): The vector from which we will copy its elements.
         """
 
-      def Swap(self, other: Vector)
+      def `Swap` as _swap(self, other: Vector):
         """Swaps the contents of self and other. Shallow swap.
 
         Args:
             other(VectorBase): The vector whose elements we want to swap with self.
         """
 
-      def Read(self, is: istream, binary: bool, add: bool = default)
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default):
         """Reads from C++ stream.
 
         Args:
@@ -547,7 +548,7 @@ from "matrix/kaldi-vector.h":
       # implement the Range method in Python by constructing a SubVector.
       # def Range(self, offset: int, length: int) -> SubVector
 
-      def Resize(self, length: int, resize_type: MatrixResizeType = default)
+      def `Resize` as _resize(self, length: int, resize_type: MatrixResizeType = default):
         """Set vector size to length (length can be zero).
            The default resize type is kSetZero, in which case the new data
            will be zero. If the resize type is kUndefined, the new data
@@ -560,7 +561,7 @@ from "matrix/kaldi-vector.h":
             resize_type(MatrixResizeType): Determines the initial values of the vector.
         """
 
-      def RemoveElement(self, index: int)
+      def `RemoveElement` as remove_element(self, index: int):
         """Remove one element and shifts later elements down, reducing the dimension by one.
 
         Args:
@@ -572,7 +573,7 @@ from "matrix/kaldi-vector.h":
     # deduction. CLIF defaults to `double` for Python float.
     # These functions were renamed to avoid possible name conflicts.
     def `ApproxEqual` as ApproxEqualVector(
-        a: VectorBase, b: VectorBase, tol: `float` as float = default) -> bool
+        a: VectorBase, b: VectorBase, tol: `float` as float = default) -> bool:
       """Computes the 2nd norm of the difference of vector a and vector b
          and returns True if it is less or equal than tol.
 
@@ -588,8 +589,8 @@ from "matrix/kaldi-vector.h":
           Error if size of a is different than size of b.
       """
 
-    def `AssertEqual` as AssertEqualVector(a: VectorBase, b: VectorBase,
-                                           tol: `float` as float = default)
+    def `AssertEqual` as assert_equal_vector(a: VectorBase, b: VectorBase,
+                                             tol: float = default):
       """Computes the 2nd norm of the difference of vector a and vector b and
          checks if it is less or equal than tol.
          If the condition is not satisfied it will raise an error.
@@ -603,29 +604,28 @@ from "matrix/kaldi-vector.h":
           Error if ||a-b||_p > tol
       """
 
-    def VecVec(v1: VectorBase, v2: VectorBase) -> float
+    def `VecVec` as vec_vec(v1: VectorBase, v2: VectorBase) -> float:
       """Returns dot product between v1 and v2.
-  
+
       Args:
           v1(VectorBase): A vector
           v2(VectorBase): A vector
-  
+
       Returns:
           The dot product of v1 and v2.
-  
+
       Raises:
           Error if size of v1 is different than size of v2.
       """
-  
     # NOTE:
     # We cannot wrap this here since MatrixBase is not defined yet.
     # def VecMatVec(v1: VectorBase, M: MatrixBase, v2: VectorBase) -> float
 
     class `VectorBase<double>` as DoubleVectorBase:
-      def SetZero(self)
+      def `SetZero` as set_zero(self):
         """Set all elements to zero."""
 
-      def IsZero(self, cutoff: float = default) -> bool
+      def `IsZero` as is_zero(self, cutoff: float = default) -> bool:
         """Return True if the max element is smaller than cutoff value.
 
         Args:
@@ -635,20 +635,20 @@ from "matrix/kaldi-vector.h":
             True if max(self) < cutoff
         """
 
-      def `Set` as Fill(self, f: float)
+      def `Set` as fill(self, f: float):
         """Assign the value f to every element in the vector.
 
         Args:
             f(float): The value to assign
         """
 
-      def SetRandn(self)
+      def `SetRandn` as set_randn(self):
         """Set vector to random normally-distributed noise."""
 
-      def SetRandUniform(self)
+      def `SetRandUniform` as set_randn_uniform(self):
         """Sets vector elements to numbers uniformly distributed on (0,1)."""
 
-      def RandCategorical(self) -> int
+      def `RandCategorical` as rand_categorical(self) -> int:
         """This function returns a random index into this vector, chosen
            with probability proportional to the corresponding element.
            It requires the minimum value of the vector to be greater or equal
@@ -658,16 +658,16 @@ from "matrix/kaldi-vector.h":
             Error if min(self)<0 || sum(self)<=0
         """
 
-      def `Dim` as __len__(self) -> int
+      def `Dim` as __len__(self) -> int:
         """Returns the dimension of the vector."""
 
-      def `Dim` as size(self) -> int
+      def `Dim` as size(self) -> int:
         """Returns the dimension of the vector."""
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int:
         """Returns the dimension of the vector."""
 
-      def SizeInBytes(self) -> int
+      def `SizeInBytes` as size_in_bytes(self) -> int:
         """Returns the size in memory of the vector, in bytes."""
 
       # NOTE:
@@ -681,7 +681,7 @@ from "matrix/kaldi-vector.h":
       #
       # def Data(self) -> float
 
-      def `operator()` as Get(self, index: int) -> float
+      def `operator()` as get(self, index: int) -> float:
         """Indexing operator.
 
         Args:
@@ -691,7 +691,7 @@ from "matrix/kaldi-vector.h":
             The value of the indexed element
         """
 
-      def Set(self, index: int, value: float)
+      def `Set` as set(self, index: int, value: float):
         """Assign value to index, v(index)=value.
 
         Args:
@@ -703,7 +703,7 @@ from "matrix/kaldi-vector.h":
       # We wrap this in Python by constructing a new SubVector.
       # def Range(self, o: int, l: int) -> SubVector
 
-      def CopyFromVec(self, v: DoubleVectorBase)
+      def `CopyFromVec` as copy_from_vec(self, v: DoubleVectorBase):
         """Copy data from another vector v of the same size.
 
         Args:
@@ -717,19 +717,19 @@ from "matrix/kaldi-vector.h":
       # We cannot wrap this here since PackedMatrix is not defined yet.
       # def CopyFromPacked(self, M: PackedMatrix)
 
-      def ApplyLog(self)
+      def `ApplyLog` as apply_log(self):
         """Apply natural log to all elements."""
 
-      def ApplyLogAndCopy(self, v: DoubleVectorBase)
+      def `ApplyLogAndCopy` as apply_log_and_copy(self, v: DoubleVectorBase):
         """Apply natural log to vector v and copy the results to this one."""
 
-      def ApplyExp(self)
+      def `ApplyExp` as apply_exp(self):
         """Apply exponential to each value in vector."""
 
-      def ApplyAbs(self)
+      def `ApplyAbs` as apply_abs(self):
         """Apply absolute value to each value in vector."""
 
-      def ApplyFloor(self, floor: float) -> int
+      def `ApplyFloor` as apply_floor(self, floor: float) -> int:
         """Applies floor to all elements. Returns number of elements floored.
            If self(i)<floor then self(i)=floor.
 
@@ -740,7 +740,7 @@ from "matrix/kaldi-vector.h":
             The number of elements changed.
         """
 
-      def ApplyCeiling(self, ceiling: float) -> int
+      def `ApplyCeiling` as apply_ceiling(self, ceiling: float) -> int:
         """Applies floor to all elements. Returns number of elements ceiled.
            If self(i)>ceiling then self(i)=ceiling.
 
@@ -751,7 +751,7 @@ from "matrix/kaldi-vector.h":
             The number of elements changed.
         """
 
-      def `ApplyFloor` as ApplyFloorVector(self, floor: VectorBase) -> int
+      def `ApplyFloor` as apply_floor_vector(self, floor: DoubleVectorBase) -> int:
         """Applies floor with respect to the elements of ``floor''.
            For example, for every element of this vector
            if v(i) < floor(i) then v(i)=floor(i).
@@ -763,7 +763,7 @@ from "matrix/kaldi-vector.h":
             The number of elements changed.
         """
 
-      def ApplySoftMax(self) -> float
+      def `ApplySoftMax` as apply_softmax(self) -> float:
         """Apply the softmax operator to the vector and
            return normalizer (log sum of exponentials).
            x(i) = exp(x_i)/Sum(exp(x_i))
@@ -772,7 +772,7 @@ from "matrix/kaldi-vector.h":
            log(Sum(exp(x_i)))
         """
 
-      def ApplyLogSoftMax(self) -> float
+      def `ApplyLogSoftMax` as apply_log_softmax(self) -> float:
         """Apply the softmax operator to the vector and
            return normalizer (log sum of exponentials).
            x(i) = exp(x_i) - log(Sum(exp(x_i))).
@@ -781,7 +781,7 @@ from "matrix/kaldi-vector.h":
            -log(Sum(exp(x_i)))
         """
 
-      def Tanh(self, src: VectorBase)
+      def `Tanh` as tanh(self, src: DoubleVectorBase):
         """Sets each element of self to the tanh of the corresponding element of src.
 
         Args:
@@ -792,96 +792,96 @@ from "matrix/kaldi-vector.h":
             Error if src has different size than self
         """
 
-      def Sigmoid(self, src: VectorBase)
+      def `Sigmoid` as sigmoid(self, src: DoubleVectorBase):
         """Sets each element of self to the sigmoid of the corresponding element of src.
-  
+
         Args:
             src(VectorBase): The vector whose elements will be used to calculate sigmoid
                              and copy to self.
-  
+
         Raises:
             Error if src has different size than self
         """
 
-      def ApplyPow(self, power: float)
+      def `ApplyPow` as apply_pow(self, power: float):
         """Take all elements of vector to a power.
-  
+
         Args:
             power(float): The power which we apply to all elements of self
-  
+
         Raises:
             Error if you try to handle imaginary numbers
             (e.g. square root of a negative) or in case of overflow.
         """
 
-      def ApplyPowAbs(self, power: float, include_sign: bool = default)
+      def `ApplyPowAbs` as apply_pow_abs(self, power: float, include_sign: bool = default):
         """Take the absolute value of all elements of a vector to a power.
            Include the sign of the input element if include_sign == true.
            For example, if self=(-3,2) then for power=2 and include_sign=true
            we would have self=(-9,4). If power is negative and the input value
            is zero, the output is set zero.
-  
+
         Args:
             power(float): The power which we apply to all alements of self
             include_sign(bool): True if we include the sign of the input element.
-  
+
         Raises:
             Error if we have overflows or underflows.
         """
- 
-      def Norm(self, p: float) -> float
+
+      def `Norm` as norm(self, p: float) -> float:
         """Compute the p-th norm of the vector.
-  
+
         Args:
             p(float): Defines which norm order to use. It must be p>=0.
-  
+
         Returns:
             A float, the norm.
-  
+
         Raises:
             Error if p<0 or we have overflows/underflows.
         """
 
-      def ApproxEqual(self, other: VectorBase, tol: float = default) -> bool
+      def `ApproxEqual` as approx_equal(self, other: DoubleVectorBase, tol: float = default) -> bool:
         """Returns true if the 2nd norm of the difference of this vector
            and other is less or equal than tol.
-  
+
         Args:
             other(VectorBase): The vector to check against.
             tol(float): The tolerance.
-  
+
         Returns:
             True if ||self-other||_p <=tol
-  
+
         Raises:
             Error if size of other is different than size of self, or if tol<0.
         """
 
-      def InvertElements(self)
+      def `InvertElements` as invert_elements(self):
         """Invert all elements. x(i) = 1/x(i).
-  
+
         Raises:
             Error if at least one x(i) is 0.
         """
 
-      def AddVec(self, alpha: float, v: VectorBase)
+      def `AddVec` as add_vec(self, alpha: float, v: DoubleVectorBase):
         """Vector addition. self = self + alpha * v.
-  
+
         Args:
             alpha(float): a scaling constant.
             v(VectorBase): a vector
-  
+
         Raises:
             Error if the size of v is different than the size of self.
         """
 
-      def AddVec2(self, alpha: float, v: VectorBase)
+      def `AddVec2` as add_vec2(self, alpha: float, v: DoubleVectorBase):
         """Vector addition. self = self + alpha * v^2.
-  
+
         Args:
             alpha(float): a scaling constant.
             v(VectorBase): a vector
-  
+
         Raises:
             Error if the size of v is different than the size of self.
         """
@@ -909,62 +909,62 @@ from "matrix/kaldi-vector.h":
       #              trans: MatrixTransposeType, v: DoubleVectorBase,
       #              beta: `double` as float)
 
-      def ReplaceValue(self, orig: float, changed: float)
+      def `ReplaceValue` as replace_value(self, orig: float, changed: float):
         """Replace every every element with value orig with changed.
            If v(i)==orig then v(i)=changed, for all i.
-  
+
         Args:
             orig(float): The value we want to change.
             changed(float): The value we want to assign.
         """
-  
-      def MulElements(self, v: VectorBase)
+
+      def `MulElements` as mul_elements(self, v: DoubleVectorBase):
         """Multipy element-by-element by another vector.
-  
+
         Args:
             v(VectorBase): a vector
-  
+
         Raises:
             Error if the size of v is different than the size of self.
         """
 
-      def DivElements(self, v: VectorBase)
+      def `DivElements` as div_elements(self, v: DoubleVectorBase):
         """Divide element-by-element by a vector
-  
+
         Args:
             v(VectorBase): a vector
-  
+
         Raises:
             Error if the size of v is different than the size of self.
         """
 
-      def Add(self, constant: float)
+      def `Add` as add(self, constant: float):
         """Add a constant to each element of a vector. self = self+constant.
-  
+
         Args:
             constant(float): The constant which we will add to the vector.
         """
 
-      def AddVecVec(self, alpha: float, v: VectorBase,
-                    r: VectorBase, beta: float)
-        """Elementwise addition of product of vectors to self.
-           self = alpha*v*r + beta*self
-  
-        Args:
-            alpha(float): a scaling constant
-            v(VectorBase): a vector
-            r(VectorBase): a vector
-            beta(float): a scaling constant
-  
-        Raises:
-            Error if dimensions do not match
-        """
+      # FIXME (VM):
+      # def `AddVecVec` as add_vec_vec(self, float, v: DoubleVectorBase, r: DoubleVectorBase, beta: float):
+      #   """Elementwise addition of product of vectors to self.
+      #      self = alpha*v*r + beta*self
 
-      def AddVecDivVec(self, alpha: float, v: VectorBase,
-                       r: VectorBase, beta: float)
+      #   Args:
+      #       alpha(float): a scaling constant
+      #       v(VectorBase): a vector
+      #       r(VectorBase): a vector
+      #       beta(float): a scaling constant
+  
+      #   Raises:
+      #       Error if dimensions do not match
+      #   """
+
+      def `AddVecDivVec` as add_vec_div_vec(self, alpha: float, v: DoubleVectorBase,
+                       r: DoubleVectorBase, beta: float):
         """Elementwise addition of quotient of vectors to self.
            self = alpha*v./r + beta*self.
-  
+
         Args:
             alpha(float): a scaling constant
             v(VectorBase): a vector
@@ -975,7 +975,7 @@ from "matrix/kaldi-vector.h":
             Error if dimensions do not match
         """
 
-      def Scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float):
         """Multiplies all elements by this constant. self=self*alpha.
 
         Args:
@@ -1022,25 +1022,25 @@ from "matrix/kaldi-vector.h":
       # We cannot wrap this here since TpMatrix is not defined yet.
       # def CopyDiagFromTp(self, M: TpMatrix)
 
-      def Max(self) -> float
+      def `Max` as max(self) -> float:
         """Returns the maximum value of the vector."""
 
-      def `Max` as MaxIndex(self) -> (value: float, index: int)
+      def `Max` as max_index(self) -> (value: float, index: int):
         """Returns the maximum value of the vector, and the associated index."""
 
-      def Min(self) -> float
+      def `Min` as min(self) -> float:
         """Returns the minimum value of the vector."""
 
-      def `Min` as MinIndex(self) -> (value: float, index: int)
+      def `Min` as min_index(self) -> (value: float, index: int):
         """Returns the minimum value of the vector, and the associated index."""
 
-      def Sum(self) -> float
+      def `Sum` as sum(self) -> float:
         """Return the sum of the elements of the vector."""
 
-      def SumLog(self) -> float
+      def `SumLog` as sum_log(self) -> float:
         """Returns sum of the logs of the elements."""
 
-      def LogSumExp(self, prune: float = default) -> float
+      def `LogSumExp` as log_sum_exp(self, prune: float = default) -> float:
         """Returns log(sum(exp())) without exp overflow.
            If prune > 0.0, ignores terms less than the max - prune.
 
@@ -1074,7 +1074,7 @@ from "matrix/kaldi-vector.h":
       #                   N: MatrixBase, transN: MatrixTransposeType,
       #                   beta: `double` as float = default)
 
-      def Read(self, is: istream, binary: bool, add: bool = default)
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default):
         """Reads from C++ stream.
 
         Args:
@@ -1083,7 +1083,7 @@ from "matrix/kaldi-vector.h":
             add(bool): True if you want to add the stream to self.
         """
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool):
         """Writes to C++ stream.
 
         Args:
@@ -1093,8 +1093,8 @@ from "matrix/kaldi-vector.h":
 
     class `Vector<double>` as DoubleVector(DoubleVectorBase):
       @add__init__
-      def `Vector` as NewWithSize(self, size: int,
-                                  resize_type: MatrixResizeType = default)
+      def `Vector` as new_with_size(self, size: int,
+                                  resize_type: MatrixResizeType = default):
         """Create a new vector of length size. If the size type is kSetZero,
            the new data will be zero. If the resize type is kUndefined,
            the new data will be undefined. Finally if the resize type is kCopyData,
@@ -1114,49 +1114,48 @@ from "matrix/kaldi-vector.h":
       # def `Vector` as NewWithVector(self, v: DoubleVector)
 
       @add__init__
-      def `Vector` as NewWithVector(self, v: DoubleVectorBase)
+      def `Vector` as new_with_vector(self, v: DoubleVectorBase):
         """Create vector and copy the elements of v.
-  
+
         Args:
             v(VectorBase): The vector from which we will copy its elements.
         """
 
-      def Swap(self, other: Vector)
+      def `Swap` as swap(self, other: DoubleVector):
         """Swaps the contents of self and other. Shallow swap.
-  
+
         Args:
             other(VectorBase): The vector whose elements we want to swap with self.
         """
 
-      def Read(self, is: istream, binary: bool, add: bool = default)
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default):
         """Reads from C++ stream.
-  
+
         Args:
             is(istream): The input straem.
             binary(bool): If the stream is binary.
             add(bool): True if you want to add the stream to self.
         """
-  
       # NOTE:
       # We cannot wrap Range here since SubVector is wrapped elsewhere. We
       # implement the Range method in Python by constructing a SubVector.
       # def Range(self, offset: int, length: int) -> SubVector
 
-      def Resize(self, length: int, resize_type: MatrixResizeType = default)
+      def `Resize` as _resize(self, length: int, resize_type: MatrixResizeType = default):
         """Set vector size to length (length can be zero).
            The default resize type is kSetZero, in which case the new data will
            be zero. If the resize type is kUndefined, the new data will be undefined.
            Finally if the resize type is kCopyData, the new data will be the same as
            the old data in any shared positions, and zero elsewhere.
-  
+
         Args:
             length(int): The new size of the vector
             resize_type(MatrixResizeType): Determines the initial values of the vector.
         """
 
-      def RemoveElement(self, index: int)
+      def `RemoveElement` as remove_element(self, index: int):
         """Remove one element and shifts later elements down, reducing the dimension by one.
-  
+
         Args:
             index(int): Determines the position in the vector. Indexing starts from 0.
         """
@@ -1165,27 +1164,27 @@ from "matrix/kaldi-vector.h":
     # Explicit mention of compatible type `double` is needed for template
     # deduction. CLIF defaults to `double` for Python float.
     # These functions were renamed to avoid possible name conflicts.
-    def `ApproxEqual` as ApproxEqualDoubleVector(
+    def `ApproxEqual` as approx_equal(
         a: DoubleVectorBase, b: DoubleVectorBase,
-        tol: `double` as float = default) -> bool
+        tol: `double` as float = default) -> bool:
       """Computes the 2nd norm of the difference of vector a and vector b
          and returns True if it is less or equal than tol.
-  
+
       Args:
           a(VectorBase): A vector
           b(VectorBase): A vector
           tol(float): The tolerance.
-  
+
       Returns:
-          True ||a-b||_p <= tol
-  
+          True if ||a-b||_p <= tol
+
       Raises:
           Error if size of a is different than size of b.
       """
 
-    def `AssertEqual` as AssertEqualDoubleVector(
+    def `AssertEqual` as assert_equal_double_vector(
         a: DoubleVectorBase, b: DoubleVectorBase,
-        tol: `double` as float = default)
+        tol: `double` as float = default):
       """Computes the 2nd norm of the difference of vector a and vector b
          and checks if it is less or equal than tol.
          If the condition is not satisfied it will raise an error.
@@ -1199,8 +1198,8 @@ from "matrix/kaldi-vector.h":
           Error if ||a-b||_p > tol
       """
 
-    def `VecVec` as DoubleVecVec(v1: DoubleVectorBase,
-                                 v2: DoubleVectorBase) -> float
+    def `VecVec` as double_vec_vec(v1: DoubleVectorBase,
+                                 v2: DoubleVectorBase) -> float:
       """Returns dot product between v1 and v2.
 
       Args:

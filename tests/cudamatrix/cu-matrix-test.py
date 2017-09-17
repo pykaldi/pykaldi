@@ -1,7 +1,5 @@
-from kaldi.cudamatrix.cu_device import CuDevice
-from kaldi.cudamatrix.cu_matrix import *
-from kaldi.cudamatrix.cu_vector import *
-from kaldi.base import kaldi_math
+from kaldi.cudamatrix import *
+from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, Matrix
 
 import unittest
@@ -71,8 +69,9 @@ class TestCuMatrix(unittest.TestCase):
     def testCopyFromMat(self):
         for i in range(10):
             rows, cols = 10*i, 5*i
-            A = Matrix.random(rows, cols)
-            B = CuMatrix.new_from_size(A.nrows(), A.ncols())
+            A = Matrix(rows, cols)
+            A.SetRandn()
+            B = CuMatrix.new_from_size(*A.shape)
             B.CopyFromMat(A)
             self.assertAlmostEqual(A.Sum(), B.Sum(), places = 4)
     

@@ -1,8 +1,6 @@
-import kaldi.matrix.matrix_common
-from kaldi.cudamatrix.cu_device import CuDevice
-from kaldi.cudamatrix.cu_matrix import *
-from kaldi.cudamatrix.cu_vector import *
-from kaldi.base import kaldi_math
+import kaldi.matrix.common as matrix_common
+from kaldi.cudamatrix import *
+from kaldi.base import math as kaldi_math
 from kaldi.base.timer import Timer 
 
 # import unittest
@@ -33,7 +31,7 @@ def aux(size_multiple):
 		if matrices[matrix].NumRows() == 0:
 			num_rows, num_cols = sizes[matrix]
 
-			matrices[matrix].Resize(num_rows, num_cols, kaldi.matrix.matrix_common.MatrixResizeType.UNDEFINED)
+			matrices[matrix].Resize(num_rows, num_cols, matrix_common.MatrixResizeType.UNDEFINED)
 			num_floats_processed += num_rows * num_cols
 
 		else:

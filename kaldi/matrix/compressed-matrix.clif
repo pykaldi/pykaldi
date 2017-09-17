@@ -48,7 +48,7 @@ from "matrix/compressed-matrix.h":
     class CompressedMatrix:
       """A lossily compressed Matrix class"""
       @add__init__
-      def `CompressedMatrix` as New(self, mat: MatrixBase,
+      def `CompressedMatrix` as new(self, mat: MatrixBase,
                                     method: CompressionMethod = default)
         """Copy the data from a MatrixBase and compress it
            
@@ -59,7 +59,7 @@ from "matrix/compressed-matrix.h":
         """
 
       @add__init__
-      def `CompressedMatrix` as NewWithRange(self, mat: CompressedMatrix,
+      def `CompressedMatrix` as new_with_range(self, mat: CompressedMatrix,
                                              row_offset: int, num_rows: int,
                                              col_offset: int, num_cols:int,
                                              allow_padding: bool = default)
@@ -81,6 +81,7 @@ from "matrix/compressed-matrix.h":
       """
 
       @add__init__
+<<<<<<< HEAD
       def `CompressedMatrix` as NewWithOther(self, mat: CompressedMatrix)
       """
          Set this matrix (self) as the other (mat)
@@ -88,15 +89,19 @@ from "matrix/compressed-matrix.h":
          Args:
              mat(CompressedMatrix): A compressed Matrix           
       """
+=======
+      def `CompressedMatrix` as new_with_other(self, mat: CompressedMatrix)
+>>>>>>> upstream/master
 
-      def CopyFromMat(self, mat: MatrixBase,
-                      method: CompressionMethod = default)
+      def `CopyFromMat` as copy_from_mat(self, mat: MatrixBase,
+                      method: CompressionMethod = default):
         """Copy data from another matrix to self.
 
         Args:
             mat(MatrixBase): The matrix from which we will copy the data
             method(CompresssionMethod): Which compression method to use
         """ 
+<<<<<<< HEAD
      
 #      FIXME(Pavlos): This needs a C++ wrapper. Does not feel pythonic
 #      def CopyToMat(self, mat: MatrixBase,
@@ -104,13 +109,19 @@ from "matrix/compressed-matrix.h":
 #      """
 #
 #      """
+=======
+      
+      def `CopyToMat` as copy_to_mat(self, mat: MatrixBase,
+                    method: MatrixTransposeType = default)
+>>>>>>> upstream/master
 
-      def NumRows(self) -> int
+      def `NumRows` as num_rows(self) -> int:
         """Returns the number of rows."""
 
-      def NumCols(self) -> int
+      def `NumCols` as num_cols(self) -> int:
         """Returns the number of columns."""
 
+<<<<<<< HEAD
 #      FIXME(Pavlos): This needs a C++ wrapper. Does not feel pythonic
 #      def CopyToMat(self, mat: MatrixBase,
 #      def CopyRowToVec(self, row: int, v: VectorBase)
@@ -119,8 +130,16 @@ from "matrix/compressed-matrix.h":
 #
 #      def `CopyToMat` as CopyToMatOffset(self, row_offset: int,
 #                                         col_offset: int, dest: MatrixBase)
+=======
+      def `CopyRowToVec` as copy_row_to_vec(self, row: int, v: VectorBase)
 
-      def Swap(self, other: CompressedMatrix)
+      def `CopyColToVec` as copy_col_to_vec(self, col: int, v: VectorBase)
+
+      def `CopyToMat` as copy_to_mat_offset(self, row_offset: int,
+                                         col_offset: int, dest: MatrixBase)
+>>>>>>> upstream/master
+
+      def `Swap` as swap(self, other: CompressedMatrix):
         """Swap elements with another compressed matrix. Shallow swap.
 
         Args:
@@ -130,8 +149,14 @@ from "matrix/compressed-matrix.h":
             Error in case od dimension mismatch.
         """
 
+<<<<<<< HEAD
       def Clear(self)
       """Deletes the data of the matrix"""
 
       def Scale(self, alpha: float)
       """scales all elements of matrix by alpha."""
+=======
+      def `Clear` as clear(self)
+
+      def `Scale` as scale(self, alpha: float)
+>>>>>>> upstream/master

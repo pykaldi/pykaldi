@@ -2,26 +2,24 @@
 """Setup configuration."""
 from __future__ import print_function
 
-from setuptools import setup, find_packages, Command
+import os
+
+import distutils.command.build
 import setuptools.command.build_ext
 import setuptools.command.install_lib
-import distutils.command.build
 import setuptools.extension
 
-import os
+from distutils.file_util import copy_file
+from setuptools import setup, find_packages, Command
 from subprocess import check_output, check_call
 
 import numpy
 
-# This might get risky
-from kaldi import __version__
-
-from distutils.file_util import copy_file
 ################################################################################
 # Check variables / find programs
 ################################################################################
 
-DEBUG = os.getenv('DEBUG') in ['ON', '1', 'YES', 'TRUE', 'Y', 'true', 'yes', 'on', 'y']
+DEBUG = os.getenv('DEBUG').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = os.getenv("PYCLIF")
 CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')
@@ -42,7 +40,8 @@ if KALDI_DIR:
         print("include {}".format(KALDI_MK_PATH), file=makefile)
         print("print-% : ; @echo $($*)", file=makefile)
     CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
-    KALDI_HAVE_CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip() in ['ON', '1', 'YES', 'TRUE', 'Y', 'true', 'yes', 'on', 'y']
+    CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip()
+    KALDI_HAVE_CUDA = CUDA.upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
     check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
@@ -70,10 +69,20 @@ if DEBUG:
 ################################################################################
 # Use CMake to build Python extensions in parallel
 ################################################################################
+
+class Extension(setuptools.extension.Extension):
+    """Dummy extension class that only holds the name of the extension."""
+    def __init__(self, name):
+        setuptools.extension.Extension.__init__(self, name, [])
+        self._needs_stub = False
+    def __str__(self):
+        return "Extension({})".format(self.name)
+
+
 def populateExtensionList():
     extensions = []
     lib_dir = os.path.join(BUILD_DIR, "lib")
-    for dirpath, _, filenames in os.walk( os.path.join(lib_dir, "kaldi") ):
+    for dirpath, _, filenames in os.walk(os.path.join(lib_dir, "kaldi")):
 
         lib_path = os.path.relpath(dirpath, lib_dir)
 
@@ -84,18 +93,18 @@ def populateExtensionList():
         for f in filenames:
             f = os.path.splitext(f)[0] # remove extension
             ext_name = "{}.{}".format(lib_path, f)
-            extensions.append(KaldiExtension(ext_name))
+            extensions.append(Extension(ext_name))
     return extensions
 
-class KaldiExtension(setuptools.extension.Extension):
-    """Dummy class that only holds the name of the extension"""
-    def __init__(self, name):
-        setuptools.extension.Extension.__init__(self, name, [])
-        self._needs_stub = False
-    def __str__(self):
-        return "KaldiExtension({})".format(self.name)
 
-class CMakeBuild(setuptools.command.build_ext.build_ext):
+class build(distutils.command.build.build):
+    def finalize_options(self):
+        self.build_base = 'build'
+        self.build_lib = 'build/lib'
+        distutils.command.build.build.finalize_options(self)
+
+
+class build_ext(setuptools.command.build_ext.build_ext):
     def run(self):
         old_inplace, self.inplace = self.inplace, 0
 
@@ -159,19 +168,8 @@ class CMakeBuild(setuptools.command.build_ext.build_ext):
         ext_suffix = '.so'
         return os.path.join(*ext_path) + ext_suffix
 
-class build(distutils.command.build.build):
-    def finalize_options(self):
-        self.build_base = 'build'
-        self.build_lib = 'build/lib'
-        distutils.command.build.build.finalize_options(self)
 
-class install_lib(setuptools.command.install_lib.install_lib):
-    def install(self):
-        self.build_dir = 'build/lib'
-        outfiles = setuptools.command.install_lib.install_lib.install(self)
-        print(outfiles)
-
-class build_doc(Command):
+class build_sphinx(Command):
     user_options = []
     description = "Builds documentation using sphinx."
 
@@ -188,14 +186,24 @@ class build_doc(Command):
         except ImportError:
             print("Sphinx was not found. Install it using pip install sphinx.")
 
+
+class install_lib(setuptools.command.install_lib.install_lib):
+    def install(self):
+        self.build_dir = 'build/lib'
+        outfiles = setuptools.command.install_lib.install_lib.install(self)
+        print(outfiles)
+
 ################################################################################
 # Setup pykaldi
 ################################################################################
 
-# We add a `dummy` extension in order to force setuptools to do the build_ext step
-extensions = [KaldiExtension("kaldi")]
+# We add a 'dummy' extension so that setuptools runs the build_ext step.
+extensions = [Extension("kaldi")]
 
 packages = find_packages()
+
+with open(os.path.join('kaldi', '__version__.py')) as f:
+    exec(f.read())
 
 setup(name = 'pykaldi',
       version = __version__,
@@ -203,10 +211,10 @@ setup(name = 'pykaldi',
       author = 'SAIL',
       ext_modules=extensions,
       cmdclass = {
-          'build_ext': CMakeBuild,
           'build': build,
+          'build_ext': build_ext,
+          'build_sphinx': build_sphinx,
           'install_lib': install_lib,
-          'build_sphinx': build_doc
           },
       packages = packages,
       package_data = {},
