@@ -1,6 +1,9 @@
 from kaldi.base import math as kaldi_math
-from kaldi.matrix import Vector, TpMatrix
-from kaldi.cudamatrix import *
+from kaldi.matrix import Vector
+from kaldi.matrix.packed import TpMatrix
+
+from kaldi.cudamatrix.device import CuDevice
+from kaldi.cudamatrix.vector import CuVector, CuSubVector
 
 import unittest
 import numpy as np 
@@ -9,20 +12,20 @@ class TestCuVector(unittest.TestCase):
     def testCuVectorNewFromSize(self):
         vec = CuVector()
         self.assertIsNotNone(vec)
-        self.assertEqual(0, vec.Dim())
+        self.assertEqual(0, vec.dim())
 
         for i in range(10):
             dim = 10 * i 
             vec = CuVector.new_from_size(dim)
             self.assertIsNotNone(vec)
-            self.assertEqual(dim, vec.Dim())
+            self.assertEqual(dim, vec.dim())
 
     def testCuVectorResize(self):
         for i in range(10):
             dim = 10 * i 
             vec = CuVector()
-            vec.Resize(dim)
-            self.assertEqual(dim, vec.Dim())
+            vec.resize(dim)
+            self.assertEqual(dim, vec.dim())
 
     @unittest.skip("TODO")
     def testCuVectorRead(self):
@@ -36,21 +39,21 @@ class TestCuVector(unittest.TestCase):
         N = [2, 3, 5, 7, 13]
         A = Vector.new(N).clone()
         C = CuVector.new_from_size(5)
-        C.Swap(A) #Swap *is* destructive
+        C.swap(A) #Swap *is* destructive
 
-        self.assertEqual(16.0, C.Norm(2))
+        self.assertEqual(16.0, C.norm(2))
 
         A = Vector()
         C = CuVector.new_from_size(0)
-        C.Swap(A)
-        self.assertEqual(0.0, C.Norm(2))
+        C.swap(A)
+        self.assertEqual(0.0, C.norm(2))
 
     def testCuVectorCopyFromVec(self):
 
         # Shouldnt crash
         A = Vector()
         C = CuVector.new_from_size(0)
-        C.CopyFromVec(A)
+        C.copy_from_vec(A)
 
         # What if dims not match?
         # HARD-CRASH
@@ -62,22 +65,23 @@ class TestCuVector(unittest.TestCase):
         for i in range(10):
             dim = 10 * i 
             A = Vector(dim)
-            A.SetRandn()
+            A.set_randn()
             D = CuVector.new_from_size(dim)
-            D.CopyFromVec(A)
-            self.assertEqual(A.Sum(), D.Sum())
+            D.copy_from_vec(A)
+            self.assertEqual(A.sum(), D.sum())
 
+    @unittest.skip("Not sequential object")
     def testCuSubVector(self):
         for iteration in range(10):
-            M1 = 1 + kaldi_math.Rand() % 10
-            M2 = 1 + kaldi_math.Rand() % 1
-            M3 = 1 + kaldi_math.Rand() % 10
+            M1 = 1 + kaldi_math.rand() % 10
+            M2 = 1 + kaldi_math.rand() % 1
+            M3 = 1 + kaldi_math.rand() % 10
             M = M1 + M2 + M3 
 
-            m = kaldi_math.Rand() % M2
+            m = kaldi_math.rand() % M2
 
             vec = CuVector.new_from_size(M)
-            vec.SetRandn()
+            vec.set_randn()
 
             subvec1 = CuSubVector(vec, M1, M2)
             # subvec2 = vec.range(M1, M2)
@@ -89,21 +93,22 @@ class TestCuVector(unittest.TestCase):
     def testCuVectorInverElements(self):
         # Test that this doesnt crash
         C = CuVector.new_from_size(0)
-        C.InvertElements()
+        C.invert_elements()
 
         C = CuVector.new_from_size(10)
-        C.SetRandn()
-        C.InvertElements()
+        C.set_randn()
+        C.invert_elements()
 
         # Geometric series r = 1/2, a = 1/2
         A = Vector.new([2, 4, 8, 16, 32, 64])
         C = CuVector.new_from_size(len(A))
-        C.Swap(A)
-        C.InvertElements()
+        C.swap(A)
+        C.invert_elements()
 
-        f1 = C.Sum()
+        f1 = C.sum()
         self.assertAlmostEqual(0.5 * (1 - 0.5**len(A))/(1 - 0.5), f1)
 
+    @unittest.skip("Not a sequential object")
     def testCuVectorGetItem(self):
         v = CuVector()
         with self.assertRaises(IndexError):
