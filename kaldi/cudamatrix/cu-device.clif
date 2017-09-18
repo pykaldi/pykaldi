@@ -7,28 +7,28 @@ from "cudamatrix/cu-device.h":
 
     class CuDevice:
       @classmethod
-      def `InstantiatePtr` as Instantiate(cls) -> CuDevice
+      def `InstantiatePtr` as instantiate(cls) -> CuDevice
 
-      def SelectGpuId(self, use_gpu: str)
+      def `SelectGpuId` as select_gpu_id(self, use_gpu: str)
 
-      def Enabled(self) -> bool
+      def `Enabled` as enabled(self) -> bool
 
-      def ActiveGpuId(self) -> int
+      def `ActiveGpuId` as active_gpu_id(self) -> int
 
-      def DoublePrecisionSupported(self) -> bool
+      def `DoublePrecisionSupported` as double_precision_supported(self) -> bool
 
       # def AccuProfile(self, function_name: str, timer: CuTimer)
 
-      def PrintProfile(self)
+      def `PrintProfile` as print_profile(self)
 
-      def PrintMemoryUsage(self)
+      def `PrintMemoryUsage` as print_memory_usage(self)
 
-      def ResetProfile(self)
+      def `ResetProfile` as reset_profile(self)
 
       # def GetFreeMemory(self) -> (ret: str, free: int, total: int)
 
       # def DeviceGetName(self, len: int, dev: int) -> str
 
-      def CheckGpuHealth(self)
+      def `CheckGpuHealth` as check_gpu_health(self)
 
-      def SetDebugStrideMode(self, mode: bool) -> bool
+      def `SetDebugStrideMode` as set_debug_stride_mode(self, mode: bool) -> bool
