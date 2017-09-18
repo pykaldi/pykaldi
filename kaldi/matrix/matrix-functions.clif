@@ -42,7 +42,7 @@ from "matrix/matrix-functions.h":
           """
 
 #         FIXME(pavlos): Need C++ wrapper, does not feel pythonic
-          def Compute(self, M:MatrixBase, X:MatrixBase)
+          def Compute(self, M:MatrixBase, X:MatrixBase):
             """Performs X=exp(M)
 
             Args: 
@@ -54,7 +54,7 @@ from "matrix/matrix-functions.h":
             # def Compute(self, M:SpMatrix) -> (X:SpMatrix)
 
 #         FIXME(pavlos): Need C++ wrapper, does not feel pythonic
-          def `Backprop` as backprop(self, hX:MatrixBase, hM:MatrixBase)
+          def `Backprop` as backprop(self, hX:MatrixBase, hM:MatrixBase):
             """The the gradient of a scalar function f backwards through
                this operation, i.e.: if the parameter dX represents df/dX
                (with no transpose, so element i, j of dX is the derivative of
@@ -73,7 +73,7 @@ from "matrix/matrix-functions.h":
         # Cannot be implemented as plus, minus is both in/out
         # def AddOuterProductPlusMinus(alpha:float, a:VectorBase, b:VectorBase, plus:MatrixBase, minus:MatrixBase)
 
-        def `AssertSameDim` as assert_same_dim_matrix(mat1:MatrixBase, mat2:MatrixBase)
+        def `AssertSameDim` as assert_same_dim_matrix(mat1:MatrixBase, mat2:MatrixBase):
           """Checks if mat1 and mat2 have the same dimensions.
  
           Raises:

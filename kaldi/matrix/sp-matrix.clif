@@ -11,7 +11,7 @@ from "matrix/sp-matrix.h":
 
       @add__init__
       def `SpMatrix` as new(self, r: int,
-                            resize_type: MatrixResizeType = default)
+                            resize_type: MatrixResizeType = default):
         """Class initialization through size. Only the number or rows is important
            since this is a class for square matrices (triangular or symmetric)
            If the resize_type is kSetZero, the new data will be zero. If the resize type is kUndefined,
@@ -26,7 +26,7 @@ from "matrix/sp-matrix.h":
         """
 
       @add__init__
-      def `SpMatrix` as new_with_other(self, orig:SpMatrix)
+      def `SpMatrix` as new_with_other(self, orig:SpMatrix):
         """Initialize this SpMatrix from another SpMatrix.
 
         Args:
@@ -35,7 +35,7 @@ from "matrix/sp-matrix.h":
 
       @add__init__
       def `SpMatrix` as new_with_matrix(self, orig: MatrixBase,
-                                      copy_type: SpCopyType = default)
+                                      copy_type: SpCopyType = default):
         """Initialize this SpMatrix from another Matrix. If the SpCopyType is kTakeMeanAndCheck
            does an extra check for symmetry in orig and copies the elements of orig
            in self. If the SpCopyType is kTakeMean, we just copy the elements of orig in self.
@@ -51,11 +51,11 @@ from "matrix/sp-matrix.h":
             Error if orig is not symmetric.
         """
 
-      def `Swap` as swap(self, other: SpMatrix)
+      def `Swap` as swap(self, other: SpMatrix):
         """Swaps the contents of self and other, where other is a
            a Packed Matrix. Shallow swap."""
 
-      def `Resize` as resize(self, nRows: int, resize_type:MatrixResizeType = default)
+      def `Resize` as resize(self, nRows: int, resize_type:MatrixResizeType = default):
         """Resizes a matrix. If the resize_type is kSetZero,
            the new data will be zero. If the resize type is kUndefined,
            the new data will be undefined. Finally if the resize type is kCopyData,
@@ -69,7 +69,7 @@ from "matrix/sp-matrix.h":
                                            Defualt is kSetZero
         """
 
-      def `CopyFromSp` as copy_from_sp(self, other:SpMatrix)
+      def `CopyFromSp` as copy_from_sp(self, other:SpMatrix):
         """Copy data from another symmetric matrix.
 
         Args:
@@ -79,7 +79,7 @@ from "matrix/sp-matrix.h":
             Error in case of dimension mismatch
         """
 
-      def `CopyFromMat` as copy_from_mat(self, orig:MatrixBase, copy_type:SpCopyType = default)
+      def `CopyFromMat` as copy_from_mat(self, orig:MatrixBase, copy_type:SpCopyType = default):
         """Copy the elements of Matrix orig to self. If the SpCopyType is kTakeMeanAndCheck
            does an extra check for symmetry in orig and copies the elements of orig
            in self. If the SpCopyType is kTakeMean, we just copy the elements of orig in self.
@@ -109,13 +109,13 @@ from "matrix/sp-matrix.h":
       def `Invert` as invert(self):
         """Invert the matrix."""
 
-      def `InvertDouble` as invert_double(self)
+      def `InvertDouble` as invert_double(self):
         """Invert the matrix. Use ``double'' precision on the inverted matrix."""
 
       def `Cond` as cond(self) -> float:
         """Returns the condition number of the SVD computation."""
 
-      def `ApplyPow` as apply_pow(self, exponent: float)
+      def `ApplyPow` as apply_pow(self, exponent: float):
         """Applies power to all elements of matrix.
 
         Args:
@@ -131,7 +131,7 @@ from "matrix/sp-matrix.h":
 #      def `TopEigs` as top_eigs(self, s: VectorBase, P: MatrixBase,
 #                  lanczos_dim: int = default)
 
-      def `Log` as log(self)
+      def `Log` as log(self):
         """Takes log of the matrix, though eigenvalue decomposition then takes
            log of eigenvalues and reconstructs.
 
@@ -139,19 +139,19 @@ from "matrix/sp-matrix.h":
            Error if matrix is not positive definite.
         """
 
-      def `Exp` as exp(self)
+      def `Exp` as exp(self):
         """Does exp(self)"""
 
-      def `MaxAbsEig` as max_abs_eig(self) -> float
+      def `MaxAbsEig` as max_abs_eig(self) -> float:
         """Returns the maximum of the absolute values of any of the eigenvalues."""
 
       # TODO: Implement in Python
       # def PrintEigs(self, name:str)
 
-      def `IsPosDef` as isposdef(self) -> bool
+      def `IsPosDef` as isposdef(self) -> bool:
         """Returns True if the matrix is positive definite."""  
 
-      def `AddSp` as add_sp(self, alpha:float, Ma:SpMatrix)
+      def `AddSp` as add_sp(self, alpha:float, Ma:SpMatrix):
         """Performs the operation self = self+alpha*Ma.
 
         Args:
@@ -159,7 +159,7 @@ from "matrix/sp-matrix.h":
             Ma(SpMatrix): A symmetrix Matrix
         """
 
-      def `LogPosDefDet` as log_pos_def_det(self) -> float
+      def `LogPosDefDet` as log_pos_def_det(self) -> float:
         """Computes the log determinant.
         
         Returns:
@@ -172,7 +172,7 @@ from "matrix/sp-matrix.h":
       # TODO: Implement C++ wrapper
       # def LogDet(self) -> (logdet: float, det_sign: float)
 
-      def `AddVec2` as add_vec2(self, alpha: float, v: VectorBase)
+      def `AddVec2` as add_vec2(self, alpha: float, v: VectorBase):
         """Performs the operation self = self + alpha*(v*v^T)
 
         Args:
@@ -183,7 +183,7 @@ from "matrix/sp-matrix.h":
             Error in case of dimension mismatch
         """
 
-      def `AddVecVec` as add_vec_vec(self, alpha: float, v: VectorBase, w:VectorBase)
+      def `AddVecVec` as add_vec_vec(self, alpha: float, v: VectorBase, w:VectorBase):
         """Performs the operation self = self + alpha*(v*w^T+w*v^T)
 
         Args:
@@ -195,7 +195,7 @@ from "matrix/sp-matrix.h":
             Error in case of dimension mismatch 
         """
 
-      def `AddVec2Sp` as add_vec_2_sp(self, alpha: float, v: VectorBase, S:SpMatrix, beta: float)
+      def `AddVec2Sp` as add_vec_2_sp(self, alpha: float, v: VectorBase, S:SpMatrix, beta: float):
         """Perform self = beta*self + alpha*diag(v)*S*diag(v)
 
         Args:
@@ -208,7 +208,7 @@ from "matrix/sp-matrix.h":
             Error in case of dimension mismatch 
         """
 
-      def `AddDiagVec` as add_diag_vec(self, alpha: float, v:VectorBase)
+      def `AddDiagVec` as add_diag_vec(self, alpha: float, v:VectorBase):
         """Performs self = self+diag(v)
 
         Args:
@@ -220,7 +220,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `AddMat2` as add_mat2(self, alpha: float, M: MatrixBase,
-                  transM: MatrixTransposeType, beta: float)
+                  transM: MatrixTransposeType, beta: float):
         """If transM == kNoTrans performs self = beta*self+alpha*M*M^T.
            If transM == kTrans self = beta*self+alpha*M^T*M 
   
@@ -236,7 +236,7 @@ from "matrix/sp-matrix.h":
              
       def `AddMat2Sp` as add_mat_2_sp(self, alpha: float, M: MatrixBase,
                     transM: MatrixTransposeType, A:SpMatrix,
-                    beta: float = default)
+                    beta: float = default):
         """If transM == kNoTrans perform self = beta*self+alpha*M*A*M^T.
            If transM == kTrans perform self = beta*self+alpha*M^T*A*M.
   
@@ -253,7 +253,7 @@ from "matrix/sp-matrix.h":
 
        def `AddSmat2Sp` as add_smat_2_sp(self, alpha: float, M:MatrixBase,
                      transM:MatrixTransposeType, A:SpMatrix,
-                     beta: float = default)
+                     beta: float = default):
         """Same as AddMat2Sp, optimized for sparse M."""
 
       # FIXME in sp-matrix-ext.h
@@ -265,7 +265,7 @@ from "matrix/sp-matrix.h":
 
       def `AddMat2Vec` as add_mat_2_vec(self, alpha:float, M:MatrixBase,
                      transM:MatrixTransposeType, v:VectorBase,
-                     beta: float = default)
+                     beta: float = default):
         """If transM == kNoTrans perform self = beta*self+alpha*M*diag(v)*M^T.
            If transM == kTrans perform self = beta*self+alpha*M^T*diag(v)*M.
   
@@ -282,7 +282,7 @@ from "matrix/sp-matrix.h":
 
       def `ApplyFloor` as apply_floor_matrix(self, floor:SpMatrix,
                                            alpha: float = default,
-                                           verbose: bool = default) -> int
+                                           verbose: bool = default) -> int:
         """Floors this symmetric matrix to the matrix alpha*floor,
            where the matrix floor is positive definite.
            It is floored in the sense that after flooring it must be that
@@ -302,7 +302,7 @@ from "matrix/sp-matrix.h":
             Error if floor is not positive definite.
         """
 
-      def `ApplyFloor` as apply_floor(self, floor:float) -> int
+      def `ApplyFloor` as apply_floor(self, floor:float) -> int:
         """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
  
         Args:
@@ -312,7 +312,7 @@ from "matrix/sp-matrix.h":
             The number of elements affected by the flooring operation
         """
 
-      def `IsDiagonal` as isdiagonal(self, cutoff:float = default) -> bool
+      def `IsDiagonal` as isdiagonal(self, cutoff:float = default) -> bool:
         """Checks if the matrix is diagonal. The nondiagonal elements
            must be less or equal to cutoff value.
 
@@ -324,7 +324,7 @@ from "matrix/sp-matrix.h":
             otherwise false
         """
 
-      def `IsUnit` as isunit(self, cutoff:float = default) -> bool
+      def `IsUnit` as isunit(self, cutoff:float = default) -> bool:
         """Checks if the matrix is identity-like. It does not have to be square.
            The nondiagonal elements must be less or equal to cutoff value,
            while the diagonal ones must be one.
@@ -336,7 +336,7 @@ from "matrix/sp-matrix.h":
             True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
         """
 
-      def `IsZero` as iszero(self, cutoff:float = default) -> bool
+      def `IsZero` as iszero(self, cutoff:float = default) -> bool:
         """Checks if all elements are 0 (where 0 is the cutoff value).
 
         Args:
@@ -346,14 +346,14 @@ from "matrix/sp-matrix.h":
             True if it is a zero matrix
         """
 
-      def `IsTridiagonal` as istriagonal(self, cutoff:float = default) -> bool
+      def `IsTridiagonal` as istriagonal(self, cutoff:float = default) -> bool:
         """Returns true if the matrix is tridiagonal(based on the
            cutoff value)."""
 
-      def `FrobeniusNorm` as frobenius_norm(self) -> float
+      def `FrobeniusNorm` as frobenius_norm(self) -> float:
         """Returns the Frobenius norm of the matrix."""
 
-      def `ApproxEqual` as approx_equal(self, other:SpMatrix, tol:float = default) -> bool
+      def `ApproxEqual` as approx_equal(self, other:SpMatrix, tol:float = default) -> bool:
         """Checks if self is equal with other by calculating the Frobenius
            norm of their difference.
 
@@ -366,7 +366,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `LimitCond` as limit_cond(self, maxCond: float = default,
-                    invert:bool = default) -> int
+                    invert:bool = default) -> int:
         """Performs self = P*diag(floor(s))*P^T, where s is the eigenvalues
            and P is the eigenvectors. 
 
@@ -378,13 +378,13 @@ from "matrix/sp-matrix.h":
         """
 
       def `LimitCondDouble` as limit_cond_double(self, maxCond: float = default,
-                          invert: bool = default) -> int
+                          invert: bool = default) -> int:
         """Same as LimitCond but the resulting operation has ``double'' precision."""
 
-      def `Trace` as trace(self) -> float
+      def `Trace` as trace(self) -> float:
         """Returns the trace of the matrix."""
 
-      def `Tridiagonalize` as triagonalize(self, Q:MatrixBase)
+      def `Tridiagonalize` as triagonalize(self, Q:MatrixBase):
         """Tridiagonalize the matrix with an orthogonal transformation.
            Performs  self = Q*self*Q^T for an orthogonal Q.
 
@@ -392,7 +392,7 @@ from "matrix/sp-matrix.h":
             Q(MatrixBase): A matrix that must be orthogonal.                 
         """
 
-      def `Qr` as qr(self, Q:MatrixBase)
+      def `Qr` as qr(self, Q:MatrixBase):
         """The symmetric QR algorithm. This is the symmetric QR algorithm,
            from Golub and Van Loan 3rd ed., Algorithm 8.3.3.
 
@@ -406,7 +406,7 @@ from "matrix/sp-matrix.h":
 
       @add__init__
       def `SpMatrix` as New(self, r: int,
-                            resize_type: MatrixResizeType = default)
+                            resize_type: MatrixResizeType = default):
         """Class initialization through size. Only the number or rows is important
            since this is a class for square matrices (triangular or symmetric)
            If the resize_type is kSetZero, the new data will be zero. If the resize type is kUndefined,
@@ -421,7 +421,7 @@ from "matrix/sp-matrix.h":
         """
 
       @add__init__
-      def `SpMatrix` as new_with_other_sp(self, orig:DoubleSpMatrix)
+      def `SpMatrix` as new_with_other_sp(self, orig:DoubleSpMatrix):
         """Initialize this SpMatrix from another SpMatrix.
 
         Args:
@@ -430,7 +430,7 @@ from "matrix/sp-matrix.h":
 
       @add__init__
       def `SpMatrix` as new_with_matrix(self, orig: DoubleMatrixBase,
-                                      copy_type: SpCopyType = default)
+                                      copy_type: SpCopyType = default):
         """Initialize this SpMatrix from another Matrix. If the SpCopyType is kTakeMeanAndCheck
            does an extra check for symmetry in orig and copies the elements of orig
            in self. If the SpCopyType is kTakeMean, we just copy the elements of orig in self.
@@ -446,11 +446,11 @@ from "matrix/sp-matrix.h":
             Error if orig is not symmetric.
         """
 
-      def `Swap` as swap_with_other(self, other: DoubleSpMatrix)
+      def `Swap` as swap_with_other(self, other: DoubleSpMatrix):
         """Swaps the contents of self and other, where other is a
            a Packed Matrix. Shallow swap."""
 
-      def `Resize` as resize(self, nRows: int, resize_type: MatrixResizeType = default)
+      def `Resize` as resize(self, nRows: int, resize_type: MatrixResizeType = default):
         """Resizes a matrix. If the resize_type is kSetZero,
            the new data will be zero. If the resize type is kUndefined,
            the new data will be undefined. Finally if the resize type is kCopyData,
@@ -464,7 +464,7 @@ from "matrix/sp-matrix.h":
                                            Defualt is kSetZero
         """
 
-      def `CopyFromSp` as copy_from_sp(self, other: DoubleSpMatrix)
+      def `CopyFromSp` as copy_from_sp(self, other: DoubleSpMatrix):
         """Copy data from another symmetric matrix.
 
         Args:
@@ -475,7 +475,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `CopyFromMat` as copy_from_mat(self, orig: DoubleMatrixBase,
-                      copy_type: SpCopyType = default)
+                      copy_type: SpCopyType = default):
         """Copy the elements of Matrix orig to self. If the SpCopyType is kTakeMeanAndCheck
            does an extra check for symmetry in orig and copies the elements of orig
            in self. If the SpCopyType is kTakeMean, we just copy the elements of orig in self.
@@ -491,7 +491,7 @@ from "matrix/sp-matrix.h":
             Error if orig is not symmetric.
         """
 
-      def `operator()` as get(self, r: int, c: int) -> float
+      def `operator()` as get(self, r: int, c: int) -> float:
         """Indexing operator.
 
         Args:
@@ -502,16 +502,16 @@ from "matrix/sp-matrix.h":
             The value of the indexed element
         """
 
-      def `Invert` as invert(self)
+      def `Invert` as invert(self):
         """Invert the matrix."""
 
-      def `InvertDouble` as invert_double(self)
+      def `InvertDouble` as invert_double(self):
         """Invert the matrix. Use ``double'' precision on the inverted matrix."""
 
-      def `Cond` as cond(self) -> float
+      def `Cond` as cond(self) -> float:
         """Returns the condition number of the SVD computation."""
 
-      def `ApplyPow` as apply_pow(self, exponent: float)
+      def `ApplyPow` as apply_pow(self, exponent: float):
         """Applies power to all elements of matrix.
 
         Args:
@@ -519,15 +519,15 @@ from "matrix/sp-matrix.h":
         """
 
 #      FIXME(pavlos): This needs C++ wrapper
-#      def `SymPosSemiDefEig` as sym_pos_semi_def_eig(self, s: DoubleVectorBase, P:DoubleMatrixBase,
-#                           tolerance:float = default)
-#
-#      def `Eig` as eig(self, s: DoubleVectorBase, P: DoubleMatrixBase = default)
-#
-#      def `TopEigs` as top_eigs(self, s: DoubleVectorBase, P: DoubleMatrixBase,
-#                  lanczos_dim: int = default)
+      def `SymPosSemiDefEig` as sym_pos_semi_def_eig(self, s: DoubleVectorBase, P:DoubleMatrixBase,
+                           tolerance:float = default)
 
-      def `Log` as log(self)
+      def `Eig` as eig(self, s: DoubleVectorBase, P: DoubleMatrixBase = default)
+
+      def `TopEigs` as top_eigs(self, s: DoubleVectorBase, P: DoubleMatrixBase,
+                  lanczos_dim: int = default)
+
+      def `Log` as log(self):
         """Takes log of the matrix, though eigenvalue decomposition then takes
            log of eigenvalues and reconstructs.
 
@@ -535,19 +535,19 @@ from "matrix/sp-matrix.h":
            Error if matrix is not positive definite.
         """
 
-      def `Exp` as exp(self)
+      def `Exp` as exp(self):
         """Does exp(self)"""
 
-      def `MaxAbsEig` as max_abs_eig(self) -> float
+      def `MaxAbsEig` as max_abs_eig(self) -> float:
         """Returns the maximum of the absolute values of any of the eigenvalues."""
 
       # TODO: Implement in Python
       # def PrintEigs(self, name:str)
 
-      def `IsPosDef` as isposdef(self) -> bool
+      def `IsPosDef` as isposdef(self) -> bool:
         """Returns True if the matrix is positive definite."""
 
-      def `AddSp` as add_sp(self, alpha:float, Ma:DoubleSpMatrix)
+      def `AddSp` as add_sp(self, alpha:float, Ma:DoubleSpMatrix):
         """Performs the operation self = self+alpha*Ma.
 
         Args:
@@ -555,7 +555,7 @@ from "matrix/sp-matrix.h":
             Ma(SpMatrix): A symmetrix Matrix
         """
 
-      def `LogPosDefDet` as log_pos_def_det(self) -> float
+      def `LogPosDefDet` as log_pos_def_det(self) -> float:
         """Computes the log determinant.
 
         Returns:
@@ -568,7 +568,7 @@ from "matrix/sp-matrix.h":
       # TODO: Implement C++ wrapper
       # def LogDet(self) -> (logdet: float, det_sign: float)
 
-      def `AddVec2` as add_vec2(self, alpha: float, v: DoubleVectorBase)
+      def `AddVec2` as add_vec2(self, alpha: float, v: DoubleVectorBase):
         """Performs the operation self = self + alpha*(v*v^T)
 
         Args:
@@ -580,7 +580,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `AddVecVec` as add_vec_vec(self, alpha: float, v: DoubleVectorBase,
-                    w:DoubleVectorBase)
+                    w:DoubleVectorBase):
         """Performs the operation self = self + alpha*(v*w^T+w*v^T)
 
         Args:
@@ -593,7 +593,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `AddVec2Sp` as add_vec_2_sp(self, alpha: float, v: DoubleVectorBase,
-                    S:DoubleSpMatrix, beta: float)
+                    S:DoubleSpMatrix, beta: float):
         """Perform self = beta*self + alpha*diag(v)*S*diag(v)
 
         Args:
@@ -606,7 +606,7 @@ from "matrix/sp-matrix.h":
             Error in case of dimension mismatch
         """
 
-      def `AddDiagVec` as add_diag_vec(self, alpha: float, v:DoubleVectorBase)
+      def `AddDiagVec` as add_diag_vec(self, alpha: float, v:DoubleVectorBase):
         """Performs self = self+diag(v)
 
         Args:
@@ -618,7 +618,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `AddMat2` as add_mat2(self, alpha: float, M: DoubleMatrixBase,
-                  transM: MatrixTransposeType, beta: float)
+                  transM: MatrixTransposeType, beta: float):
         """If transM == kNoTrans performs self = beta*self+alpha*M*M^T.
            If transM == kTrans self = beta*self+alpha*M^T*M
 
@@ -634,7 +634,7 @@ from "matrix/sp-matrix.h":
 
       def `AddMat2Sp` as add_mat_2_sp(self, alpha: float, M: DoubleMatrixBase,
                     transM: MatrixTransposeType, A:DoubleSpMatrix,
-                    beta: float = default)
+                    beta: float = default):
         """If transM == kNoTrans perform self = beta*self+alpha*M*A*M^T.
            If transM == kTrans perform self = beta*self+alpha*M^T*A*M.
 
@@ -651,7 +651,7 @@ from "matrix/sp-matrix.h":
 
       def `AddSmat2Sp` as add_smat_2_sp(self, alpha: float, M:DoubleMatrixBase,
                      transM:MatrixTransposeType, A:DoubleSpMatrix,
-                     beta: float = default)
+                     beta: float = default):
         """Same as AddMat2Sp, optimized for sparse M."""
 
       # FIXME in sp-matrix-ext.h
@@ -663,7 +663,7 @@ from "matrix/sp-matrix.h":
 
       def `AddMat2Vec` as add_mat_2_vec(self, alpha:float, M:DoubleMatrixBase,
                      transM:MatrixTransposeType, v:DoubleVectorBase,
-                     beta: float = default)
+                     beta: float = default):
         """If transM == kNoTrans perform self = beta*self+alpha*M*diag(v)*M^T.
            If transM == kTrans perform self = beta*self+alpha*M^T*diag(v)*M.
 
@@ -680,7 +680,7 @@ from "matrix/sp-matrix.h":
 
       def `ApplyFloor` as apply_floor(self, Floor:DoubleSpMatrix,
                                      alpha: float = default,
-                                     verbose: bool = default) -> int
+                                     verbose: bool = default) -> int:
         """Floors this symmetric matrix to the matrix alpha*floor,
            where the matrix floor is positive definite.
            It is floored in the sense that after flooring it must be that
@@ -700,7 +700,7 @@ from "matrix/sp-matrix.h":
             Error if floor is not positive definite.
         """
 
-      def `ApplyFloor` as floor(self, floor:float) -> int
+      def `ApplyFloor` as floor(self, floor:float) -> int:
         """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
 
         Args:
@@ -710,7 +710,7 @@ from "matrix/sp-matrix.h":
             The number of elements affected by the flooring operation
         """
 
-      def `IsDiagonal` as isdiagonal(self, cutoff:float = default) -> bool
+      def `IsDiagonal` as isdiagonal(self, cutoff:float = default) -> bool:
         """Checks if the matrix is diagonal. The nondiagonal elements
            must be less or equal to cutoff value.
 
@@ -722,7 +722,7 @@ from "matrix/sp-matrix.h":
             otherwise false
         """
 
-      def `IsUnit` as isunit(self, cutoff:float = default) -> bool
+      def `IsUnit` as isunit(self, cutoff:float = default) -> bool:
         """Checks if the matrix is identity-like. It does not have to be square.
            The nondiagonal elements must be less or equal to cutoff value,
            while the diagonal ones must be one.
@@ -734,7 +734,7 @@ from "matrix/sp-matrix.h":
             True if the diagonal elements are 1 and sum(nondiagonal_elements)<=cutoff
         """
 
-      def `IsZero` as iszero(self, cutoff:float = default) -> bool
+      def `IsZero` as iszero(self, cutoff:float = default) -> bool:
         """Checks if all elements are 0 (where 0 is the cutoff value).
 
         Args:
@@ -744,15 +744,15 @@ from "matrix/sp-matrix.h":
             True if it is a zero matrix
         """
 
-      def `IsTridiagonal` as istriagonal(self, cutoff:float = default) -> bool
+      def `IsTridiagonal` as istriagonal(self, cutoff:float = default) -> bool:
         """Returns true if the matrix is tridiagonal(based on the
            cutoff value)."""
 
-      def `FrobeniusNorm` as frobenius_norm(self) -> float
+      def `FrobeniusNorm` as frobenius_norm(self) -> float:
         """Returns the Frobenius norm of the matrix."""
 
       def `ApproxEqual` as approx_equal(self, other:DoubleSpMatrix,
-                      tol:float = default) -> bool
+                      tol:float = default) -> bool:
         """Checks if self is equal with other by calculating the Frobenius
            norm of their difference.
 
@@ -765,7 +765,7 @@ from "matrix/sp-matrix.h":
         """
 
       def `LimitCond` as limit_cond(self, maxCond: float = default,
-                    invert:bool = default) -> int
+                    invert:bool = default) -> int:
         """Performs self = P*diag(floor(s))*P^T, where s is the eigenvalues
            and P is the eigenvectors.
 
@@ -777,13 +777,13 @@ from "matrix/sp-matrix.h":
         """
 
       def `LimitCondDouble` as limit_cond_double(self, maxCond: float = default,
-                          invert: bool = default) -> int
+                          invert: bool = default) -> int:
         """Same as LimitCond but the resulting operation has ``double'' precision."""
 
-      def `Trace` as trace(self) -> float
+      def `Trace` as trace(self) -> float:
         """Returns the trace of the matrix."""
 
-      def `Tridiagonalize` as triagonalize(self, Q:DoubleMatrixBase)
+      def `Tridiagonalize` as triagonalize(self, Q:DoubleMatrixBase):
         """Tridiagonalize the matrix with an orthogonal transformation.
            Performs  self = Q*self*Q^T for an orthogonal Q.
 
@@ -791,7 +791,7 @@ from "matrix/sp-matrix.h":
             Q(DoubleMatrixBase): A matrix that must be orthogonal.
         """
 
-      def `Qr` as qr(self, Q:DoubleMatrixBase)
+      def `Qr` as qr(self, Q:DoubleMatrixBase):
         """The symmetric QR algorithm. This is the symmetric QR algorithm,
            from Golub and Van Loan 3rd ed., Algorithm 8.3.3.
 
@@ -799,7 +799,7 @@ from "matrix/sp-matrix.h":
             Q(MatrixBase): A matrix
         """
 
-    def `TraceSpSp` as trace_sp_sp(A:SpMatrix, B:SpMatrix) -> float
+    def `TraceSpSp` as trace_sp_sp(A:SpMatrix, B:SpMatrix) -> float:
       """Calculates the trace of A*B
 
       Args:
@@ -814,11 +814,11 @@ from "matrix/sp-matrix.h":
       """
 
     def `TraceSpSp` as trace_double_sp_sp(A:DoubleSpMatrix,
-                                       B:DoubleSpMatrix) -> float
+                                       B:DoubleSpMatrix) -> float:
       """Same as TraceSpSp, when you have built Kaldi with double precision."""
 
     def `ApproxEqual` as approx_equal_sp_matrix(
-        A:SpMatrix, B:SpMatrix, tol:`float` as float = default) -> bool
+        A:SpMatrix, B:SpMatrix, tol:`float` as float = default) -> bool:
       """Computes the Frobenius norm of the difference of matrix A and B
          and returns True if it is less or equal than tol.
       
@@ -835,7 +835,7 @@ from "matrix/sp-matrix.h":
       """
 
     def `AssertEqual` as assert_equal_sp_matrix(A:SpMatrix, B:SpMatrix,
-                                             tol:`float` as float = default)
+                                             tol:`float` as float = default):
       """Computes the Frobenius norm of the difference of matrix A and B
          and checks if it is less or equal than tol. If the condition is
          not satisfied it will raise an error.
@@ -849,10 +849,10 @@ from "matrix/sp-matrix.h":
           Error if ||A-B||_F > tol
       """
 
-    def `TraceSpSpLower` as trace_sp_sp_lower(A:SpMatrix, B:SpMatrix) -> float
+    def `TraceSpSpLower` as trace_sp_sp_lower(A:SpMatrix, B:SpMatrix) -> float:
       """Computes the trace of (A*B)"""
 
-    def `TraceSpMat` as trace_sp_mat(A:SpMatrix, B:MatrixBase) -> float
+    def `TraceSpMat` as trace_sp_mat(A:SpMatrix, B:MatrixBase) -> float:
       """Returns Trace(A*B)
 
       Raises:
@@ -860,7 +860,7 @@ from "matrix/sp-matrix.h":
       """
 
     def `TraceMatSpMat` as trace_mat_sp_mat(A:MatrixBase, transA:MatrixTransposeType, B:SpMatrix,
-                      C:MatrixBase, transC: MatrixTransposeType) -> float
+                      C:MatrixBase, transC: MatrixTransposeType) -> float:
       """Returns tr(A*B*C)
     
       Args:
@@ -881,7 +881,7 @@ from "matrix/sp-matrix.h":
 
     def `TraceMatSpMatSp` as trace_mat_sp_mat_sp(A:MatrixBase, transA:MatrixTransposeType,
                         B:SpMatrix, C:MatrixBase,
-                        transC: MatrixTransposeType, D:SpMatrix) -> float
+                        transC: MatrixTransposeType, D:SpMatrix) -> float:
       """Returns tr(A*B*C*D)
 
       Args:
@@ -901,7 +901,7 @@ from "matrix/sp-matrix.h":
           Error in case of dimension mismatch
       """
 
-    def `VecSpVec` as vec_sp_vec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float
+    def `VecSpVec` as vec_sp_vec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float:
       """Performs v1^T*M*v2.
    
       Args:
@@ -924,7 +924,7 @@ from "matrix/sp-matrix.h":
       print_debug_output:bool
 
       @add__init__
-      def `SolverOptions` as solver_options_with_name(self, name:str)
+      def `SolverOptions` as solver_options_with_name(self, name:str):
         """Initialize the class. Default values are:
            K = 1.0e+4,
            eps = 1.0e-40
@@ -933,11 +933,11 @@ from "matrix/sp-matrix.h":
           print_debug_output = true
         """
 
-      def `Check` as check(self)
+      def `Check` as check(self):
         """Raises error if K<10 or eps>1.0e-10"""
 
     def `SolveQuadraticProblem` as solve_quadratic_problem(H:SpMatrix, g:VectorBase, opts:SolverOptions,
-                              x:VectorBase) -> float
+                              x:VectorBase) -> float:
       """Maximizes the auxiliary function
          Q(x) = x.*g - 0.5 x^T*H*x using a numerically stable method.
          Assumes H positive semidefinite.
@@ -956,7 +956,7 @@ from "matrix/sp-matrix.h":
       """
 
     def `SolveQuadraticMatrixProblem` as solve_quadratic_matrix_problem(Q:SpMatrix, Y:MatrixBase, P:SpMatrix,
-                                    opts:SolverOptions, M:MatrixBase) -> float
+                                    opts:SolverOptions, M:MatrixBase) -> float:
       """Maximizes the auxiliary function
          Q(x) = tr(M^T*P*Y)-0.5*tr(P*M*Q*M^T) 
          Assumes Q and P positive semidefinite.
@@ -977,7 +977,7 @@ from "matrix/sp-matrix.h":
 
     def `SolveDoubleQuadraticMatrixProblem` as solve_double_quadratic_matrix_problem(
         G:MatrixBase, P1:SpMatrix, P2:SpMatrix, Q1:SpMatrix, Q2:SpMatrix,
-        opts:SolverOptions, M:MatrixBase) -> float
+        opts:SolverOptions, M:MatrixBase) -> float:
       """Maximizes the auxiliary function
          Q(M) = tr(M^T*G)-0.5*tr(P1*M*Q1 M^T)-0.5*tr(P2*M*Q2*M^T)        
          Assumes Q1, Q2, P1, and P2 are positive semidefinite.

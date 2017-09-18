@@ -38,7 +38,7 @@ from "matrix/kaldi-matrix-ext.h":
           Error in case of dimension mismatch
       """                                                               
  
-    def `AddSp` as add_sp(self: MatrixBase, alpha: float, S: SpMatrix)
+    def `AddSp` as add_sp(self: MatrixBase, alpha: float, S: SpMatrix):
       """Performs the self = self+alpha*S
          
          Args:
@@ -49,7 +49,7 @@ from "matrix/kaldi-matrix-ext.h":
              Error if S is not square
       """
 
-    def `AddSpMat` as add_sp_mat(self: MatrixBase, alpha: float, A: SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+    def `AddSpMat` as add_sp_mat(self: MatrixBase, alpha: float, A: SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
          
          Args:
@@ -64,7 +64,7 @@ from "matrix/kaldi-matrix-ext.h":
              Error in case of dimension mismatch
       """
 
-    def `AddTpMat` as add_tp_mat(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float)
+    def `AddTpMat` as add_tp_mat(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
         
         Args:
@@ -81,7 +81,7 @@ from "matrix/kaldi-matrix-ext.h":
             Error in case of dimension mismatch
       """
    
-    def `AddMatSp` as add_mat_sp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: SpMatrix, beta: float)
+    def `AddMatSp` as add_mat_sp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: SpMatrix, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
          
          Args:
@@ -96,7 +96,7 @@ from "matrix/kaldi-matrix-ext.h":
              Error in case of dimension mismatch
       """
 
-    def `AddMatTp` as add_mat_tp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float)
+    def `AddMatTp` as add_mat_tp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
         
          Args:
@@ -113,7 +113,7 @@ from "matrix/kaldi-matrix-ext.h":
              Error in case of dimension mismatch
       """
 
-    def `AddTpTp` as add_tp_tp(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float)  
+    def `AddTpTp` as add_tp_tp(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
         
          Args:
@@ -130,7 +130,7 @@ from "matrix/kaldi-matrix-ext.h":
              Error in case of dimension mismatch
       """
    
-    def `AddSpSp` as add_sp_sp(self: MatrixBase, alpha: float, A: SpMatrix, B: SpMatrix, beta: float)
+    def `AddSpSp` as add_sp_sp(self: MatrixBase, alpha: float, A: SpMatrix, B: SpMatrix, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
         
          Args:

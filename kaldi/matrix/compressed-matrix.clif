@@ -49,7 +49,7 @@ from "matrix/compressed-matrix.h":
       """A lossily compressed Matrix class"""
       @add__init__
       def `CompressedMatrix` as new(self, mat: MatrixBase,
-                                    method: CompressionMethod = default)
+                                    method: CompressionMethod = default):
         """Copy the data from a MatrixBase and compress it
            
         Args:
@@ -62,32 +62,32 @@ from "matrix/compressed-matrix.h":
       def `CompressedMatrix` as new_with_range(self, mat: CompressedMatrix,
                                              row_offset: int, num_rows: int,
                                              col_offset: int, num_cols:int,
-                                             allow_padding: bool = default)
-      """
-        Create a compressed matrix from another compressed matrix. If allow padding is true
-        you can create an "expanded" matrix by either having a negative row_offset or by
-        setting num_rows>mat.num_rows.
-
-        Args:
-            mat(CompressedMatrix): A compressed matrix
-            row_offset(int): From which row of mat to start copying. Indexing starts at 0
-            num_rows(int): How many rows of mat to copy
-            col_offset(int): From which column of mat to start copying. Indexing starts at 0
-            num_cols(int): How many columns of mat to copy
-            allow_padding(bool): Allows you to violate ``row'' dimentionality conditions
-         
-         Raises:
-            Error in case dimensionality violations (taking also allow_padding into consideration).
-      """
+                                             allow_padding: bool = default):
+        """
+          Create a compressed matrix from another compressed matrix. If allow padding is true
+          you can create an "expanded" matrix by either having a negative row_offset or by
+          setting num_rows>mat.num_rows.
+  
+          Args:
+              mat(CompressedMatrix): A compressed matrix
+              row_offset(int): From which row of mat to start copying. Indexing starts at 0
+              num_rows(int): How many rows of mat to copy
+              col_offset(int): From which column of mat to start copying. Indexing starts at 0
+              num_cols(int): How many columns of mat to copy
+              allow_padding(bool): Allows you to violate ``row'' dimentionality conditions
+           
+           Raises:
+              Error in case dimensionality violations (taking also allow_padding into consideration).
+        """
 
       @add__init__
-      def `CompressedMatrix` as new_with_other(self, mat: CompressedMatrix)
-      """
-         Set this matrix (self) as the other (mat)
-         
-         Args:
-             mat(CompressedMatrix): A compressed Matrix           
-      """
+      def `CompressedMatrix` as new_with_other(self, mat: CompressedMatrix):
+        """
+           Set this matrix (self) as the other (mat)
+           
+           Args:
+               mat(CompressedMatrix): A compressed Matrix           
+        """
 
       def `CopyFromMat` as copy_from_mat(self, mat: MatrixBase,
                       method: CompressionMethod = default):
@@ -98,9 +98,20 @@ from "matrix/compressed-matrix.h":
             method(CompresssionMethod): Which compression method to use
         """ 
 
-#      FIXME_U(Pavlos): This needs a C++ wrapper. Does not feel pythonic  
-#      def `CopyToMat` as copy_to_mat(self, mat: MatrixBase,
-#                    method: MatrixTransposeType = default)
+#      FIXME(Pavlos): This needs a C++ wrapper. Does not feel pythonic  
+      def `CopyToMat` as copy_to_mat(self, mat: MatrixBase,
+                    method: MatrixTransposeType = default):
+        """Perfomrs mat=self if MatrixTransposeType is kNoTrans,
+           or mat^T=self if MatrixTransposeType is kTrans.
+
+        Args:
+            mat(MatrixBase): The destination matrix
+            method(MatrixTransposeType): Determines transposition of mat.
+                                         Default value is kNoTrans
+
+        Raises:
+            Error in case of dimension mismatch
+        """
 
       def `NumRows` as num_rows(self) -> int:
         """Returns the number of rows."""
@@ -109,7 +120,7 @@ from "matrix/compressed-matrix.h":
         """Returns the number of columns."""
 
 #     FIXME(Pavlos): This needs a C++ wrapper. Does not feel pythonic
-      def `CopyRowToVec` as copy_row_to_vec(self, row: int, v: VectorBase)
+      def `CopyRowToVec` as copy_row_to_vec(self, row: int, v: VectorBase):
         """Uncompresess and copies row of the matrix into vector v.
         
         Args:
@@ -120,7 +131,7 @@ from "matrix/compressed-matrix.h":
             Error in case of dimesnionality mismatch
         """
 
-      def `CopyColToVec` as copy_col_to_vec(self, col: int, v: VectorBase)
+      def `CopyColToVec` as copy_col_to_vec(self, col: int, v: VectorBase):
         """Uncompresess and copies column of the matrix into vector v.
         
         Args:
@@ -132,7 +143,7 @@ from "matrix/compressed-matrix.h":
         """
 
       def `CopyToMat` as copy_to_mat_offset(self, row_offset: int,
-                                         col_offset: int, dest: MatrixBase)
+                                         col_offset: int, dest: MatrixBase):
         """Uncompresses and copies submatrix of compressed matrix
            into matrix dest. Submatrix starts at row row_offset and column
            column_offset and its size is defined by size of provided matrix
@@ -157,9 +168,9 @@ from "matrix/compressed-matrix.h":
             Error in case od dimension mismatch.
         """
 
-      def `Clear` as clear(self)
+      def `Clear` as clear(self):
         """Deletes the data of the matrix"""
 
-      def `Scale` as scale(self, alpha: float)
+      def `Scale` as scale(self, alpha: float):
         """scales all elements of matrix by alpha."""
 

@@ -10,15 +10,9 @@ from "matrix/kaldi-matrix.h":
       _num_rows: int = property(`NumRows`)
       _num_cols: int = property(`NumCols`)
       _stride: int = property(`Stride`)
-      
-      def `NumRows` as num_rows(self) -> int:
-        """Returns the number of rows"""
-      
-      def `NumCols` as num_cols(self) -> int:
-       """Returns the number of columns"""
-      
+            
       def `SizeInBytes` as size_in_bytes(self) -> int:
-        """Returns the size in memory of the matrix, in bytes."""
+        """Returns the size in bytes of the data held by the matrix."""
   		
       # Note: It is probably a bad idea to expose these in Python.
       # def Data(self) -> float*
@@ -28,10 +22,8 @@ from "matrix/kaldi-matrix.h":
       # the __setitem__ method.
 
       def `operator()` as _getitem(self, row:int, col:int) -> float
-        """Returns value of self(row,col)"""
 
       def `Set` as _setitem(self, row:int, col:int, value:float)
-        """self(row,col)=value"""
 
       def `SetZero` as set_zero(self):
         """Fills matrix with zeros."""
@@ -251,34 +243,34 @@ from "matrix/kaldi-matrix.h":
       # Need C++ wrappers for these functions. Moreover they do not feel like ``pythonic''
       #
       # def LogDet(self, det_sign: `float` as float = default) -> float
-      
-      def `Invert` as invert(self, log_det: `float` as float = default,
-                 det_sign: `float` as float = default,
-                 inverse_needed: bool = default)
-        """Matrix inverse.
-     
-          Args:
-              log_det(float): Will store the log determinant
-              det_sign(float): Will store the sign of the determinant, 1 or -1.
-              inverse_needed(bool): If false it will return garbage. Default is true
-     
-          Raises:
-              Error if matrix is not square
-        """
-      
-      def `InvertDouble` as invert_double(self, logDet: `float` as float = default,
-                       det_sign: `float` as float = default,
-                       inverse_needed: bool = default)
-        """Matrix inverse with ``double'' precision.
-     
-          Args:
-              logDet(float): Will store the log determinant
-              det_sign(float): Will store the sign of the determinant, 1 or -1.
-              inverse_needed(bool): If false it will return garbage
-     
-          Raises:
-              Error if matrix is not square
-        """
+      # 
+      # def `Invert` as invert(self, log_det: `float` as float = default,
+      #            det_sign: `float` as float = default,
+      #            inverse_needed: bool = default):
+      #   """Matrix inverse.
+      #
+      #     Args:
+      #         log_det(float): Will store the log determinant
+      #         det_sign(float): Will store the sign of the determinant, 1 or -1.
+      #         inverse_needed(bool): If false it will return garbage. Default is true
+      #
+      #     Raises:
+      #         Error if matrix is not square
+      #   """
+      # 
+      # def `InvertDouble` as invert_double(self, logDet: `float` as float = default,
+      #                  det_sign: `float` as float = default,
+      #                  inverse_needed: bool = default):
+      #   """Matrix inverse with ``double'' precision.
+      #
+      #     Args:
+      #         logDet(float): Will store the log determinant
+      #         det_sign(float): Will store the sign of the determinant, 1 or -1.
+      #         inverse_needed(bool): If false it will return garbage
+      #
+      #     Raises:
+      #         Error if matrix is not square
+      #   """
 
       def `InvertElements` as invert_elements(self):
         """Inverts all the elements of the matrix. self(i,j)=1/self(i,j)."""
@@ -353,26 +345,26 @@ from "matrix/kaldi-matrix.h":
       # FIXME_U(pavlos):
       # Need C++ wrappers for this
       #
-      # def Eig(self, P: MatrixBase, eigs_real: VectorBase,
-      #        eigs_imag: VectorBase)
-      #   """Eigenvalue Decomposition of a square matrix into the form  P D P^{-1}.
-      #       Be careful: the relationship of D to the eigenvalues we output is
-      #       slightly complicated, due to the need for P to be real.  In the symmetric
-      #       case D is diagonal and real, but in
-      #       the non-symmetric case there may be complex-conjugate pairs of eigenvalues.
-      #       In this case, for the equation (*this) = P D P^{-1} to hold, D must actually
-      #       be block diagonal, with 2x2 blocks corresponding to any such pairs.  If a
-      #       pair is lambda +- i*mu, D will have a corresponding 2x2 block
-      #       [lambda, mu; -mu, lambda].
-      #       Note that if the input matrix (*this) is non-invertible, P may not be invertible
-      #       so in this case instead of the equation (*this) = P D P^{-1} holding, we have
-      #       instead (*this) P = P D.
-      #
-      #    Args:
-      #        P(MatrixBase): Will store the P part of PDP^{-1} decomposition
-      #        eigs_real(VectorBase): Will store the real part of the eigenvalues
-      #        eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
-      #   """
+      def Eig(self, P: MatrixBase, eigs_real: VectorBase,
+             eigs_imag: VectorBase):
+        """Eigenvalue Decomposition of a square matrix into the form  P D P^{-1}.
+           Be careful: the relationship of D to the eigenvalues we output is
+           slightly complicated, due to the need for P to be real.  In the symmetric
+           case D is diagonal and real, but in
+           the non-symmetric case there may be complex-conjugate pairs of eigenvalues.
+           In this case, for the equation (*this) = P D P^{-1} to hold, D must actually
+           be block diagonal, with 2x2 blocks corresponding to any such pairs.  If a
+           pair is lambda +- i*mu, D will have a corresponding 2x2 block
+           [lambda, mu; -mu, lambda].
+           Note that if the input matrix (*this) is non-invertible, P may not be invertible
+           so in this case instead of the equation (*this) = P D P^{-1} holding, we have
+           instead (*this) P = P D.
+     
+        Args:
+            P(MatrixBase): Will store the P part of PDP^{-1} decomposition
+            eigs_real(VectorBase): Will store the real part of the eigenvalues
+            eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
+       """
 
       def `Power` as power(self, pow: float) -> bool:
         """The Power method attempts to take the matrix to a power
@@ -571,8 +563,11 @@ from "matrix/kaldi-matrix.h":
              :kaldi:`kaldi::GroupPnorm`
         """
 
-      # def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase,
-      #                     power: float)
+      def GroupPnormDeriv(self, input: MatrixBase, output: MatrixBase,
+                          power: float):
+        """See Also:
+             :kaldi:`kaldi::GroupPnormDeriv`
+        """
 
       def `GroupMax` as group_max(self, src: MatrixBase):
         """See Also:
@@ -582,10 +577,10 @@ from "matrix/kaldi-matrix.h":
       # FIXME(pavlos):
       # This needs a C++ wrapper
       #
-      # def GroupMaxDeriv(self, input: MatrixBase, output: MatrixBase)
-      #   """See Also:
-      #     :kaldi:`kaldi::GroupMaxDeriv`
-      #   """
+      def GroupMaxDeriv(self, input: MatrixBase, output: MatrixBase):
+        """See Also:
+             :kaldi:`kaldi::GroupMaxDeriv`
+        """
 
       def `Tanh` as tanh(self, src: MatrixBase):
         """Set each element to the tanh of the corresponding element of src.
@@ -599,13 +594,22 @@ from "matrix/kaldi-matrix.h":
 
       # FIXME(pavlos):
       # This needs a C++ wrapper
-      #
-      # def DiffSigmoid(self, value: MatrixBase, diff: MatrixBase)
-      #
-      # def DiffTanh(self, value: MatrixBase, diff: MatrixBase)
-      #
-      # def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase,
-      #                     check_thresh: float = default)
+    
+      def DiffSigmoid(self, value: MatrixBase, diff: MatrixBase):
+        """See Also:
+             :kaldi:`kaldi::DiffSigmoid`
+        """
+
+      def DiffTanh(self, value: MatrixBase, diff: MatrixBase):
+        """See Also:
+             :kaldi:`kaldi::DiffTanh`
+        """
+    
+      def SymPosSemiDefEig(self, s: VectorBase, P: MatrixBase,
+                          check_thresh: float = default):
+        """See Also:
+             :kaldi:`kaldi::SysPoseSemiDefEig`
+        """
 
       def `Add` as add(self, alpha: float):
         """Add a scalar alpha to each element of the matrix.
@@ -1274,7 +1278,6 @@ from "matrix/kaldi-matrix.h":
         """
 
       def `Set` as _setitem(self, row:int, col:int, value:float)
-        """self(row,col)=value"""
 
       def `SetZero` as set_zero(self):
         """Set all elements to zero."""
@@ -1481,40 +1484,37 @@ from "matrix/kaldi-matrix.h":
             Error if self.num_rows != scr.num_rows || self.num_cols % src.num_cols !=0
         """
 
-      # FIXME(Pavlos):
+      # FIXME_U(Pavlos):
       # Need C++ wrappers for these functions. Moreover they do not feel like ``pythonic''
       #
       # def LogDet(self, det_sign: `float` as float = default) -> float
-      
-      # FIXME(Pavlos):
-      # NEED C++ Wrappers
-      def Invert(self, log_det: `float` as float = default,
-                 det_sign: `float` as float = default,
-                 inverse_needed: bool = default)
-        """Matrix inverse
-      
-          Args:
-              log_det(float): Will store the log determinant
-              det_sign(float): Will store the sign of the determinant, 1 or -1.
-              inverse_needed(bool): If false it will return garbage. Default is true
-      
-          Raises:
-              Error if matrix is not square
-        """
-      
-      def InvertDouble(self, logDet: `float` as float = default,
-                           det_sign: `float` as float = default,
-                           inverse_needed: bool = default)
-        """Matrix inverse
-      
-          Args:
-              logDet(float): Will store the log determinant
-              det_sign(float): Will store the sign of the determinant, 1 or -1.
-              inverse_needed(bool): If false it will return garbage
-      
-          Raises:
-              Error if matrix is not square
-        """
+      # def Invert(self, log_det: `float` as float = default,
+      #            det_sign: `float` as float = default,
+      #            inverse_needed: bool = default)
+      #   """Matrix inverse
+      # 
+      #     Args:
+      #         log_det(float): Will store the log determinant
+      #         det_sign(float): Will store the sign of the determinant, 1 or -1.
+      #         inverse_needed(bool): If false it will return garbage. Default is true
+      # 
+      #     Raises:
+      #         Error if matrix is not square
+      #   """
+      # 
+      # def InvertDouble(self, logDet: `float` as float = default,
+      #                      det_sign: `float` as float = default,
+      #                      inverse_needed: bool = default)
+      #   """Matrix inverse
+      # 
+      #     Args:
+      #         logDet(float): Will store the log determinant
+      #         det_sign(float): Will store the sign of the determinant, 1 or -1.
+      #         inverse_needed(bool): If false it will return garbage
+      # 
+      #     Raises:
+      #         Error if matrix is not square
+      #   """
 
       def `InvertElements` as invert_elements(self):
         """Inverts all the elements of the matrix. self(i,j)=1/self(i,j)."""
@@ -1522,7 +1522,7 @@ from "matrix/kaldi-matrix.h":
       def `Transpose` as transpose(self):
         """Transposes the elements of the matrix. self(i,j)=self(j,i)."""
 
-      # FIXME(Pavlos):
+      # FIXME_U(Pavlos):
       # Indices should not be int, they are supposed to be an array
       # def CopyCols(self, src: MatrixBase, indices: int)
       # def CopyRows(self, src: MatrixBase, indices: int)
@@ -1587,36 +1587,36 @@ from "matrix/kaldi-matrix.h":
 
       # FIXME(pavlos):
       # Need C++ wrappers for this
-      #
-      # def Eig(self, P: MatrixBase, eigs_real: VectorBase,
-      #             eigs_imag: VectorBase)
-      #   """Eigenvalue Decomposition of a square matrix into the form  P D P^{-1}.
-      #        Be careful: the relationship of D to the eigenvalues we output is
-      #        slightly complicated, due to the need for P to be real.  In the symmetric
-      #        case D is diagonal and real, but in
-      #        the non-symmetric case there may be complex-conjugate pairs of eigenvalues.
-      #        In this case, for the equation (*this) = P D P^{-1} to hold, D must actually
-      #        be block diagonal, with 2x2 blocks corresponding to any such pairs.  If a
-      #        pair is lambda +- i*mu, D will have a corresponding 2x2 block
-      #        [lambda, mu; -mu, lambda].
-      #        Note that if the input matrix (*this) is non-invertible, P may not be invertible
-      #        so in this case instead of the equation (*this) = P D P^{-1} holding, we have
-      #        instead (*this) P = P D.
-      #
-      #     Args:
-      #         P(MatrixBase): Will store the P part of PDP^{-1} decomposition
-      #         eigs_real(VectorBase): Will store the real part of the eigenvalues
-      #         eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
-      #   """
+     
+      def Eig(self, P: MatrixBase, eigs_real: VectorBase,
+                  eigs_imag: VectorBase):
+        """Eigenvalue Decomposition of a square matrix into the form  P*D*P^{-1}.
+           Be careful: the relationship of D to the eigenvalues we output is
+           slightly complicated, due to the need for P to be real.  In the symmetric
+           case D is diagonal and real, but in
+           the non-symmetric case there may be complex-conjugate pairs of eigenvalues.
+           In this case, for the equation (*this) = P*D*P^{-1} to hold, D must actually
+           be block diagonal, with 2x2 blocks corresponding to any such pairs.  If a
+           pair is lambda +- i*mu, D will have a corresponding 2x2 block
+           [lambda, mu; -mu, lambda].
+           Note that if the input matrix (*this) is non-invertible, P may not be invertible
+           so in this case instead of the equation (*this) = P*D*P^{-1} holding, we have
+           instead (*this) P = P*D.
+ 
+        Args:
+            P(MatrixBase): Will store the P part of PDP^{-1} decomposition
+            eigs_real(VectorBase): Will store the real part of the eigenvalues
+            eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
+        """
 
       def `Power` as power(self, pow: float) -> bool:
         """The Power method attempts to take the matrix to a power
-             (e.g P^3=P*P*P) using a method that works in general for fractional
-             and negative powers. The input matrix must be invertible and have
-             reasonable condition (or we don't guarantee the results. The method is
-             based on the eigenvalue decomposition. It will return false and
-             leave the matrix unchanged, if at entry the matrix had real negative
-             eigenvalues (or if it had zero eigenvalues and the power was negative).
+            (e.g P^3=P*P*P) using a method that works in general for fractional
+            and negative powers. The input matrix must be invertible and have
+            reasonable condition (or we don't guarantee the results. The method is
+            based on the eigenvalue decomposition. It will return false and
+            leave the matrix unchanged, if at entry the matrix had real negative
+            eigenvalues (or if it had zero eigenvalues and the power was negative).
 
         Args:
             pow(float): The power which we will apply
