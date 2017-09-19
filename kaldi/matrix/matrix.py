@@ -141,7 +141,7 @@ class MatrixBase(object):
                              "matrix.")
         P = Matrix(n, n)
         r, i = Vector(n), Vector(n)
-        self.eig(P, r, i)
+        self._eig(P, r, i)
         return P, r, i
 
     def svd(self):

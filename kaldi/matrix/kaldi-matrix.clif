@@ -345,7 +345,7 @@ from "matrix/kaldi-matrix.h":
       # FIXME_U(pavlos):
       # Need C++ wrappers for this
       #
-      def Eig(self, P: MatrixBase, eigs_real: VectorBase,
+      def `Eig` as _eig(self, P: MatrixBase, eigs_real: VectorBase,
              eigs_imag: VectorBase):
         """Eigenvalue Decomposition of a square matrix into the form  P D P^{-1}.
            Be careful: the relationship of D to the eigenvalues we output is
@@ -1588,8 +1588,8 @@ from "matrix/kaldi-matrix.h":
       # FIXME(pavlos):
       # Need C++ wrappers for this
      
-      def Eig(self, P: MatrixBase, eigs_real: VectorBase,
-                  eigs_imag: VectorBase):
+      def `Eig` as _eig(self, P: DoubleMatrixBase, eigs_real: DoubleVectorBase,
+                  eigs_imag: DoubleVectorBase):
         """Eigenvalue Decomposition of a square matrix into the form  P*D*P^{-1}.
            Be careful: the relationship of D to the eigenvalues we output is
            slightly complicated, due to the need for P to be real.  In the symmetric

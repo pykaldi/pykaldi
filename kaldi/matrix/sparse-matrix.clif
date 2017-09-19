@@ -111,7 +111,7 @@ from "matrix/sparse-matrix.h":
             binary(bool): If the stream is binary.
         """
 
-      def Read as read(self, is: istream, binary: bool):
+      def `Read` as read(self, is: istream, binary: bool):
         """Reads from C++ stream.
 
         Args:

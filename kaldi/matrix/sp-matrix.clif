@@ -251,10 +251,10 @@ from "matrix/sp-matrix.h":
             Error in case of dimension mismatch  
         """
 
-       def `AddSmat2Sp` as add_smat_2_sp(self, alpha: float, M:MatrixBase,
+      def `AddSmat2Sp` as add_smat_2_sp(self, alpha: float, M:MatrixBase,
                      transM:MatrixTransposeType, A:SpMatrix,
                      beta: float = default):
-        """Same as AddMat2Sp, optimized for sparse M."""
+         """Same as AddMat2Sp, optimized for sparse M."""
 
       # FIXME in sp-matrix-ext.h
       # def AddTp2Sp(self, alpha:float, T:TpMatrix,
