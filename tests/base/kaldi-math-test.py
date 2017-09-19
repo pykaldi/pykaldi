@@ -110,19 +110,19 @@ class testKaldiMath(unittest.TestCase):
 		# self.assertFalse(kaldi_math.KALDI_ISINF(0.0))
 		# self.assertFalse(kaldi_math.KALDI_ISNAN(0.0))
 
-		with self.subTest():
-			self.assertTrue(1.0 != 1.0 + kaldi_math.DBL_EPSILON)
-			self.assertTrue(1.0 == 1.0 + 0.5 * kaldi_math.DBL_EPSILON)
-			# self.assertNotAlmostEqual(1.0, 1.0 + kaldi_math.FLT_EPSILON, places = 7)
-			# self.assertAlmostEqual(1.0, 1.0 + 0.5 * kaldi_math.FLT_EPSILON, places = 6)
-			
-			self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.M_PI)))
-			self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.M_PI)))
-			self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.M_2PI)))
-			self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.M_2PI)))
+	
+		self.assertTrue(1.0 != 1.0 + kaldi_math.DBL_EPSILON)
+		self.assertTrue(1.0 == 1.0 + 0.5 * kaldi_math.DBL_EPSILON)
+		# self.assertNotAlmostEqual(1.0, 1.0 + kaldi_math.FLT_EPSILON, places = 7)
+		# self.assertAlmostEqual(1.0, 1.0 + 0.5 * kaldi_math.FLT_EPSILON, places = 6)
+		
+		self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.M_PI)))
+		self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.M_PI)))
+		self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.M_2PI)))
+		self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.M_2PI)))
 
-			self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.exp(kaldi_math.M_LOG_2PI))), places = 5)
-			self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.exp(kaldi_math.M_LOG_2PI))), places = 5)
+		self.assertAlmostEqual(0.0, math.fabs(math.sin(kaldi_math.exp(kaldi_math.M_LOG_2PI))), places = 5)
+		self.assertAlmostEqual(1.0, math.fabs(math.cos(kaldi_math.exp(kaldi_math.M_LOG_2PI))), places = 5)
 
 
 if __name__ == '__main__':

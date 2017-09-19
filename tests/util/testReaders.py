@@ -29,7 +29,7 @@ class _TestSequentialReaders(AuxMixin):
             os.remove(self.filename)
 
         # Reader into a file that does not exists
-        with self.assertRaises(OSError):
+        with self.assertRaises(IOError):
             reader = self.getImpl(self.rspecifier)
 
         # Touch file
@@ -208,7 +208,7 @@ class _TestRandomAccessReaders(AuxMixin):
             os.remove(self.filename)
 
         # Reading a non-existant file raises an exception
-        with self.assertRaises(OSError):
+        with self.assertRaises(IOError):
             reader = self.getImpl(self.rspecifier)
             self.assertIsNotNone(reader)
 
