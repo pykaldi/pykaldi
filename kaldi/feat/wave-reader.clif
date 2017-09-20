@@ -5,30 +5,31 @@ from "feat/wave-reader.h":
   namespace `kaldi`:
 
     class WaveData:
-      """This class is to read in Wave files."""
+      """This class represents a Wave file."""
 
       @add__init__
-      def `WaveData` as New(self, samp_freq:float, data:Matrix)
+      def `WaveData` as new(self, samp_freq:float, data:Matrix)
 
-      def Data(self) -> Matrix:
-        """
-          Wrapper function for :kaldi:`kaldi::WaveData::Data`
-          This function returns the wave data-- 
-          it's in a matrix because there may be multiple channels.
-          In the normal case there's just one channel so Data() will have one row.
+      def `Data` as data(self) -> Matrix:
+        """Wrapper function for :kaldi:`kaldi::WaveData::Data`.
+
+        This method returns the wave data. Data is a matrix because there may
+        be multiple channels. In the normal case there is just one channel so
+        the returned matrix will have just one row.
 
         Returns:
           :class:`kaldi.matrix.Matrix` with the wave data.
         """
         return construct_matrix(...)
 
-      def SampFreq(self) -> float
+      samp_freq: float = property(`SampFreq`)
+      """Sampling frequency"""
 
-      def Duration(self) -> float:
-        """Returns the duration in seconds."""
+      duration: float = property(`Duration`)
+      """Duration in seconds."""
 
-      def CopyFrom(self, other:WaveData)
+      def `CopyFrom` as copy_from(self, other:WaveData)
 
-      def Clear(self)
+      def `Clear` as clear(self)
 
-      def Swap(self, other:WaveData)
+      def `Swap` as swap(self, other:WaveData)
