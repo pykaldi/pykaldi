@@ -7,8 +7,8 @@ from "matrix/kaldi-matrix.h":
     class `MatrixBase<float>` as MatrixBase:
       """Base class for Matrix"""
 
-      _num_rows: int = property(`NumRows`)
-      _num_cols: int = property(`NumCols`)
+      num_rows: int = property(`NumRows`)
+      num_cols: int = property(`NumCols`)
       _stride: int = property(`Stride`)
             
       def `SizeInBytes` as size_in_bytes(self) -> int:
