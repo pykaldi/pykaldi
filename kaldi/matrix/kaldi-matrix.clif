@@ -386,7 +386,7 @@ from "matrix/kaldi-matrix.h":
       # Need C++ wrappers for this
       #
       def `DestructiveSvd` as destructive_svd(self, s: VectorBase, U: MatrixBase,
-                         Vt: MatrixBase)
+                         Vt: MatrixBase):
         """Singular value decomposition for NONSQUARE matrices.
              We assume num_rows >= num_cols, and we return the "skinny" Svd,
              i.e. the matrix in the middle is diagonal, and the one on the left
@@ -409,7 +409,7 @@ from "matrix/kaldi-matrix.h":
               by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
         """
       
-      def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
+      def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
         """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
              transposed; the normal formulation is U diag(s) V^T. Null pointers
              for U or V mean we don't want that output (this saves computation time).
@@ -423,7 +423,7 @@ from "matrix/kaldi-matrix.h":
                               will be filled with the U part of SVD
         """
       
-      def `Svd` as SingularValues(self, s: VectorBase)
+      def `Svd` as SingularValues(self, s: VectorBase):
         """Compute SVD but only retain the singular values.
       
           Args:
@@ -1195,7 +1195,7 @@ from "matrix/kaldi-matrix.h":
       """
 
     def `CreateEigenvalueMatrix` as create_eigenvalue_matrix(real:VectorBase, imag:VectorBase,
-                                D:MatrixBase)
+                                D:MatrixBase):
       """Creates the eigenvalue matrix D that is part of the decomposition used in eig.
          D will be block-diagonal with blocks of size 1 (for real eigenvalues) or 2x2
          for complex pairs. If a complex pair is lambda +- i*mu, D will have a corresponding
@@ -1626,7 +1626,7 @@ from "matrix/kaldi-matrix.h":
       # Need C++ wrappers for this
       #
       def `DestructiveSvd` as destructive_svd(self, s: VectorBase, U: MatrixBase,
-                           Vt: MatrixBase)
+                           Vt: MatrixBase):
         """Singular value decomposition for NONSQUARE matrices.
              We assume num_rows >= num_cols, and we return the "skinny" Svd,
              i.e. the matrix in the middle is diagonal, and the one on the left
@@ -1649,7 +1649,7 @@ from "matrix/kaldi-matrix.h":
               by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
         """
       
-      def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase)
+      def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
         """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
              transposed; the normal formulation is U diag(s) V^T. Null pointers
              for U or V mean we don't want that output (this saves computation time).
@@ -1663,7 +1663,7 @@ from "matrix/kaldi-matrix.h":
                               will be filled with the U part of SVD
         """
       
-      def `Svd` as SingularValues(self, s: VectorBase)
+      def `Svd` as SingularValues(self, s: VectorBase):
         """Compute SVD but only retain the singular values.
       
           Args:
@@ -2366,7 +2366,7 @@ from "matrix/kaldi-matrix.h":
       """
 
     def `CreateEigenvalueMatrix` as create_eigenvalue_double_matrix(real:VectorBase, imag:VectorBase,
-                                D:MatrixBase)
+                                D:MatrixBase):
       """Creates the eigenvalue matrix D that is part of the decomposition used in eig.
          D will be block-diagonal with blocks of size 1 (for real eigenvalues) or 2x2
          for complex pairs. If a complex pair is lambda +- i*mu, D will have a corresponding
