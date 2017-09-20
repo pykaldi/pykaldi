@@ -212,7 +212,6 @@ class MatrixBase(object):
               the left side of the assignment:
                 >>> m[:,0:4:2] = m[:,1:4:2]
         """
-        from . import vector as _vector
         ret = self.numpy().__getitem__(index)
         if isinstance(ret, numpy.float32):
             return float(ret)
@@ -220,6 +219,7 @@ class MatrixBase(object):
             if ret.ndim == 2:
                 return SubMatrix(ret)
             elif ret.ndim == 1:
+                from . import vector as _vector
                 return _vector.SubVector(ret)
             else:
                 raise ValueError("indexing operation returned a numpy array "
