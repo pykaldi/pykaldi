@@ -7,45 +7,45 @@ from "gmm/am-diag-gmm.h":
   namespace `kaldi`:
     class AmDiagGmm:
 
-      def Init(self, proto: DiagGmm, num_pdfs: int)
+      def `Init` as init(self, proto: DiagGmm, num_pdfs: int)
 
-      def AddPdf(self, gmm: DiagGmm)
+      def `AddPdf` as add_pdf(self, gmm: DiagGmm)
 
-      def CopyFromAmDiagGmm(self, other: AmDiagGmm)
+      def `CopyFromAmDiagGmm` as copy_from_am_diag(self, other: AmDiagGmm)
 
-      def SplitPdf(self, idx: int, target_components: int,
+      def `SplitPdf` as split_pdf(self, idx: int, target_components: int,
                    perturb_factor: float)
 
-      def SplitByCount(self, state_occs: Vector, target_components: int,
+      def `SplitByCount` as split_by_count(self, state_occs: Vector, target_components: int,
                        perturb_factor: float, power: float, min_count: float)
 
-      def MergeByCount(self, state_occs: Vector, target_components: int,
+      def `MergeByCount` as merge_by_count(self, state_occs: Vector, target_components: int,
                        power: float, min_count: float)
 
-      def ComputeGconsts(self) -> int
+      def `ComputeGconsts` as compute_gconsts(self) -> int
 
-      def LogLikelihood(self, pdf_index: int, data: VectorBase) -> float
+      def `LogLikelihood` as log_likelihood(self, pdf_index: int, data: VectorBase) -> float
 
-      def Read(self, is: istream, binary: bool)
-      def Write(self, os: ostream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int
 
-      def NumPdfs(self) -> int
+      def `NumPdfs` as num_pdfs(self) -> int
 
-      def NumGauss(self) -> int
+      def `NumGauss` as num_gauss(self) -> int
 
-      def NumGaussInPdf(self, pdf_index: int) -> int
+      def `NumGaussInPdf` as num_gauss_in_pdf(self, pdf_index: int) -> int
 
       # FIXME: Add a work around wrapper
       # def GetPdf(self, pdf_index: int) -> DiagGmm
 
-      def GetGaussianMean(self, pdf_index: int, gauss: int, out: VectorBase)
+      def `GetGaussianMean` as get_gaussian_mean(self, pdf_index: int, gauss: int, out: VectorBase)
 
-      def GetGaussianVariance(self, pdf_index: int, gauss: int,
+      def `GetGaussianVariance` as get_gaussian_variance(self, pdf_index: int, gauss: int,
                               out: VectorBase)
 
-      def SetGaussianMean(self, pdf_index: int, gauss: int, in: VectorBase)
+      def `SetGaussianMean` as set_gaussian_mean(self, pdf_index: int, gauss: int, in: VectorBase)
 
     class UbmClusteringOptions:
       ubm_num_gauss: int
@@ -54,9 +54,9 @@ from "gmm/am-diag-gmm.h":
       cluster_varfloor: float
       max_am_gauss: int
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
-      def Check(self)
+      def `Check` as check(self)
 
-    def ClusterGaussiansToUbm(am: AmDiagGmm, state_occs: Vector,
+    def `ClusterGaussiansToUbm` as cluster_gaussians_to_ubm(am: AmDiagGmm, state_occs: Vector,
                               opts: UbmClusteringOptions, ubm_out: DiagGmm)

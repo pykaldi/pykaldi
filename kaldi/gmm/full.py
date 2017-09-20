@@ -28,7 +28,7 @@ class FullGmm(_full_gmm.FullGmm):
         if nmix < 0 or dim < 0:
             raise ValueError("nmix and dimension must be a positive integer.")
         if nmix > 0 and dim > 0:
-            self.Resize(nmix, dim)
+            self.resize(nmix, dim)
 
     def copy(self, src):
         """Copies data from src into this FullGmm and returns this FullGmm.
@@ -40,9 +40,9 @@ class FullGmm(_full_gmm.FullGmm):
             This FullGmm after update.
         """
         if isinstance(src, FullGmm):
-            self.CopyFromFullGmm(src)
+            self.copy_from_full(src)
         elif isinstance(src, DiagGmm):
-            CopyFromDiagGmm(self, src)
+            copy_from_diag(self, src)
         else:
             raise ValueError("src must be either FullGmm or DiagGmm")
         return self
@@ -65,11 +65,11 @@ class FullGmm(_full_gmm.FullGmm):
         Raises:
             ValueError if data is not consistent with this components dimension.
         """
-        if data.size() != self.Dim():
+        if data.size() != self.dim():
             raise ValueError("data point is not consistent with the component "
                              "dimension.")
-        posteriors = Vector(self.NumGauss())
-        loglike = self.ComponentPosteriors(data, posteriors)
+        posteriors = Vector(self.num_gauss())
+        loglike = self._component_posteriors(data, posteriors)
         return loglike, posteriors
 
     def weights(self):
@@ -86,14 +86,14 @@ class FullGmm(_full_gmm.FullGmm):
         """
         if not isinstance(weights, Vector):
             weights = Vector.new(weights)
-        self._SetWeights(weights)
+        self._set_weights(weights)
 
     def means(self):
         """
         Returns:
             Component means
         """
-        return SubMatrix(Matrix.new(self.GetMeans()))
+        return SubMatrix(Matrix.new(self.get_means()))
 
     def set_means(self, means):
         """
@@ -102,14 +102,14 @@ class FullGmm(_full_gmm.FullGmm):
         """
         if not isinstance(means, Matrix):
             means = Matrix.new(means)
-        self._SetMeans(means)
+        self._set_means(means)
 
     def covars(self):
         """
         Returns:
             Component Co-variances
         """
-        return self.GetCovars()
+        return self.get_covars()
 
 
 ################################################################################

@@ -24,7 +24,7 @@ class DiagGmm(_diag_gmm.DiagGmm):
         if nmix < 0 or dim < 0:
             raise ValueError("nmix and dimension must be a positive integer.")
         if nmix > 0 and dim > 0:
-            self.Resize(nmix, dim)
+            self.resize(nmix, dim)
 
     def copy(self, src):
         """Copies data from src into this DiagGmm and returns this DiagGmm.
@@ -36,9 +36,9 @@ class DiagGmm(_diag_gmm.DiagGmm):
             This DiagGmm after update.
         """
         if isinstance(src, FullGmm):
-            self.CopyFromFullGmm(src)
+            self.copy_from_full(src)
         elif isinstance(src, DiagGmm):
-            self.CopyFromDiagGmm(src)
+            self.copy_from_diag(src)
         else:
             raise ValueError("src must be either FullGmm or DiagGmm")
         return self

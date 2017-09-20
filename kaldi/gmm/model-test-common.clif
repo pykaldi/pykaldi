@@ -10,10 +10,10 @@ from "gmm/model-test-common.h":
 
 			# def RandPosdefSpMatrix(dim:int, matrix: SpMatrix, matrix_sqrt:TpMatrix = default, logdet:float = default)
 
-			def RandDiagGaussFeatures(num_samples:int, mean:VectorBase, sqrt_var:VectorBase, feats: MatrixBase)
+			def `RandDiagGaussFeatures` as rand_diag_gauss_features(num_samples:int, mean:VectorBase, sqrt_var:VectorBase, feats: MatrixBase)
 
-			def RandFullGaussFeatures(num_samples: int, mean:VectorBase, sqrt_var:TpMatrix, feats: MatrixBase)
+			def `RandFullGaussFeatures` as rand_full_gauss_features(num_samples: int, mean:VectorBase, sqrt_var:TpMatrix, feats: MatrixBase)
 
-			def InitRandDiagGmm(dim:int, num_comp:int, gmm:DiagGmm)
+			def `InitRandDiagGmm` as init_rand_diag(dim:int, num_comp:int, gmm:DiagGmm)
 
-			def InitRandFullGmm(dim: int, num_comp:int, gmm:FullGmm)
+			def `InitRandFullGmm` as init_rand_full(dim: int, num_comp:int, gmm:FullGmm)

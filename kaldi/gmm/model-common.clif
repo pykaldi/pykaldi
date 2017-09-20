@@ -9,11 +9,11 @@ from "gmm/model-common.h":
             `kGmmTransitions` as TRANSITIONS
             `kGmmAll` as ALL 
 
-        def StringToGmmFlags(s:str) -> GmmUpdateFlags
+        def `StringToGmmFlags` as string_to_gmm_flags(s:str) -> GmmUpdateFlags
 
-        def GmmFlagsToString(gmm_flags: GmmUpdateFlags) -> str 
+        def `GmmFlagsToString` as gmm_flags_to_string(gmm_flags: GmmUpdateFlags) -> str 
 
-        def AugmentGmmFlags(gmm_flags: GmmUpdateFlags) -> GmmUpdateFlags
+        def `AugmentGmmFlags` as augment_gmm_flags(gmm_flags: GmmUpdateFlags) -> GmmUpdateFlags
 
         enum SgmmUpdateFlags with:
             `kSgmmPhoneVectors` as PHONE_VECTORS
@@ -26,7 +26,7 @@ from "gmm/model-common.h":
             `kSgmmSpeakerWeightProjections` as SPEAKER_WEIGHT_PROJECTIONS 
             `kSgmmAll` as ALL 
 
-        def StringToSgmmUpdateFlags(s:str) -> SgmmUpdateFlags
+        def `StringToSgmmUpdateFlags` as string_to_sgmm_update_flags(s:str) -> SgmmUpdateFlags
 
         enum SgmmWriteFlags with:
             `kSgmmGlobalParams` as GLOBAL_PARAMS
@@ -35,6 +35,6 @@ from "gmm/model-common.h":
             `kSgmmBackgroundGmms` as BACKGROUND_GMMS
             `kSgmmWriteAll` as WRITE_ALL
 
-        def StringToSgmmWriteFlags(s:str) -> SgmmWriteFlags
+        def `StringToSgmmWriteFlags` as string_to_sgmm_write_flags(s:str) -> SgmmWriteFlags
 
-        def GetSplitTargets(state_occs: Vector, target_components: int, power:float, min_count: float) -> list<int>
+        def `GetSplitTargets` as get_split_targets(state_occs: Vector, target_components: int, power:float, min_count: float) -> list<int>

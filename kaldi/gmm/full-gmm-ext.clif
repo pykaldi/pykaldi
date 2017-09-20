@@ -3,4 +3,4 @@ from "gmm/diag-gmm-clifwrap.h" import *
 
 from "gmm/full-gmm-ext.h":
 	namespace `kaldi`:
-		def CopyFromDiagGmm(self: FullGmm, diaggmm:DiagGmm)
+		def `CopyFromDiagGmm` as copy_from_diag(self: FullGmm, diaggmm:DiagGmm)

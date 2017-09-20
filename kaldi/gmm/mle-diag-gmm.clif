@@ -13,55 +13,55 @@ from "gmm/mle-diag-gmm.h":
             min_variance: float 
             remove_low_count_gaussians: bool
 
-            def Register(self, opts: OptionsItf)
+            def `Register` as register(self, opts: OptionsItf)
 
         class MapDiagGmmOptions:
             mean_tau: float
             variance_tau: float 
             weight_tau: float 
 
-            def Register(self, opts: OptionsItf)
+            def `Register` as register(self, opts: OptionsItf)
 
         class AccumDiagGmm:
             @add__init__
-            def `AccumDiagGmm` as New(self, gmm: DiagGmm, flags: int)
+            def `AccumDiagGmm` as new(self, gmm: DiagGmm, flags: int)
 
             @add__init__
-            def `AccumDiagGmm` as WithOther(self, other: AccumDiagGmm)
+            def `AccumDiagGmm` as with_other(self, other: AccumDiagGmm)
 
-            def Read(self, in_stream: istream, binary: bool, add: bool)
+            def `Read` as read(self, in_stream: istream, binary: bool, add: bool)
 
-            def Write(self, out_stream: ostream, binary: bool)
+            def `Write` as write(self, out_stream: ostream, binary: bool)
 
-            def `Resize` as Resize(self, num_gauss: int, dim: int, flags: int)
+            def `Resize` as resize(self, num_gauss: int, dim: int, flags: int)
 
-            def `Resize` as ResizeWithGmm(self, gmm:DiagGmm, flags: int)
+            def `Resize` as resize_with_gmm(self, gmm:DiagGmm, flags: int)
 
-            def NumGauss(self) -> int 
+            def `NumGauss` as num_gauss(self) -> int 
 
-            def Dim(self) -> int 
+            def `Dim` as dim(self) -> int 
 
-            def SetZero(self, flags: int)
+            def `SetZero` as set_zero(self, flags: int)
 
-            def Scale(self, f: float, flags: int)
+            def `Scale` as scale(self, f: float, flags: int)
 
-            def AccumulateForComponent(self, data: VectorBase, comp_index: int, weight: float)
+            def `AccumulateForComponent` as accumulate_for_component(self, data: VectorBase, comp_index: int, weight: float)
 
-            def AccumulateFromPosteriors(self, data: VectorBase, gauss_posteriors: VectorBase)
+            def `AccumulateFromPosteriors` as accumulate_from_posteriors(self, data: VectorBase, gauss_posteriors: VectorBase)
 
-            def AccumulateFromDiag(self, gmm: DiagGmm, data: VectorBase, frame_posterior: float) -> float
+            def `AccumulateFromDiag` as accumulate_from_diag(self, gmm: DiagGmm, data: VectorBase, frame_posterior: float) -> float
 
-            def AccumulateFromDiagMultiThreaded(self, gmm: DiagGmm, data: MatrixBase, frame_weights: VectorBase, num_threads: int) -> float 
+            def `AccumulateFromDiagMultiThreaded` as accumulate_from_diag_multi_threaded(self, gmm: DiagGmm, data: MatrixBase, frame_weights: VectorBase, num_threads: int) -> float 
 
-            def AddStatsForComponent(self, comp_id: int, occ: float, x_stats: DoubleVectorBase, x2_stats: DoubleVectorBase)
+            def `AddStatsForComponent` as add_stats_for_component(self, comp_id: int, occ: float, x_stats: DoubleVectorBase, x2_stats: DoubleVectorBase)
 
-            def Add(self, scale: float, acc: AccumDiagGmm)
+            def `Add` as add(self, scale: float, acc: AccumDiagGmm)
 
-            def SmoothStats(self, tau: float)
+            def `SmoothStats` as smooth_stats(self, tau: float)
 
-            def SmoothWithAccum(self, tau: float, src_acc: AccumDiagGmm)
+            def `SmoothWithAccum` as smooth_with_accum(self, tau: float, src_acc: AccumDiagGmm)
 
-            def SmoothWithModel(self, tau: float, src_gmm: DiagGmm)
+            def `SmoothWithModel` as smooth_with_model(self, tau: float, src_gmm: DiagGmm)
 
             flags_: int = property(`Flags`)
 
@@ -70,9 +70,9 @@ from "gmm/mle-diag-gmm.h":
             # mean_accumulator_: DoubleMatrixBase = property(`mean_accumulator`)
             # variance_accumulator_: DoubleMatrixBase = property(`variance_accumulator`)
 
-            def AssertEqual(self, other: AccumDiagGmm)
+            def `AssertEqual` as assert_equal(self, other: AccumDiagGmm)
 
-        def AugmentGmmFlags(f: int) -> int 
+        def `AugmentGmmFlags` as augment_gmm_flags(f: int) -> int 
 
         # def MleDiagGmmUpdate(self, config: MleDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out:float, count_out: float, floored_elements_out: int = default, floored_gauss_out: int = default, removed_gauss_out: int = default)
 

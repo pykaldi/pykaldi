@@ -6,13 +6,13 @@ import numpy as np
 
 from kaldi.base import math as kaldi_math
 from kaldi.matrix import MatrixTransposeType, Matrix, Vector
+from kaldi.matrix.packed import SpMatrix, TpMatrix, vec_sp_vec
+from kaldi.gmm.common import GmmUpdateFlags
 from kaldi.gmm.diag import DiagGmm
 from kaldi.gmm.full import FullGmm
+from kaldi.gmm.full_normal import *
 from kaldi.gmm._model_test_common import *
-from kaldi.gmm.full_normal import FullGmmNormal
-from kaldi.gmm.mle_full import AccumFullGmm, MleFullGmmOptions, MleFullGmmUpdate
-from kaldi.gmm.common import GmmUpdateFlags
-from kaldi.matrix.packed import SpMatrix, TpMatrix, vec_sp_vec
+from kaldi.gmm.mle_full import AccumFullGmm, MleFullGmmOptions, mle_full_gmm_update
 
 def RandPosdefSpMatrix(dim):
     """
@@ -41,7 +41,7 @@ def RandPosdefSpMatrix(dim):
     return matrix, matrix_sqrt, logdet_out
 
 def init_rand_diag_gmm(gmm):
-    num_comp, dim = gmm.NumGauss(), gmm.Dim()
+    num_comp, dim = gmm.num_gauss(), gmm.dim()
     weights = Vector.new([kaldi_math.rand_uniform() for _ in range(num_comp)])
     tot_weigth = weights.sum()
 
@@ -51,10 +51,10 @@ def init_rand_diag_gmm(gmm):
     means = Matrix.new([[kaldi_math.rand_gauss() for _ in range(dim)] for _ in range(num_comp)])
     vars_ = Matrix.new([[kaldi_math.exp(kaldi_math.rand_gauss()) for _ in range(dim)] for _ in range(num_comp)])
     vars_.invert_elements()
-    gmm.SetWeights(weights)
-    gmm.SetInvVarsAndMeans(vars_, means)
-    gmm.Perturb(0.5 * kaldi_math.rand_uniform())
-    gmm.ComputeGconsts()
+    gmm.set_weights(weights)
+    gmm.set_inv_vars_and_means(vars_, means)
+    gmm.perturb(0.5 * kaldi_math.rand_uniform())
+    gmm.compute_gconsts()
 
 class TestFullGmm(unittest.TestCase):
 
@@ -65,17 +65,17 @@ class TestFullGmm(unittest.TestCase):
         num_frames = 5000
         feats = Matrix(num_frames, dim)
 
-        InitRandFullGmm(dim, num_comp, fgmm)
-        fgmm_normal = FullGmmNormal.NewWithOther(fgmm)
-        fgmm_normal.Rand(feats)
+        init_rand_full(dim, num_comp, fgmm)
+        fgmm_normal = FullGmmNormal.new_with_other(fgmm)
+        fgmm_normal.rand(feats)
 
-        acc = AccumFullGmm.NewWithFull(fgmm, GmmUpdateFlags.ALL)
+        acc = AccumFullGmm.new_with_full(fgmm, GmmUpdateFlags.ALL)
         for t in range(num_frames):
-            acc.AccumulateFromFull(fgmm, feats[t,:], 1.0)
+            acc.accumulate_from_full(fgmm, feats[t,:], 1.0)
 
         opts = MleFullGmmOptions()
 
-        objf_change, count = MleFullGmmUpdate(opts, acc, GmmUpdateFlags.ALL, fgmm)
+        objf_change, count = mle_full_gmm_update(opts, acc, GmmUpdateFlags.ALL, fgmm)
         change = objf_change / count
         num_params = num_comp * (dim + 1 + (dim * (dim + 1)/2))
         predicted_change = 0.5 * num_params / num_frames
@@ -122,8 +122,8 @@ class TestFullGmm(unittest.TestCase):
         # new Gmm
         gmm = FullGmm(nMix, dim)
         gmm.set_weights(weights)
-        gmm.SetInvCovarsAndMeans(invcovars, means)
-        gmm.ComputeGconsts()
+        gmm.set_inv_covars_and_means(invcovars, means)
+        gmm.compute_gconsts()
 
         loglike1, posterior1 = gmm.component_posteriors(feat)
 
@@ -137,63 +137,63 @@ class TestFullGmm(unittest.TestCase):
             invcovars_bak[i].invert_double()
 
         # Set all params one-by-one to new model
-        gmm2 = FullGmm(gmm.NumGauss(), gmm.Dim())
+        gmm2 = FullGmm(gmm.num_gauss(), gmm.dim())
         gmm2.set_weights(weights_bak)
         gmm2.set_means(means_bak)
         gmm2.inv_covars_ = invcovars_bak
-        gmm2.ComputeGconsts()
+        gmm2.compute_gconsts()
 
-        loglike_gmm2 = gmm2.LogLikelihood(feat)
+        loglike_gmm2 = gmm2.log_likelihood(feat)
         self.assertAlmostEqual(loglike1, loglike_gmm2, delta = 0.01)
 
-        loglikes = gmm2.LogLikelihoods(feat)
+        loglikes = gmm2.log_likelihoods(feat)
         self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2)
 
-        indices = list(range(gmm2.NumGauss()))
-        loglikes = gmm2.LogLikelihoodsPreselect(feat, indices)
+        indices = list(range(gmm2.num_gauss()))
+        loglikes = gmm2.log_likelihoods_preselect(feat, indices)
         self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2)
 
         # Simple component mean accessor + mutator
-        gmm3 = FullGmm(gmm.NumGauss(), gmm.Dim())
+        gmm3 = FullGmm(gmm.num_gauss(), gmm.dim())
         gmm3.set_weights(weights_bak)
         means_bak.set_zero()
         for i in range(nMix):
-            gmm.GetComponentMean(i, means_bak[i,:])
+            gmm.get_component_mean(i, means_bak[i,:])
         gmm3.set_means(means_bak)
         gmm3.inv_covars_ = invcovars_bak
-        gmm3.ComputeGconsts()
+        gmm3.compute_gconsts()
 
-        loglike_gmm3 = gmm3.LogLikelihood(feat)
+        loglike_gmm3 = gmm3.log_likelihood(feat)
         self.assertAlmostEqual(loglike1, loglike_gmm3, delta = 0.01)
 
-        gmm4 = FullGmm(gmm.NumGauss(), gmm.Dim())
+        gmm4 = FullGmm(gmm.num_gauss(), gmm.dim())
         gmm4.set_weights(weights_bak)
-        invcovars_bak, means_bak = gmm.GetCovarsAndMeans()
+        invcovars_bak, means_bak = gmm.get_covars_and_means()
         for i in range(nMix):
             invcovars_bak[i].invert_double()
-        gmm4.SetInvCovarsAndMeans(invcovars_bak, means_bak)
-        gmm4.ComputeGconsts()
-        loglike_gmm4 = gmm4.LogLikelihood(feat)
+        gmm4.set_inv_covars_and_means(invcovars_bak, means_bak)
+        gmm4.compute_gconsts()
+        loglike_gmm4 = gmm4.log_likelihood(feat)
         self.assertAlmostEqual(loglike1, loglike_gmm4, delta = 0.01)
 
         # TODO: I/O tests
 
         # CopyFromFullGmm
         gmm4 = FullGmm()
-        gmm4.CopyFromFullGmm(gmm)
+        gmm4.copy_from_full(gmm)
         loglike5, _ = gmm4.component_posteriors(feat)
         self.assertAlmostEqual(loglike, loglike5, delta = 0.01)
 
         # CopyFromDiag
         gmm_diag = DiagGmm(nMix, dim)
         init_rand_diag_gmm(gmm_diag)
-        loglike_diag = gmm_diag.LogLikelihood(feat)
+        loglike_diag = gmm_diag.log_likelihood(feat)
 
         gmm_full = FullGmm().copy(gmm_diag)
-        loglike_full = gmm_full.LogLikelihood(feat)
+        loglike_full = gmm_full.log_likelihood(feat)
 
         gmm_diag2 = DiagGmm().copy(gmm_full)
-        loglike_diag2 = gmm_diag2.LogLikelihood(feat)
+        loglike_diag2 = gmm_diag2.log_likelihood(feat)
 
         self.assertAlmostEqual(loglike_diag, loglike_full, delta = 0.01)
         self.assertAlmostEqual(loglike_diag, loglike_diag2, delta = 0.01)
