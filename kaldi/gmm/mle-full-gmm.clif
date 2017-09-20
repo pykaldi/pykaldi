@@ -17,45 +17,45 @@ from "gmm/mle-full-gmm.h":
       max_condition: float 
       remove_low_count_gaussians: bool
 
-      def Register(self, opts:OptionsItf)
+      def `Register` as register(self, opts:OptionsItf)
 
     class AccumFullGmm:
       @add__init__
-      def `AccumFullGmm` as NewWithParams(self, num_comp:int, dim:int, flags:int)
+      def `AccumFullGmm` as new_with_params(self, num_comp:int, dim:int, flags:int)
 
       @add__init__
-      def `AccumFullGmm` as NewWithFull(self, gmm:FullGmm, flags:int)
+      def `AccumFullGmm` as new_with_full(self, gmm:FullGmm, flags:int)
 
       @add__init__
-      def `AccumFullGmm` as NewWithOther(self, gmm:AccumFullGmm)
+      def `AccumFullGmm` as new_with_other(self, gmm:AccumFullGmm)
 
       # TODO:
       # def Read
       # def Write
 
-      def `Resize` as Resize(self, num_comp:int, dim:int, flags:int)
+      def `Resize` as resize(self, num_comp:int, dim:int, flags:int)
 
-      def `Resize` as ResizeWithFull(self, gmm:FullGmm, flags:int)
+      def `Resize` as resize_with_full(self, gmm:FullGmm, flags:int)
 
-      def ResizeVarAccumulator(self, num_comp:int, dim:int)
+      def `ResizeVarAccumulator` as resize_var_accumulator(self, num_comp:int, dim:int)
 
-      def NumGauss(self) -> int 
+      def `NumGauss` as num_gauss(self) -> int 
 
-      def Dim(self) -> int 
+      def `Dim` as dim(self) -> int 
 
-      def SetZero(self, flags:int)
+      def `SetZero` as set_zero(self, flags:int)
 
-      def Scale(self, f:float, flags:int)
+      def `Scale` as scale(self, f:float, flags:int)
 
-      def AccumulateForComponent(self, data:VectorBase, comp_index:int, weight:float)
+      def `AccumulateForComponent` as accumulate_for_component(self, data:VectorBase, comp_index:int, weight:float)
 
-      def AccumulateFromPosteriors(self, data:VectorBase, gauss_posteriors:VectorBase)
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self, data:VectorBase, gauss_posteriors:VectorBase)
 
-      def AccumulateFromFull(self, gmm:FullGmm, data:VectorBase, frame_posterior:float) -> float 
+      def `AccumulateFromFull` as accumulate_from_full(self, gmm:FullGmm, data:VectorBase, frame_posterior:float) -> float 
 
-      def AccumulateFromDiag(self, gmm:DiagGmm, data:VectorBase, frame_posterior:float) -> float 
+      def `AccumulateFromDiag` as accumulate_from_diag(self, gmm:DiagGmm, data:VectorBase, frame_posterior:float) -> float 
 
-      def Flags(self) -> int 
+      def `Flags` as flags(self) -> int 
 
       def occupancy(self) -> DoubleVector
 
@@ -63,4 +63,4 @@ from "gmm/mle-full-gmm.h":
 
       def covariance_accumulator(self) -> list<DoubleSpMatrix>
 
-    def MleFullGmmUpdate(config:MleFullGmmOptions, fullgmm_acc:AccumFullGmm, flags:int, gmm:FullGmm) -> (obj_change_out: float, count_out: float)
+    def `MleFullGmmUpdate` as mle_full_gmm_update(config:MleFullGmmOptions, fullgmm_acc:AccumFullGmm, flags:int, gmm:FullGmm) -> (obj_change_out: float, count_out: float)

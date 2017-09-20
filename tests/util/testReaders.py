@@ -120,7 +120,7 @@ class TestSequentialWaveReader(_TestSequentialReaders, unittest.TestCase, WaveEx
         k, m = pair 
         if idx == 0:
             self.assertTrue("one", k)
-            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.Data().numpy()))
+            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.data().numpy()))
         else:
             self.fail("shouldn't happen")
 
@@ -289,7 +289,7 @@ class TestRandomAccessMatrixReader(_TestRandomAccessReaders, unittest.TestCase, 
 
 class TestRandomAccessWaveReader(_TestRandomAccessReaders, unittest.TestCase, WaveExampleMixin):
     def checkRead(self, reader):
-        self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].Data().numpy()))
+        self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].data().numpy()))
     
 class TestRandomAccessIntReader(_TestRandomAccessReaders, unittest.TestCase, IntExampleMixin):
     def checkRead(self, reader):

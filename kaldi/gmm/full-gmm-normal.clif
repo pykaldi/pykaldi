@@ -13,13 +13,13 @@ from "gmm/full-gmm-normal.h":
       vars_:list<DoubleSpMatrix>
 
       @add__init__
-      def `FullGmmNormal` as NewWithOther(self, gmm:FullGmm)
+      def `FullGmmNormal` as new_with_other(self, gmm:FullGmm)
 
-      def Resize(self, nMix:int, dim: int)
+      def `Resize` as resize(self, nMix:int, dim: int)
 
-      def CopyFromFullGmm(self, fullgmm:FullGmm)
+      def `CopyFromFullGmm` as copy_from_full(self, fullgmm:FullGmm)
 
-      def CopyToFullGmm(self, fullgmm:FullGmm, flags: int = default)
+      def `CopyToFullGmm` as copy_to_full(self, fullgmm:FullGmm, flags: int = default)
 
-      def Rand(self, feats:MatrixBase)
+      def `Rand` as rand(self, feats:MatrixBase)
 
