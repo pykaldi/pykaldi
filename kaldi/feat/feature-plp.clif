@@ -18,7 +18,7 @@ from "feat/feature-plp.h":
       cepstral_scale: float
       htk_compat: bool
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class PlpComputer:
       def __init__(self, opts: PlpOptions)
@@ -26,11 +26,13 @@ from "feat/feature-plp.h":
       @add__init__
       def `PlpComputer` as from_other(self, other: PlpComputer)
 
-      def GetFrameOptions(self) -> FrameExtractionOptions
+      def `GetFrameOptions` as get_frame_options(self)
+          -> FrameExtractionOptions
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int
 
-      def NeedRawLogEnergy(self) -> bool
+      def `NeedRawLogEnergy` as need_raw_log_energy(self) -> bool
 
-      def Compute(self, signal_log_energy: float, vtln_warp: float,
-                  signal_frame: VectorBase, feature: VectorBase)
+      def `Compute` as compute(self, signal_log_energy: float,
+                               vtln_warp: float, signal_frame: VectorBase,
+                               feature: VectorBase)
