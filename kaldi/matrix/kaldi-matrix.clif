@@ -364,7 +364,7 @@ from "matrix/kaldi-matrix.h":
             P(MatrixBase): Will store the P part of PDP^{-1} decomposition
             eigs_real(VectorBase): Will store the real part of the eigenvalues
             eigs_imga(VectorBase): Will store the imaginary part of the eigenvalues
-       """
+        """
 
       def `Power` as power(self, pow: float) -> bool:
         """The Power method attempts to take the matrix to a power
@@ -375,61 +375,61 @@ from "matrix/kaldi-matrix.h":
              leave the matrix unchanged, if at entry the matrix had real negative
              eigenvalues (or if it had zero eigenvalues and the power was negative).
 
-          Args:
-              pow(float): The power which we will apply
+        Args:
+            pow(float): The power which we will apply
 
-          Returns:
-              True if operation was successful
+        Returns:
+            True if operation was successful
         """
 
       # FIXME_U(pavlos):
       # Need C++ wrappers for this
       #
-      def `DestructiveSvd` as destructive_svd(self, s: VectorBase, U: MatrixBase,
-                         Vt: MatrixBase):
-        """Singular value decomposition for NONSQUARE matrices.
-             We assume num_rows >= num_cols, and we return the "skinny" Svd,
-             i.e. the matrix in the middle is diagonal, and the one on the left
-             is rectangular. In Svd, self = U*diag(S)*Vt. Null pointers for U and/or
-             Vt at input mean we do not want that output. We expect that
-             S.dim == num_rows, U is either NULL or num_rows by num_cols,
-             and V is either NULL or num_cols by num_cols. The singular values are
-             not sorted (use SortSvd for that). Note that Vt is the transpose of V.
-      
-          Args:
-              s(VectorBase): A vector of length num_rows of self.
-                             It must be that s.dim = self.num_cols
-              U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
-                             will be filled with the U part of SVD
-              Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
-                              will be filled with the U part of SVD
-      
-          Raises:
-              Error if self.num_rows<self.num_cols, or if U is not self.num_rows
-              by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
-        """
-      
-      def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
-        """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
-             transposed; the normal formulation is U diag(s) V^T. Null pointers
-             for U or V mean we don't want that output (this saves computation time).
-             The singular values are not sorted (use SortSvd for that).
-      
-          Args:
-              s(VectorBase): A vector of length min(self.num_rows, self.num_cols)
-              U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
-                             will be filled with the U part of SVD
-              Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
-                              will be filled with the U part of SVD
-        """
-      
-      def `Svd` as SingularValues(self, s: VectorBase):
-        """Compute SVD but only retain the singular values.
-      
-          Args:
-              s(VectorBase): The vector where the singular values of self will be stored.
-                             Its length must be min(self.num_rows, self.num_cols)
-        """
+      #def `DestructiveSvd` as destructive_svd(self, s: VectorBase, U: MatrixBase,
+      #                   Vt: MatrixBase):
+      #  """Singular value decomposition for NONSQUARE matrices.
+      #       We assume num_rows >= num_cols, and we return the "skinny" Svd,
+      #       i.e. the matrix in the middle is diagonal, and the one on the left
+      #       is rectangular. In Svd, self = U*diag(S)*Vt. Null pointers for U and/or
+      #       Vt at input mean we do not want that output. We expect that
+      #       S.dim == num_rows, U is either NULL or num_rows by num_cols,
+      #       and V is either NULL or num_cols by num_cols. The singular values are
+      #       not sorted (use SortSvd for that). Note that Vt is the transpose of V.
+      #
+      #  Args:
+      #      s(VectorBase): A vector of length num_rows of self.
+      #                     It must be that s.dim = self.num_cols
+      #      U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
+      #                     will be filled with the U part of SVD
+      #      Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
+      #                      will be filled with the U part of SVD
+      #
+      #  Raises:
+      #      Error if self.num_rows<self.num_cols, or if U is not self.num_rows
+      #        by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
+      #  """
+      #
+      #def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
+      #  """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
+      #       transposed; the normal formulation is U diag(s) V^T. Null pointers
+      #       for U or V mean we don't want that output (this saves computation time).
+      #       The singular values are not sorted (use SortSvd for that).
+      #
+      #  Args:
+      #      s(VectorBase): A vector of length min(self.num_rows, self.num_cols)
+      #      U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
+      #                     will be filled with the U part of SVD
+      #      Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
+      #                      will be filled with the U part of SVD
+      #  """
+      #
+      #def `Svd` as SingularValues(self, s: VectorBase):
+      #  """Compute SVD but only retain the singular values.
+      #
+      #  Args:
+      #      s(VectorBase): The vector where the singular values of self will be stored.
+      #                     Its length must be min(self.num_rows, self.num_cols)
+      #  """
 
       def `MinSingularValue` as min_singular_value(self) -> float:
         """Returns the smallest singular value."""
@@ -577,10 +577,10 @@ from "matrix/kaldi-matrix.h":
       # FIXME(pavlos):
       # This needs a C++ wrapper
       #
-      def `GroupMaxDeriv` as groupmaxderiv(self, input: MatrixBase, output: MatrixBase):
-        """See Also:
-             :kaldi:`kaldi::GroupMaxDeriv`
-        """
+      # def `GroupMaxDeriv` as groupmaxderiv(self, input: MatrixBase, output: MatrixBase):
+      #   """See Also:
+      #        :kaldi:`kaldi::GroupMaxDeriv`
+      #   """
 
       def `Tanh` as tanh(self, src: MatrixBase):
         """Set each element to the tanh of the corresponding element of src.
@@ -592,24 +592,23 @@ from "matrix/kaldi-matrix.h":
               Error in case of dimension mismatch
         """
 
-      # FIXME(pavlos):
-      # This needs a C++ wrapper
-    
-      def `DiffSigmoid` as diff_sigmoid(self, value: MatrixBase, diff: MatrixBase):
-        """See Also:
-             :kaldi:`kaldi::DiffSigmoid`
-        """
+      # FIXME_U(pavlos):
+      # These needs a C++ wrapper 
+      # def `DiffSigmoid` as diff_sigmoid(self, value: MatrixBase, diff: MatrixBase):
+      #   """See Also:
+      #        :kaldi:`kaldi::DiffSigmoid`
+      #   """
 
-      def `DiffTanh` as diff_tanh(self, value: MatrixBase, diff: MatrixBase):
-        """See Also:
-             :kaldi:`kaldi::DiffTanh`
-        """
+      # def `DiffTanh` as diff_tanh(self, value: MatrixBase, diff: MatrixBase):
+      #   """See Also:
+      #        :kaldi:`kaldi::DiffTanh`
+      #   """
     
-      def `SymPosSemiDefEig` as sym_pos_semi_def_eig(self, s: VectorBase, P: MatrixBase,
-                          check_thresh: float = default):
-        """See Also:
-             :kaldi:`kaldi::SysPoseSemiDefEig`
-        """
+      # def `SymPosSemiDefEig` as sym_pos_semi_def_eig(self, s: VectorBase, P: MatrixBase,
+      #                     check_thresh: float = default):
+      #   """See Also:
+      #        :kaldi:`kaldi::SysPoseSemiDefEig`
+      #   """
 
       def `Add` as add(self, alpha: float):
         """Add a scalar alpha to each element of the matrix.
@@ -1181,17 +1180,17 @@ from "matrix/kaldi-matrix.h":
          to be applicable to other types of problems. s->Dim() should be the same as U->NumCols(),
          and we sort s from greatest to least absolute value (if sort_on_absolute_value == true)
          or greatest to least value otherwise, moving the columns of U, if it exists, and the
-         rows of Vt, if it exists, around in the same way. Note: the "absolute value" part won't
+         rows of Vt, if it exists, around in the same way. Note: the ``absolute value'' part won't
          matter if this is an actual SVD, since singular values are non-negative.
          Makes sure the Svd is sorted (from greatest to least absolute value).
 
-         Args:
-             s(VectorBase): The singular values. SVD is U*diag(s)*Vt.
-             U(MatrixBase): The U part of SVD 
-             Vt(MatrixBase): The Vt part of SVD
+      Args:
+          s(VectorBase): The singular values. SVD is U*diag(s)*Vt.
+          U(MatrixBase): The U part of SVD 
+          Vt(MatrixBase): The Vt part of SVD
             
-         Raises:
-             Error if s.size != U.num_cols
+      Raises:
+          Error if s.size != U.num_cols
       """
 
     def `CreateEigenvalueMatrix` as create_eigenvalue_matrix(real:VectorBase, imag:VectorBase,
@@ -1203,14 +1202,14 @@ from "matrix/kaldi-matrix.h":
          eigenvalues are not in complex conjugate pairs (or the members of such pairs are 
          not consecutively numbered). The D you supply must has correct dimensions.
 
-       Args:
-           real(VectorBase): The real part of the eigenvalues
-           imag(VectorBase): The imaginary part of the eigenvalues
-           D(MatrixBase): Will store the eigenvalue matrix
+      Args:
+          real(VectorBase): The real part of the eigenvalues
+          imag(VectorBase): The imaginary part of the eigenvalues
+          D(MatrixBase): Will store the eigenvalue matrix
 
-       Raises:
-           Error if real.size != imag.size and if D is not the appropriate size. 
-       """
+      Raises:
+          Error if real.size != imag.size and if D is not the appropriate size. 
+      """
     
     # FIXME_U(pavlos): This needs C++ wrappers
 #    def AttemptComplexPower(x_re:float, x_im:float, power:float) -> bool
@@ -1234,12 +1233,12 @@ from "matrix/kaldi-matrix.h":
     def `SameDim` as same_dim_matrix(M: MatrixBase, N: MatrixBase) -> bool:
       """Checks if M and N have the same dimensions.
 
-        Args:
-            M(MatrixBase): A matrix
-            N(MatrixBase): A matrix
+      Args:
+          M(MatrixBase): A matrix
+          N(MatrixBase): A matrix
 
-        Returns:
-            True if M.num_rows==N.num_rows && M.num_cols==N.num_cols
+      Returns:
+          True if M.num_rows==N.num_rows && M.num_cols==N.num_cols
       """
 
     class `MatrixBase<double>` as DoubleMatrixBase:
@@ -1625,51 +1624,51 @@ from "matrix/kaldi-matrix.h":
       # FIXME(pavlos):
       # Need C++ wrappers for this
       #
-      def `DestructiveSvd` as destructive_svd(self, s: VectorBase, U: MatrixBase,
-                           Vt: MatrixBase):
-        """Singular value decomposition for NONSQUARE matrices.
-             We assume num_rows >= num_cols, and we return the "skinny" Svd,
-             i.e. the matrix in the middle is diagonal, and the one on the left
-             is rectangular. In Svd, self = U*diag(S)*Vt. Null pointers for U and/or
-             Vt at input mean we do not want that output. We expect that
-             S.dim == num_rows, U is either NULL or num_rows by num_cols,
-             and V is either NULL or num_cols by num_cols. The singular values are
-             not sorted (use SortSvd for that). Note that Vt is the transpose of V.
-      
-          Args:
-              s(VectorBase): A vector of length num_rows of self.
-                             It must be that s.dim = self.num_cols
-              U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
-                             will be filled with the U part of SVD
-              Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
-                              will be filled with the U part of SVD
-      
-          Raises:
-              Error if self.num_rows<self.num_cols, or if U is not self.num_rows
-              by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
-        """
-      
-      def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
-        """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
-             transposed; the normal formulation is U diag(s) V^T. Null pointers
-             for U or V mean we don't want that output (this saves computation time).
-             The singular values are not sorted (use SortSvd for that).
-      
-          Args:
-              s(VectorBase): A vector of length min(self.num_rows, self.num_cols)
-              U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
-                             will be filled with the U part of SVD
-              Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
-                              will be filled with the U part of SVD
-        """
-      
-      def `Svd` as SingularValues(self, s: VectorBase):
-        """Compute SVD but only retain the singular values.
-      
-          Args:
-              s(VectorBase): The vector where the singular values of self will be stored.
-                             Its length must be min(self.num_rows, self.num_cols)
-        """
+      # def `DestructiveSvd` as destructive_svd(self, s: VectorBase, U: MatrixBase,
+      #                      Vt: MatrixBase):
+      #   """Singular value decomposition for NONSQUARE matrices.
+      #        We assume num_rows >= num_cols, and we return the "skinny" Svd,
+      #        i.e. the matrix in the middle is diagonal, and the one on the left
+      #        is rectangular. In Svd, self = U*diag(S)*Vt. Null pointers for U and/or
+      #        Vt at input mean we do not want that output. We expect that
+      #        S.dim == num_rows, U is either NULL or num_rows by num_cols,
+      #        and V is either NULL or num_cols by num_cols. The singular values are
+      #        not sorted (use SortSvd for that). Note that Vt is the transpose of V.
+      # 
+      #   Args:
+      #       s(VectorBase): A vector of length num_rows of self.
+      #                      It must be that s.dim = self.num_cols
+      #       U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
+      #                      will be filled with the U part of SVD
+      #       Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
+      #                       will be filled with the U part of SVD
+      # 
+      #   Raises:
+      #       Error if self.num_rows<self.num_cols, or if U is not self.num_rows
+      #       by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
+      #   """
+      # 
+      # def `Svd` as svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
+      #   """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
+      #        transposed; the normal formulation is U diag(s) V^T. Null pointers
+      #        for U or V mean we don't want that output (this saves computation time).
+      #        The singular values are not sorted (use SortSvd for that).
+      # 
+      #   Args:
+      #       s(VectorBase): A vector of length min(self.num_rows, self.num_cols)
+      #       U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
+      #                      will be filled with the U part of SVD
+      #       Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
+      #                       will be filled with the U part of SVD
+      #   """
+      # 
+      # def `Svd` as SingularValues(self, s: VectorBase):
+      #   """Compute SVD but only retain the singular values.
+      # 
+      #     Args:
+      #         s(VectorBase): The vector where the singular values of self will be stored.
+      #                        Its length must be min(self.num_rows, self.num_cols)
+      #   """
 
       def `MinSingularValue` as min_singular_value(self) -> float:
         """Returns the smallest singular value."""
@@ -1806,10 +1805,10 @@ from "matrix/kaldi-matrix.h":
       # FIXME(pavlos):
       # This needs a C++ wrapper
       #
-      def `GroupMaxDeriv` as group_max_deriv(self, input: MatrixBase, output: MatrixBase)
-        """See Also:
-          :kaldi:`kaldi::GroupMaxDeriv`
-      """
+      # def `GroupMaxDeriv` as group_max_deriv(self, input: MatrixBase, output: MatrixBase):
+      #   """See Also:
+      #     :kaldi:`kaldi::GroupMaxDeriv`
+      #   """
 
       def `Tanh` as tanh(self, src: DoubleMatrixBase):
         """Set each element to the tanh of the corresponding element of src.
@@ -1821,23 +1820,23 @@ from "matrix/kaldi-matrix.h":
             Error in case of dimension mismatch
         """
 
-      # FIXME(pavlos):
+      # FIXME_U(pavlos):
       # These needs a C++ wrapper
-      def `DiffSigmoid` as diff_sigmoid(self, value: MatrixBase, diff: MatrixBase):
-        """See Also:
-             :kaldi:`kaldi::DiffSigmoid`
-        """
+      # def `DiffSigmoid` as diff_sigmoid(self, value: MatrixBase, diff: MatrixBase):
+      #   """See Also:
+      #        :kaldi:`kaldi::DiffSigmoid`
+      #   """
 
-      def `DiffTanh` as diff_tanh(self, value: MatrixBase, diff: MatrixBase):
-        """See Also:
-             :kaldi:`kaldi::DiffTanh`
-        """
+      # def `DiffTanh` as diff_tanh(self, value: MatrixBase, diff: MatrixBase):
+      #   """See Also:
+      #        :kaldi:`kaldi::DiffTanh`
+      #   """
     
-      def `SymPosSemiDefEig` as sym_pos_semi_def_eig(self, s: VectorBase, P: MatrixBase,
-                          check_thresh: float = default):
-        """See Also:
-             :kaldi:`kaldi::SysPoseSemiDefEig`
-        """
+      # def `SymPosSemiDefEig` as sym_pos_semi_def_eig(self, s: VectorBase, P: MatrixBase,
+      #                     check_thresh: float = default):
+      #   """See Also:
+      #        :kaldi:`kaldi::SysPoseSemiDefEig`
+      #   """
 
       def `Add` as add(self, alpha: float):
         """Add a scalar alpha to each element of the matrix.
@@ -2311,8 +2310,8 @@ from "matrix/kaldi-matrix.h":
       """
 
     def `ApproxEqual` as approx_equal_double_matrix(
-        A:DoubleMatrixBase, B:DoubleMatrixBase,
-        tol:`double` as float = default) -> bool:
+         A:DoubleMatrixBase, B:DoubleMatrixBase,
+         tol:`double` as float = default) -> bool:
       """Computes the Frobenius norm of the difference of matrix A and B
            and returns True if it is less or equal than tol.
 
@@ -2352,17 +2351,17 @@ from "matrix/kaldi-matrix.h":
          to be applicable to other types of problems. s->Dim() should be the same as U->NumCols(),
          and we sort s from greatest to least absolute value (if sort_on_absolute_value == true)
          or greatest to least value otherwise, moving the columns of U, if it exists, and the
-         rows of Vt, if it exists, around in the same way. Note: the "absolute value" part won't
+         rows of Vt, if it exists, around in the same way. Note: the ``absolute value'' part won't
          matter if this is an actual SVD, since singular values are non-negative.
          Makes sure the Svd is sorted (from greatest to least absolute value).
 
-         Args:
-             s(VectorBase): The singular values. SVD is U*diag(s)*Vt.
-             U(MatrixBase): The U part of SVD 
-             Vt(MatrixBase): The Vt part of SVD
+      Args:
+          s(VectorBase): The singular values. SVD is U*diag(s)*Vt.
+          U(MatrixBase): The U part of SVD 
+          Vt(MatrixBase): The Vt part of SVD
             
-         Raises:
-             Error if s.size != U.num_cols
+      Raises:
+          Error if s.size != U.num_cols
       """
 
     def `CreateEigenvalueMatrix` as create_eigenvalue_double_matrix(real:VectorBase, imag:VectorBase,
@@ -2374,14 +2373,14 @@ from "matrix/kaldi-matrix.h":
          eigenvalues are not in complex conjugate pairs (or the members of such pairs are 
          not consecutively numbered). The D you supply must has correct dimensions.
 
-       Args:
-           real(VectorBase): The real part of the eigenvalues
-           imag(VectorBase): The imaginary part of the eigenvalues
-           D(MatrixBase): Will store the eigenvalue matrix
+      Args:
+          real(VectorBase): The real part of the eigenvalues
+          imag(VectorBase): The imaginary part of the eigenvalues
+          D(MatrixBase): Will store the eigenvalue matrix
 
-       Raises:
+      Raises:
            Error if real.size != imag.size and if D is not the appropriate size. 
-       """
+      """
 
 
     def `SameDim` as same_dim_double_matrix(M: DoubleMatrixBase,
@@ -2397,10 +2396,10 @@ from "matrix/kaldi-matrix.h":
       """
 
     class HtkHeader:
-        mNSamples: int
-        mSamplePeriod: int
-        mSampleSize: int
-        mSampleKind: int
+      mNSamples: int
+      mSamplePeriod: int
+      mSampleSize: int
+      mSampleKind: int
 
     def `ReadHtk` as read_htk(is: istream, M: Matrix, header: HtkHeader) -> bool
 
