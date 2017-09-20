@@ -5,6 +5,8 @@ from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
 
+from kaldi.matrix import construct_matrix
+
 from "feat/feature-common-ext.h":
   namespace `kaldi`:
     class `SpectrogramOfflineFeatureTpl` as Spectrogram:
@@ -17,12 +19,15 @@ from "feat/feature-common-ext.h":
       def `SpectrogramOfflineFeatureTpl` as from_other(self,
                                                        other: Spectrogram)
 
-      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
+          -> Matrix:
+        return construct_matrix(...)
 
-      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
-                          vtnl_warp: float) -> Matrix
+      def `ComputeFeatures` as compute_features(self,
+          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        return construct_matrix(...)
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int
 
     class `MfccOfflineFeatureTpl` as Mfcc:
       # Additional dummy argument was added for resolving the difficulty CLIF
@@ -33,12 +38,15 @@ from "feat/feature-common-ext.h":
       @add__init__
       def `MfccOfflineFeatureTpl` as from_other(self, other: Mfcc)
 
-      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
+          -> Matrix:
+        return construct_matrix(...)
 
-      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
-                          vtnl_warp: float) -> Matrix
+      def `ComputeFeatures` as compute_features(self,
+          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        return construct_matrix(...)
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int
 
     class `PlpOfflineFeatureTpl` as Plp:
       # Additional dummy argument was added for resolving the difficulty CLIF
@@ -49,12 +57,15 @@ from "feat/feature-common-ext.h":
       @add__init__
       def `PlpOfflineFeatureTpl` as from_other(self, other: Plp)
 
-      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
+          -> Matrix:
+        return construct_matrix(...)
 
-      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
-                          vtnl_warp: float) -> Matrix
+      def `ComputeFeatures` as compute_features(self,
+          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        return construct_matrix(...)
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int
 
     class `FbankOfflineFeatureTpl` as Fbank:
       # Additional dummy argument was added for resolving the difficulty CLIF
@@ -65,9 +76,12 @@ from "feat/feature-common-ext.h":
       @add__init__
       def `FbankOfflineFeatureTpl` as from_other(self, other: Fbank)
 
-      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
+          -> Matrix:
+        return construct_matrix(...)
 
-      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
-                          vtnl_warp: float) -> Matrix
+      def `ComputeFeatures` as compute_features(self,
+          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        return construct_matrix(...)
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int

@@ -12,7 +12,7 @@ from . import _kaldi_matrix_ext
 from . import _matrix_ext
 from ._matrix_ext import matrix_to_numpy
 from . import _str
-from . import vector as _vector
+
 
 ################################################################################
 # Define Matrix Classes
@@ -212,6 +212,7 @@ class MatrixBase(object):
               the left side of the assignment:
                 >>> m[:,0:4:2] = m[:,1:4:2]
         """
+        from . import vector as _vector
         ret = self.numpy().__getitem__(index)
         if isinstance(ret, numpy.float32):
             return float(ret)
@@ -231,6 +232,7 @@ class MatrixBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
+        from . import vector as _vector
         if isinstance(value, (MatrixBase, _vector.VectorBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:

@@ -12,7 +12,6 @@ from ._kaldi_vector_ext import vec_mat_vec
 from . import _matrix_ext
 from ._matrix_ext import vector_to_numpy
 from . import _str
-from . import matrix as _matrix
 
 ################################################################################
 # Define Vector Classes
@@ -524,6 +523,7 @@ class VectorBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
+        from . import matrix as _matrix
         if isinstance(value, (VectorBase, _matrix.MatrixBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:

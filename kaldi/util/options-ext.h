@@ -27,8 +27,11 @@ class SimpleOptionsExt : public SimpleOptions {
 
 class ParseOptionsExt : public ParseOptions {
  public:
-  explicit ParseOptionsExt(const std::string &usage)
-      : ParseOptions(usage.c_str()) { }
+  // This constructor accepts a usage string and moves its contents to the
+  // internal member usage_. This ensures that the char pointer passed to the
+  // base class stays alive as long as this ParseOptionsExt object is in scope.
+  explicit ParseOptionsExt(std::string usage)
+      : ParseOptions(usage.c_str()), usage_(std::move(usage)) {}
 
   ParseOptionsExt(const std::string &prefix, OptionsItf *other)
       : ParseOptions(prefix, other) { }
@@ -128,6 +131,7 @@ class ParseOptionsExt : public ParseOptions {
 
 private:
   Options options_;
+  std::string usage_;
 };
 
 }  // namespace kaldi
