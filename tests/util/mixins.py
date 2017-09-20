@@ -1,13 +1,13 @@
-import re 
+import re
 import os
 
 
 import kaldi.util
-from kaldi.matrix import Matrix 
+from kaldi.matrix import Matrix
 from kaldi.util.table import WaveWriter
 from kaldi.feat.wave import WaveData
 
-import numpy as np 
+import numpy as np
 
 ################################################################################################################
 # Auxiliary class that provides classname instanciation
@@ -60,7 +60,7 @@ class WaveExampleMixin:
     def writeExample(self, outpt):
         m = Matrix.new(np.arange(9).reshape((3, 3)))
         with WaveWriter('ark:/tmp/temp.ark') as writer:
-            writer['one'] = WaveData.New(1.0, m)
+            writer['one'] = WaveData.new(1.0, m)
 
 class IntExampleMixin:
     def writeExample(self, outpt):

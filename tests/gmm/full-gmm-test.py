@@ -5,20 +5,20 @@ import unittest
 import numpy as np
 
 from kaldi.base import math as kaldi_math
-from kaldi.matrix import *
-from kaldi.gmm import FullGmm, DiagGmm
-
+from kaldi.matrix import MatrixTransposeType, Matrix, Vector
+from kaldi.gmm.diag import DiagGmm
+from kaldi.gmm.full import FullGmm
 from kaldi.gmm._model_test_common import *
 from kaldi.gmm.full_normal import FullGmmNormal
 from kaldi.gmm.mle_full import AccumFullGmm, MleFullGmmOptions, MleFullGmmUpdate
 from kaldi.gmm.common import GmmUpdateFlags
-from kaldi.matrix.packed import VecSpVec
+from kaldi.matrix.packed import SpMatrix, TpMatrix, vec_sp_vec
 
 def RandPosdefSpMatrix(dim):
     """
     Generate random (non-singular) matrix
     Arguments:
-        dim - int 
+        dim - int
         matrix_sqrt - TpMatrix
         logdet - float
     Outputs:
@@ -26,34 +26,34 @@ def RandPosdefSpMatrix(dim):
     """
     while True:
         tmp = Matrix(dim, dim)
-        tmp.SetRandn()
-        if tmp.Cond() < 100: break
-        print("Condition number of random matrix large {}, trying again (this is normal)".format(tmp.Cond()))
+        tmp.set_randn()
+        if tmp.cond() < 100: break
+        print("Condition number of random matrix large {}, trying again (this is normal)".format(tmp.cond()))
 
     # tmp * tmp^T will give positive definite matrix
     matrix = SpMatrix(dim)
-    matrix.AddMat2(1.0, tmp, MatrixTransposeType.NO_TRANS, 0.0)
+    matrix.add_mat2(1.0, tmp, MatrixTransposeType.NO_TRANS, 0.0)
 
     matrix_sqrt = TpMatrix(len(matrix))
-    matrix_sqrt = matrix_sqrt.Cholesky(matrix)
-    logdet_out = matrix.LogPosDefDet()
+    matrix_sqrt = matrix_sqrt.cholesky(matrix)
+    logdet_out = matrix.log_pos_def_det()
 
     return matrix, matrix_sqrt, logdet_out
 
 def init_rand_diag_gmm(gmm):
     num_comp, dim = gmm.NumGauss(), gmm.Dim()
-    weights = Vector.new([kaldi_math.RandUniform() for _ in range(num_comp)])
-    tot_weigth = weights.Sum()
+    weights = Vector.new([kaldi_math.rand_uniform() for _ in range(num_comp)])
+    tot_weigth = weights.sum()
 
     for i, m in enumerate(weights):
         weights[i] = m / tot_weigth
 
-    means = Matrix.new([[kaldi_math.RandGauss() for _ in range(dim)] for _ in range(num_comp)])
-    vars_ = Matrix.new([[kaldi_math.Exp(kaldi_math.RandGauss()) for _ in range(dim)] for _ in range(num_comp)])
-    vars_.InvertElements()
+    means = Matrix.new([[kaldi_math.rand_gauss() for _ in range(dim)] for _ in range(num_comp)])
+    vars_ = Matrix.new([[kaldi_math.exp(kaldi_math.rand_gauss()) for _ in range(dim)] for _ in range(num_comp)])
+    vars_.invert_elements()
     gmm.SetWeights(weights)
     gmm.SetInvVarsAndMeans(vars_, means)
-    gmm.Perturb(0.5 * kaldi_math.RandUniform())
+    gmm.Perturb(0.5 * kaldi_math.rand_uniform())
     gmm.ComputeGconsts()
 
 class TestFullGmm(unittest.TestCase):
@@ -72,11 +72,11 @@ class TestFullGmm(unittest.TestCase):
         acc = AccumFullGmm.NewWithFull(fgmm, GmmUpdateFlags.ALL)
         for t in range(num_frames):
             acc.AccumulateFromFull(fgmm, feats[t,:], 1.0)
-        
+
         opts = MleFullGmmOptions()
 
         objf_change, count = MleFullGmmUpdate(opts, acc, GmmUpdateFlags.ALL, fgmm)
-        change = objf_change / count 
+        change = objf_change / count
         num_params = num_comp * (dim + 1 + (dim * (dim + 1)/2))
         predicted_change = 0.5 * num_params / num_frames
 
@@ -90,36 +90,36 @@ class TestFullGmm(unittest.TestCase):
 
         print("Testing NumGauss: {}, Dim: {}".format(nMix, dim))
 
-        feat = Vector.new([kaldi_math.RandGauss() for _ in range(dim)])
-        weights = Vector.new([kaldi_math.RandUniform() for _ in range(nMix)])
-        tot_weigth = weights.Sum()
+        feat = Vector.new([kaldi_math.rand_gauss() for _ in range(dim)])
+        weights = Vector.new([kaldi_math.rand_uniform() for _ in range(nMix)])
+        tot_weigth = weights.sum()
 
         for i, m in enumerate(weights):
             weights[i] = m / tot_weigth
 
-        means = Matrix.new([[kaldi_math.RandGauss() for _ in range(dim)] for _ in range(nMix)])
+        means = Matrix.new([[kaldi_math.rand_gauss() for _ in range(dim)] for _ in range(nMix)])
 
         invcovars = [SpMatrix(dim) for _ in range(nMix)]
         covars_logdet = []
         for _ in range(nMix):
             c, matrix_sqrt, logdet_out = RandPosdefSpMatrix(dim)
-            invcovars[_].CopyFromSp(c)
-            invcovars[_].InvertDouble()
+            invcovars[_].copy_from_sp(c)
+            invcovars[_].invert_double()
             covars_logdet.append(logdet_out)
 
         # Calculate loglike for feature Vector
         def auxLogLike(w, logdet, mean_row, invcovar):
             return -0.5 * ( kaldi_math.M_LOG_2PI * dim \
                           + logdet \
-                          + VecSpVec(mean_row, invcovar, mean_row) \
-                          + VecSpVec(feat, invcovar, feat)) \
-                    + VecSpVec(mean_row, invcovar, feat) \
+                          + vec_sp_vec(mean_row, invcovar, mean_row) \
+                          + vec_sp_vec(feat, invcovar, feat)) \
+                    + vec_sp_vec(mean_row, invcovar, feat) \
                     + np.log(w)
 
         loglikes = [auxLogLike(weights[m], covars_logdet[m], means[m, :], invcovars[m]) for m in range(nMix)]
-        loglike = Vector.new(loglikes).LogSumExp()
+        loglike = Vector.new(loglikes).log_sum_exp()
 
-        # new Gmm 
+        # new Gmm
         gmm = FullGmm(nMix, dim)
         gmm.set_weights(weights)
         gmm.SetInvCovarsAndMeans(invcovars, means)
@@ -128,13 +128,13 @@ class TestFullGmm(unittest.TestCase):
         loglike1, posterior1 = gmm.component_posteriors(feat)
 
         self.assertAlmostEqual(loglike, loglike1, delta = 0.01)
-        self.assertAlmostEqual(1.0, posterior1.Sum(), delta = 0.01)
+        self.assertAlmostEqual(1.0, posterior1.sum(), delta = 0.01)
 
         weights_bak = gmm.weights()
         means_bak = gmm.means()
         invcovars_bak = gmm.covars()
         for i in range(nMix):
-            invcovars_bak[i].InvertDouble()
+            invcovars_bak[i].invert_double()
 
         # Set all params one-by-one to new model
         gmm2 = FullGmm(gmm.NumGauss(), gmm.Dim())
@@ -147,16 +147,16 @@ class TestFullGmm(unittest.TestCase):
         self.assertAlmostEqual(loglike1, loglike_gmm2, delta = 0.01)
 
         loglikes = gmm2.LogLikelihoods(feat)
-        self.assertAlmostEqual(loglikes.LogSumExp(), loglike_gmm2)
+        self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2)
 
         indices = list(range(gmm2.NumGauss()))
         loglikes = gmm2.LogLikelihoodsPreselect(feat, indices)
-        self.assertAlmostEqual(loglikes.LogSumExp(), loglike_gmm2)
+        self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2)
 
         # Simple component mean accessor + mutator
         gmm3 = FullGmm(gmm.NumGauss(), gmm.Dim())
         gmm3.set_weights(weights_bak)
-        means_bak.SetZero()
+        means_bak.set_zero()
         for i in range(nMix):
             gmm.GetComponentMean(i, means_bak[i,:])
         gmm3.set_means(means_bak)
@@ -170,7 +170,7 @@ class TestFullGmm(unittest.TestCase):
         gmm4.set_weights(weights_bak)
         invcovars_bak, means_bak = gmm.GetCovarsAndMeans()
         for i in range(nMix):
-            invcovars_bak[i].InvertDouble()
+            invcovars_bak[i].invert_double()
         gmm4.SetInvCovarsAndMeans(invcovars_bak, means_bak)
         gmm4.ComputeGconsts()
         loglike_gmm4 = gmm4.LogLikelihood(feat)

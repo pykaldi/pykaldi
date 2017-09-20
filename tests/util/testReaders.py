@@ -1,9 +1,9 @@
 from __future__ import division
 import unittest
-import numpy as np 
+import numpy as np
 
 from kaldi.matrix import *
-import kaldi.util 
+import kaldi.util
 
 from mixins import *
 import os
@@ -21,7 +21,7 @@ class _TestSequentialReaders(AuxMixin):
             self.assertFalse(reader.is_open())
             self.assertFalse(reader.done())
 
-        with self.assertRaises(RuntimeError): 
+        with self.assertRaises(RuntimeError):
             reader.close()
 
         # Delete file in case it exists
@@ -34,7 +34,7 @@ class _TestSequentialReaders(AuxMixin):
 
         # Touch file
         open(self.filename, 'w').close()
-        
+
         reader = self.getImpl(self.rspecifier)
         self.assertTrue(reader.is_open())
         self.assertTrue(reader.done())
@@ -49,7 +49,7 @@ class _TestSequentialReaders(AuxMixin):
             with self.getImpl() as reader:
                 self.assertFalse(reader.is_open())
                 self.assertFalse(reader.done())
-                
+
             self.assertFalse(reader.is_open())
             self.assertFalse(reader.done())
 
@@ -58,11 +58,11 @@ class _TestSequentialReaders(AuxMixin):
 
         # Touch file
         open(self.filename, 'w').close()
-        
+
         with self.getImpl(self.rspecifier) as reader:
             self.assertTrue(reader.is_open())
             self.assertTrue(reader.done())
-        
+
         with self.assertRaises(RuntimeError):
             self.assertFalse(reader.is_open())
             self.assertTrue(reader.done())
@@ -87,7 +87,7 @@ class _TestSequentialReaders(AuxMixin):
 
 class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase, VectorExampleMixin):
     def checkRead(self, idx, pair):
-        k, v = pair 
+        k, v = pair
         if idx == 0:
             self.assertEqual("one", k)
             self.assertTrue(np.array_equal([3.0, 5.0, 7.0], v.numpy()))
@@ -102,7 +102,7 @@ class TestSequentialVectorReader(_TestSequentialReaders, unittest.TestCase, Vect
 
 class TestSequentialMatrixReader(_TestSequentialReaders, unittest.TestCase, MatrixExampleMixin):
     def checkRead(self, idx, pair):
-        k, m = pair 
+        k, m = pair
         if idx == 0:
             self.assertEqual("one", k)
             self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.numpy()))
@@ -117,10 +117,10 @@ class TestSequentialMatrixReader(_TestSequentialReaders, unittest.TestCase, Matr
 
 class TestSequentialWaveReader(_TestSequentialReaders, unittest.TestCase, WaveExampleMixin):
     def checkRead(self, idx, pair):
-        k, m = pair 
+        k, m = pair
         if idx == 0:
             self.assertTrue("one", k)
-            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.Data().numpy()))
+            self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), m.data().numpy()))
         else:
             self.fail("shouldn't happen")
 
@@ -145,7 +145,7 @@ class TestSequentialBoolReader(_TestSequentialReaders, unittest.TestCase, BoolEx
             self.assertTupleEqual(("three", False), pair)
         elif idx < 0 or idx > 2:
             self.fail("shouldn't happen")
-        
+
 class TestSequentialIntVectorReader(_TestSequentialReaders, unittest.TestCase, IntVectorExampleMixin):
     def checkRead(self, idx, pair):
         if idx == 0:
@@ -200,7 +200,7 @@ class _TestRandomAccessReaders(AuxMixin):
         self.assertIsNotNone(reader)
         self.assertFalse(reader.is_open())
 
-        with self.assertRaises(RuntimeError): 
+        with self.assertRaises(RuntimeError):
             reader.close()
 
         # Delete file in case it exists
@@ -217,7 +217,7 @@ class _TestRandomAccessReaders(AuxMixin):
 
         # Touch file
         open(self.filename, 'w').close()
-        
+
         reader = self.getImpl(self.rspecifier)
         self.assertTrue(reader.is_open())
 
@@ -225,7 +225,7 @@ class _TestRandomAccessReaders(AuxMixin):
         with self.assertRaises(RuntimeError):
             with self.getImpl() as reader:
                 self.assertFalse(reader.is_open())
-                
+
             self.assertFalse(reader.is_open())
 
         # Reset reader so that it doesnt by default pass the next ones
@@ -233,10 +233,10 @@ class _TestRandomAccessReaders(AuxMixin):
 
         # Touch file
         open(self.filename, 'w').close()
-        
+
         with self.getImpl(self.rspecifier) as reader:
             self.assertTrue(reader.is_open())
-        
+
         self.assertFalse(reader.is_open())
 
     def getValidKey(self):
@@ -268,7 +268,7 @@ class _TestRandomAccessReaders(AuxMixin):
         with open(self.filename, 'w') as outpt:
             self.writeExample(outpt)
 
-        # 
+        #
         self.checkRead(self.getImpl(self.rspecifier))
 
         # Check that the keys are strings
@@ -289,8 +289,8 @@ class TestRandomAccessMatrixReader(_TestRandomAccessReaders, unittest.TestCase, 
 
 class TestRandomAccessWaveReader(_TestRandomAccessReaders, unittest.TestCase, WaveExampleMixin):
     def checkRead(self, reader):
-        self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].Data().numpy()))
-    
+        self.assertTrue(np.array_equal(np.arange(9).reshape((3, 3)), reader["one"].data().numpy()))
+
 class TestRandomAccessIntReader(_TestRandomAccessReaders, unittest.TestCase, IntExampleMixin):
     def checkRead(self, reader):
         self.assertEqual(1, reader['one'])

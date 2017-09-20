@@ -3,7 +3,7 @@
 import random
 import unittest
 
-from kaldi.cudamatrix import *
+from kaldi.cudamatrix.matrix import ApproxEqualCuMatrix, CuMatrix
 from kaldi.matrix import Matrix, Vector
 from kaldi.matrix.vector import ApproxEqualVector
 from kaldi.nnet3 import *
@@ -120,14 +120,14 @@ class TestNnetCompute(unittest.TestCase):
         SetBatchnormTestMode(True, nnet)
         SetDropoutTestMode(True, nnet)
 
-        input.SetRandn()
+        input.set_randn()
         ivector = Vector(ivector_dim)
-        ivector.SetRandn()
+        ivector.set_randn()
 
         priors = Vector(output_dim if random.choice([True, False]) else 0)
         if len(priors) != 0:
-            priors.SetRandn()
-            priors.ApplyExp()
+            priors.set_randn()
+            priors.apply_exp()
 
         output1 = Matrix(num_frames, output_dim)
         output2 = Matrix(num_frames, output_dim)
