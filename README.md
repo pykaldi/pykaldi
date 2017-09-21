@@ -31,13 +31,13 @@ Examples
                                                    wave.samp_freq, 1.0)
    ```
 
-   See also: [MFCC computation script](examples/compute-mfcc-feats.py)
+   [compute-mfcc-feats.py](examples/compute-mfcc-feats.py) script
    that can be used as a drop in replacement for the
    [compute-mfcc-feats](https://github.com/kaldi-asr/kaldi/blob/master/src/featbin/compute-mfcc-feats.cc)
    binary in Kaldi.
 
-2. [Faster GMM decoding script](examples/gmm-decode-faster.py) that can be used
-   as a drop in replacement for the
+2. [gmm-decode-faster.py](examples/gmm-decode-faster.py) script
+   that can be used as a drop in replacement for the
    [gmm-decode-faster](https://github.com/kaldi-asr/kaldi/blob/master/src/gmmbin/gmm-decode-faster.cc)
    binary in Kaldi.
 
