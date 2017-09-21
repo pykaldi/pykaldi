@@ -32,12 +32,12 @@ Examples
    ```
 
    [compute-mfcc-feats.py](examples/compute-mfcc-feats.py) script
-   that can be used as a drop in replacement for the
+   can be used as a drop in replacement for the
    [compute-mfcc-feats](https://github.com/kaldi-asr/kaldi/blob/master/src/featbin/compute-mfcc-feats.cc)
    binary in Kaldi.
 
 2. [gmm-decode-faster.py](examples/gmm-decode-faster.py) script
-   that can be used as a drop in replacement for the
+   can be used as a drop in replacement for the
    [gmm-decode-faster](https://github.com/kaldi-asr/kaldi/blob/master/src/gmmbin/gmm-decode-faster.cc)
    binary in Kaldi.
 
