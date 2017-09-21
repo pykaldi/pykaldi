@@ -1,7 +1,5 @@
 PyKaldi
-===================================
-
-.. warning:: This is a pre-release version. Some features might not work yet.
+=======
 
 PyKaldi is a Python package that aims to provide a bridge between Kaldi and all
 the nice things Python has to offer. For example, you can use PyKaldi to read
@@ -10,15 +8,15 @@ with the native matrices and feed them to a neural network model in TensorFlow
 or PyTorch.
 
 Examples
--------------------
+--------
 
-#. Calculate MFCC features and write them to file:::
+1. Calculate MFCC features and write them to file.
 
-    from kaldi.feat import MfccOptions, Mfcc
-    from kaldi.util import *
+    from kaldi.feat.mfcc import MfccOptions, Mfcc
+    from kaldi.util.table import SequentialWaveReader, MatrixWriter
 
-    wav_rspecifier = "scp:~/pykaldi/tests/wav.scp"
-    mfcc_wspecifier = "ark,t:~/pykaldi/tests/mfcc.ark"
+    wav_rspecifier = "scp:wav.scp"
+    mfcc_wspecifier = "ark,t:mfcc.ark"
 
     opts = MfccOptions()
     opts.frame_opts.dither = 0.0
@@ -31,14 +29,21 @@ Examples
     with SequentialWaveReader(wav_rspecifier) as reader:
         with MatrixWriter(mfcc_wspecifier) as writer:
             for key, wave in reader:
-                writer[key] = mfcc.ComputeFeatures(wave.Data()[0],
-                                                   wave.SampFreq(), 1.0)
+                writer[key] = mfcc.compute_features(wave.data()[0],
+                                                    wave.samp_freq, 1.0)
 
-#. `Decode features using a GMM-based model
-<https://gist.github.com/vrmpx/ef3f889ece05cb26e3a60a52613e650f>`_
+   [MFCC computation script](examples/compute-mfcc-feats.py) that can be used
+   as a drop in replacement for the
+   [compute-mfcc-feats](https://github.com/kaldi-asr/kaldi/blob/master/src/featbin/compute-mfcc-feats.cc)
+   binary in Kaldi.
+
+2. [Faster GMM decoding script](examples/gmm-decode-faster.py) that can be used
+   as a drop in replacement for the
+   [gmm-decode-faster](https://github.com/kaldi-asr/kaldi/blob/master/src/gmmbin/gmm-decode-faster.cc)
+   binary in Kaldi.
 
 Features
--------------------
+--------
 - Seamless integration between your favorite Python code and Kaldi.
 - Beautiful visualization of decoder lattices.
 - Out-of-the-box integration with NumPy, sklearn, TensorFlow, PyTorch and more!
@@ -46,7 +51,7 @@ Features
 
 How is this possible?
 ---------------------
-PyKaldi harnesses the power of `CLIF <https://github.com/google/clif>`_. This
+PyKaldi harnesses the power of [CLIF](https://github.com/google/clif). This
 allows us to write simple API descriptions to wrap C++ headers without having
 to worry (*too much*) on how things are going to work. For more information,
 please refer to the developer's guide.
