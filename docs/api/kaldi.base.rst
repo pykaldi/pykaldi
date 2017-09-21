@@ -31,8 +31,8 @@ kaldi\.base\.io
 
    .. autosummary::
    
-      init_input_stream
-      init_output_stream
+      init_kaldi_input_stream
+      init_kaldi_output_stream
    
    
 

@@ -12,37 +12,42 @@ or PyTorch.
 Examples
 -------------------
 
-#. Calculate MFCC features and write them to file:::
+#. Read mono WAV files, compute MFCC features and write them to a Kaldi archive.:::
 
-    from kaldi.feat import MfccOptions, Mfcc
-    from kaldi.util import *
+    from kaldi.feat.mfcc import MfccOptions, Mfcc
+    from kaldi.util.table import SequentialWaveReader, MatrixWriter
 
-    wav_rspecifier = "scp:~/pykaldi/tests/wav.scp"
-    mfcc_wspecifier = "ark,t:~/pykaldi/tests/mfcc.ark"
+    wav_rspecifier = "scp:wav.scp"
+    mfcc_wspecifier = "ark,t:mfcc.ark"
 
     opts = MfccOptions()
-    opts.frame_opts.dither = 0.0
-    opts.frame_opts.preemph_coeff = 0.0
-    opts.frame_opts.round_to_power_of_two = True
     opts.use_energy = False
-
+    opts.frame_opts.dither = 0.0
     mfcc = Mfcc(opts)
 
     with SequentialWaveReader(wav_rspecifier) as reader:
         with MatrixWriter(mfcc_wspecifier) as writer:
             for key, wave in reader:
-                writer[key] = mfcc.ComputeFeatures(wave.Data()[0],
-                                                   wave.SampFreq(), 1.0)
+                writer[key] = mfcc.compute_features(wave.data()[0],
+                                                    wave.samp_freq, 1.0)
 
-#. `Decode features using a GMM-based model
-<https://gist.github.com/vrmpx/ef3f889ece05cb26e3a60a52613e650f>`_
+   `compute-mfcc-feats.py
+   <https://github.com/usc-sail/pykaldi/blob/master/examples/compute-mfcc-feats.py>`_
+   script can be used as a drop in replacement for the `compute-mfcc-feats
+   <https://github.com/kaldi-asr/kaldi/blob/master/src/featbin/compute-mfcc-feats.cc>`_
+   binary in Kaldi.
+
+#. `gmm-decode-faster.py
+   <https://github.com/usc-sail/pykaldi/blob/master/examples/gmm-decode-faster.py>`_
+   script can be used as a drop in replacement for the `gmm-decode-faster
+   <https://github.com/kaldi-asr/kaldi/blob/master/src/gmmbin/gmm-decode-faster.cc>`_
+   binary in Kaldi.
 
 Features
 -------------------
-- Seamless integration between your favorite Python code and Kaldi.
-- Beautiful visualization of decoder lattices.
-- Out-of-the-box integration with NumPy, sklearn, TensorFlow, PyTorch and more!
-- Supports both python 2.7 and 3.6.
+- Seamless integration between your favorite Python libraries (NumPy, PyTorch,
+  TensorFlow, sklearn and more!), Kaldi and OpenFst.
+- Support for Python 2 and 3.
 
 How is this possible?
 ---------------------
@@ -51,8 +56,7 @@ allows us to write simple API descriptions to wrap C++ headers without having
 to worry (*too much*) on how things are going to work. For more information,
 please refer to the developer's guide.
 
-Contents
---------
+
 .. toctree::
    :hidden:
 

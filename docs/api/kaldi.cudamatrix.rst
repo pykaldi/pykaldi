@@ -136,8 +136,8 @@ kaldi\.cudamatrix\.vector
 
    .. autosummary::
    
-      ApproxEqualCuVector
-      AssertEqualCuVector
+      approx_equal_cu_vector
+      assert_equal_cu_vector
    
    
 

@@ -25,7 +25,7 @@ kaldi\.gmm\.am\_diag
 
    .. autosummary::
    
-      ClusterGaussiansToUbm
+      cluster_gaussians_to_ubm
    
    
 
@@ -54,12 +54,12 @@ kaldi\.gmm\.common
 
    .. autosummary::
    
-      AugmentGmmFlags
-      GetSplitTargets
-      GmmFlagsToString
-      StringToGmmFlags
-      StringToSgmmUpdateFlags
-      StringToSgmmWriteFlags
+      augment_gmm_flags
+      get_split_targets
+      gmm_flags_to_string
+      string_to_gmm_flags
+      string_to_sgmm_update_flags
+      string_to_sgmm_write_flags
    
    
 
@@ -134,7 +134,7 @@ kaldi\.gmm\.full
 
    .. autosummary::
    
-      CopyFromDiagGmm
+      copy_from_diag
    
    
 
@@ -189,7 +189,7 @@ kaldi\.gmm\.mle\_diag
 
    .. autosummary::
    
-      AugmentGmmFlags
+      augment_gmm_flags
    
    
 
@@ -219,7 +219,7 @@ kaldi\.gmm\.mle\_full
 
    .. autosummary::
    
-      MleFullGmmUpdate
+      mle_full_gmm_update
    
    
 

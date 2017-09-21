@@ -102,10 +102,14 @@ kaldi\.matrix\.matrix
       assert_equal_double_matrix
       assert_equal_matrix
       construct_matrix
+      create_eigenvalue_double_matrix
+      create_eigenvalue_matrix
       matrix_to_numpy
       read_htk
       same_dim_double_matrix
       same_dim_matrix
+      sort_double_svd
+      sort_svd
       trace_double_mat
       trace_double_mat_mat
       trace_double_mat_mat_mat

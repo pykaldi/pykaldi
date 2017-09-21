@@ -25,17 +25,17 @@ kaldi\.util\.io
 
    .. autosummary::
    
-      ClassifyRxfilename
-      ClassifyWxfilename
-      PrintableRxfilename
-      PrintableWxfilename
-      ReadKaldiMatrix
-      ReadKaldiVector
-      WriteKaldiMatrix
-      WriteKaldiVector
+      classify_rxfilename
+      classify_wxfilename
       get_stderr
       get_stdin
       get_stdout
+      printable_rxfilename
+      printable_wxfilename
+      read_kaldi_matrix
+      read_kaldi_vector
+      write_kaldi_matrix
+      write_kaldi_vector
    
    
 
@@ -97,8 +97,8 @@ kaldi\.util\.table
 
    .. autosummary::
    
-      ReadScriptFile
-      WriteScriptFile
+      read_script_file
+      write_script_file
    
    
 
