@@ -43,10 +43,9 @@ Examples
 
 Features
 --------
-- Seamless integration between your favorite Python code and Kaldi.
-- Beautiful visualization of decoder lattices.
-- Out-of-the-box integration with NumPy, sklearn, TensorFlow, PyTorch and more!
-- Supports both python 2.7 and 3.6.
+- Seamless integration between your favorite Python libraries (NumPy, PyTorch,
+  TensorFlow, sklearn and more!), Kaldi and OpenFst.
+- Support for Python 2 and 3.
 
 How is this possible?
 ---------------------
