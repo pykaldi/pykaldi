@@ -10,7 +10,7 @@ or PyTorch.
 Examples
 --------
 
-1. Read WAV files, compute MFCC features and write them to a Kaldi archive.
+1. Read mono WAV files, compute MFCC features and write them to a Kaldi archive.
 
 ```python
 from kaldi.feat.mfcc import MfccOptions, Mfcc
@@ -20,11 +20,8 @@ wav_rspecifier = "scp:wav.scp"
 mfcc_wspecifier = "ark,t:mfcc.ark"
 
 opts = MfccOptions()
-opts.frame_opts.dither = 0.0
-opts.frame_opts.preemph_coeff = 0.0
-opts.frame_opts.round_to_power_of_two = True
 opts.use_energy = False
-
+opts.frame_opts.dither = 0.0
 mfcc = Mfcc(opts)
 
 with SequentialWaveReader(wav_rspecifier) as reader:
