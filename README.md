@@ -10,7 +10,7 @@ or PyTorch.
 Examples
 --------
 
-1. Calculate MFCC features and write them to file.
+1. Read WAV files, compute MFCC features and write them to a Kaldi archive.
 
 ```python
 from kaldi.feat.mfcc import MfccOptions, Mfcc
@@ -34,8 +34,8 @@ with SequentialWaveReader(wav_rspecifier) as reader:
                                                 wave.samp_freq, 1.0)
 ```
 
-   [MFCC computation script](examples/compute-mfcc-feats.py) that can be used
-   as a drop in replacement for the
+   See also: [MFCC computation script](examples/compute-mfcc-feats.py)
+   that can be used as a drop in replacement for the
    [compute-mfcc-feats](https://github.com/kaldi-asr/kaldi/blob/master/src/featbin/compute-mfcc-feats.cc)
    binary in Kaldi.
 
