@@ -12,25 +12,27 @@ Examples
 
 1. Calculate MFCC features and write them to file.
 
-    from kaldi.feat.mfcc import MfccOptions, Mfcc
-    from kaldi.util.table import SequentialWaveReader, MatrixWriter
+```python
+from kaldi.feat.mfcc import MfccOptions, Mfcc
+from kaldi.util.table import SequentialWaveReader, MatrixWriter
 
-    wav_rspecifier = "scp:wav.scp"
-    mfcc_wspecifier = "ark,t:mfcc.ark"
+wav_rspecifier = "scp:wav.scp"
+mfcc_wspecifier = "ark,t:mfcc.ark"
 
-    opts = MfccOptions()
-    opts.frame_opts.dither = 0.0
-    opts.frame_opts.preemph_coeff = 0.0
-    opts.frame_opts.round_to_power_of_two = True
-    opts.use_energy = False
+opts = MfccOptions()
+opts.frame_opts.dither = 0.0
+opts.frame_opts.preemph_coeff = 0.0
+opts.frame_opts.round_to_power_of_two = True
+opts.use_energy = False
 
-    mfcc = Mfcc(opts)
+mfcc = Mfcc(opts)
 
-    with SequentialWaveReader(wav_rspecifier) as reader:
-        with MatrixWriter(mfcc_wspecifier) as writer:
-            for key, wave in reader:
-                writer[key] = mfcc.compute_features(wave.data()[0],
-                                                    wave.samp_freq, 1.0)
+with SequentialWaveReader(wav_rspecifier) as reader:
+    with MatrixWriter(mfcc_wspecifier) as writer:
+        for key, wave in reader:
+            writer[key] = mfcc.compute_features(wave.data()[0],
+                                                wave.samp_freq, 1.0)
+```
 
    [MFCC computation script](examples/compute-mfcc-feats.py) that can be used
    as a drop in replacement for the
