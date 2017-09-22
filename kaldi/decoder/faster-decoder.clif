@@ -1,5 +1,4 @@
 from "itf/decodable-itf-clifwrap.h" import *
-from "matrix/kaldi-matrix-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
@@ -18,38 +17,54 @@ from "decoder/faster-decoder.h":
         """If 'full' use obscure options too."""
 
     class FasterDecoder:
+      """Faster Decoder."""
       def __init__(self, fst: StdFst, config: FasterDecoderOptions)
 
-      def `SetOptions` as set_options(self, config: FasterDecoderOptions)
+      def `SetOptions` as set_options(self, config: FasterDecoderOptions):
+        """Sets decoder options."""
 
       @async
-      def `Decode` as decode(self, decodable: DecodableInterface)
+      def `Decode` as decode(self, decodable: DecodableInterface):
+        """Decodes all frames in the decodable object."""
 
       def `ReachedFinal` as reached_final(self) -> bool:
         """
         Returns:
-          true if a final state was active on the last frame.
+          True if a final state was active on the last frame.
         """
 
-      def `GetBestPath` as get_best_path(self, fst_out: LatticeMutableFst,
-                      use_final_probs: bool = default) -> bool:
-        """ Gets the decoding traceback.
-        if 'use_final_probs' is true and we reached a final state, it limits itself to final states; otherwise it gets the most likely token not taking into account final-probs.
+      def `GetBestPath` as get_best_path(self,
+          fst_out: LatticeMutableFst, use_final_probs: bool = default) -> bool:
+        """Gets best path as an FST.
+
+        If 'use_final_probs' is true and we reached a final state of the graph,
+        then the output will include final probabilities given by the graph;
+        otherwise all final probabilities are treated as one.
 
         Returns:
-          True if the output best path was not the empty FST (will only return false in ususual circumstances where no tokens survived).
-        """          
+          True if the output best path is not empty,
+          False in the unusual circumstances where no tokens survive.
+        """
 
       def `InitDecoding` as init_decoding(self):
-        """As a new alternative to `:meth:decode`, you can call init_decoding and then (posible multiple times) `:meth:advance_decoding`."""
+        """Initializes decoding.
+
+        As a new alternative to :meth:`decode`, you can call init_decoding and
+        then call :meth:`advance_decoding` (posible multiple times) .
+        """
 
       @async
-      def `AdvanceDecoding` as advance_decoding(self, decodable: DecodableInterface,
-                          max_num_frames: int = default):
-        """This will decode until there are no more frames ready in the decodable object, but if max_num_frames >= 0 it will decode no more than that many frames."""
+      def `AdvanceDecoding` as advance_decoding(self,
+          decodable: DecodableInterface, max_num_frames: int = default):
+        """Advances decoding.
+
+        This will decode until there are no more frames ready in the decodable
+        object, but if max_num_frames >= 0 it will decode no more than that
+        many frames.
+        """
 
       def `NumFramesDecoded` as num_frames_decoded(self) -> int:
         """
         Returns:
-         the number of frames already decoded.
+          The number of frames already decoded.
         """

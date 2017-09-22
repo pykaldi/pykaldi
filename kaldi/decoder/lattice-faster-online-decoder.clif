@@ -1,0 +1,139 @@
+from "itf/decodable-itf-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "decoder/lattice-faster-decoder-clifwrap.h" import *
+
+from "decoder/lattice-faster-online-decoder.h":
+  namespace `kaldi`:
+    class LatticeFasterOnlineDecoder:
+      """Lattice generating online decoder.
+
+      Similar to LatticeFasterDecoder but also supports an efficient way of
+      getting the best path (see :meth:`best_path_end`), which is useful in
+      endpointing.
+      """
+
+      def __init__(self, fst: StdFst, config: LatticeFasterDecoderOptions)
+
+      def `SetOptions` as set_options(self,
+                                      config: LatticeFasterDecoderOptions):
+        """Sets decoder options."""
+
+      def `GetOptions` as get_options(self) -> LatticeFasterDecoderOptions:
+        """Gets decoder options."""
+
+      @async
+      def `Decode` as decode(self, decodable: DecodableInterface) -> bool:
+        """Decodes all frames in the decodable object.
+
+        This may block waiting for input if the "decodable" object blocks.
+
+        Returns:
+          True if any kind of traceback is available (not necessarily from a
+          final state).
+        """
+
+      def `ReachedFinal` as reached_final(self) -> bool:
+        """Check if decoding reached a final state of the graph.
+
+        Returns:
+          True if a final state of the graph was active on the last frame.
+        """
+
+      def `GetBestPath` as get_best_path(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool:
+        """Gets best path as an FST.
+
+        This is quite efficient because it doesn't get the entire raw lattice
+        and find the best path through it. Instead, it traces back through the
+        lattice.
+
+        If 'use_final_probs' is true and we reached a final state of the graph,
+        then the output will include final probabilities given by the graph;
+        otherwise all final probabilities are treated as one.
+
+        Returns:
+          True if the output best path is not empty,
+          False in the unusual circumstances where no tokens survive.
+        """
+
+      def `GetRawLattice` as get_raw_lattice(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool:
+        """Gets raw state-level lattice.
+
+        If 'use_final_probs' is true and we reached a final state of the graph,
+        then the output will include final probabilities given by the graph;
+        otherwise all final probabilities are treated as one.
+
+        The output raw lattice will be topologically sorted.
+
+        Returns:
+          True if the output is not empty.
+        """
+
+      def `GetRawLatticePruned` as get_raw_lattice_pruned(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool,
+          beam: float) -> bool:
+        """Gets pruned raw state-level lattice.
+
+        Behaves like get_raw_lattice but only processes tokens whose extra-cost
+        is smaller than the best-cost plus the specified beam. It is only
+        worthwhile to call this function if beam is less than the lattice-beam
+        specified in the config; otherwise, it would return essentially the
+        same thing as get_raw_lattice, but more slowly.
+
+        If 'use_final_probs' is true and we reached a final state of the graph,
+        then the output will include final probabilities given by the graph;
+        otherwise all final probabilities are treated as one.
+
+        The output raw lattice will be topologically sorted.
+
+        Returns:
+          True if the output is not empty.
+        """
+
+      def `InitDecoding` as init_decoding(self):
+        """Initializes decoding.
+
+        As a new alternative to :meth:`decode`, you can call init_decoding and
+        then call :meth:`advance_decoding` (posible multiple times) .
+        """
+
+      @async
+      def `AdvanceDecoding` as advance_decoding(self,
+          decodable: DecodableInterface, max_num_frames: int = default):
+        """Advances decoding.
+
+        This will decode until there are no more frames ready in the decodable
+        object, but if max_num_frames >= 0 it will decode no more than that
+        many frames.
+        """
+
+      def `FinalizeDecoding` as finalize_decoding(self):
+        """Finalizes decoding.
+
+        This function may be optionally called after the last call to
+        :meth:`advance_decoding`. It does an extra pruning step to prune the
+        lattices output by :meth:`get_lattice` and :meth:`get_raw_lattice`.
+        more accurately.
+        """
+
+      def `FinalRelativeCost` as final_relative_cost(self) -> float:
+        """Return the final relative cost.
+
+        final_relative_cost serves the same purpose as reached_final, but
+        gives more information.  It returns the difference between the best
+        (final-cost plus cost) of any token on the final frame, and the best
+        cost of any token on the final frame.  If it is infinity it means no
+        final-states were present on the final frame.  It will usually be
+        nonnegative.  If it not too positive (e.g. < 5) you can take it as an
+        indication that we reached the final-state with reasonable likelihood.
+        """
+
+      def `NumFramesDecoded` as num_frames_decoded(self) -> int:
+        """
+        Returns:
+          The number of frames already decoded.
+        """

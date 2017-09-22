@@ -9,28 +9,15 @@ kaldi\.decoder
 
    
    
-   
-
-   
-   
-   
-kaldi\.decoder\.faster
-----------------------
-
-.. automodule:: kaldi.decoder.faster
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       FasterDecoder
       FasterDecoderOptions
+      LatticeFasterDecoder
+      LatticeFasterDecoderOptions
+      LatticeFasterOnlineDecoder
    
    
 

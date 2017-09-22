@@ -5,7 +5,7 @@ import sys
 import time
 
 from kaldi.base.io import init_kaldi_input_stream
-from kaldi.decoder.faster import FasterDecoderOptions, FasterDecoder
+from kaldi.decoder import FasterDecoderOptions, FasterDecoder
 from kaldi.fstext import (StdFst, LatticeVectorFst, CompactLatticeVectorFst,
                           SymbolTable, GetLinearSymbolSequenceFromLatticeFst,
                           AcousticLatticeScale, ScaleLattice,
