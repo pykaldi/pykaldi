@@ -1,6 +1,6 @@
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
-from "util/iostream-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
 
 from "util/kaldi-io.h":
   namespace `kaldi`:

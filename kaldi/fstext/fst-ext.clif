@@ -5,7 +5,7 @@ from "fstext/expanded-fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
-from "util/iostream-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
 
 from "fstext/fst-ext.h":
   namespace `fst`:

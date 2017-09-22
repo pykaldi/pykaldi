@@ -1,4 +1,4 @@
-from "util/iostream-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
 from "nnet3/nnet-computation-clifwrap.h" import *
 from "nnet3/nnet-nnet-clifwrap.h" import *
 

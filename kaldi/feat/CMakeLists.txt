@@ -57,7 +57,7 @@ add_pyclif_library("_online_feature" online-feature.clif
   LIBRARIES kaldi-feat
   BASETYPES __online__feature__itf_clifwrap::pyOnlineFeatureInterface
             __online__feature__itf_clifwrap::pyOnlineBaseFeature
-  RPATH $ORIGIN/../itf:$ORIGIN/../util:$ORIGIN/../matrix
+  RPATH $ORIGIN/../base:$ORIGIN/../itf:$ORIGIN/../util:$ORIGIN/../matrix
 )
 add_pyclif_library("_pitch_functions" pitch-functions.clif
   CLIF_DEPS _online_feature_itf _kaldi_matrix _options_ext

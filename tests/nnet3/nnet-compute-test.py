@@ -3,12 +3,12 @@
 import random
 import unittest
 
+from kaldi.base.io import stringstream as sstream
+from kaldi.base.io import istringstream, ostringstream
 from kaldi.cudamatrix.matrix import ApproxEqualCuMatrix, CuMatrix
 from kaldi.matrix import Matrix, Vector
 from kaldi.matrix.vector import ApproxEqualVector
 from kaldi.nnet3 import *
-from kaldi.util.io import stringstream as sstream
-from kaldi.util.io import istringstream, ostringstream
 
 class TestNnetCompute(unittest.TestCase):
 

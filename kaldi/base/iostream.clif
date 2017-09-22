@@ -7,7 +7,7 @@ used for wrapping methods and functions that accept or return stream objects.
 The get_* utility functions provide the handles for the standard C++ streams.
 """
 
-from "util/iostream-ext.h":
+from "base/iostream-ext.h":
   namespace `::std`:
     class istream:
       """Input stream."""

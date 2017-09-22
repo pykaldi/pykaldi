@@ -31,8 +31,8 @@ from ._compiler import *
 from ._encode import StdEncode, StdDecode
 from ._fst_operations import *
 
-from ..util._fstream import ofstream
-from ..util._sstream import ostringstream, stringstream
+from ..base._fstream import ofstream
+from ..base._sstream import ostringstream, stringstream
 
 
 class StdEncodeMapper(_encode.StdEncodeMapper):

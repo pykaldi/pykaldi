@@ -46,7 +46,7 @@ add_pyclif_library("_vector_fst" vector-fst.clif
 add_pyclif_library("_fst_ext" fst-ext.clif
   CLIF_DEPS _vector_fst _iostream
   LIBRARIES kaldi-fstext
-  RPATH $ORIGIN/../util
+  RPATH $ORIGIN/../base
 )
 add_pyclif_library("_kaldi_fst_io" kaldi-fst-io.clif
   CLIF_DEPS _vector_fst
@@ -58,15 +58,15 @@ add_pyclif_library("_fstext_utils" fstext-utils.clif
 )
 add_pyclif_library("_drawer" drawer.clif
   CLIF_DEPS _fst _iostream
-  RPATH $ORIGIN/../util
+  RPATH $ORIGIN/../base
 )
 add_pyclif_library("_printer" printer.clif
   CLIF_DEPS _fst _iostream
-  RPATH $ORIGIN/../util
+  RPATH $ORIGIN/../base
 )
 add_pyclif_library("_compiler" compiler.clif
   CLIF_DEPS _vector_fst _iostream
-  RPATH $ORIGIN/../util
+  RPATH $ORIGIN/../base
 )
 add_pyclif_library("_getters" getters.clif
   LIBRARIES -lfstscript
