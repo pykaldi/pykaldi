@@ -27,9 +27,6 @@ kaldi\.util\.io
    
       classify_rxfilename
       classify_wxfilename
-      get_stderr
-      get_stdin
-      get_stdout
       printable_rxfilename
       printable_wxfilename
       read_kaldi_matrix
@@ -49,14 +46,6 @@ kaldi\.util\.io
       InputType
       Output
       OutputType
-      ifstream
-      iostream
-      istream
-      istringstream
-      ofstream
-      ostream
-      ostringstream
-      stringstream
    
    
 

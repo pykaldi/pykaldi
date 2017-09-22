@@ -31,12 +31,28 @@ kaldi\.base\.io
 
    .. autosummary::
    
+      get_stderr
+      get_stdin
+      get_stdout
       init_kaldi_input_stream
       init_kaldi_output_stream
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ifstream
+      iostream
+      istream
+      istringstream
+      ofstream
+      ostream
+      ostringstream
+      stringstream
    
    
 

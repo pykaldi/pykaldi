@@ -2,14 +2,18 @@
 from "itf/options-itf.h":
   namespace `kaldi`:
     class OptionsItf:
-      def `Register` as register_bool_ptr(self, name: str, ptr: bool, doc: str)
+      def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
 
-      def `Register` as register_int_ptr(self, name: str, ptr: `int32` as int, doc: str)
+      def `Register` as register_int(self, name: str, ptr: `int32` as int,
+                                     doc: str)
 
-      def `Register` as register_uint_ptr(self, name: str, ptr: `uint32` as int, doc: str)
+      def `Register` as register_uint(self, name: str, ptr: `uint32` as int,
+                                      doc: str)
 
-      def `Register` as register_float_ptr(self, name: str, ptr: `float` as float, doc: str)
+      def `Register` as register_float(self, name: str, ptr: `float` as float,
+                                       doc: str)
 
-      def `Register` as register_double_ptr(self, name: str, ptr: `double` as float, doc: str)
+      def `Register` as register_double(self, name: str,
+                                        ptr: `double` as float, doc: str)
 
-      def `Register` as register_str_ptr(self, name: str, ptr: str, doc: str)
+      def `Register` as register_str(self, name: str, ptr: str, doc: str)
