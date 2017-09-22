@@ -147,13 +147,13 @@ class MatrixBase(object):
     def svd(self):
         """Singular value decomposition.
 
-        For nonsquare matrices, assumes self.num_rows >= self.num_cols.
+        For nonsquare matrices, requires self.num_rows >= self.num_cols.
 
         Returns:
             3-element tuple containing
 
-            - **U** (:class:`Matrix`): Orthonormal Matrix m x n.
             - **s** (:class:`Vector`): Singular values.
+            - **U** (:class:`Matrix`): Orthonormal Matrix m x n.
             - **V^T** (:class:`Matrix`): Orthonormal Matrix n x n.
 
         Raises:
@@ -165,8 +165,8 @@ class MatrixBase(object):
                              ">= self.num_cols.")
         U, Vt = Matrix(m, n), Matrix(n, n)
         s = Vector(n)
-        self.svd(s, U, Vt)
-        return U, s, Vt
+        self._svd(s, U, Vt)
+        return s, U, Vt
 
     def singular_values(self):
         """Performs singular value decomposition, returns singular values.
@@ -175,7 +175,7 @@ class MatrixBase(object):
             A :class:`Vector` representing singular values of this matrix.
         """
         res = Vector(self.num_cols)
-        self.singular_values(res)
+        self._singular_values(res)
         return res
 
     def __getitem__(self, index):
