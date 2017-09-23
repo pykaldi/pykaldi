@@ -1,0 +1,41 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/clusterable-itf-clifwrap.h" import *
+from "tree/event-map-clifwrap.h" import *
+from "tree/build-tree-questions-clifwrap.h" import *
+
+from "tree/build-tree.h":
+  namespace `kaldi`:
+    def `BuildTree` as build_tree(
+        qopts: Questions, phone_sets: list<list<int>>,
+        phone2num_pdf_classes: list<int>,
+        share_roots: list<bool>, do_split: list<bool>,
+        stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
+        thresh: float, max_leaves: int, cluster_thresh: float,
+        P: int) -> EventMap
+
+    def `BuildTreeTwoLevel` as build_tree_two_level(
+        qopts: Questions, phone_sets: list<list<int>>,
+        phone2num_pdf_classes: list<int>,
+        share_roots: list<bool>, do_split: list<bool>,
+        stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
+        max_leaves_first: int, max_leaves_second: int, cluster_leaves: bool,
+        P: int) -> (tree: EventMap, leaf_map: list<int>)
+
+    # GenRandStats
+
+    def `ReadSymbolTableAsIntegers` as read_symbol_table_as_integers(
+        filename: str, include_eps: bool) -> list<int>
+
+    # def `AutomaticallyObtainQuestions` as automatically_obtain_questions(
+    #     stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
+    #     phone_sets_in: list<list<int>>, all_pdf_classes_in: list<int>,
+    #     P: int) -> list<list<int>>
+    #
+    # def `KMeansClusterPhones` as kmeans_cluster_phones(
+    #     stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
+    #     phone_sets_in: list<list<int>>, all_pdf_classes_in: list<int>,
+    #     P: int, num_classes: int) -> list<list<int>>
+
+    def `ReadRootsFile` as read_roots_file(is: istream)
+        -> (phone_sets: list<list<int>>, is_shared_root: list<bool>,
+            is_split_root: list<bool>)

@@ -1,0 +1,35 @@
+from "itf/context-dep-itf-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "tree/event-map-clifwrap.h" import *
+
+from "tree/context-dep.h":
+  namespace `kaldi`:
+    const `kPdfClass` as PDF_CLASS: int
+
+    class ContextDependency(ContextDependencyInterface):
+      def `Read` as read(self, is: istream, binary: bool)
+
+      @add__init__
+      def `ContextDependency` as from_event_map(self, N: int, P: int,
+                                                to_pdf: EventMap)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `ToPdfMapPtr` as to_pdf_map(self) -> EventMap
+
+    def `GenRandContextDependency` as _gen_rand_context_dependency(
+        phones: list<int>, ensure_all_covered: bool)
+        -> (ctx_dep: ContextDependency, num_pdf_classes: list<int>)
+
+    def `GenRandContextDependencyLarge` as _gen_rand_context_dependency_large(
+        phones: list<int>, N: int, P: int, ensure_all_covered: bool)
+        -> (ctx_dep: ContextDependency, num_pdf_classes: list<int>)
+
+    def `MonophoneContextDependency` as monophone_context_dependency(
+        phones: list<int>, phone2num_pdf_classes: list<int>)
+        -> ContextDependency
+
+    def `MonophoneContextDependencyShared`
+        as monophone_context_dependency_shared(
+        phone_classes: list<list<int>>, phone2num_pdf_classes: list<int>)
+        -> ContextDependency

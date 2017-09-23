@@ -1,0 +1,67 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/clusterable-itf-clifwrap.h" import *
+
+from "tree/cluster-utils.h":
+  namespace `kaldi`:
+    def `SumClusterableObjf` as sum_clusterable_objf(vec: list<Clusterable>)
+        -> float
+
+    def `SumClusterableNormalizer`
+        as sum_clusterable_normalizer(vec: list<Clusterable>) -> float
+
+    def `SumClusterable` as sum_clusterable(vec: list<Clusterable>)
+        -> Clusterable
+
+    # def EnsureClusterableVectorNotNull
+
+    def `AddToClusters` as add_to_clusters(stats: list<Clusterable>,
+                                           assignments: list<int>)
+        -> list<Clusterable>
+
+    def `AddToClustersOptimized` as add_to_clusters_optimized(
+        stats: list<Clusterable>, assignments: list<int>, total: Clusterable)
+        -> list<Clusterable>
+
+    def `ClusterBottomUp` as cluster_bottom_up(
+        points: list<Clusterable>, thresh: float, min_clust: int)
+        -> (objf_change: float, clusters_out: list<Clusterable>,
+            assignments_out: list<int>)
+
+    def `ClusterBottomUpCompartmentalized`
+        as cluster_bottom_up_compartmentalized(
+        points: list<list<Clusterable>>, thresh: float, min_clust: int)
+        -> (objf_change: float, clusters_out: list<list<Clusterable>>,
+            assignments_out: list<list<int>>)
+
+    class RefineClustersOptions:
+      num_iters: int
+      top_n: int
+
+      @add__init__
+      def `RefineClustersOptions` as new(self, num_iters_in: int,
+                                         top_n_in: int)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+    # def RefineClusters
+
+    class ClusterKMeansOptions:
+      refine_cfg: RefineClustersOptions
+      num_iters: int
+      num_tries: int
+      verbose: bool
+
+    # def ClusterKMeans
+
+    class TreeClusterOptions:
+      kmeans_cfg: ClusterKMeansOptions
+      branch_factor: int
+      thresh: float
+
+    # def TreeCluster
+
+    # def ClusterTopDown
+
+    

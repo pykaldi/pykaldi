@@ -1,0 +1,34 @@
+from "base/iostream-clifwrap.h" import *
+from "tree/cluster-utils-clifwrap.h" import *
+
+from "tree/build-tree-questions.h":
+  namespace `kaldi`:
+    class QuestionsForKey:
+      initial_questions: list<list<int>>
+      refine_opts: RefineClustersOptions
+
+      def __init__(self, num_iters: int = default)
+
+      # def Check
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+    class Questions:
+      def `GetQuestionsOf` as get_questions_of(self, key: int)
+          -> QuestionsForKey
+
+      def `SetQuestionsOf` as set_questions_of(self, key: int,
+                                               options_of_key: QuestionsForKey)
+
+      def `GetKeysWithQuestions` as get_keys_with_questions(self)
+          -> list<int>
+
+      def `HasQuestionsForKey` as has_questions_for_key(self, key: int) -> bool
+
+      # def InitRand
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)

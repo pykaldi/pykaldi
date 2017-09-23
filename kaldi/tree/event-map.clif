@@ -1,0 +1,61 @@
+from "base/iostream-clifwrap.h" import *
+
+from "tree/event-map.h":
+  namespace `kaldi`:
+    def MakeEventPair(k: int, v: int) -> tuple<int, int>
+
+    class EventMap:
+      @classmethod
+      def `Check` as check(cls, event: list<tuple<int, int>>)
+
+      @classmethod
+      def `Lookup` as lookup(cls, event: list<tuple<int, int>>, key: int)
+          -> (success: bool, ans: int)
+
+      def `Map` as map(self, event: list<tuple<int, int>>)
+          -> (success: bool, ans: int)
+
+      def `MultiMap` as multi_map(self, event: list<tuple<int, int>>)
+          -> list<int>
+
+      def `GetChildren` as get_children(self) -> list<EventMap>
+
+      def `Copy` as copy_with_new_leaves(self, new_leaves: list<EventMap>)
+          -> EventMap
+
+      def `Copy` as copy(self) -> EventMap
+
+      def `MapValues` as map_values(
+          self, keys_to_map: set<int>,
+          value_map: dict<int, int>) -> EventMap
+
+      def `Prune` as prune(self) -> EventMap
+
+      def `MaxResult` as max_result(self) -> int
+
+      @classmethod
+      def `Write` as write(cls, os: ostream, binary: bool, emap: EventMap)
+
+      @classmethod
+      def `Read` as read(cls, is: istream, binary: bool) -> EventMap
+
+    class ConstantEventMap(EventMap):
+      def __init__(self, answer: int)
+
+    class TableEventMap(EventMap):
+      def __init__(self, key: int, table: list<EventMap>)
+
+      @add__init__
+      def `TableEventMap` as from_val_map_table(self,
+          key: int, map_in: `std::map` as dict<int, EventMap>)
+
+      @add__init__
+      def `TableEventMap` as from_val_answer_table(self,
+          key: int, map_in: `std::map` as dict<int, int>)
+
+    class SplitEventMap(EventMap):
+      def __init__(self, key: int, yes_set: list<int>,
+                   yes: EventMap, no: EventMap)
+
+    def `GetTreeStructure` as get_tree_structure(map: EventMap)
+        -> (has_tree_structure: bool, num_leaves: int, parents: list<int>)

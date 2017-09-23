@@ -3,21 +3,21 @@ from "itf/context-dep-itf.h":
   namespace `kaldi`:
     class ContextDependencyInterface:
 
-      def ContextWidth(self) -> int
+      def `ContextWidth` as context_width(self) -> int
 
-      def CentralPosition(self) -> int
+      def `CentralPosition` as central_position(self) -> int
 
-      def Compute(self, phoneseq: list<int>, pdf_class: int)
+      def `Compute` as compute(self, phoneseq: list<int>, pdf_class: int)
           -> (success: bool, pdf_id: int)
 
-      def GetPdfInfo(self, phones: list<int>, num_pdf_classes: list<int>)
+      def `GetPdfInfo` as get_pdf_info(self, phones: list<int>,
+                                       num_pdf_classes: list<int>)
           -> list<list<tuple<int, int>>>
 
-      def `GetPdfInfo` as GetPdfPairInfo(
-          self, phones: list<int>,
-          pdf_class_pairs: list<list<tuple<int, int>>>)
+      def `GetPdfInfo` as get_pdf_pair_info(self,
+          phones: list<int>, pdf_class_pairs: list<list<tuple<int, int>>>)
           -> list<list<list<tuple<int, int>>>>
 
-      def NumPdfs(self) -> int
+      def `NumPdfs` as num_pdfs(self) -> int
 
-      def Copy(self) -> ContextDependencyInterface
+      def `Copy` as copy(self) -> ContextDependencyInterface

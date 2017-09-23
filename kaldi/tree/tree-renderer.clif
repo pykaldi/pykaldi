@@ -1,0 +1,17 @@
+from "base/iostream-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+
+from "tree/tree-renderer.h":
+  namespace `kaldi`:
+    class TreeRenderer:
+      # const kEdgeWidth: int
+      # const kEdgeWidthQuery: int
+      # const kEdgeColor: str
+      # const kEdgeColorQuery: str
+
+      def __init__(self, is: istream, binary: bool, os: ostream,
+                   phone_syms: SymbolTable, use_tooltips: bool)
+
+      def `Render` as render(self)
+
+      def `RenderQuery` as render_query(self, query: list<tuple<int, int>>)

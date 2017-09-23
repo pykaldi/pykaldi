@@ -1,0 +1,30 @@
+from "base/iostream-clifwrap.h" import *
+
+from "itf/clusterable-itf.h":
+  namespace `kaldi`:
+    class Clusterable:
+      def `Copy` as copy(self) -> Clusterable
+
+      def `Objf` as objf(self) -> float
+
+      def `Normalizer` as normalizer(self) -> float
+
+      def `SetZero` as set_zero(self)
+
+      def `Add` as add(self, other: Clusterable)
+
+      def `Sub` as sub(self, other: Clusterable)
+
+      def `Scale` as scale(self, f: float)
+
+      def `Type` as type(self) -> str
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `ReadNew` as read_new(self, is: istream, binary: bool) -> Clusterable
+
+      def `ObjfPlus` as objf_plus(self, other: Clusterable) -> float
+
+      def `ObjfMinus` as objf_minus(self, other: Clusterable) -> float
+
+      def `Distance` as distance(self, other: Clusterable) -> float

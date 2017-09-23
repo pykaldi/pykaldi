@@ -1,0 +1,35 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/clusterable-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "tree/clusterable-classes.h":
+  namespace `kaldi`:
+    class ScalarClusterable(Clusterable):
+      @add__init__
+      def `ScalarClusterable` as new_with_scalar(self, x: float)
+
+      def `Info` as info(self) -> str
+
+      def `Mean` as mean(self) -> float
+
+    class GaussClusterable(Clusterable):
+      @add__init__
+      def `GaussClusterable` as new_with_dim(self, dim: int, var_floor: float)
+
+
+      @add__init__
+      def `GaussClusterable` as new_with_stats(self,
+          x_stats: Vector, x2_stats: Vector, var_floor: float, count: float)
+
+      def `AddStats` as add_stats(self, vec: VectorBase,
+                                  weight: float = default)
+
+      def count(self) -> float
+
+      # def x_stats(self) -> DoubleSubVector
+      # def x2_stats(self) -> DoubleSubVector
+
+    class VectorClusterable(Clusterable):
+      @add__init__
+      def `VectorClusterable` as new_with_vector(self, vector: Vector,
+                                                 weight: float)

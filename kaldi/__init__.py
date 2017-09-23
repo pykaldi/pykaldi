@@ -22,3 +22,4 @@ from . import hmm
 from . import matrix
 from . import nnet3
 from . import util
+from . import tree
