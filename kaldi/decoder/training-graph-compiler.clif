@@ -1,0 +1,38 @@
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "tree/context-dep-clifwrap.h" import *
+
+from "decoder/training-graph-compiler.h":
+  namespace `kaldi`:
+    class TrainingGraphCompilerOptions:
+      transition_scale: float
+      self_loop_scale: float
+      rm_eps: bool
+      reorder: bool
+
+      def __init__(self, transition_scale: float = default,
+                   self_loop_scale: float = default, reorder: bool = default)
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class TrainingGraphCompiler:
+      def __init__(self, trans_model: TransitionModel,
+                   ctx_dep: ContextDependency, lex_fst: StdVectorFst,
+                   disambig_syms: list<int>,
+                   opts: TrainingGraphCompilerOptions)
+
+      def CompileGraph(self, word_fst: StdVectorFst)
+          -> (success: bool, out_fst: StdVectorFst)
+
+      # FIXME(Dogan)
+      # CLIF does not like the constant fsts in the input list :(
+      # def CompileGraphs(self, word_fsts: list<StdVectorFst>)
+      #     -> (success: bool, out_fsts: list<StdVectorFst>)
+
+      def CompileGraphFromText(self, transcript: list<int>)
+          -> (success: bool, out_fst: StdVectorFst)
+
+      def CompileGraphsFromText(self, transcripts: list<list<int>>)
+          -> (success: bool, out_fsts: list<StdVectorFst>)

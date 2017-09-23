@@ -18,6 +18,8 @@ kaldi\.decoder
       LatticeFasterDecoder
       LatticeFasterDecoderOptions
       LatticeFasterOnlineDecoder
+      TrainingGraphCompiler
+      TrainingGraphCompilerOptions
    
    
 

@@ -13,6 +13,7 @@ kaldi\.itf
 
    .. autosummary::
    
+      Clusterable
       ContextDependencyInterface
       DecodableInterface
       OnlineBaseFeature

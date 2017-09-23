@@ -2,7 +2,7 @@ from "base/iostream-clifwrap.h" import *
 
 from "tree/event-map.h":
   namespace `kaldi`:
-    def MakeEventPair(k: int, v: int) -> tuple<int, int>
+    def `MakeEventPair` as make_event_pair(k: int, v: int) -> tuple<int, int>
 
     class EventMap:
       @classmethod

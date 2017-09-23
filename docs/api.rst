@@ -11,4 +11,5 @@
    api/kaldi.itf
    api/kaldi.matrix
    api/kaldi.nnet3
+   api/kaldi.tree
    api/kaldi.util

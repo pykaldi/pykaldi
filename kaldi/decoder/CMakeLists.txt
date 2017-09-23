@@ -15,3 +15,9 @@ add_pyclif_library("_lattice_faster_online_decoder" lattice-faster-online-decode
   LIBRARIES kaldi-decoder
   RPATH $ORIGIN/../itf:$ORIGIN/../fstext
 )
+
+add_pyclif_library("_training_graph_compiler" training-graph-compiler.clif
+  CLIF_DEPS _options_itf _vector_fst _transition_model _context_dep
+  LIBRARIES kaldi-decoder
+  RPATH $ORIGIN/../itf:$ORIGIN/../fstext:$ORIGIN/../hmm:$ORIGIN/../tree
+)

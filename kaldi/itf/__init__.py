@@ -1,4 +1,5 @@
 from ._options_itf import *
+from ._clusterable_itf import *
 from ._context_dep_itf import *
 from ._decodable_itf import *
 from ._online_feature_itf import *
