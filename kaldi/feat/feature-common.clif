@@ -16,9 +16,9 @@ from "feat/feature-common.h":
       @add__init__
       def `OfflineFeatureTpl` as from_other(self, other: Mfcc)
 
-      def Compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix
 
-      def ComputeFeatures(self, wave: VectorBase, sample_freq: float,
+      def `ComputeFeatures` as compute_features(self, wave: VectorBase, sample_freq: float,
                           vtnl_warp: float) -> Matrix
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int

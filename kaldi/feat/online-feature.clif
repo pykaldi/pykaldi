@@ -44,7 +44,7 @@ from "feat/online-feature.h":
       # It aborts if check fails when compiled without the NDEBUG flag.
       # def Check(self)
 
-      def Register(self, opts: ParseOptions)
+      def `Register` as register(self, opts: ParseOptions)
 
     class OnlineCmvnState:
       speaker_cmvn_stats: DoubleMatrix
@@ -57,8 +57,8 @@ from "feat/online-feature.h":
       @add__init__
       def `OnlineCmvnState` as from_other(self, other: OnlineCmvnState)
 
-      def Write(self, os: ostream, binary: bool)
-      def Read(self, is: istream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
     class OnlineCmvn(OnlineFeatureInterface):
       def __init__(self, opts: OnlineCmvnOptions, cmvn_state: OnlineCmvnState,
@@ -68,17 +68,17 @@ from "feat/online-feature.h":
       def `OnlineCmvn` as without_state(self, opts: OnlineCmvnOptions,
                                         src: OnlineFeatureInterface)
 
-      def GetState(self, cur_frame: int) -> OnlineCmvnState
+      def `GetState` as get_state(self, cur_frame: int) -> OnlineCmvnState
 
-      def SetState(self, cmvn_state: OnlineCmvnState)
+      def `SetState` as set_state(self, cmvn_state: OnlineCmvnState)
 
-      def Freeze(self, cur_frame: int)
+      def `Freeze` as freeze(self, cur_frame: int)
 
     class OnlineSpliceOptions:
       left_context: int
       right_context: int
 
-      def Register(self, po: ParseOptions)
+      def `Register` as register(self, po: ParseOptions)
 
     class OnlineSpliceFrames(OnlineFeatureInterface):
       def __init__(self, opts: OnlineSpliceOptions,
@@ -94,7 +94,7 @@ from "feat/online-feature.h":
     class OnlineCacheFeature(OnlineFeatureInterface):
       def __init__(self, src: OnlineFeatureInterface)
 
-      def ClearCache(self)
+      def `ClearCache` as clear_cache(self)
 
     class OnlineAppendFeature(OnlineFeatureInterface):
       def __init__(self, src1: OnlineFeatureInterface,

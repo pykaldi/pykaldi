@@ -3,7 +3,7 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 
 from "feat/feature-functions.h":
   namespace `kaldi`:
-    def ComputePowerSpectrum(complex_fft: VectorBase)
+    def `ComputePowerSpectrum` as compute_power_spectrum(complex_fft: VectorBase)
 
     class DeltaFeaturesOptions:
       order: int
@@ -14,7 +14,7 @@ from "feat/feature-functions.h":
     class DeltaFeatures:
       def __init__(self, opts: DeltaFeaturesOptions)
 
-      def Process(self, input_feats: MatrixBase, frame: int,
+      def `Process` as process(self, input_feats: MatrixBase, frame: int,
                   output_frame: VectorBase)
 
     class ShiftedDeltaFeaturesOptions:
@@ -25,22 +25,22 @@ from "feat/feature-functions.h":
     class ShiftedDeltaFeatures:
       def __init__(self, opts: ShiftedDeltaFeaturesOptions)
 
-      def Process(self, input_feats: MatrixBase, frame: int,
+      def `Process` as process(self, input_feats: MatrixBase, frame: int,
                   output_frame: VectorBase)
 
-    def ComputeDeltas(delta_opts: DeltaFeaturesOptions,
+    def `ComputeDeltas` as compute_deltas(delta_opts: DeltaFeaturesOptions,
                       input_features: MatrixBase, output_features: Matrix)
 
-    def ComputeShiftedDeltas(delta_opts: ShiftedDeltaFeaturesOptions,
+    def `ComputeShiftedDeltas` as compute_shift_deltas(delta_opts: ShiftedDeltaFeaturesOptions,
                              input_features: MatrixBase,
                              output_features: Matrix)
 
-    def SpliceFrames(input_features: MatrixBase, left_context: int,
+    def `SpliceFrames` as splice_frames(input_features: MatrixBase, left_context: int,
                      right_context: int, output_features: Matrix)
 
-    def ReverseFrames(input_features: MatrixBase, output_features: Matrix)
+    def `ReverseFrames` as reverse_frames(input_features: MatrixBase, output_features: Matrix)
 
-    def InitIdftBases(n_bases: int, dimension: int, mat_out: Matrix)
+    def `InitIdftBases` as init_idft_bases(n_bases: int, dimension: int, mat_out: Matrix)
 
     class SlidingWindowCmnOptions:
       cmn_window: int
@@ -48,7 +48,7 @@ from "feat/feature-functions.h":
       normalize_variance: bool
       center: bool
 
-      def Check(self)
+      def `Check` as check(self)
 
-    def SlidingWindowCmn(opts: SlidingWindowCmnOptions,
+    def `SlidingWindowCmn` as sliding_window_cmn(opts: SlidingWindowCmnOptions,
                          input: MatrixBase, output: Matrix)

@@ -22,35 +22,35 @@ from "feat/mel-computations.h":
       def `MelBanks` as from_other(self, other: MelBanks)
 
       @classmethod
-      def InverseMelScale(cls, mel_freq: float) -> float
+      def `InverseMelScale` as inverse_mel_scale(cls, mel_freq: float) -> float
 
       @classmethod
-      def MelScale(cls, freq: float) -> float
+      def `MelScale` as mel_scale(cls, freq: float) -> float
 
       @classmethod
-      def VtlnWarpFreq(cls, vtln_low_cutoff: float, vtln_high_cutoff: float,
+      def `VtlnWarpFreq` as vtln_warp_freq(cls, vtln_low_cutoff: float, vtln_high_cutoff: float,
                        low_freq: float, high_freq: float,
                        vtln_warp_factor: float, freq: float) -> float
 
       @classmethod
-      def VtlnWarpMelFreq(cls, vtln_low_cutoff: float,
+      def `VtlnWarpMelFreq` as vtln_warp_mel_freq(cls, vtln_low_cutoff: float,
                           vtln_high_cutoff: float,
                           low_freq: float, high_freq: float,
                           vtln_warp_factor: float, mel_freq: float) -> float
 
-      def Compute(self, fft_energies: VectorBase, mel_energies_out: VectorBase)
+      def `Compute` as compute(self, fft_energies: VectorBase, mel_energies_out: VectorBase)
 
-      def NumBins(self) -> int
+      def `NumBins` as num_bins(self) -> int
 
-      def GetCenterFreqs(self) -> Vector
+      def `GetCenterFreqs` as get_center_freqs(self) -> Vector
 
-    def ComputeLifterCoeffs(Q: float, coeffs: VectorBase)
+    def `ComputeLifterCoeffs` as compute_lifter_coeffs(Q: float, coeffs: VectorBase)
 
     # FIXME(Dogan): Write helper functions in C++ to wrap these.
     # def Durbin(n: int, pAC: float, pLP: float, pTmp: float) -> float
     #
     # def Lpc2Cepstrum(n: int, pLPC: float, pCepst: float)
 
-    def ComputeLpc(autocorr_in: VectorBase, lpc_out: Vector) -> float
+    def `ComputeLpc` as compute_lpc(autocorr_in: VectorBase, lpc_out: Vector) -> float
 
-    def GetEqualLoudnessVector(mel_banks: MelBanks, ans: Vector)
+    def `GetEqualLoudnessVector` as get_equal_loudness_vector(mel_banks: MelBanks, ans: Vector)

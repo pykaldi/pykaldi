@@ -28,11 +28,11 @@ from "feat/pitch-functions.h":
       nccf_ballast_online: bool
       snip_edges: bool
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
-      def NccfWindowSize(self) -> int
+      def `NccfWindowSize` as nccf_window_size(self) -> int
 
-      def NccfWindowShift(self) -> int
+      def `NccfWindowShift` as nccf_window_shift(self) -> int
 
     class ProcessPitchOptions:
       pitch_scale: float
@@ -49,7 +49,7 @@ from "feat/pitch-functions.h":
       add_delta_pitch: bool
       add_raw_log_pitch: bool
 
-      def Register(self, opts: ParseOptions)
+      def `Register` as register(self, opts: ParseOptions)
 
     class OnlinePitchFeature(OnlineBaseFeature):
       def __init__(self, opts: PitchExtractionOptions)
@@ -58,11 +58,11 @@ from "feat/pitch-functions.h":
       def __init__(self, opts: ProcessPitchOptions,
                    src: OnlineFeatureInterface)
 
-    def ComputeKaldiPitch(opts: PitchExtractionOptions, wave: VectorBase)
+    def `ComputeKaldiPitch` as compute_kaldi_pitch(opts: PitchExtractionOptions, wave: VectorBase)
         -> Matrix
 
-    def ProcessPitch(opts: ProcessPitchOptions, input: MatrixBase) -> Matrix
+    def `ProcessPitch` as process_pitch(opts: ProcessPitchOptions, input: MatrixBase) -> Matrix
 
-    def ComputeAndProcessKaldiPitch(pitch_opts: PitchExtractionOptions,
+    def `ComputeAndProcessKaldiPitch` as compute_and_process_kaldi_pitch(pitch_opts: PitchExtractionOptions,
                                     process_opts: ProcessPitchOptions,
                                     wave: VectorBase) -> Matrix
