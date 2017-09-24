@@ -8,22 +8,22 @@ from "feat/resample.h":
                    filter_cutoff_hz: float, sample_points_secs: Vector,
                    num_zeros: int)
 
-      def NumSamplesIn(self) -> int
+      def `NumSamplesIn` as num_samples_in(self) -> int
 
-      def NumSamplesOut(self) -> int
+      def `NumSamplesOut` as num_samples_out(self) -> int
 
-      def Resample(self, input: MatrixBase, output: MatrixBase)
+      def `Resample` as resample(self, input: MatrixBase, output: MatrixBase)
 
-      def `Resample` as ResampleVector(self, input: VectorBase,
+      def `Resample` as resample_vector(self, input: VectorBase,
                                        output: VectorBase)
 
     class LinearResample:
       def __init__(self, sample_rate_in_hz: int, samp_rate_out_hz: int,
                    filter_cutoff_hz: float, num_zeros: int)
 
-      def Resample(self, input: VectorBase, flush: bool) -> Vector
+      def `Resample` as resample(self, input: VectorBase, flush: bool) -> Vector
 
-      def Reset(self)
+      def `Reset` as reset(self)
 
-    def DownsampleWaveForm(orig_freq: float, wave: VectorBase,
+    def `DownsampleWaveForm` as downsample_wave_form(orig_freq: float, wave: VectorBase,
                            new_freq: float) -> Vector

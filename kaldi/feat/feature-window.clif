@@ -15,11 +15,11 @@ from "feat/feature-window.h":
       snip_edges: bool
       allow_downsample: bool
 
-      def WindowShift(self) -> int
+      def `WindowShift` as window_shift(self) -> int
 
-      def WindowSize(self) -> int
+      def `WindowSize` as window_size(self) -> int
 
-      def PaddedWindowSize(self) -> int
+      def `PaddedWindowSize` as padded_window_size(self) -> int
 
     class FeatureWindowFunction:
       @add__init__
@@ -30,14 +30,14 @@ from "feat/feature-window.h":
                                                 other: FeatureWindowFunction)
       window: Vector
 
-    def NumFrames(num_samples: int, opts: FrameExtractionOptions,
+    def `NumFrames` as num_frames(num_samples: int, opts: FrameExtractionOptions,
                   flush: bool = default) -> int
 
-    def FirstSampleOfFrame(frame: int, opts: FrameExtractionOptions) -> int
+    def `FirstSampleOfFrame` as first_sample_of_frame(frame: int, opts: FrameExtractionOptions) -> int
 
-    def Dither(waveform: VectorBase, dither_value: float)
+    def `Dither` as dither(waveform: VectorBase, dither_value: float)
 
-    def Preemphasize(waveform: VectorBase, preemph_coeff: float)
+    def `Preemphasize` as preemphasize(waveform: VectorBase, preemph_coeff: float)
 
     # FIXME(Dogan): Write helper functions in C++ to wrap these.
     # def ProcessWindow(opts: FrameExtractionOptions,
@@ -49,6 +49,6 @@ from "feat/feature-window.h":
     #                   window_function: FeatureWindowFunction) ->
     #                   (window: Vector, log_energy_pre_window: float)
 
-    def ExtractWaveformRemainder(wave: VectorBase,
+    def `ExtractWaveformRemainder` as extract_waveform_remainder(wave: VectorBase,
                                  opts: FrameExtractionOptions,
                                  wave_remainder: Vector)

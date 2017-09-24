@@ -2,8 +2,8 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 
 from "feat/signal.h":
   namespace `kaldi`:
-    def ConvolveSignals(filter: Vector, signal: Vector)
+    def `ConvolveSignals` as convolve_signals(filter: Vector, signal: Vector)
 
-    def FFTbasedConvolveSignals(filter: Vector, signal: Vector)
+    def `FFTbasedConvolveSignals` as fft_based_convolve_signals(filter: Vector, signal: Vector)
 
-    def FFTbasedBlockConvolveSignals(filter: Vector, signal: Vector)
+    def `FFTbasedBlockConvolveSignals` as fft_based_block_convolve_signals(filter: Vector, signal: Vector)
