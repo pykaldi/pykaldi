@@ -46,9 +46,9 @@ class MatrixBase(object):
         if isinstance(src, MatrixBase):
             self._copy_from_mat(src)
         elif isinstance(src, SpMatrix):
-            __kaldi_matrix.ext.copy_from_sp(self, src)
+            __kaldi_matrix_ext.copy_from_sp(self, src)
         elif isinstance(src, TpMatrix):
-            __kaldi_matrix.ext.copy_from_tp(self, src)
+            __kaldi_matrix_ext.copy_from_tp(self, src)
         return self
 
     def clone(self):
@@ -219,7 +219,7 @@ class MatrixBase(object):
             if ret.ndim == 2:
                 return SubMatrix(ret)
             elif ret.ndim == 1:
-                from . import vector as _vector
+                from . import _vector
                 return _vector.SubVector(ret)
             else:
                 raise ValueError("indexing operation returned a numpy array "
@@ -232,7 +232,7 @@ class MatrixBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        from . import vector as _vector
+        from . import _vector
         if isinstance(value, (MatrixBase, _vector.VectorBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:
@@ -270,7 +270,7 @@ class MatrixBase(object):
         """
         if Sp.size() != self.size():
             raise ValueError()
-        __kaldi_matrix.ext.add_sp(self, alpha, Sp)
+        __kaldi_matrix_ext.add_sp(self, alpha, Sp)
         return self
 
     def add_sp_mat(self, alpha, A, B, transB, beta):
@@ -282,7 +282,7 @@ class MatrixBase(object):
             alpha (float): Coefficient for the product A * B
             A (SpMatrix): Symmetric matrix of size m x q
             B (Matrix_like): Matrix_like of size q x n
-            transB (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            transB (:data:`~kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
@@ -300,7 +300,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.add_sp_mat(self, alpha, A, transA, B, beta)
+        __kaldi_matrix_ext.add_sp_mat(self, alpha, A, transA, B, beta)
         return self
 
     def add_tp_mat(self, alpha, A, transA, B, transB, beta = 1.0):
@@ -309,10 +309,10 @@ class MatrixBase(object):
         Args:
             alpha (float): Coefficient for the product A * B
             A (TpMatrix): Triangular matrix of size m x m
-            transA (`matrix_common.MatrixTransposeType`):
+            transA (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace A with A^T
             B (Matrix_like): Matrix_like of size m x n
-            transB (`matrix_common.MatrixTransposeType`):
+            transB (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
@@ -330,7 +330,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.add_tp_mat(self, alpha, A, transA, B, transB, beta)
+        __kaldi_matrix_ext.add_tp_mat(self, alpha, A, transA, B, transB, beta)
         return self
 
     def add_mat_sp(self, alpha, A, transA, B, beta = 1.0):
@@ -339,7 +339,7 @@ class MatrixBase(object):
         Args:
             alpha (float): Coefficient for the product A * B
             A (Matrix_like): Matrix of size m x n
-            transA (`matrix_common.MatrixTransposeType`):
+            transA (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace A with A^T
             B (SpMatrix): Symmetric Matrix of size n x n
             beta (float): Coefficient for this matrix
@@ -358,7 +358,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.add_mat_sp(self, alpha, A, transA, B, beta)
+        __kaldi_matrix_ext.add_mat_sp(self, alpha, A, transA, B, beta)
         return self
 
     def add_mat_tp(self, alpha, A, transA, B, transB, beta = 1.0):
@@ -367,10 +367,10 @@ class MatrixBase(object):
         Args:
             alpha (float): Coefficient for the product A * B
             A (Matrix_like): Matrix of size m x q
-            transA (`matrix_common.MatrixTransposeType`):
+            transA (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace A with A^T
             B (TpMatrix): Matrix_like of size m x n
-            transB (`matrix_common.MatrixTransposeType`):
+            transB (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
@@ -386,7 +386,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.add_mat_tp(self, alpha, A, transA, B, transB, beta)
+        __kaldi_matrix_ext.add_mat_tp(self, alpha, A, transA, B, transB, beta)
         return self
 
     def add_tp_tp(self, alpha, A, transA, B, transB, beta = 1.0):
@@ -395,10 +395,10 @@ class MatrixBase(object):
         Args:
             alpha (float): Coefficient for the product A * B
             A (TpMatrix): Triangular Matrix of size m x m
-            transA (`matrix_common.MatrixTransposeType`):
+            transA (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace A with A^T
             B (TpMatrix): Triangular Matrix of size m x m
-            transB (`matrix_common.MatrixTransposeType`):
+            transB (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
@@ -414,7 +414,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.add_tp_tp(self, alpha, A, transA, B, transB, beta)
+        __kaldi_matrix_ext.add_tp_tp(self, alpha, A, transA, B, transB, beta)
         return self
 
     def add_sp_sp(self, alpha, A, B, beta = 1.0):
@@ -423,10 +423,10 @@ class MatrixBase(object):
         Args:
             alpha (float): Coefficient for the product A * B
             A (SpMatrix): Triangular Matrix of size m x m
-            transA (`matrix_common.MatrixTransposeType`):
+            transA (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace A with A^T
             B (SpMatrix): Triangular Matrix of size m x m
-            transB (`matrix_common.MatrixTransposeType`):
+            transB (`kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace B with B^T
             beta (float): Coefficient for this matrix
 
@@ -442,7 +442,7 @@ class MatrixBase(object):
                              " A({a[0]}x{a[1]}), B({b[0]}x{b[1]})"
                              .format(s=self.size(), a=A.size(), b=B.size()))
 
-        __kaldi_matrix.ext.add_sp_sp(self, alpha, A, B, beta)
+        __kaldi_matrix_ext.add_sp_sp(self, alpha, A, B, beta)
 
 
 class Matrix(MatrixBase, _kaldi_matrix.Matrix):

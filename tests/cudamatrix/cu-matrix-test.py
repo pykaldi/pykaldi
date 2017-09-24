@@ -1,57 +1,57 @@
 from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, Matrix
 
-from kaldi.cudamatrix.matrix import CuMatrix, ApproxEqualCuMatrix, SameDimCuMatrix
+from kaldi.cudamatrix.matrix import CuMatrix, approx_equal_cu_matrix, same_dim_cu_matrix
 from kaldi.cudamatrix.vector import CuVector
 from kaldi.cudamatrix.device import CuDevice
 
 import unittest
-import numpy as np 
+import numpy as np
 
 class TestCuMatrix(unittest.TestCase):
 
     def testNew(self):
         A = CuMatrix()
         self.assertIsNotNone(A)
-        self.assertEqual(0, A.NumRows())
-        self.assertEqual(0, A.NumCols())
+        self.assertEqual(0, A.num_rows())
+        self.assertEqual(0, A.num_cols())
 
-        dim = A.Dim()
+        dim = A.dim()
         self.assertEqual(0, dim.rows)
         self.assertEqual(0, dim.cols)
 
         A = CuMatrix.new_from_size(10, 10)
         self.assertIsNotNone(A)
-        self.assertEqual(10, A.NumRows())
-        self.assertEqual(10, A.NumCols())
+        self.assertEqual(10, A.num_rows())
+        self.assertEqual(10, A.num_cols())
 
-        dim = A.Dim()
+        dim = A.dim()
         self.assertEqual(10, dim.rows)
         self.assertEqual(10, dim.cols)
 
         A = CuMatrix.new_from_matrix(Matrix.new([[2, 3], [5, 7]]))
         self.assertIsNotNone(A)
-        self.assertEqual(2, A.NumRows())
-        self.assertEqual(2, A.NumCols())
+        self.assertEqual(2, A.num_rows())
+        self.assertEqual(2, A.num_cols())
 
         B = CuMatrix.new_from_other(A)
         self.assertIsNotNone(B)
-        self.assertEqual(2, B.NumRows())
-        self.assertEqual(2, B.NumCols())
+        self.assertEqual(2, B.num_rows())
+        self.assertEqual(2, B.num_cols())
 
     def testResize(self):
         A = CuMatrix()
-        A.Resize(10, 10)
-        self.assertEqual(10, A.NumRows())
-        self.assertEqual(10, A.NumCols())
+        A.resize(10, 10)
+        self.assertEqual(10, A.num_rows())
+        self.assertEqual(10, A.num_cols())
 
-        # A.Resize(-1, -1) #This hard-crashes
-        A.Resize(0, 0)
+        # A.resize(-1, -1) #This hard-crashes
+        A.resize(0, 0)
 
         # TODO:
         # A = CuMatrix.new_from_matrix(Matrix.new([[1, 2], [3, 4], [5, 6]])) #A is 3x2
         # with self.assertRaises(Exception):
-        #     A.Resize(2, 2) #Try to resize to something invalid 
+        #     A.resize(2, 2) #Try to resize to something invalid
 
     # FIXME:
     # Hard crashing...
@@ -61,29 +61,29 @@ class TestCuMatrix(unittest.TestCase):
             dim = (10 * i, 4 * i)
             M = Matrix.new(np.random.random(dim)).clone()
             A = CuMatrix.new_from_matrix(M)
-            B = CuMatrix.new_from_size(A.NumRows(), A.NumCols())
+            B = CuMatrix.new_from_size(A.num_rows(), A.num_cols())
             B.Swap(A)
-            self.assertAlmostEqual(A.Sum(), B.Sum(), places = 4) #Kaldi's precision is aweful
-            self.assertAlmostEqual(M.sum(), B.Sum(), places = 4) #Kaldi's precision is aweful
+            self.assertAlmostEqual(A.sum(), B.sum(), places = 4) #Kaldi's precision is aweful
+            self.assertAlmostEqual(M.sum(), B.sum(), places = 4) #Kaldi's precision is aweful
 
             C = CuMatrix.new_from_size(M.shape[0], M.shape[1])
             C.SwapWithMatrix(M)
-            self.assertAlmostEqual(B.Sum(), C.Sum(), places = 4) #Kaldi's precision is aweful
+            self.assertAlmostEqual(B.sum(), C.sum(), places = 4) #Kaldi's precision is aweful
 
-    def testCopyFromMat(self):
+    def testcopy_from_mat(self):
         for i in range(10):
             rows, cols = 10*i, 5*i
             A = Matrix(rows, cols)
             A.set_randn()
             B = CuMatrix.new_from_size(*A.shape)
-            B.CopyFromMat(A)
-            self.assertAlmostEqual(A.sum(), B.Sum(), places = 4)
-    
+            B.copy_from_mat(A)
+            self.assertAlmostEqual(A.sum(), B.sum(), places = 4)
+
             A = CuMatrix.new_from_size(rows, cols)
-            A.SetRandn()
+            A.set_randn()
             B = CuMatrix.new_from_size(rows, cols)
-            B.CopyFromCuMat(A)
-            self.assertAlmostEqual(A.Sum(), B.Sum(), places = 4)
+            B.copy_from_cu_mat(A)
+            self.assertAlmostEqual(A.sum(), B.sum(), places = 4)
 
     @unittest.skip("hard-crashes")
     def test__getitem(self):
@@ -101,25 +101,25 @@ class TestCuMatrix(unittest.TestCase):
     def testSameDim(self):
         A = CuMatrix()
         B = CuMatrix()
-        self.assertTrue(SameDimCuMatrix(A, B))
+        self.assertTrue(same_dim_cu_matrix(A, B))
 
         A = CuMatrix.new_from_size(10, 10)
         B = CuMatrix.new_from_size(10, 9)
-        self.assertFalse(SameDimCuMatrix(A, B))
+        self.assertFalse(same_dim_cu_matrix(A, B))
 
     @unittest.skip("FIXME")
     def testApproxEqual(self):
         A = CuMatrix()
         B = CuMatrix()
-        self.assertTrue(ApproxEqualCuMatrix(A, B))
+        self.assertTrue(approx_equal_cu_matrix(A, B))
 
         A.SetZero()
         B.SetZero()
-        self.assertTrue(ApproxEqualCuMatrix(A, B))
+        self.assertTrue(approx_equal_cu_matrix(A, B))
 
-        B.SetRandn()
+        B.set_randn()
         B.Scale(10.0)
-        self.assertFalse(ApproxEqualCuMatrix(A, B))
+        self.assertFalse(approx_equal_cu_matrix(A, B))
 
 if __name__ == '__main__':
     for i in range(2):
@@ -128,7 +128,7 @@ if __name__ == '__main__':
             CuDevice.Instantiate().SelectGpuId("no")
         else:
             CuDevice.Instantiate().SelectGpuId("yes")
-        
+
         unittest.main()
 
         CuDevice.Instantiate().PrintProfile()

@@ -5,6 +5,12 @@ kaldi\.cudamatrix
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      cuda_available
+   
    
 
    
@@ -78,10 +84,10 @@ kaldi\.cudamatrix\.matrix
 
    .. autosummary::
    
-      ApproxEqualCuMatrix
-      AssertEqualCuMatrix
-      SameDimAndStrideCuMatrix
-      SameDimCuMatrix
+      approx_equal_cu_matrix
+      assert_equal_cu_matrix
+      same_dim_and_stride_cu_matrix
+      same_dim_cu_matrix
    
    
 

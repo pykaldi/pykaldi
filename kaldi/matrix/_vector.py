@@ -111,7 +111,7 @@ class VectorBase(object):
         Args:
             alpha (int): Coefficient for matrix M
             M (Matrix): Matrix with dimensions m x n
-            trans (:class:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            trans (:class:`~kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace M with its transpose M^T.
             v (Vector): Vector of size n
             beta (int): Coefficient for this vector
@@ -182,7 +182,7 @@ class VectorBase(object):
 
         Args:
             M (TpMatrix): Lower-triangular matrix of size m x m.
-            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            trans (:data:`~kaldi.matrix.MatrixTransposeType`):
                 If `MatrixTransposeType.TRANS`, muliplies with `M^T`.
 
         Raises:
@@ -206,7 +206,7 @@ class VectorBase(object):
 
         Args:
             M (TpMatrix): A matrix of dimensions m x m.
-            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            trans (:data:`~kaldi.matrix.MatrixTransposeType`):
                 If `MatrixTransposeType.TRANS`, solves M^T x = b instead.
 
         Returns:
@@ -415,7 +415,7 @@ class VectorBase(object):
         Args:
             alpha (float): Coefficient for diagonal x diagonal.
             M (Matrix_like): Matrix of size m x n.
-            trans (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            trans (:data:`~kaldi.matrix.MatrixTransposeType`):
                 If trans == MatrixTransposeType.NO_TRANS:
                 `self = diag(M M^T) +  beta * self`.
                 If trans == MatrixTransposeType.TRANS:
@@ -437,10 +437,10 @@ class VectorBase(object):
         Args:
             alpha (float): Coefficient for the diagonal.
             M (Matrix_like): Matrix of size m x n.
-            transM (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            transM (:data:`~kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace M with M^T.
             N (Matrix_like): Matrix of size n x q.
-            transN (:data:`~kaldi.matrix.matrix_common.MatrixTransposeType`):
+            transN (:data:`~kaldi.matrix.MatrixTransposeType`):
                 If MatrixTransposeType.TRANS, replace N with N^T.
             beta (float): Coefficient for self.
         """
@@ -523,7 +523,7 @@ class VectorBase(object):
 
         Offloads the operation to numpy by converting kaldi types to ndarrays.
         """
-        from . import matrix as _matrix
+        from . import _matrix
         if isinstance(value, (VectorBase, _matrix.MatrixBase)):
             self.numpy().__setitem__(index, value.numpy())
         else:

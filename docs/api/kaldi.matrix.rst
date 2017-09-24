@@ -9,9 +9,39 @@ kaldi\.matrix
 
    .. autosummary::
    
+      approx_equal_double_matrix
+      approx_equal_double_vector
+      approx_equal_matrix
+      approx_equal_vector
+      assert_equal_double_matrix
+      assert_equal_double_vector
+      assert_equal_matrix
+      assert_equal_vector
       construct_matrix
       construct_vector
+      create_eigenvalue_double_matrix
+      create_eigenvalue_matrix
+      double_vec_vec
+      matrix_to_numpy
+      read_htk
+      same_dim_double_matrix
+      same_dim_matrix
       set_printoptions
+      sort_double_svd
+      sort_svd
+      trace_double_mat
+      trace_double_mat_mat
+      trace_double_mat_mat_mat
+      trace_double_mat_mat_mat_mat
+      trace_mat
+      trace_mat_mat
+      trace_mat_mat_mat
+      trace_mat_mat_mat_mat
+      vec_mat_vec
+      vec_vec
+      vector_to_numpy
+      wrie_htk
+      wrie_sphinx
    
    
 
@@ -21,6 +51,9 @@ kaldi\.matrix
 
    .. autosummary::
    
+      DoubleMatrix
+      DoubleVector
+      HtkHeader
       Matrix
       MatrixResizeType
       MatrixStrideType
@@ -79,64 +112,6 @@ kaldi\.matrix\.functions
    
 
    
-   
-   
-
-   
-   
-   
-kaldi\.matrix\.matrix
----------------------
-
-.. automodule:: kaldi.matrix.matrix
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      approx_equal_double_matrix
-      approx_equal_matrix
-      assert_equal_double_matrix
-      assert_equal_matrix
-      construct_matrix
-      create_eigenvalue_double_matrix
-      create_eigenvalue_matrix
-      matrix_to_numpy
-      read_htk
-      same_dim_double_matrix
-      same_dim_matrix
-      sort_double_svd
-      sort_svd
-      trace_double_mat
-      trace_double_mat_mat
-      trace_double_mat_mat_mat
-      trace_double_mat_mat_mat_mat
-      trace_mat
-      trace_mat_mat
-      trace_mat_mat_mat
-      trace_mat_mat_mat_mat
-      wrie_htk
-      wrie_sphinx
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      DoubleMatrix
-      DoubleMatrixBase
-      HtkHeader
-      Matrix
-      MatrixBase
-      MatrixResizeType
-      MatrixStrideType
-      MatrixTransposeType
-      SubMatrix
    
    
 
@@ -249,48 +224,6 @@ kaldi\.matrix\.sparse
       GeneralMatrixType
       SparseMatrix
       SparseVector
-   
-   
-
-   
-   
-   
-kaldi\.matrix\.vector
----------------------
-
-.. automodule:: kaldi.matrix.vector
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      ApproxEqualVector
-      approx_equal
-      assert_equal_double_vector
-      assert_equal_vector
-      construct_vector
-      double_vec_vec
-      vec_mat_vec
-      vec_vec
-      vector_to_numpy
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      DoubleVector
-      DoubleVectorBase
-      MatrixResizeType
-      MatrixTransposeType
-      SubVector
-      Vector
-      VectorBase
    
    
 

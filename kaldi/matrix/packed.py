@@ -1,5 +1,5 @@
 from _matrix_common import MatrixResizeType
-from .matrix import Matrix
+from ._matrix import Matrix
 from . import _packed_matrix
 from ._packed_matrix import *
 from . import _sp_matrix

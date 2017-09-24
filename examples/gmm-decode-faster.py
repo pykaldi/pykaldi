@@ -25,8 +25,8 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
     am_gmm = AmDiagGmm()
     ki = Input.new(model_rxfilename)
     success, binary = init_kaldi_input_stream(ki.stream())
-    trans_model.Read(ki.stream(), binary)
-    am_gmm.Read(ki.stream(), binary)
+    trans_model.read(ki.stream(), binary)
+    am_gmm.read(ki.stream(), binary)
 
     words_writer = IntVectorWriter(words_wspecifier)
     alignment_writer = IntVectorWriter(alignment_wspecifier)

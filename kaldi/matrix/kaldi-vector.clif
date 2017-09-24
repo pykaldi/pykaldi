@@ -206,7 +206,7 @@ from "matrix/kaldi-vector.h":
         Args:
             power(float): The power which we apply to all alements of self
             include_sign(bool): True if we include the sign of the input element
-  
+
         Raises:
             Error if we have overflows or underflows.
         """
@@ -572,7 +572,7 @@ from "matrix/kaldi-vector.h":
     # Explicit mention of compatible type `float` is needed for template
     # deduction. CLIF defaults to `double` for Python float.
     # These functions were renamed to avoid possible name conflicts.
-    def `ApproxEqual` as ApproxEqualVector(
+    def `ApproxEqual` as approx_equal_vector(
         a: VectorBase, b: VectorBase, tol: `float` as float = default) -> bool:
       """Computes the 2nd norm of the difference of vector a and vector b
          and returns True if it is less or equal than tol.
@@ -955,7 +955,7 @@ from "matrix/kaldi-vector.h":
       #       v(VectorBase): a vector
       #       r(VectorBase): a vector
       #       beta(float): a scaling constant
-  
+
       #   Raises:
       #       Error if dimensions do not match
       #   """
@@ -970,7 +970,7 @@ from "matrix/kaldi-vector.h":
             v(VectorBase): a vector
             r(VectorBase): a vector
             beta(float): a scaling constant
-  
+
         Raises:
             Error if dimensions do not match
         """
@@ -1164,7 +1164,7 @@ from "matrix/kaldi-vector.h":
     # Explicit mention of compatible type `double` is needed for template
     # deduction. CLIF defaults to `double` for Python float.
     # These functions were renamed to avoid possible name conflicts.
-    def `ApproxEqual` as approx_equal(
+    def `ApproxEqual` as approx_equal_double_vector(
         a: DoubleVectorBase, b: DoubleVectorBase,
         tol: `double` as float = default) -> bool:
       """Computes the 2nd norm of the difference of vector a and vector b

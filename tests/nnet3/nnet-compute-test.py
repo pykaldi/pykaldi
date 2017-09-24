@@ -7,8 +7,7 @@ from kaldi.base.io import stringstream as sstream
 from kaldi.base.io import istringstream, ostringstream
 from kaldi.cudamatrix.matrix import approx_equal_cu_matrix, CuMatrix
 from kaldi.cudamatrix.device import cuda_available
-from kaldi.matrix import Matrix, Vector
-from kaldi.matrix.vector import ApproxEqualVector
+from kaldi.matrix import Matrix, Vector, approx_equal_vector
 from kaldi.nnet3 import *
 
 class TestNnetCompute(unittest.TestCase):
@@ -152,7 +151,7 @@ class TestNnetCompute(unittest.TestCase):
             and nnet.info().find("statistics-extraction") == -1
             and nnet.info().find("TimeHeightConvolutionComponent") == -1):
             for t in range(num_frames):
-                self.assertTrue(ApproxEqualVector(output1[t], output2[t]))
+                self.assertTrue(approx_equal_vector(output1[t], output2[t]))
 
 
 if __name__ == '__main__':
