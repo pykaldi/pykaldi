@@ -1,0 +1,33 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "tree/clusterable-classes-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "hmm/tree-accu.h":
+  namespace `kaldi`:
+    class AccumulateTreeStatsOptions:
+      var_floor: float
+      ci_phones_str: str
+      phone_map_rxfilename: str
+      collapse_pdf_classes: bool
+      context_width: int
+      central_position: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class AccumulateTreeStatsInfo:
+      var_floor: float
+      ci_phones: list<int>
+      phone_map: list<int>
+      context_width: int
+      central_position: int
+
+      # def __init__(self, opts: AccumulateTreeStatsOptions)
+
+    def `AccumulateTreeStats` as accumulate_tree_stats(
+        trans_model: TransitionModel, info: AccumulateTreeStatsInfo,
+        alignment: list<int>, features: Matrix)
+        -> `std::map` as dict<list<tuple<int, int>>, GaussClusterable>
+
+    def `ReadPhoneMap` as read_phone_map(phone_map_rxfilename: str)
+        -> list<int>
