@@ -49,13 +49,13 @@ kaldi\.feat\.functions
 
    .. autosummary::
    
-      ComputeDeltas
-      ComputePowerSpectrum
-      ComputeShiftedDeltas
-      InitIdftBases
-      ReverseFrames
-      SlidingWindowCmn
-      SpliceFrames
+      compute_deltas
+      compute_power_spectrum
+      compute_shift_deltas
+      init_idft_bases
+      reverse_frames
+      sliding_window_cmn
+      splice_frames
    
    
 
@@ -87,9 +87,9 @@ kaldi\.feat\.mel
 
    .. autosummary::
    
-      ComputeLifterCoeffs
-      ComputeLpc
-      GetEqualLoudnessVector
+      compute_lifter_coeffs
+      compute_lpc
+      get_equal_loudness_vector
    
    
 
@@ -176,9 +176,9 @@ kaldi\.feat\.pitch
 
    .. autosummary::
    
-      ComputeAndProcessKaldiPitch
-      ComputeKaldiPitch
-      ProcessPitch
+      compute_and_process_kaldi_pitch
+      compute_kaldi_pitch
+      process_pitch
    
    
 
@@ -233,10 +233,10 @@ kaldi\.feat\.signal
 
    .. autosummary::
    
-      ConvolveSignals
-      DownsampleWaveForm
-      FFTbasedBlockConvolveSignals
-      FFTbasedConvolveSignals
+      convolve_signals
+      downsample_wave_form
+      fft_based_block_convolve_signals
+      fft_based_convolve_signals
    
    
 
@@ -311,11 +311,11 @@ kaldi\.feat\.window
 
    .. autosummary::
    
-      Dither
-      ExtractWaveformRemainder
-      FirstSampleOfFrame
-      NumFrames
-      Preemphasize
+      dither
+      extract_waveform_remainder
+      first_sample_of_frame
+      num_frames
+      preemphasize
    
    
 

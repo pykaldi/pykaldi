@@ -88,6 +88,8 @@ kaldi\.hmm\.transition\_model
    
       GetPdfsForPhones
       GetPhonesForPdfs
+      accumulate_tree_stats
+      read_phone_map
    
    
 
@@ -97,6 +99,8 @@ kaldi\.hmm\.transition\_model
 
    .. autosummary::
    
+      AccumulateTreeStatsInfo
+      AccumulateTreeStatsOptions
       MapTransitionUpdateConfig
       MleTransitionUpdateConfig
       TransitionModel
