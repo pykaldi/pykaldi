@@ -58,7 +58,6 @@ from "nnet3/nnet-optimize.h":
 
       def `WriteCache` as write_cache(self, os: ostream, binary: bool)
 
-    def `ConsolidateModelUpdate` as consolidate_model_update(nnet: Nnet, computation: NnetComputation)
 
     def `ConvertAdditionToAssignment` as convert_addition_to_assignment(nnet: Nnet, computation: NnetComputation)
 

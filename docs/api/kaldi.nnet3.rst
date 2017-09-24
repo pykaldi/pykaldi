@@ -9,18 +9,6 @@ kaldi\.nnet3
 
    .. autosummary::
    
-      ConsolidateModelUpdate
-      ExpandComputation
-      FixGotoLabel
-      IdentifySubmatrixArgs
-      IdentifySubmatrixArgsInComputation
-      LimitDerivativeTimes
-      OptimizeLoopedComputation
-      RemoveNoOps
-      RenumberComputation
-      ReplaceRowWithMatrixOps
-      RequestIsDecomposable
-      SnipRowOps
       add_nnet
       add_nnet_components
       append_cindexes
@@ -48,9 +36,11 @@ kaldi\.nnet3
       error_context_from_stream
       evaluate_computation_request
       example_approx_equal
+      expand_computation
       find_orphan_components
       find_orphan_nodes
       find_sccs
+      fix_goto_label
       freeze_natural_gradient
       generate_config_sequence
       generate_config_sequence_composite_block
@@ -61,8 +51,11 @@ kaldi\.nnet3
       get_nnet_example_size
       graph_has_cycles
       has_batchnorm
+      identify_submatrix_args
+      identify_submatrix_args_in_computation
       is_simple_nnet
       is_valid_name
+      limit_derivative_times
       make_scc_graph
       max_output_time_in_request
       merge_examples
@@ -76,6 +69,7 @@ kaldi\.nnet3
       num_parameters
       num_updatable_components
       optimize
+      optimize_looped_computation
       parse_config_lines
       perturb_params
       print_cindex
@@ -94,8 +88,12 @@ kaldi\.nnet3
       read_index_vector
       read_vector_as_char
       recompute_stats
+      remove_no_ops
       remove_unnecessary_allocation
       remove_unnecessary_zeroing
+      renumber_computation
+      replace_row_with_matrix_ops
+      request_is_decomposable
       reset_generators
       scale_nnet
       set_batchnorm_test_mode
@@ -103,6 +101,7 @@ kaldi\.nnet3
       set_dropout_test_mode
       set_learning_rate
       set_nnet_as_gradient
+      snip_row_ops
       summarize_vector
       un_vectorize_nnet
       update_nnet_with_max_change

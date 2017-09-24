@@ -9,52 +9,52 @@ from "nnet3/nnet-optimize-utils.h":
       def __init__(self, config: NnetOptimizeOptions, nnet: Nnet,
                    computation: NnetComputation)
 
-      def `MergeVariables` as MergeVariables(self) -> bool
+      def `MergeVariables` as merge_variables(self) -> bool
 
-    def `ConsolidateModelUpdate` as ConsolidateModelUpdate(nnet: Nnet, computation: NnetComputation)
+    def `ConsolidateModelUpdate` as consolidate_model_update(nnet: Nnet, computation: NnetComputation)
 
     class DerivativeTimeLimiter:
       def __init__(self, nnet: Nnet, min_deriv_time: int, max_deriv_time: int,
                    computation: NnetComputation)
 
-      def `LimitDerivTimes` as LimitDerivTimes(self)
+      def `LimitDerivTimes` as limit_deriv_times(self)
 
-    def `LimitDerivativeTimes` as LimitDerivativeTimes(nnet: Nnet, min_deriv_time: int,
+    def `LimitDerivativeTimes` as limit_derivative_times(nnet: Nnet, min_deriv_time: int,
                              max_deriv_time: int,
                              computation: NnetComputation)
 
-    def `RequestIsDecomposable` as RequestIsDecomposable(request: ComputationRequest)
+    def `RequestIsDecomposable` as request_is_decomposable(request: ComputationRequest)
         -> (suc: bool, mini_request: ComputationRequest, num_n_values: int)
 
-    def `ExpandComputation` as ExpandComputation(nnet: Nnet, misc_info: MiscComputationInfo,
+    def `ExpandComputation` as expand_computation(nnet: Nnet, misc_info: MiscComputationInfo,
                           computation: NnetComputation, need_debug_info: bool,
                           num_n_values: int) -> NnetComputation
 
-    def `ReplaceRowWithMatrixOps` as ReplaceRowWithMatrixOps(computation: NnetComputation) -> bool
+    def `ReplaceRowWithMatrixOps` as replace_row_with_matrix_ops(computation: NnetComputation) -> bool
 
-    def `SnipRowOps` as SnipRowOps(computation: NnetComputation) -> bool
+    def `SnipRowOps` as snip_row_ops(computation: NnetComputation) -> bool
 
-    def `RenumberComputation` as RenumberComputation(computation: NnetComputation)
+    def `RenumberComputation` as renumber_computation(computation: NnetComputation)
 
-    def `RemoveNoOps` as RemoveNoOps(computation: NnetComputation)
+    def `RemoveNoOps` as remove_no_ops(computation: NnetComputation)
 
-    def `IdentifySubmatrixArgs` as IdentifySubmatrixArgs(command: NnetComputation.Command) -> list<int>
+    def `IdentifySubmatrixArgs` as identify_submatrix_args(command: NnetComputation.Command) -> list<int>
 
-    # def `IdentifySubmatrixArgs` as IdentifySubmatrixArgsFromCommands(
+    # def `IdentifySubmatrixArgs` as identify_submatrix_args_from_commands(
     #     commands: list<NnetComputation.Command>) -> list<int>
 
-    def `IdentifySubmatrixArgsInComputation` as IdentifySubmatrixArgsInComputation(computation: NnetComputation)
+    def `IdentifySubmatrixArgsInComputation` as identify_submatrix_args_in_computation(computation: NnetComputation)
         -> list<int>
 
-    # def `IdentifyIndexesMultiArgs` as IdentifyIndexesMultiArgs(commands: list<NnetComputation.Command>)
+    # def `IdentifyIndexesMultiArgs` as identify_indexes_multi_args(commands: list<NnetComputation.Command>)
     #     -> list<int>
     #
-    # def `IdentifyIndexesArgs` as IdentifyIndexesArgs(commands: list<NnetComputation.Command>)
+    # def `IdentifyIndexesArgs` as identify_indexes_args(commands: list<NnetComputation.Command>)
     #     -> list<int>
     #
-    # def `IdentifyIndexesRangesArgs` as IdentifyIndexesRangesArgs(commands: list<NnetComputation.Command>)
+    # def `IdentifyIndexesRangesArgs` as identify_indexes_ranges_args(commands: list<NnetComputation.Command>)
     #     -> list<int>
 
-    def `OptimizeLoopedComputation` as OptimizeLoopedComputation(nnet: Nnet, computation: NnetComputation)
+    def `OptimizeLoopedComputation` as optimize_looped_computation(nnet: Nnet, computation: NnetComputation)
 
-    def `FixGotoLabel` as FixGotoLabel(computation: NnetComputation)
+    def `FixGotoLabel` as fix_goto_label(computation: NnetComputation)
