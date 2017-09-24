@@ -10,16 +10,16 @@ from "util/kaldi-table-clifwrap.h" import *
 
 from "nnet3/nnet-example-utils.h":
   namespace `kaldi::nnet3`:
-    def MergeExamples(src: list<NnetExample>, compress: bool) -> NnetExample
+    def `MergeExamples` as merge_examples(src: list<NnetExample>, compress: bool) -> NnetExample
 
-    def GetComputationRequest(nnet: Nnet, eg: NnetExample,
+    def `GetComputationRequest` as get_computation_request(nnet: Nnet, eg: NnetExample,
                               need_model_derivative: bool,
                               store_component_stats: bool)
         -> ComputationRequest
 
-    def WriteVectorAsChar(os: ostream, binary: bool, vec: VectorBase)
+    def `WriteVectorAsChar` as write_vector_as_char(os: ostream, binary: bool, vec: VectorBase)
 
-    def ReadVectorAsChar(is: istream, binary: bool) -> Vector
+    def `ReadVectorAsChar` as read_vector_as_char(is: istream, binary: bool) -> Vector
 
     class ExampleGenerationConfig:
       left_context: int
@@ -31,9 +31,9 @@ from "nnet3/nnet-example-utils.h":
       num_frames_str: str
       num_frames: list<int>
 
-      def ComputeDerived(self)
+      def `ComputeDerived` as compute_derived(self)
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class ChunkTimeInfo:
       first_frame: int
@@ -45,16 +45,16 @@ from "nnet3/nnet-example-utils.h":
     class UtteranceSplitter:
       def __init__(self, config: ExampleGenerationConfig)
 
-      def Config(self) -> ExampleGenerationConfig
+      def `Config` as config(self) -> ExampleGenerationConfig
 
-      def GetChunksForUtterance(self, utterance_length: int)
+      def `GetChunksForUtterance` as get_chunks_for_utterance(self, utterance_length: int)
           -> list<ChunkTimeInfo>
 
-      def LengthsMatch(self, utt: str, utterance_length: int,
+      def `LengthsMatch` as lengths_match(self, utt: str, utterance_length: int,
                        supervision_length: int,
                        length_tolerance: int = default) -> bool
 
-      def ExitStatus(self) -> int
+      def `ExitStatus` as exit_status(self) -> int
 
     class ExampleMergingConfig:
       compress: bool
@@ -64,30 +64,40 @@ from "nnet3/nnet-example-utils.h":
 
       # def __init__(self, default_minibatch_size: str = default)
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
-      def ComputeDerived(self)
+      def `ComputeDerived` as compute_derived(self)
 
-      def MinibatchSize(self, size_of_eg: int, num_available_egs: int,
-                        input_ended: bool) -> int
+      def `MinibatchSize` as get_minibatch_size(self, size_of_eg: int, num_available_egs: int,
+                        input_ended: bool) -> int:
+        """This function tells you what minibatch size should be used for this eg.
 
-    def GetNnetExampleSize(a: NnetExample) -> int
+        Args:
+          size_of_eg (int): The size of the eg, as obtained by :meth:`GetNnetExampleSize`
+          num_available_egs (int): The number of egs of this size that are currently available
+          input_ended (bool): True if the input has ended. False otherwise
+
+        Returns:
+          Minibatch Size to use in this situation
+        """
+
+    def `GetNnetExampleSize` as get_nnet_example_size(a: NnetExample) -> int
 
     class ExampleMergingStats:
-      def WroteExample(self, example_size: int, structure_hash: int,
+      def `WroteExample` as wrote_example(self, example_size: int, structure_hash: int,
                        minibatch_size: int)
 
-      def DiscardedExamples(self, example_size: int, structure_hash: int,
+      def `DiscardedExamples` as discarded_examples(self, example_size: int, structure_hash: int,
                             num_discarded: int)
 
-      def PrintStats(self)
+      def `PrintStats` as print_stats(self)
 
     class ExampleMerger:
       def __init__(self, config: ExampleMergingConfig,
                    writer: NnetExampleWriter)
 
-      def AcceptExample(self, a: NnetExample)
+      def `AcceptExample` as accept_example(self, a: NnetExample)
 
-      def Finish(self)
+      def `Finish` as finish(self)
 
-      def ExitStatus(self) -> int
+      def `ExitStatus` as exit_status(self) -> int

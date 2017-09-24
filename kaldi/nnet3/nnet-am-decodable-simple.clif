@@ -23,7 +23,7 @@ from "nnet3/nnet-am-decodable-simple.h":
       compute_config: NnetComputeOptions
       compiler_config: CachingOptimizingCompilerOptions
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class DecodableNnetSimple:
       def __init__(self, opts: NnetSimpleComputationOptions, nnet: Nnet,
@@ -33,13 +33,13 @@ from "nnet3/nnet-am-decodable-simple.h":
                    online_ivectors: MatrixBase = default,
                    online_ivector_period: int = default)
 
-      def NumFrames(self) -> int
+      def `NumFrames` as num_frames(self) -> int
 
-      def OutputDim(self) -> int
+      def `OutputDim` as output_dim(self) -> int
 
-      def GetOutputForFrame(self, frame: int, output: VectorBase)
+      def `GetOutputForFrame` as get_output_for_frame(self, frame: int, output: VectorBase)
 
-      def GetOutput(self, subsampled_frame: int, pdf_id: int) -> float
+      def `GetOutput` as get_output(self, subsampled_frame: int, pdf_id: int) -> float
 
     class DecodableAmNnetSimple(DecodableInterface):
       def __init__(self, opts: NnetSimpleComputationOptions,

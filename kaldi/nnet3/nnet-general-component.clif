@@ -9,7 +9,7 @@ from "nnet3/nnet-general-component.h":
       @add__init__
       def `DistributeComponent` as new(self, input_dim: int, output_dim: int)
 
-      def Init(self, input_dim: int, output_dim: int)
+      def `Init` as init(self, input_dim: int, output_dim: int)
 
     class DistributeComponentPrecomputedIndexes(ComponentPrecomputedIndexes):
       pairs: list<tuple<int, int>>
@@ -41,7 +41,7 @@ from "nnet3/nnet-general-component.h":
                                                zeroing_interval: int,
                                                recurrence_interval: int)
 
-      def Init(self, dim: int, scale: float, clipping_threshold: float,
+      def `Init` as init(self, dim: int, scale: float, clipping_threshold: float,
                zeroing_threshold: float, zeroing_interval: int,
                recurrence_interval: int)
 
@@ -58,4 +58,4 @@ from "nnet3/nnet-general-component.h":
       def `DropoutMaskComponent` as new_from_other(self,
                                                    other: DropoutMaskComponent)
 
-      def SetDropoutProportion(self, p: float)
+      def `SetDropoutProportion` as set_dropout_proportion(self, p: float)

@@ -9,183 +9,183 @@ from "cudamatrix/cu-vector-clifwrap.h" import *
 from "cudamatrix/cu-matrix.h":
   namespace `kaldi`:
     class `CuMatrixBase<float>` as CuMatrixBase:
-      def CopyCols(self, src: CuMatrixBase, indexes: CuArray)
+      def `CopyCols` as copy_cols(self, src: CuMatrixBase, indexes: CuArray)
 
-      def AddCols(self, src: CuMatrixBase, indexes: CuArray)
+      def `AddCols` as add_cols(self, src: CuMatrixBase, indexes: CuArray)
 
-      def CopyRows(self, src: CuMatrixBase, indexes: CuArray)
+      def `CopyRows` as copy_rows(self, src: CuMatrixBase, indexes: CuArray)
 
-      # def CopyRows(self, src: CuFloatPtrArray)
+      # def `CopyRows` as copy_rows(self, src: CuFloatPtrArray)
 
-      def CopyToRows(self, dst: CuFloatPtrArray)
+      def `CopyToRows` as copy_to_rows(self, dst: CuFloatPtrArray)
 
-      def AddRows(self, alpha: float, src: CuMatrixBase, indexes: CuArray)
+      def `AddRows` as add_rows(self, alpha: float, src: CuMatrixBase, indexes: CuArray)
 
-      # def AddRows(self, alpha: float, src: CuFloatPtrArray)
+      # def `AddRows` as add_rows(self, alpha: float, src: CuFloatPtrArray)
 
-      def AddToRows(self, alpha: float, dst: CuFloatPtrArray)
+      def `AddToRows` as add_to_rows(self, alpha: float, dst: CuFloatPtrArray)
 
-      def SumColumnRanges(self, src: CuMatrixBase, indexes: CuIntPairArray)
+      def `SumColumnRanges` as sum_column_ranges(self, src: CuMatrixBase, indexes: CuIntPairArray)
 
-      def AddRowRanges(self, src: CuMatrixBase, indexes: CuIntPairArray)
+      def `AddRowRanges` as add_row_ranges(self, src: CuMatrixBase, indexes: CuIntPairArray)
 
-      def AddToDiag(self, value: float)
+      def `AddToDiag` as add_to_diag(self, value: float)
 
-      def NumRows(self) -> int
+      def `NumRows` as num_rows(self) -> int
 
-      def NumCols(self) -> int
+      def `NumCols` as num_cols(self) -> int
 
-      def Stride(self) -> int
+      def `Stride` as stride(self) -> int
 
-      def Dim(self) -> MatrixDim
+      def `Dim` as dim(self) -> MatrixDim
 
-      def FrobeniusNorm(self) -> float
+      def `FrobeniusNorm` as frobenius_norm(self) -> float
 
-      def IsUnit(self, tol: float = default) -> bool
+      def `IsUnit` as is_unit(self, tol: float = default) -> bool
 
-      def ApproxEqual(self, other: CuMatrixBase, tol: float = default) -> bool
+      def `ApproxEqual` as approx_equal(self, other: CuMatrixBase, tol: float = default) -> bool
 
-      def SizeInBytes(self) -> int
+      def `SizeInBytes` as size_in_bytes(self) -> int
 
-      def CopyFromMat(self, src: MatrixBase,
+      def `CopyFromMat` as copy_from_mat(self, src: MatrixBase,
                       trans: MatrixTransposeType = default)
 
-      def `CopyFromMat` as CopyFromCuMat(self, src: CuMatrixBase,
+      def `CopyFromMat` as copy_from_cu_mat(self, src: CuMatrixBase,
                                          trans: MatrixTransposeType = default)
 
-      def CopyToMat(self, dst: MatrixBase,
+      def `CopyToMat` as copy_to_mat(self, dst: MatrixBase,
                     trans: MatrixTransposeType = default)
 
-      def `CopyRowsFromVec` as CopyRowsFromCuVec(self, v: CuVectorBase)
+      def `CopyRowsFromVec` as copy_rows_from_cu_vec(self, v: CuVectorBase)
 
-      def CopyRowsFromVec(self, v: VectorBase)
+      def `CopyRowsFromVec` as copy_rows_from_vec(self, v: VectorBase)
 
-      def `CopyColsFromVec` as CopyColsFromCuVec(self, v: CuVectorBase)
+      def `CopyColsFromVec` as copy_cols_from_cu_vec(self, v: CuVectorBase)
 
-      def `CopyColFromVec` as CopyColFromCuVec(self, v: CuVectorBase, col: int)
+      def `CopyColFromVec` as copy_col_from_cu_vec(self, v: CuVectorBase, col: int)
 
-      def Sigmoid(self, src: CuMatrixBase)
+      def `Sigmoid` as sigmoid(self, src: CuMatrixBase)
 
-      def Heaviside(self, src: CuMatrixBase)
+      def `Heaviside` as heaviside(self, src: CuMatrixBase)
 
-      def SoftHinge(self, src: CuMatrixBase)
+      def `SoftHinge` as soft_hinge(self, src: CuMatrixBase)
 
-      def GroupPnorm(self, src: CuMatrixBase, pow: float)
+      def `GroupPnorm` as group_pnorm(self, src: CuMatrixBase, pow: float)
 
-      def DiffGroupPnorm(self, in_value: CuMatrixBase, out_value: CuMatrixBase,
+      def `DiffGroupPnorm` as diff_group_pnorm(self, in_value: CuMatrixBase, out_value: CuMatrixBase,
                          out_deriv: CuMatrixBase, power: float)
 
-      def GroupMax(self, src: CuMatrixBase)
+      def `GroupMax` as group_max(self, src: CuMatrixBase)
 
-      def GroupMaxDeriv(self, input: CuMatrixBase, output: CuMatrixBase)
+      def `GroupMaxDeriv` as group_max_deriv(self, input: CuMatrixBase, output: CuMatrixBase)
 
-      def ParametricRelu(self, src: CuMatrixBase, alpha: CuVectorBase,
+      def `ParametricRelu` as parametric_relu(self, src: CuMatrixBase, alpha: CuVectorBase,
                          beta: CuVectorBase)
 
-      def DiffParametricRelu(self, value: CuMatrixBase, diff: CuMatrixBase,
+      def `DiffParametricRelu` as diff_parametric_relu(self, value: CuMatrixBase, diff: CuMatrixBase,
                              alpha: CuVectorBase, beta: CuVectorBase)
 
-      def Tanh(self, src: CuMatrixBase)
+      def `Tanh` as tanh(self, src: CuMatrixBase)
 
-      def DiffSigmoid(self, value: CuMatrixBase, diff: CuMatrixBase)
+      def `DiffSigmoid` as diff_sigmoid(self, value: CuMatrixBase, diff: CuMatrixBase)
 
-      def DiffTanh(self, value: CuMatrixBase, diff: CuMatrixBase)
+      def `DiffTanh` as diff_tanh(self, value: CuMatrixBase, diff: CuMatrixBase)
 
-      def DiffSoftmaxPerRow(self, value: CuMatrixBase, diff: CuMatrixBase)
+      def `DiffSoftmaxPerRow` as diff_softmax_per_row(self, value: CuMatrixBase, diff: CuMatrixBase)
 
-      def DiffLogSoftmaxPerRow(self, out_value: CuMatrixBase,
+      def `DiffLogSoftmaxPerRow` as diff_log_softmax_per_row(self, out_value: CuMatrixBase,
                                out_deriv: CuMatrixBase)
 
-      def DiffXent(self, tgt: CuArray) -> CuVector
+      def `DiffXent` as diff_xent(self, tgt: CuArray) -> CuVector
 
-      def Cholesky(self, inv_cholesky: CuMatrixBase = default)
+      def `Cholesky` as cholesky(self, inv_cholesky: CuMatrixBase = default)
 
-      def SymInvertPosDef(self)
+      def `SymInvertPosDef` as sym_invert_pos_def(self)
 
-      def ApplyPow(self, power: float)
+      def `ApplyPow` as apply_pow(self, power: float)
 
-      def ApplyPowAbs(self, power: float, include_sign: bool = default)
+      def `ApplyPowAbs` as apply_pow_abs(self, power: float, include_sign: bool = default)
 
-      def ApplyHeaviside(self)
+      def `ApplyHeaviside` as apply_heaviside(self)
 
-      def ApplyFloor(self, floor_val: float)
+      def `ApplyFloor` as apply_floor(self, floor_val: float)
 
-      def ApplyCeiling(self, ceiling_val: float)
+      def `ApplyCeiling` as apply_ceiling(self, ceiling_val: float)
 
-      def ApplyExp(self)
+      def `ApplyExp` as apply_exp(self)
 
-      def ApplySoftMaxPerRow(self, src: CuMatrixBase)
+      def `ApplySoftMaxPerRow` as apply_soft_max_per_row(self, src: CuMatrixBase)
 
-      def ApplyLogSoftMaxPerRow(self, src: CuMatrixBase)
+      def `ApplyLogSoftMaxPerRow` as apply_log_soft_max_per_row(self, src: CuMatrixBase)
 
-      def FindRowMaxId(self) -> CuArray
+      def `FindRowMaxId` as find_row_max_id(self) -> CuArray
 
-      def SetZero(self)
+      def `SetZero` as set_zero(self)
 
-      def Set(self, value: float)
+      def `Set` as set(self, value: float)
 
-      def Add(self, value: float)
+      def `Add` as add(self, value: float)
 
-      def SetZeroAboveDiag(self)
+      def `SetZeroAboveDiag` as set_zero_above_diag(self)
 
-      def Scale(self, value: float)
+      def `Scale` as scale(self, value: float)
 
-      def ApplyLog(self)
+      def `ApplyLog` as apply_log(self)
 
-      def MulElements(self, A: CuMatrixBase)
+      def `MulElements` as mul_elements(self, A: CuMatrixBase)
 
-      def DivElements(self, A: CuMatrixBase)
+      def `DivElements` as div_elements(self, A: CuMatrixBase)
 
-      def `Max` as MaxElementwise(self, A: CuMatrixBase)
+      def `Max` as max_elementwise(self, A: CuMatrixBase)
 
-      def `Min` as MinElementwise(self, A: CuMatrixBase)
+      def `Min` as min_elementwise(self, A: CuMatrixBase)
 
-      def MulColsVec(self, scale: CuVectorBase)
+      def `MulColsVec` as mul_cols_vec(self, scale: CuVectorBase)
 
-      def MulRowsVec(self, scale: CuVectorBase)
+      def `MulRowsVec` as mul_rows_vec(self, scale: CuVectorBase)
 
-      def MulRowsGroupMat(self, src: CuMatrixBase)
+      def `MulRowsGroupMat` as mul_rows_group_mat(self, src: CuMatrixBase)
 
-      def DivRowsVec(self, div: CuVectorBase)
+      def `DivRowsVec` as div_rows_vec(self, div: CuVectorBase)
 
-      def InvertElements(self)
+      def `InvertElements` as invert_elements(self)
 
-      def AddMat(self, alpha: float, A: CuMatrixBase,
+      def `AddMat` as add_mat(self, alpha: float, A: CuMatrixBase,
                  trans: MatrixTransposeType = default)
 
-      def AddMatBlocks(self, alpha: float, A: CuMatrixBase,
+      def `AddMatBlocks` as add_mat_blocks(self, alpha: float, A: CuMatrixBase,
                        trans: MatrixTransposeType = default)
 
-      def AddVecToCols(self, alpha: float, col: CuVectorBase,
+      def `AddVecToCols` as add_vec_to_cols(self, alpha: float, col: CuVectorBase,
                        beta: float = default)
 
-      def AddVecToRows(self, alpha: float, row: CuVectorBase,
+      def `AddVecToRows` as add_vec_to_rows(self, alpha: float, row: CuVectorBase,
                        beta: float = default)
 
-      def AddMatMat(self, alpha: float, A: CuMatrixBase,
+      def `AddMatMat` as add_mat_mat(self, alpha: float, A: CuMatrixBase,
                     transA: MatrixTransposeType, B: CuMatrixBase,
                     transB: MatrixTransposeType, beta: float)
 
-      def AddVecVec(self, alpha: float, x: CuVectorBase, y: CuVectorBase)
+      def `AddVecVec` as add_vec_vec(self, alpha: float, x: CuVectorBase, y: CuVectorBase)
 
-      def SetMatMatDivMat(self, A: CuMatrixBase, B: CuMatrixBase,
+      def `SetMatMatDivMat` as set_mat_mat_div_mat(self, A: CuMatrixBase, B: CuMatrixBase,
                           C: CuMatrixBase)
 
-      def SymAddMat2(self, alpha: float, M: CuMatrixBase,
+      def `SymAddMat2` as sym_add_mat2(self, alpha: float, M: CuMatrixBase,
                      transA: MatrixTransposeType, beta: float)
 
-      # def AddMatBlock(self, alpha: float, A: CuMatrixBase,
+      # def `AddMatBlock` as add_mat_block(self, alpha: float, A: CuMatrixBase,
       #                 transA: MatrixTransposeType, B: CuBlockMatrix,
       #                 transB: MatrixTransposeType, beta: float)
 
-      def AddDiagVecMat(self, alpha: float, v: CuVectorBase, M: CuMatrixBase,
+      def `AddDiagVecMat` as add_diag_vec_mat(self, alpha: float, v: CuVectorBase, M: CuMatrixBase,
                         transM: MatrixTransposeType, beta: float = default)
 
-      def AddMatDiagVec(self, alpha: float, M: CuMatrixBase,
+      def `AddMatDiagVec` as add_mat_diag_vec(self, alpha: float, M: CuMatrixBase,
                         transM: MatrixTransposeType, v: CuVectorBase,
                         beta: float = default)
 
-      def AddMatMatElements(self, alpha: float, A: CuMatrixBase,
+      def `AddMatMatElements` as add_mat_mat_elements(self, alpha: float, A: CuMatrixBase,
                             B:CuMatrixBase, beta: float)
 
       # AddMatSp
@@ -195,9 +195,9 @@ from "cudamatrix/cu-matrix.h":
 
       # CopyFromBlock
 
-      def CopyLowerToUpper(self)
+      def `CopyLowerToUpper` as copy_lower_to_upper(self)
 
-      def CopyUpperToLower(self)
+      def `CopyUpperToLower` as copy_upper_to_lower(self)
 
       # Range
       # RowRange
@@ -206,25 +206,25 @@ from "cudamatrix/cu-matrix.h":
 
       def `operator()` as _getitem(self, r: int, c: int) -> float
 
-      def Sum(self) -> float
+      def `Sum` as sum(self) -> float
 
-      def Max(self) -> float
+      def `Max` as max(self) -> float
 
-      def Min(self) -> float
+      def `Min` as min(self) -> float
 
-      def Trace(self, check_square: bool = default) -> float
+      def `Trace` as trace(self, check_square: bool = default) -> float
 
-      def SetRandn(self)
+      def `SetRandn` as set_randn(self)
 
-      def SetRandUniform(self)
+      def `SetRandUniform` as set_rand_uniform(self)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def AddElements(self, alpha: float, input: list<MatrixElement>)
+      def `AddElements` as add_elements(self, alpha: float, input: list<MatrixElement>)
 
       # Lookup
 
-      # def EqualElementMask(self, mat: CuMatrixBase) -> CuMatrix
+      # def `EqualElementMask` as equal_element_mask(self, mat: CuMatrixBase) -> CuMatrix
 
       # Mat
 
@@ -244,21 +244,21 @@ from "cudamatrix/cu-matrix.h":
 
       # Copy constructors from CuBlockMatrix, CuSpMatrix, CuTpMatrix
 
-      def Transpose(self)
+      def `Transpose` as transpose(self)
 
-      def Resize(self, rows: int, cols: int,
+      def `Resize` as resize(self, rows: int, cols: int,
                  resize_type: MatrixResizeType = default,
                  stride_type: MatrixStrideType = default)
 
-      def `Swap` as SwapWithMatrix(self, mat: Matrix)
+      def `Swap` as swap_with_matrix(self, mat: Matrix)
 
-      def Swap(self, mat: CuMatrix)
+      def `Swap` as swap(self, mat: CuMatrix)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
       # Mat
 
-      def CompObjfAndDeriv(self, elements: list<MatrixElement>, A: CuMatrix)
+      def `CompObjfAndDeriv` as comp_objf_and_deriv(self, elements: list<MatrixElement>, A: CuMatrix)
           -> (tot_objf: float, tot_weight: float)
 
     class `CuSubMatrix<float>` as CuSubMatrix(CuMatrixBase):
@@ -268,14 +268,14 @@ from "cudamatrix/cu-matrix.h":
       @add__init__
       def `CuSubMatrix` as new_from_other(self, other: CuSubMatrix)
 
-    def `ApproxEqual` as ApproxEqualCuMatrix(A: CuMatrixBase, B: CuMatrixBase,
+    def `ApproxEqual` as approx_equal_cu_matrix(A: CuMatrixBase, B: CuMatrixBase,
                                              tol: `float` as float = default)
         -> bool
 
-    def `AssertEqual` as AssertEqualCuMatrix(A: CuMatrixBase, B: CuMatrixBase,
+    def `AssertEqual` as assert_equal_cu_matrix(A: CuMatrixBase, B: CuMatrixBase,
                                              tol: `float` as float = default)
 
-    def `SameDim` as SameDimCuMatrix(M: CuMatrixBase, N: CuMatrixBase) -> bool
+    def `SameDim` as same_dim_cu_matrix(M: CuMatrixBase, N: CuMatrixBase) -> bool
 
-    def `SameDimAndStride` as SameDimAndStrideCuMatrix(M: CuMatrixBase,
+    def `SameDimAndStride` as same_dim_and_stride_cu_matrix(M: CuMatrixBase,
                                                        N: CuMatrixBase) -> bool

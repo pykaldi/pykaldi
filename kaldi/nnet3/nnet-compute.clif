@@ -9,19 +9,19 @@ from "nnet3/nnet-compute.h":
     class NnetComputeOptions:
       debug: bool
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class NnetComputer:
       def __init__(self, options: NnetComputeOptions,
                    computation: NnetComputation, nnet: Nnet,
                    nnet_to_update: Nnet)
 
-      def AcceptInput(self, node_name: str, input: CuMatrix)
+      def `AcceptInput` as accept_input(self, node_name: str, input: CuMatrix)
 
-      def AcceptInputs(self, nnet: Nnet, io: list<NnetIo>)
+      def `AcceptInputs` as accept_inputs(self, nnet: Nnet, io: list<NnetIo>)
 
-      def Run(self)
+      def `Run` as run(self)
 
       # def GetOutput(self, node_name: str) -> CuMatrixBase
 
-      def GetOutputDestructive(self, output_name: str) -> CuMatrix
+      def `GetOutputDestructive` as get_output_destructive(self, output_name: str) -> CuMatrix

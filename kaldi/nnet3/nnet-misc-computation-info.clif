@@ -5,4 +5,4 @@ from "nnet3/nnet-computation.h":
     class MiscComputationInfo:
       def __eq__(self, other: MiscComputationInfo) -> bool
 
-      def Print(self, os: ostream)
+      def `Print` as print(self, os: ostream)

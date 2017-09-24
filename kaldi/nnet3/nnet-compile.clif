@@ -14,4 +14,4 @@ from "nnet3/nnet-compile.h":
       #                                     request: list<ComputationRequest>,
       #                                     nnet: Nnet)
 
-      def CreateComputation(self, opts: CompilerOptions) -> NnetComputation
+      def `CreateComputation` as create_computation(self, opts: CompilerOptions) -> NnetComputation

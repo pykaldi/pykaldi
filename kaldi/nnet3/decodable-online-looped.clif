@@ -10,7 +10,7 @@ from "nnet3/decodable-online-looped.h":
                    input_features: OnlineFeatureInterface,
                    ivector_features: OnlineFeatureInterface)
 
-      def FrameSubsamplingFactor(self) -> int
+      def `FrameSubsamplingFactor` as frame_subsampling_factor(self) -> int
 
     class DecodableAmNnetLoopedOnline(DecodableInterface):
       def __init__(self, trans_model: TransitionModel,
@@ -18,4 +18,4 @@ from "nnet3/decodable-online-looped.h":
                    input_features: OnlineFeatureInterface,
                    ivector_features: OnlineFeatureInterface)
 
-      def FrameSubsamplingFactor(self) -> int
+      def `FrameSubsamplingFactor` as frame_subsampling_factor(self) -> int

@@ -4,17 +4,17 @@ from "nnet3/nnet-common-clifwrap.h" import *
 from "nnet3/nnet-descriptor.h":
   namespace `kaldi::nnet3`:
     class ForwardingDescriptor:
-      def MapToInput(self, output: Index) -> tuple<int,Index>
+      def `MapToInput` as map_to_input(self, output: Index) -> tuple<int,Index>
 
       # def Dim(self, nnet: Nnet) -> int
 
-      def Copy(self) -> ForwardingDescriptor
+      def `Copy` as copy(self) -> ForwardingDescriptor
 
-      def Modulus(self) -> int
+      def `Modulus` as modulus(self) -> int
 
-      def WriteConfig(self, os: ostream, node_names: list<str>)
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
-      def GetNodeDependencies(self) -> list<int>
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
 
     class SimpleForwardingDescriptor(ForwardingDescriptor):
       def __init__(self, src_node: int)
@@ -40,20 +40,20 @@ from "nnet3/nnet-descriptor.h":
                    variable_name: VariableName, value: int)
 
     class SumDescriptor:
-      def GetDependencies(self, ind: Index) -> list<tuple<int,Index>>
+      def `GetDependencies` as get_dependencies(self, ind: Index) -> list<tuple<int,Index>>
 
       # def IsComputable(self, ind: Index, cindex_set: CindexSet)
       #     -> list<tuple<int,Index>>
 
       # def Dim(self, nnet: Nnet) -> int
 
-      def Copy(self) -> SumDescriptor
+      def `Copy` as copy(self) -> SumDescriptor
 
-      def GetNodeDependencies(self) -> list<int>
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
 
-      def Modulus(self) -> int
+      def `Modulus` as modulus(self) -> int
 
-      def WriteConfig(self, os: ostream, node_names: list<str>)
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
     class OptionalSumDescriptor(SumDescriptor):
       def __init__(self, src: SumDescriptor)
@@ -75,18 +75,18 @@ from "nnet3/nnet-descriptor.h":
       # def Dim(self, nnet: Nnet) -> int
       # def Parse(self, node_names: list<str>, next_token: ??) -> bool
 
-      def WriteConfig(self, os: ostream, node_names: list<str>)
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
-      def GetDependencies(self, index: Index) -> list<tuple<int, Index>>
+      def `GetDependencies` as get_dependencies(self, index: Index) -> list<tuple<int, Index>>
 
       # def IsComputable(self, ind: Index, cindex_set: CindexSet)
       #     -> list<tuple<int,Index>>
 
-      def GetNodeDependencies(self) -> list<int>
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
 
-      def Modulus(self) -> int
+      def `Modulus` as modulus(self) -> int
 
-      def NumParts(self) -> int
+      def `NumParts` as num_parts(self) -> int
 
       # def Part(self, n: int) -> SumDescriptor
 
@@ -114,8 +114,8 @@ from "nnet3/nnet-descriptor.h":
       def __init__(self, t: DescriptorType, value1: int = default,
                    value2: int = default)
 
-      def GetNormalizedDescriptor(self) -> GeneralDescriptor
+      def `GetNormalizedDescriptor` as get_normalized_descriptor(self) -> GeneralDescriptor
 
-      def ConvertToDescriptor(self) -> Descriptor
+      def `ConvertToDescriptor` as convert_to_descriptor(self) -> Descriptor
 
-      def Print(self, node_names: list<str>, os: ostream)
+      def `Print` as print(self, node_names: list<str>, os: ostream)

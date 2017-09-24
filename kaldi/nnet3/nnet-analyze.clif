@@ -13,7 +13,7 @@ from "nnet3/nnet-analyze.h":
       matrices_written: list<int>
       has_side_effects: bool
 
-    def PrintCommandAttributes(os: ostream,
+    def `PrintCommandAttributes` as print_command_attributes(os: ostream,
                                attributes: list<CommandAttributes>)
 
     enum AccessType with:
@@ -22,21 +22,21 @@ from "nnet3/nnet-analyze.h":
       `kReadWriteAccess` as READ_WRITE_ACCESS
 
     class ComputationVariables:
-      def Init(self, computation: NnetComputation)
+      def `Init` as init(self, computation: NnetComputation)
 
-      def RecordAccessForSubmatrix(self, submatrix_index: int,
+      def `RecordAccessForSubmatrix` as record_access_for_submatrix(self, submatrix_index: int,
                                    access_type: AccessType,
                                    ca: CommandAttributes)
 
-      def AppendVariablesForMatrix(self, matrix_index: int) -> list<int>
+      def `AppendVariablesForMatrix` as append_variables_for_matrix(self, matrix_index: int) -> list<int>
 
-      def AppendVariablesForSubmatrix(self, submatrix_index: int) -> list<int>
+      def `AppendVariablesForSubmatrix` as append_variables_for_submatrix(self, submatrix_index: int) -> list<int>
 
-      def NumVariables(self) -> int
+      def `NumVariables` as num_variables(self) -> int
 
-      def GetMatrixForVariable(self, variable: int) -> int
+      def `GetMatrixForVariable` as get_matrix_for_variable(self, variable: int) -> int
 
-      def DescribeVariable(self, variable: int) -> str
+      def `DescribeVariable` as describe_variable(self, variable: int) -> str
 
     class Access:
       command_index: int
@@ -47,7 +47,7 @@ from "nnet3/nnet-analyze.h":
 
       def __lt__(self, other: Access) -> bool
 
-    def ComputeVariableAccesses(variables: ComputationVariables,
+    def `ComputeVariableAccesses` as compute_variable_accesses(variables: ComputationVariables,
                                 command_attributes: list<CommandAttributes>)
         -> list<list<Access>>
 
@@ -58,12 +58,12 @@ from "nnet3/nnet-analyze.h":
       is_input: bool
       is_output: bool
 
-    def ComputeMatrixAccesses(nnet: Nnet, computation: NnetComputation,
+    def `ComputeMatrixAccesses` as compute_matrix_accesses(nnet: Nnet, computation: NnetComputation,
                               variables: ComputationVariables,
                               command_attributes: list<CommandAttributes>)
         -> list<MatrixAccesses>
 
-    def PrintMatrixAccesses(os: ostream, matrix_accesses: list<MatrixAccesses>)
+    def `PrintMatrixAccesses` as print_matrix_accesses(os: ostream, matrix_accesses: list<MatrixAccesses>)
 
     class Analyzer:
       variables: ComputationVariables
@@ -71,27 +71,27 @@ from "nnet3/nnet-analyze.h":
       variable_accesses: list<list<Access>>
       matrix_accesses: list<MatrixAccesses>
 
-      def Init(self, nnet: Nnet, computation: NnetComputation)
+      def `Init` as init(self, nnet: Nnet, computation: NnetComputation)
 
     class ComputationAnalysis:
       def __init__(self, computation: NnetComputation, analyzer: Analyzer)
 
-      def FirstAccess(self, s: int) -> int
+      def `FirstAccess` as first_access(self, s: int) -> int
 
-      def LastAccess(self, s: int) -> int
+      def `LastAccess` as last_access(self, s: int) -> int
 
-      def LastWriteAccess(self, s: int) -> int
+      def `LastWriteAccess` as last_write_access(self, s: int) -> int
 
-      def DataInvalidatedCommand(self, c: int, s: int) -> int
+      def `DataInvalidatedCommand` as data_invalidated_command(self, c: int, s: int) -> int
 
-      def FirstMatrixAccess(self, m: int) -> int
+      def `FirstMatrixAccess` as first_matrix_access(self, m: int) -> int
 
-      def LastMatrixAccess(self, m: int) -> int
+      def `LastMatrixAccess` as last_matrix_access(self, m: int) -> int
 
-    def ComputeMatrixToSubmatrix(computation: NnetComputation)
+    def `ComputeMatrixToSubmatrix` as compute_matrix_to_submatrix(computation: NnetComputation)
         -> list<list<int>>
 
-    def ComputeCommandAttributes(nnet: Nnet, computation: NnetComputation,
+    def `ComputeCommandAttributes` as compute_command_attributes(nnet: Nnet, computation: NnetComputation,
                                  variables: ComputationVariables)
         -> list<CommandAttributes>
 
@@ -103,10 +103,10 @@ from "nnet3/nnet-analyze.h":
       def __init__(self, config: CheckComputationOptions, nnet: Nnet,
                    computation: NnetComputation)
 
-      def Check(self)
+      def `Check` as check(self)
 
-    def GetCommandsOfType(computation: NnetComputation, t: CommandType)
+    def `GetCommandsOfType` as get_commands_of_type(computation: NnetComputation, t: CommandType)
         -> list<int>
 
-    def CheckComputation(nnet: Nnet, computation: NnetComputation,
+    def `CheckComputation` as check_computation(nnet: Nnet, computation: NnetComputation,
                          check_rewrite: bool = default)

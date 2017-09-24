@@ -24,24 +24,24 @@ from "nnet3/nnet-optimize.h":
       snip_row_ops: bool
       optimize_looped_computation: bool
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
       def __eq__(self, other: NnetOptimizeOptions) -> bool
 
-    def MaxOutputTimeInRequest(request: ComputationRequest) -> int
+    def `MaxOutputTimeInRequest` as max_output_time_in_request(request: ComputationRequest) -> int
 
-    def Optimize(config: NnetOptimizeOptions, nnet: Nnet,
+    def `Optimize` as optimize(config: NnetOptimizeOptions, nnet: Nnet,
                  max_output_time_in_request: int, computation: NnetComputation)
 
     class CachingOptimizingCompilerOptions:
       use_shortcut: bool
       cache_capacity: int
 
-      def Register(self, opt: OptionsItf)
+      def `Register` as register(self, opt: OptionsItf)
 
     class CachingOptimizingCompiler:
       def __init__(self, nnet: Nnet,
@@ -52,23 +52,23 @@ from "nnet3/nnet-optimize.h":
           self, nnet: Nnet, opt_config: NnetOptimizeOptions,
           config: CachingOptimizingCompilerOptions = default)
 
-      def Compile(self, request: ComputationRequest) -> NnetComputation
+      def `Compile` as compile(self, request: ComputationRequest) -> NnetComputation
 
-      def ReadCache(self, is: istream, binary: bool)
+      def `ReadCache` as read_cache(self, is: istream, binary: bool)
 
-      def WriteCache(self, os: ostream, binary: bool)
+      def `WriteCache` as write_cache(self, os: ostream, binary: bool)
 
-    def ConsolidateModelUpdate(nnet: Nnet, computation: NnetComputation)
+    def `ConsolidateModelUpdate` as consolidate_model_update(nnet: Nnet, computation: NnetComputation)
 
-    def ConvertAdditionToAssignment(nnet: Nnet, computation: NnetComputation)
+    def `ConvertAdditionToAssignment` as convert_addition_to_assignment(nnet: Nnet, computation: NnetComputation)
 
-    def VariableMergingOptimization(config: NnetOptimizeOptions,
+    def `VariableMergingOptimization` as variable_merging_optimization(config: NnetOptimizeOptions,
                                     nnet: Nnet, computation: NnetComputation)
 
-    def RemoveUnnecessaryZeroing(nnet: Nnet, computation: NnetComputation)
+    def `RemoveUnnecessaryZeroing` as remove_unnecessary_zeroing(nnet: Nnet, computation: NnetComputation)
 
-    def MoveSizingCommands(nnet: Nnet, computation: NnetComputation)
+    def `MoveSizingCommands` as move_sizing_commands(nnet: Nnet, computation: NnetComputation)
 
-    def RemoveUnnecessaryAllocation(nnet: Nnet, computation: NnetComputation)
+    def `RemoveUnnecessaryAllocation` as remove_unnecessary_allocation(nnet: Nnet, computation: NnetComputation)
 
-    def ConsolidateIoOperations(nnet: Nnet, computation: NnetComputation)
+    def `ConsolidateIoOperations` as consolidate_io_operations(nnet: Nnet, computation: NnetComputation)

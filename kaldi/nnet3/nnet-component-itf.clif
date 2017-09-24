@@ -10,37 +10,37 @@ from "nnet3/nnet-component-itf.h":
 
   namespace `kaldi::nnet3`:
     class ComponentPrecomputedIndexes:
-      def Copy(self) -> ComponentPrecomputedIndexes
+      def `Copy` as copy(self) -> ComponentPrecomputedIndexes
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Type(self) -> str
+      def `Type` as type(self) -> str
 
       @classmethod
-      def ReadNew(cls, is: istream, binary: bool)
+      def `ReadNew` as read_new(cls, is: istream, binary: bool)
           -> ComponentPrecomputedIndexes
 
       @classmethod
-      def NewComponentPrecomputedIndexesOfType(cls, cpi_type: str)
+      def `NewComponentPrecomputedIndexesOfType` as new_component_precomputed_indexes_of_type(cls, cpi_type: str)
           -> ComponentPrecomputedIndexes
 
     class Component:
-      def Propagate(self, indexes: ComponentPrecomputedIndexes,
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
                     in: CuMatrixBase, out: CuMatrixBase) -> Void
 
-      def Backprop(self, debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(self, debug_info: str, indexes: ComponentPrecomputedIndexes,
                    in_value: CuMatrixBase, out_value: CuMatrixBase,
                    out_deriv: CuMatrixBase, memo: Void, to_update: Component,
                    in_deriv: CuMatrixBase)
 
-      def StoreStats(self, in_value: CuMatrixBase, out_value: CuMatrixBase,
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase, out_value: CuMatrixBase,
                      memo: Void)
 
-      def ZeroStats(self)
+      def `ZeroStats` as zero_stats(self)
 
-      def GetInputIndexes(self, misc_info: MiscComputationInfo,
+      def `GetInputIndexes` as get_input_indexes(self, misc_info: MiscComputationInfo,
                           output_index: Index) -> list<Index>
 
       # def IsComputable(self, misc_info: MiscComputationInfo,
@@ -51,45 +51,45 @@ from "nnet3/nnet-component-itf.h":
       # def ReorderIndexes(self, input_indexes: list<Index>,
       #                    output_indexes: list<Index>)
 
-      def PrecomputeIndexes(self, misc_info: MiscComputationInfo,
+      def `PrecomputeIndexes` as precompute_indexes(self, misc_info: MiscComputationInfo,
                             input_indexes: list<Index>,
                             output_indexes: list<Index>, need_backprop: bool)
           -> ComponentPrecomputedIndexes
 
-      def Type(self) -> str
+      def `Type` as type(self) -> str
 
-      def InitFromConfig(self, cfl: ConfigLine)
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
 
-      def InputDim(self) -> int
+      def `InputDim` as input_dim(self) -> int
 
-      def OutputDim(self) -> int
+      def `OutputDim` as output_dim(self) -> int
 
-      def Properties(self) -> int
-
-      @classmethod
-      def ReadNew(cls, is: istream, binary: bool) -> Component
-
-      def Copy(self) -> Component
+      def `Properties` as properties(self) -> int
 
       @classmethod
-      def NewComponentOfType(cls, type: str) -> Component
+      def `ReadNew` as read_new(cls, is: istream, binary: bool) -> Component
 
-      def Read(self, is: istream, binary: bool)
+      def `Copy` as copy(self) -> Component
 
-      def Write(self, os: ostream, binary: bool)
+      @classmethod
+      def `NewComponentOfType` as new_component_of_type(cls, type: str) -> Component
 
-      def Info(self) -> str
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Scale(self, scale: float)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Add(self, alpha: float, other: Component)
+      def `Info` as info(self) -> str
 
-      def DeleteMemo(self, memo: Void)
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `DeleteMemo` as delete_memo(self, memo: Void)
 
     class RandomComponent(Component):
-      def ResetGenerator(self)
+      def `ResetGenerator` as reset_generator(self)
 
-      def SetTestMode(self, test_mode: bool)
+      def `SetTestMode` as set_test_mode(self, test_mode: bool)
 
     class UpdatableComponent(Component):
       # FIXME: Enabling copy constructor requires implementing pure virtual
@@ -98,27 +98,27 @@ from "nnet3/nnet-component-itf.h":
       # def `UpdatableComponent` as new_from_other(self,
       #                                            other: UpdatableComponent)
 
-      def DotProduct(self, other: UpdatableComponent) -> float
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
 
-      def PerturbParams(self, stddev: float)
+      def `PerturbParams` as perturb_params(self, stddev: float)
 
-      def SetUnderlyingLearningRate(self, lrate: float)
+      def `SetUnderlyingLearningRate` as set_underlying_learning_rate(self, lrate: float)
 
-      def SetActualLearningRate(self, lrate: float)
+      def `SetActualLearningRate` as set_actual_learning_rate(self, lrate: float)
 
-      def SetAsGradient(self)
+      def `SetAsGradient` as set_as_gradient(self)
 
-      def FreezeNaturalGradient(self, freeze: bool)
+      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
 
-      def LearningRate(self) -> float
+      def `LearningRate` as learning_rate(self) -> float
 
-      def MaxChange(self) -> float
+      def `MaxChange` as max_change(self) -> float
 
-      def NumParameters(self) -> int
+      def `NumParameters` as num_parameters(self) -> int
 
-      def Vectorize(self, params: VectorBase)
+      def `Vectorize` as vectorize(self, params: VectorBase)
 
-      def UnVectorize(self, params: VectorBase)
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
 
     class NonlinearComponent(Component):
       # FIXME: Enabling copy constructor requires implementing pure virtual
@@ -130,7 +130,7 @@ from "nnet3/nnet-component-itf.h":
       # def ValueSum(self) -> CuDoubleVector
       # def DerivSum(self) -> CuDoubleVector
 
-      def Count(self) -> float
+      def `Count` as count(self) -> float
 
     enum ComponentProperties with:
       `kSimpleComponent` as SIMPLE_COMPONENT

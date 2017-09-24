@@ -11,28 +11,28 @@ from "nnet3/am-nnet-simple.h":
       @add__init__
       def `AmNnetSimple` as new_from_nnet(self, nnet: Nnet)
 
-      def NumPdfs(self) -> int
+      def `NumPdfs` as num_pdfs(self) -> int
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def GetNnet(self) -> Nnet
+      def `GetNnet` as get_nnet(self) -> Nnet
 
-      def SetNnet(self, nnet: Nnet)
+      def `SetNnet` as set_nnet(self, nnet: Nnet)
 
-      def SetPriors(self, priors: VectorBase)
+      def `SetPriors` as set_priors(self, priors: VectorBase)
 
       # def Priors(self) -> VectorBase
 
-      def Info(self) -> str
+      def `Info` as info(self) -> str
 
-      def LeftContext(self) -> int
+      def `LeftContext` as left_context(self) -> int
 
-      def RightContext(self) -> int
+      def `RightContext` as right_context(self) -> int
 
-      def InputDim(self) -> int
+      def `InputDim` as input_dim(self) -> int
 
-      def IvectorDim(self) -> int
+      def `IvectorDim` as ivector_dim(self) -> int
 
-      def SetContext(self)
+      def `SetContext` as set_context(self)

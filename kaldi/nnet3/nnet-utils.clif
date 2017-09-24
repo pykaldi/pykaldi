@@ -6,70 +6,70 @@ from "nnet3/nnet-nnet-clifwrap.h" import *
 
 from "nnet3/nnet-utils.h":
   namespace `kaldi::nnet3`:
-    def EvaluateComputationRequest(nnet: Nnet, request: ComputationRequest)
+    def `EvaluateComputationRequest` as evaluate_computation_request(nnet: Nnet, request: ComputationRequest)
         -> list<list<bool>>
 
-    def NumOutputNodes(nnet: Nnet) -> int
+    def `NumOutputNodes` as num_output_nodes(nnet: Nnet) -> int
 
-    def NumInputNodes(nnet: Nnet) -> int
+    def `NumInputNodes` as num_input_nodes(nnet: Nnet) -> int
 
-    def PerturbParams(stddev: float, nnet: Nnet)
+    def `PerturbParams` as perturb_params(stddev: float, nnet: Nnet)
 
-    def DotProduct(nnet1: Nnet, nnet2: Nnet) -> float
+    def `DotProduct` as dot_product(nnet1: Nnet, nnet2: Nnet) -> float
 
-    def ComponentDotProducts(nnet1: Nnet, nnet2: Nnet, dot_prod: VectorBase)
+    def `ComponentDotProducts` as component_dot_products(nnet1: Nnet, nnet2: Nnet, dot_prod: VectorBase)
 
-    def PrintVectorPerUpdatableComponent(nnet: Nnet, vec: VectorBase) -> str
+    def `PrintVectorPerUpdatableComponent` as print_vector_per_updatable_component(nnet: Nnet, vec: VectorBase) -> str
 
-    def IsSimpleNnet(nnet: Nnet) -> bool
+    def `IsSimpleNnet` as is_simple_nnet(nnet: Nnet) -> bool
 
-    def ZeroComponentStats(nnet: Nnet)
+    def `ZeroComponentStats` as zero_component_stats(nnet: Nnet)
 
-    def ComputeSimpleNnetContext(nnet: Nnet) -> (left_context: int,
+    def `ComputeSimpleNnetContext` as compute_simple_nnet_context(nnet: Nnet) -> (left_context: int,
                                                  right_context: int)
 
-    def SetLearningRate(learning_rate: float, nnet: Nnet)
+    def `SetLearningRate` as set_learning_rate(learning_rate: float, nnet: Nnet)
 
-    def ScaleNnet(scale: float, nnet: Nnet)
+    def `ScaleNnet` as scale_nnet(scale: float, nnet: Nnet)
 
-    def SetNnetAsGradient(nnet: Nnet)
+    def `SetNnetAsGradient` as set_nnet_as_gradient(nnet: Nnet)
 
-    def AddNnet(src: Nnet, alpha: float, dest: Nnet)
+    def `AddNnet` as add_nnet(src: Nnet, alpha: float, dest: Nnet)
 
-    def AddNnetComponents(src: Nnet, alphas: Vector, scale: float,
+    def `AddNnetComponents` as add_nnet_components(src: Nnet, alphas: Vector, scale: float,
                           dest: Nnet)
 
-    def NnetIsRecurrent(nnet: Nnet) -> bool
+    def `NnetIsRecurrent` as nnet_is_recurrent(nnet: Nnet) -> bool
 
-    def NumParameters(src: Nnet) -> int
+    def `NumParameters` as num_parameters(src: Nnet) -> int
 
-    def VectorizeNnet(src: Nnet, params: VectorBase)
+    def `VectorizeNnet` as vectorize_nnet(src: Nnet, params: VectorBase)
 
-    def UnVectorizeNnet(params: VectorBase, dest: Nnet)
+    def `UnVectorizeNnet` as un_vectorize_nnet(params: VectorBase, dest: Nnet)
 
-    def NumUpdatableComponents(dest: Nnet) -> int
+    def `NumUpdatableComponents` as num_updatable_components(dest: Nnet) -> int
 
-    def FreezeNaturalGradient(freeze: bool, nnet: Nnet)
+    def `FreezeNaturalGradient` as freeze_natural_gradient(freeze: bool, nnet: Nnet)
 
-    def ConvertRepeatedToBlockAffine(nnet: Nnet)
+    def `ConvertRepeatedToBlockAffine` as convert_repeated_to_block_affine(nnet: Nnet)
 
-    def NnetInfo(nnet: Nnet) -> str
+    def `NnetInfo` as nnet_info(nnet: Nnet) -> str
 
-    def SetDropoutProportion(dropout_proportion: float, nnet: Nnet)
+    def `SetDropoutProportion` as set_dropout_proportion(dropout_proportion: float, nnet: Nnet)
 
-    def HasBatchnorm(nnet: Nnet) -> bool
+    def `HasBatchnorm` as has_batchnorm(nnet: Nnet) -> bool
 
-    def SetBatchnormTestMode(test_mode: bool, nnet: Nnet)
+    def `SetBatchnormTestMode` as set_batchnorm_test_mode(test_mode: bool, nnet: Nnet)
 
-    def RecomputeStats(egs: list<NnetExample>, nnet: Nnet)
+    def `RecomputeStats` as recompute_stats(egs: list<NnetExample>, nnet: Nnet)
 
-    def SetDropoutTestMode(test_mode: bool, nnet: Nnet)
+    def `SetDropoutTestMode` as set_dropout_test_mode(test_mode: bool, nnet: Nnet)
 
-    def ResetGenerators(nnet: Nnet)
+    def `ResetGenerators` as reset_generators(nnet: Nnet)
 
-    def FindOrphanComponents(nnet: Nnet) -> list<int>
+    def `FindOrphanComponents` as find_orphan_components(nnet: Nnet) -> list<int>
 
-    def FindOrphanNodes(nnet: Nnet) -> list<int>
+    def `FindOrphanNodes` as find_orphan_nodes(nnet: Nnet) -> list<int>
 
     class CollapseModelConfig:
       collapse_dropout: bool
@@ -77,11 +77,11 @@ from "nnet3/nnet-utils.h":
       collapse_affine: bool
       collapse_scale: bool
 
-    def CollapseModel(config: CollapseModelConfig, nnet: Nnet)
+    def `CollapseModel` as collapse_model(config: CollapseModelConfig, nnet: Nnet)
 
-    def ReadEditConfig(config_file: istream, nnet: Nnet)
+    def `ReadEditConfig` as read_edit_config(config_file: istream, nnet: Nnet)
 
-    def UpdateNnetWithMaxChange(delta_nnet: Nnet, max_param_change: float,
+    def `UpdateNnetWithMaxChange` as update_nnet_with_max_change(delta_nnet: Nnet, max_param_change: float,
                                 max_change_scale: float, scale: float,
                                 nnet: Nnet)
         -> (suc: bool, num_max_change_per_component_applied: list<int>,

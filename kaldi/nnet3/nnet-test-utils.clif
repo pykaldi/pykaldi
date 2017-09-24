@@ -19,25 +19,25 @@ from "nnet3/nnet-test-utils.h":
       allow_statistics_pooling: bool
       output_dim: int
 
-    def GenerateConfigSequence(opts: NnetGenerationOptions) -> list<str>
+    def `GenerateConfigSequence` as generate_config_sequence(opts: NnetGenerationOptions) -> list<str>
 
-    def GenerateConfigSequenceCompositeBlock(opts: NnetGenerationOptions)
+    def `GenerateConfigSequenceCompositeBlock` as generate_config_sequence_composite_block(opts: NnetGenerationOptions)
         -> list<str>
 
-    def ComputeExampleComputationRequestSimple(nnet: Nnet,
+    def `ComputeExampleComputationRequestSimple` as compute_example_computation_request_simple(nnet: Nnet,
                                                request: ComputationRequest)
         -> list<Matrix>
 
-    def GenerateRandomSimpleComponent() -> Component
+    def `GenerateRandomSimpleComponent` as generate_random_simple_component() -> Component
 
-    def NnetParametersAreIdentical(nnet1: Nnet, nnet2: Nnet, threshold: float)
+    def `NnetParametersAreIdentical` as nnet_parameters_are_identical(nnet1: Nnet, nnet2: Nnet, threshold: float)
         -> bool
 
-    def GenerateSimpleNnetTrainingExample(num_supervised_frames: int,
+    def `GenerateSimpleNnetTrainingExample` as generate_simple_nnet_training_example(num_supervised_frames: int,
                                           left_context: int,
                                           right_context: int, input_dim: int,
                                           output_dim: int, ivector_dim: int)
         -> NnetExample
 
-    def ExampleApproxEqual(eg1: NnetExample, eg2: NnetExample, delta: float)
+    def `ExampleApproxEqual` as example_approx_equal(eg1: NnetExample, eg2: NnetExample, delta: float)
         -> bool

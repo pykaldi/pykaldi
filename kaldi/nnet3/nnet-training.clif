@@ -23,7 +23,7 @@ from "nnet3/nnet-training.h":
       compute_config: NnetComputeOptions
       compiler_config: CachingOptimizingCompilerOptions
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class ObjectiveFunctionInfo:
       current_phase: int
@@ -35,26 +35,26 @@ from "nnet3/nnet-training.h":
       tot_objf_this_phase: float
       tot_aux_objf_this_phase: float
 
-      def UpdateStats(self, output_name: str, minibatches_per_phase: int,
+      def `UpdateStats` as update_stats(self, output_name: str, minibatches_per_phase: int,
                       minibatch_counter: int, this_minibatch_weight: float,
                       this_minibatch_tot_objf: float,
                       this_minibatch_tot_aux_objf: float = default)
 
-      def PrintStatsForThisPhase(self, output_name: str,
+      def `PrintStatsForThisPhase` as print_stats_for_this_phase(self, output_name: str,
                                  minibatches_per_phase: int, phase: int)
 
-      def PrintTotalStats(self, output_name: str) -> bool
+      def `PrintTotalStats` as print_total_stats(self, output_name: str) -> bool
 
     class NnetTrainer:
       def __init__(self, config: NnetTrainerOptions, nnet: Nnet)
 
-      def Train(self, eg: NnetExample)
+      def `Train` as train(self, eg: NnetExample)
 
-      def PrintTotalStats(self) -> bool
+      def `PrintTotalStats` as print_total_stats(self) -> bool
 
-      def PrintMaxChangeStats(self)
+      def `PrintMaxChangeStats` as print_max_change_stats(self)
 
-    def ComputeObjectiveFunction(supervision: GeneralMatrix,
+    def `ComputeObjectiveFunction` as compute_objective_function(supervision: GeneralMatrix,
                                  objective_type: ObjectiveType,
                                  output_name: str, supply_deriv: bool,
                                  computer: NnetComputer)

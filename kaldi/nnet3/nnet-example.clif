@@ -26,11 +26,11 @@ from "nnet3/nnet-example.h":
                                          labels: list<list<tuple<int, float>>>,
                                          t_stride: int = default)
 
-      def Swap(self, other: NnetIo)
+      def `Swap` as swap(self, other: NnetIo)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
       def __eq__(self, other: NnetIo) -> bool
 
@@ -39,16 +39,16 @@ from "nnet3/nnet-example.h":
     class NnetExample:
       io: list<NnetIo>
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
       @add__init__
       def `NnetExample` as new_from_other(self, other: NnetExample)
 
-      def Swap(self, other: NnetExample)
+      def `Swap` as swap(self, other: NnetExample)
 
-      def Compress(self)
+      def `Compress` as compress(self)
 
       def __eq__(self, other: NnetExample) -> bool
 

@@ -27,7 +27,7 @@ from "nnet3/nnet-nnet.h":
       dim: int
       dim_offset: int
 
-      # def Dim(nnet: Nnet) -> int
+      # def `Dim` as Dim(nnet: Nnet) -> int
 
       def __init__(self, nt: NodeType = default)
 
@@ -36,73 +36,73 @@ from "nnet3/nnet-nnet.h":
 
 
     class Nnet:
-      def ReadConfig(self, config_file: istream)
+      def `ReadConfig` as read_config(self, config_file: istream)
 
-      def NumComponents(self) -> int
+      def `NumComponents` as num_components(self) -> int
 
-      def NumNodes(self) -> int
+      def `NumNodes` as num_nodes(self) -> int
 
-      # def GetComponent(self, c: int) -> Component
+      # def `GetComponent` as GetComponent(self, c: int) -> Component
 
-      def SetComponent(self, c: int, component: Component)
+      def `SetComponent` as set_component(self, c: int, component: Component)
 
-      def AddComponent(self, name: str, component: Component) -> int
+      def `AddComponent` as add_component(self, name: str, component: Component) -> int
 
-      def GetNode(self, node: int) -> NetworkNode
+      def `GetNode` as get_node(self, node: int) -> NetworkNode
 
-      def IsComponentNode(self, node: int) -> bool
+      def `IsComponentNode` as is_component_node(self, node: int) -> bool
 
-      def IsDimRangeNode(self, node: int) -> bool
+      def `IsDimRangeNode` as is_dim_range_node(self, node: int) -> bool
 
-      def IsInputNode(self, node: int) -> bool
+      def `IsInputNode` as is_input_node(self, node: int) -> bool
 
-      def IsDescriptorNode(self, node: int) -> bool
+      def `IsDescriptorNode` as is_descriptor_node(self, node: int) -> bool
 
-      def IsOutputNode(self, node: int) -> bool
+      def `IsOutputNode` as is_output_node(self, node: int) -> bool
 
-      def IsComponentInputNode(self, node: int) -> bool
+      def `IsComponentInputNode` as is_component_input_node(self, node: int) -> bool
 
-      def GetNodeNames(self) -> list<str>
+      def `GetNodeNames` as get_node_names(self) -> list<str>
 
-      def GetNodeName(self, node_index: int) -> str
+      def `GetNodeName` as get_node_name(self, node_index: int) -> str
 
-      def SetNodeName(self, node_index: int, new_name: str)
+      def `SetNodeName` as set_node_name(self, node_index: int, new_name: str)
 
-      def GetComponentNames(self) -> list<str>
+      def `GetComponentNames` as get_component_names(self) -> list<str>
 
-      def GetComponentName(self, node_index: int) -> str
+      def `GetComponentName` as get_component_name(self, node_index: int) -> str
 
-      def GetNodeIndex(self, node_name: str) -> int
+      def `GetNodeIndex` as get_node_index(self, node_name: str) -> int
 
-      def GetComponentIndex(self, component_name: str) -> int
+      def `GetComponentIndex` as get_component_index(self, component_name: str) -> int
 
-      def InputDim(self, input_name: str) -> int
+      def `InputDim` as input_dim(self, input_name: str) -> int
 
-      def OutputDim(self, output_name: str) -> int
+      def `OutputDim` as output_dim(self, output_name: str) -> int
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Check(self, warn_for_orphans: bool = default)
+      def `Check` as check(self, warn_for_orphans: bool = default)
 
-      def Info(self) -> str
+      def `Info` as info(self) -> str
 
-      def Modulus(self) -> int
+      def `Modulus` as modulus(self) -> int
 
       @add__init__
       def `Nnet` as new_from_other(self, other: Nnet)
 
-      def Copy(self) -> Nnet
+      def `Copy` as copy(self) -> Nnet
 
-      def Swap(self, other: Nnet)
+      def `Swap` as swap(self, other: Nnet)
 
-      def RemoveOrphanNodes(self, remove_orphan_inputs: bool = default)
+      def `RemoveOrphanNodes` as remove_orphan_nodes(self, remove_orphan_inputs: bool = default)
 
-      def RemoveOrphanComponents(self)
+      def `RemoveOrphanComponents` as remove_orphan_components(self)
 
-      def RemoveSomeNodes(self, nodes_to_remove: list<int>)
+      def `RemoveSomeNodes` as remove_some_nodes(self, nodes_to_remove: list<int>)
 
-      def ResetGenerators(self)
+      def `ResetGenerators` as reset_generators(self)
 
-      def GetConfigLines(self, include_dim: bool) -> list<str>
+      def `GetConfigLines` as get_config_lines(self, include_dim: bool) -> list<str>

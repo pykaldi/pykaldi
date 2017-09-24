@@ -25,23 +25,23 @@ from "nnet3/nnet-diagnostics.h":
       compute_config: NnetComputeOptions
       compiler_config: CachingOptimizingCompilerOptions
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class NnetComputeProb:
       def __init__(self, config: NnetComputeProbOptions, nnet: Nnet)
 
       # NnetComputeProb second constructor
 
-      def Reset(self)
+      def `Reset` as reset(self)
 
-      def Compute(self, eg: NnetExample)
+      def `Compute` as compute(self, eg: NnetExample)
 
-      def PrintTotalStats(self) -> bool
+      def `PrintTotalStats` as print_total_stats(self) -> bool
 
-      def GetObjective(self, output_name: str) -> SimpleObjectiveInfo
+      def `GetObjective` as get_objective(self, output_name: str) -> SimpleObjectiveInfo
 
-      def GetTotalObjective(self) -> (tot_objective: float, tot_weight: float)
+      def `GetTotalObjective` as get_total_objective(self) -> (tot_objective: float, tot_weight: float)
 
-      def GetDeriv(self) -> Nnet
+      def `GetDeriv` as get_deriv(self) -> Nnet
 
     # ComputeAccuracy

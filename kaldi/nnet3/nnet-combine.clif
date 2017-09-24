@@ -14,14 +14,14 @@ from "nnet3/nnet-combine.h":
       sum_to_one_penalty: float
       separate_weights_per_component: bool
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class NnetCombiner:
       def __init__(self, config: NnetCombineConfig, num_nnets: int,
                    egs: list<NnetExample>, first_nnet: Nnet)
 
-      def AcceptNnet(self, nnet: Nnet)
+      def `AcceptNnet` as accept_nnet(self, nnet: Nnet)
 
-      def Combine(self)
+      def `Combine` as combine(self)
 
-      def GetNnet(self) -> Nnet
+      def `GetNnet` as get_nnet(self) -> Nnet

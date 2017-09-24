@@ -25,7 +25,7 @@ from "nnet3/decodable-simple-looped.h":
       # It either does nothing or aborts when the assertion fails.
       # def Check(self)
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class DecodableNnetSimpleLoopedInfo:
       def __init__(self, opts: NnetSimpleLoopedComputationOptions, nnet: Nnet)
@@ -39,7 +39,7 @@ from "nnet3/decodable-simple-looped.h":
           self, opts: NnetSimpleLoopedComputationOptions, priors: Vector,
           nnet: Nnet)
 
-      def Init(self, opts: NnetSimpleLoopedComputationOptions, nnet: Nnet)
+      def `Init` as init(self, opts: NnetSimpleLoopedComputationOptions, nnet: Nnet)
 
       # FIXME: Need to remove const qualifiers in C++ code to expose these.
       # opts: NnetSimpleLoopedComputationOptions
@@ -62,13 +62,13 @@ from "nnet3/decodable-simple-looped.h":
                    online_ivectors: MatrixBase = default,
                    online_ivector_period: int = default)
 
-      def NumFrames(self) -> int
+      def `NumFrames` as num_frames(self) -> int
 
-      def OutputDim(self) -> int
+      def `OutputDim` as output_dim(self) -> int
 
-      def GetOutputForFrame(self, frame: int, output: VectorBase)
+      def `GetOutputForFrame` as get_output_for_frame(self, frame: int, output: VectorBase)
 
-      def GetOutput(self, subsampled_frame: int, pdf_id: int) -> float
+      def `GetOutput` as get_output(self, subsampled_frame: int, pdf_id: int) -> float
 
     class DecodableAmNnetSimpleLooped(DecodableInterface):
       def __init__(self, info: DecodableNnetSimpleLoopedInfo,

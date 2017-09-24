@@ -12,28 +12,28 @@ from "nnet3/nnet-computation-graph.h":
       dependencies: list<list<int>>
       segment_ends: list<int>
 
-      def `GetCindexId` as GetCindexIdOrAdd(self, cindex: tuple<int, Index>,
+      def `GetCindexId` as get_cindex_id_or_add(self, cindex: tuple<int, Index>,
                                             is_input: bool)
           -> (id: int, is_new: bool)
 
-      def GetCindexId(self, cindex: tuple<int, Index>) -> int
+      def `GetCindexId` as get_cindex_id(self, cindex: tuple<int, Index>) -> int
 
-      def Renumber(self, start_cindex_id: int, keep: list<bool>)
+      def `Renumber` as renumber(self, start_cindex_id: int, keep: list<bool>)
 
-      def Print(self, os: ostream, node_names: list<str>)
+      def `Print` as print(self, os: ostream, node_names: list<str>)
 
     class ComputationGraphBuilder:
       def __init__(self, nnet: Nnet, graph: ComputationGraph)
 
-      def Compute(self, request: ComputationRequest)
+      def `Compute` as compute(self, request: ComputationRequest)
 
-      def AllOutputsAreComputable(self) -> bool
+      def `AllOutputsAreComputable` as all_outputs_are_computable(self) -> bool
 
-      def ExplainWhyAllOutputsNotComputable(self)
+      def `ExplainWhyAllOutputsNotComputable` as explain_why_all_outputs_not_computable(self)
 
-      def GetComputableInfo(self) -> list<list<bool>>
+      def `GetComputableInfo` as get_computable_info(self) -> list<list<bool>>
 
-      def Prune(self)
+      def `Prune` as prune(self)
 
       enum ComputableInfo with:
         `kUnknown` as UNKNOWN
@@ -57,7 +57,7 @@ from "nnet3/nnet-computation-graph.h":
       # def __init__(self, graph: ComputationGraph, computable_info: list<int>,
       #              node_id: int, treat_unknown_as_computable: bool)
 
-    def ComputeComputationPhases(nnet: Nnet, graph: ComputationGraph)
+    def `ComputeComputationPhases` as compute_computation_phases(nnet: Nnet, graph: ComputationGraph)
         -> list<list<list<int>>>
 
     # class ComputationStepsComputer
