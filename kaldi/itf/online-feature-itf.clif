@@ -4,18 +4,18 @@ from "itf/online-feature-itf.h":
   namespace `kaldi`:
     class OnlineFeatureInterface:
 
-      def Dim(self) -> int
+      def `Dim` as dim(self) -> int
 
-      def IsLastFrame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
 
-      def FrameShiftInSeconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
 
-      def NumFramesReady(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int
 
-      def GetFrame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
 
     class OnlineBaseFeature(OnlineFeatureInterface):
 
-      def AcceptWaveform(self, sampling_rate: float, waveform: VectorBase)
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
 
-      def InputFinished(self)
+      def `InputFinished` as input_finished(self)

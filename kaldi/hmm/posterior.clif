@@ -7,79 +7,79 @@ from "hmm/posterior.h":
   namespace `kaldi`:
     class PosteriorHolder:
       @classmethod
-      def Write(cls, os: ostream, binary: bool,
+      def `Write` as write(cls, os: ostream, binary: bool,
                 t: list<list<tuple<int, float>>>) -> bool
 
-      def Clear(self)
+      def `Clear` as clear(self)
 
-      def Read(self, is: istream) -> bool
+      def `Read` as read(self, is: istream) -> bool
 
       @classmethod
-      def IsReadInBinary(cls) -> bool
+      def `IsReadInBinary` as is_read_in_binary(cls) -> bool
 
-      def Value(self) -> list<list<tuple<int, float>>>
+      def `Value` as value(self) -> list<list<tuple<int, float>>>
 
-      def Swap(self, other: PosteriorHolder)
+      def `Swap` as swap(self, other: PosteriorHolder)
 
-      def ExtractRange(self, other: PosteriorHolder, range: str) -> bool
+      def `ExtractRange` as extract_range(self, other: PosteriorHolder, range: str) -> bool
 
-    def WritePosterior(os: ostream, binary: bool,
+    def `WritePosterior` as write_posterior(os: ostream, binary: bool,
                        post: list<list<tuple<int, float>>>)
 
-    def ReadPosterior(is: istream, binary: bool)
+    def `ReadPosterior` as read_posterior(is: istream, binary: bool)
         -> list<list<tuple<int, float>>>
 
     class GaussPostHolder:
       @classmethod
-      def Write(cls, os: ostream, binary: bool,
+      def `Write` as write(cls, os: ostream, binary: bool,
                 t: list<list<tuple<int, Vector>>>) -> bool
 
-      def Clear(self)
+      def `Clear` as clear(self)
 
-      def Read(self, is: istream) -> bool
+      def `Read` as read(self, is: istream) -> bool
 
       @classmethod
-      def IsReadInBinary(cls) -> bool
+      def `IsReadInBinary` as is_read_in_binary(cls) -> bool
 
-      def Value(self) -> list<list<tuple<int, Vector>>>
+      def `Value` as value(self) -> list<list<tuple<int, Vector>>>
 
-      def Swap(self, other: GaussPostHolder)
+      def `Swap` as swap(self, other: GaussPostHolder)
 
-      def ExtractRange(self, other: GaussPostHolder, range: str) -> bool
+      def `ExtractRange` as extract_range(self, other: GaussPostHolder, range: str) -> bool
 
     # ScalePosterior
 
-    def TotalPosterior(post: list<list<tuple<int, float>>>) -> float
+    def `TotalPosterior` as total_posterior(post: list<list<tuple<int, float>>>) -> float
 
-    def PosteriorEntriesAreDisjoint(post_elem1: list<tuple<int, float>>,
+    def `PosteriorEntriesAreDisjoint` as posterior_entries_are_disjoint(post_elem1: list<tuple<int, float>>,
                                     post_elem2: list<tuple<int, float>>)
         -> bool
 
-    def MergePosteriors(post1: list<list<tuple<int, float>>>,
+    def `MergePosteriors` as merge_posteriors(post1: list<list<tuple<int, float>>>,
                         post2: list<list<tuple<int, float>>>, merge: bool,
                         drop_frames: bool)
         -> (num_frames: int, post: list<list<tuple<int, float>>>)
 
-    def VectorToPosteriorEntry(log_likes: VectorBase, num_gselect: int,
+    def `VectorToPosteriorEntry` as vector_to_posterior_entry(log_likes: VectorBase, num_gselect: int,
                                min_post: float)
         -> (log_like: float, post_entry: list<tuple<int, float>>)
 
-    def AlignmentToPosterior(ali: list<int>) -> list<list<tuple<int, float>>>
+    def `AlignmentToPosterior` as alignment_to_posterior(ali: list<int>) -> list<list<tuple<int, float>>>
 
     # SortPosteriorByPdfs
 
-    def ConvertPosteriorToPdfs(tmodel: TransitionModel,
+    def `ConvertPosteriorToPdfs` as convert_posterior_to_pdfs(tmodel: TransitionModel,
                                post_in: list<list<tuple<int, float>>>)
         -> list<list<tuple<int, float>>>
 
-    def ConvertPosteriorToPhones(tmodel: TransitionModel,
+    def `ConvertPosteriorToPhones` as convert_posterior_to_phones(tmodel: TransitionModel,
                                  post_in: list<list<tuple<int, float>>>)
         -> list<list<tuple<int, float>>>
 
     # WeightSilencePost, WeightSilencePostDistributed
 
-    def PosteriorToMatrix(post: list<list<tuple<int, float>>>, post_dim: int)
+    def `PosteriorToMatrix` as posterior_to_matrix(post: list<list<tuple<int, float>>>, post_dim: int)
         -> Matrix
 
-    def PosteriorToPdfMatrix(post: list<list<tuple<int, float>>>,
+    def `PosteriorToPdfMatrix` as posterior_to_pdf_matrix(post: list<list<tuple<int, float>>>,
                              model: TransitionModel) -> Matrix

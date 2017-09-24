@@ -21,22 +21,22 @@ from "hmm/hmm-topology.h":
 
         def __eq__(self, other: HmmState) -> bool
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def Check(self)
+      def `Check` as check(self)
 
-      def IsHmm(self) -> bool
+      def `IsHmm` as is_hmm(self) -> bool
 
-      def TopologyForPhone(self, phone: int) -> list<HmmState>
+      def `TopologyForPhone` as topology_for_phone(self, phone: int) -> list<HmmState>
 
-      def NumPdfClasses(self, phone: int) -> int
+      def `NumPdfClasses` as num_pdf_classes(self, phone: int) -> int
 
-      def GetPhones(self) -> list<int>
+      def `GetPhones` as get_phones(self) -> list<int>
 
-      def GetPhoneToNumPdfClasses(self) -> list<int>
+      def `GetPhoneToNumPdfClasses` as get_phone_to_num_pdf_classes(self) -> list<int>
 
-      def MinLength(self, phone: int) -> int
+      def `MinLength` as min_length(self, phone: int) -> int
 
       def __eq__(self, other: HmmTopology) -> bool

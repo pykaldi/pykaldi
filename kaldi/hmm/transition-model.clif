@@ -14,13 +14,13 @@ from "hmm/transition-model.h":
       def __init__(self, floor: float = default, mincount: float = default,
                    share_for_pdfs: bool = default)
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class MapTransitionUpdateConfig:
       tau: float
       share_for_pdfs: bool
 
-      def Register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf)
 
     class TransitionModel:
       @add__init__
@@ -28,67 +28,67 @@ from "hmm/transition-model.h":
                                          ctx_dep: ContextDependencyInterface,
                                          hmm_topo: HmmTopology)
 
-      def Read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool)
 
-      def Write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
-      def GetTopo(self) -> HmmTopology
+      def `GetTopo` as get_topo(self) -> HmmTopology
 
-      def TupleToTransitionState(self, phone: int, hmm_state: int, pdf: int,
+      def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int,
                                  self_loop_pdf: int) -> int
-      def PairToTransitionId(self, trans_state: int, trans_index: int) -> int
-      def TransitionIdToTransitionState(self, trans_id: int) -> int
-      def TransitionIdToTransitionIndex(self, trans_id: int) -> int
-      def TransitionStateToPhone(self, trans_state: int) -> int
-      def TransitionStateToHmmState(self, trans_state: int) -> int
-      def TransitionStateToForwardPdfClass(self, trans_state: int) -> int
-      def TransitionStateToSelfLoopPdfClass(self, trans_state: int) -> int
-      def TransitionStateToForwardPdf(self, trans_state: int) -> int
-      def TransitionStateToSelfLoopPdf(self, trans_state: int) -> int
-      def SelfLoopOf(self, trans_state: int) -> int
-      def TransitionIdToPdf(self, trans_id: int) -> int
-      def TransitionIdToPhone(self, trans_id: int) -> int
-      def TransitionIdToPdfClass(self, trans_id: int) -> int
-      def TransitionIdToHmmState(self, trans_id: int) -> int
+      def `PairToTransitionId` as pair_to_transition_id(self, trans_state: int, trans_index: int) -> int
+      def `TransitionIdToTransitionState` as transition_id_to_transition_state(self, trans_id: int) -> int
+      def `TransitionIdToTransitionIndex` as transition_id_to_transition_index(self, trans_id: int) -> int
+      def `TransitionStateToPhone` as transition_state_to_phone(self, trans_state: int) -> int
+      def `TransitionStateToHmmState` as transition_state_to_hmm_state(self, trans_state: int) -> int
+      def `TransitionStateToForwardPdfClass` as transition_state_to_forward_pdf_class(self, trans_state: int) -> int
+      def `TransitionStateToSelfLoopPdfClass` as transition_state_to_self_loop_pdf_class(self, trans_state: int) -> int
+      def `TransitionStateToForwardPdf` as transition_state_to_forward_pdf(self, trans_state: int) -> int
+      def `TransitionStateToSelfLoopPdf` as transition_state_to_self_loop_pdf(self, trans_state: int) -> int
+      def `SelfLoopOf` as self_loop_of(self, trans_state: int) -> int
+      def `TransitionIdToPdf` as transition_id_to_pdf(self, trans_id: int) -> int
+      def `TransitionIdToPhone` as transition_id_to_phone(self, trans_id: int) -> int
+      def `TransitionIdToPdfClass` as transition_id_to_pdf_class(self, trans_id: int) -> int
+      def `TransitionIdToHmmState` as transition_id_to_hmm_state(self, trans_id: int) -> int
 
-      def IsFinal(self, trans_id: int) -> bool
+      def `IsFinal` as is_final(self, trans_id: int) -> bool
 
-      def IsSelfLoop(self, trans_id: int) -> bool
+      def `IsSelfLoop` as is_self_loop(self, trans_id: int) -> bool
 
-      def NumTransitionIds(self) -> int
+      def `NumTransitionIds` as num_transition_ids(self) -> int
 
-      def NumTransitionIndices(self, trans_state: int) -> int
+      def `NumTransitionIndices` as num_transition_indices(self, trans_state: int) -> int
 
-      def NumTransitionStates(self) -> int
+      def `NumTransitionStates` as num_transition_states(self) -> int
 
-      def NumPdfs(self) -> int
+      def `NumPdfs` as num_pdfs(self) -> int
 
-      def NumPhones(self) -> int
+      def `NumPhones` as num_phones(self) -> int
 
-      def GetPhones(self) -> list<int>
+      def `GetPhones` as get_phones(self) -> list<int>
 
-      def GetTransitionProb(self, trans_id: int) -> float
-      def GetTransitionLogProb(self, trans_id: int) -> float
-      def GetTransitionLogProbIgnoringSelfLoops(self, trans_id: int) -> float
-      def GetNonSelfLoopLogProb(self, trans_id: int) -> float
+      def `GetTransitionProb` as get_transition_prob(self, trans_id: int) -> float
+      def `GetTransitionLogProb` as get_transition_log_prob(self, trans_id: int) -> float
+      def `GetTransitionLogProbIgnoringSelfLoops` as get_transition_log_prob_ignoring_self_loops(self, trans_id: int) -> float
+      def `GetNonSelfLoopLogProb` as get_non_self_loop_log_prob(self, trans_id: int) -> float
 
-      def MleUpdate(self, stats: DoubleVector, cfg: MleTransitionUpdateConfig)
+      def `MleUpdate` as mle_update(self, stats: DoubleVector, cfg: MleTransitionUpdateConfig)
           -> (objf_impr_out: float, count_out: float)
 
-      def MapUpdate(self, stats: DoubleVector, cfg: MapTransitionUpdateConfig)
+      def `MapUpdate` as map_update(self, stats: DoubleVector, cfg: MapTransitionUpdateConfig)
           -> (objf_impr_out: float, count_out: float)
 
-      def Print(self, os: ostream, phone_names: list<str>,
+      def `Print` as print(self, os: ostream, phone_names: list<str>,
                 occs: DoubleVector = default)
 
-      def InitStats(self, stats: DoubleVector)
+      def `InitStats` as init_stats(self, stats: DoubleVector)
 
-      def Accumulate(self, prob: float, trans_id: int, stats: DoubleVector)
+      def `Accumulate` as accumulate(self, prob: float, trans_id: int, stats: DoubleVector)
 
-      def Compatible(self, other: TransitionModel) -> bool
+      def `Compatible` as compatible(self, other: TransitionModel) -> bool
 
-    def GetPdfsForPhones(trans_model: TransitionModel, phones: list<int>)
+    def `GetPdfsForPhones` as get_pdfs_for_phones(trans_model: TransitionModel, phones: list<int>)
         -> (ret: bool, pdfs: list<int>)
 
-    def GetPhonesForPdfs(trans_model: TransitionModel, pdfs: list<int>)
+    def `GetPhonesForPdfs` as get_phones_for_pdfs(trans_model: TransitionModel, pdfs: list<int>)
         -> (ret: bool, phones: list<int>)

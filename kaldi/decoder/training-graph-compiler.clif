@@ -23,7 +23,7 @@ from "decoder/training-graph-compiler.h":
                    disambig_syms: list<int>,
                    opts: TrainingGraphCompilerOptions)
 
-      def CompileGraph(self, word_fst: StdVectorFst)
+      def `CompileGraph` as compile_graph(self, word_fst: StdVectorFst)
           -> (success: bool, out_fst: StdVectorFst)
 
       # FIXME(Dogan)
@@ -31,8 +31,8 @@ from "decoder/training-graph-compiler.h":
       # def CompileGraphs(self, word_fsts: list<StdVectorFst>)
       #     -> (success: bool, out_fsts: list<StdVectorFst>)
 
-      def CompileGraphFromText(self, transcript: list<int>)
+      def `CompileGraphFromText` as compile_graph_from_text(self, transcript: list<int>)
           -> (success: bool, out_fst: StdVectorFst)
 
-      def CompileGraphsFromText(self, transcripts: list<list<int>>)
+      def `CompileGraphsFromText` as compile_graphs_from_text(self, transcripts: list<list<int>>)
           -> (success: bool, out_fsts: list<StdVectorFst>)
