@@ -22,7 +22,7 @@ from "hmm/tree-accu.h":
       context_width: int
       central_position: int
 
-      # def __init__(self, opts: AccumulateTreeStatsOptions)
+      def __init__(self, opts: AccumulateTreeStatsOptions)
 
     def `AccumulateTreeStats` as accumulate_tree_stats(
         trans_model: TransitionModel, info: AccumulateTreeStatsInfo,

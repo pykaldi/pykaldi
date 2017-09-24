@@ -89,7 +89,7 @@ from "matrix/sp-matrix.h":
 
         Args:
             orig(MatrixBase): A matrix of class MatrixBase
-            copy_type(SpCopyType): Determines how data will be written 
+            copy_type(SpCopyType): Determines how data will be written
 
         Raises:
             Error if orig is not symmetric.
@@ -131,16 +131,6 @@ from "matrix/sp-matrix.h":
 #      def `TopEigs` as top_eigs(self, s: VectorBase, P: MatrixBase,
 #                  lanczos_dim: int = default)
 
-      def `Log` as log(self):
-        """Takes log of the matrix, though eigenvalue decomposition then takes
-           log of eigenvalues and reconstructs.
-
-        Raises:
-           Error if matrix is not positive definite.
-        """
-
-      def `Exp` as exp(self):
-        """Does exp(self)"""
 
       def `MaxAbsEig` as max_abs_eig(self) -> float:
         """Returns the maximum of the absolute values of any of the eigenvalues."""
@@ -149,7 +139,7 @@ from "matrix/sp-matrix.h":
       # def PrintEigs(self, name:str)
 
       def `IsPosDef` as isposdef(self) -> bool:
-        """Returns True if the matrix is positive definite."""  
+        """Returns True if the matrix is positive definite."""
 
       def `AddSp` as add_sp(self, alpha:float, Ma:SpMatrix):
         """Performs the operation self = self+alpha*Ma.
@@ -161,13 +151,13 @@ from "matrix/sp-matrix.h":
 
       def `LogPosDefDet` as log_pos_def_det(self) -> float:
         """Computes the log determinant.
-        
+
         Returns:
             The log determinant
-      
+
         Raises:
             Error if matrix is not positive definite
-        """   
+        """
 
       # TODO: Implement C++ wrapper
       # def LogDet(self) -> (logdet: float, det_sign: float)
@@ -178,7 +168,7 @@ from "matrix/sp-matrix.h":
         Args:
             alpha(float): A scaling constant
             v(VectorBase): A vector
-        
+
         Raises:
             Error in case of dimension mismatch
         """
@@ -192,7 +182,7 @@ from "matrix/sp-matrix.h":
             w(VectorBase): A vector
 
         Raises:
-            Error in case of dimension mismatch 
+            Error in case of dimension mismatch
         """
 
       def `AddVec2Sp` as add_vec_2_sp(self, alpha: float, v: VectorBase, S:SpMatrix, beta: float):
@@ -205,7 +195,7 @@ from "matrix/sp-matrix.h":
             beta(float): A scaling constant
 
         Raises:
-            Error in case of dimension mismatch 
+            Error in case of dimension mismatch
         """
 
       def `AddDiagVec` as add_diag_vec(self, alpha: float, v:VectorBase):
@@ -216,39 +206,39 @@ from "matrix/sp-matrix.h":
             v(VectorBase): A vector
 
         Raises:
-            Error in case of dimension mismatch 
+            Error in case of dimension mismatch
         """
 
       def `AddMat2` as add_mat2(self, alpha: float, M: MatrixBase,
                   transM: MatrixTransposeType, beta: float):
         """If transM == kNoTrans performs self = beta*self+alpha*M*M^T.
-           If transM == kTrans self = beta*self+alpha*M^T*M 
-  
+           If transM == kTrans self = beta*self+alpha*M^T*M
+
         Args:
             alpha(float): A constant
             M(MatrixBase): A matrix
             transM(MatrixTransposeType): Determines if M will be transposed
             beta(float): A constant
-  
+
         Raises:
-            Error in case of dimension mismatch  
+            Error in case of dimension mismatch
         """
-             
+
       def `AddMat2Sp` as add_mat_2_sp(self, alpha: float, M: MatrixBase,
                     transM: MatrixTransposeType, A:SpMatrix,
                     beta: float = default):
         """If transM == kNoTrans perform self = beta*self+alpha*M*A*M^T.
            If transM == kTrans perform self = beta*self+alpha*M^T*A*M.
-  
+
         Args:
             alpha(float): A constant
             M(MatrixBase): A matrix
             transM(MatrixTransposeType): Determines if M will be transposed
             A(SpMatrix): A symmetric matrix
             beta(float): A constant
-  
+
         Raises:
-            Error in case of dimension mismatch  
+            Error in case of dimension mismatch
         """
 
       def `AddSmat2Sp` as add_smat_2_sp(self, alpha: float, M:MatrixBase,
@@ -268,14 +258,14 @@ from "matrix/sp-matrix.h":
                      beta: float = default):
         """If transM == kNoTrans perform self = beta*self+alpha*M*diag(v)*M^T.
            If transM == kTrans perform self = beta*self+alpha*M^T*diag(v)*M.
-  
+
         Args:
             alpha(float): A constant
             M(MatrixBase): A matrix
             transM(MatrixTransposeType): Determines if M will be transposed
             v(VectorBase): A vector
             beta(float): A constant
-  
+
         Raises:
             Error in case of dimension mismatch
         """
@@ -286,28 +276,28 @@ from "matrix/sp-matrix.h":
         """Floors this symmetric matrix to the matrix alpha*floor,
            where the matrix floor is positive definite.
            It is floored in the sense that after flooring it must be that
-           x^T*self*x >= x^T*(alpha*floor)*x. 
+           x^T*self*x >= x^T*(alpha*floor)*x.
            floor must be positive definite.
 
         Args:
             floor(SpMatrix): A positive definite matrix
             alpha(float): a contant
             verbose(bool): Default is False. If true, extra messages
-                           can be printed 
+                           can be printed
 
         Returns:
             the number of elements that were floored.
- 
+
         Raises:
             Error if floor is not positive definite.
         """
 
       def `ApplyFloor` as apply_floor(self, floor:float) -> int:
         """Applies floor to all elements. If self(i,j)<floor then self(i,j)=floor.
- 
+
         Args:
             floor(float): The floor value to check against
- 
+
         Returns:
             The number of elements affected by the flooring operation
         """
@@ -368,11 +358,11 @@ from "matrix/sp-matrix.h":
       def `LimitCond` as limit_cond(self, maxCond: float = default,
                     invert:bool = default) -> int:
         """Performs self = P*diag(floor(s))*P^T, where s is the eigenvalues
-           and P is the eigenvectors. 
+           and P is the eigenvectors.
 
         Args:
             MaxCond(float): Determines the flooring threshold (i.e. floor=max_eigen/MaxCond)
-      
+
         Raises:
             Error if matrix is not positive definite
         """
@@ -389,7 +379,7 @@ from "matrix/sp-matrix.h":
            Performs  self = Q*self*Q^T for an orthogonal Q.
 
         Args:
-            Q(MatrixBase): A matrix that must be orthogonal.                 
+            Q(MatrixBase): A matrix that must be orthogonal.
         """
 
       def `Qr` as qr(self, Q:MatrixBase):
@@ -526,17 +516,6 @@ from "matrix/sp-matrix.h":
 
       def `TopEigs` as top_eigs(self, s: DoubleVectorBase, P: DoubleMatrixBase,
                   lanczos_dim: int = default)
-
-      def `Log` as log(self):
-        """Takes log of the matrix, though eigenvalue decomposition then takes
-           log of eigenvalues and reconstructs.
-
-        Raises:
-           Error if matrix is not positive definite.
-        """
-
-      def `Exp` as exp(self):
-        """Does exp(self)"""
 
       def `MaxAbsEig` as max_abs_eig(self) -> float:
         """Returns the maximum of the absolute values of any of the eigenvalues."""
@@ -821,15 +800,15 @@ from "matrix/sp-matrix.h":
         A:SpMatrix, B:SpMatrix, tol:`float` as float = default) -> bool:
       """Computes the Frobenius norm of the difference of matrix A and B
          and returns True if it is less or equal than tol.
-      
+
       Args:
           A(MatrixBase): A matrix
           B(MatrixBase): A matrix
           tol(float): The tolerance.
-      
+
       Returns:
           True ||A-B||_F <= tol
-      
+
       Raises:
           Error if size of a is different than size of b.
       """
@@ -862,12 +841,12 @@ from "matrix/sp-matrix.h":
     def `TraceMatSpMat` as trace_mat_sp_mat(A:MatrixBase, transA:MatrixTransposeType, B:SpMatrix,
                       C:MatrixBase, transC: MatrixTransposeType) -> float:
       """Returns tr(A*B*C)
-    
+
       Args:
           A(MatrixBase): A matrix
           transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
                                        if kTrans transpose A before operation
-          B(SpMatrix): A symmetric matrix 
+          B(SpMatrix): A symmetric matrix
           C(MatrixBase): A matrix
           transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
                                        if kTrans transpose C before operation
@@ -903,14 +882,14 @@ from "matrix/sp-matrix.h":
 
     def `VecSpVec` as vec_sp_vec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float:
       """Performs v1^T*M*v2.
-   
+
       Args:
           v1(VectorBase): A vector
           M(SpMatrix): A symmetric matrix
           v2(VectorBase): A vector
 
       Raises:
-          Error in case of dimension mismatch    
+          Error in case of dimension mismatch
       """
 
     class SolverOptions:
@@ -941,7 +920,7 @@ from "matrix/sp-matrix.h":
       """Maximizes the auxiliary function
          Q(x) = x.*g - 0.5 x^T*H*x using a numerically stable method.
          Assumes H positive semidefinite.
-   
+
       Args:
           H(SpMatrix): A positive semidefinite number
           g(VectorBase): A vector
@@ -958,7 +937,7 @@ from "matrix/sp-matrix.h":
     def `SolveQuadraticMatrixProblem` as solve_quadratic_matrix_problem(Q:SpMatrix, Y:MatrixBase, P:SpMatrix,
                                     opts:SolverOptions, M:MatrixBase) -> float:
       """Maximizes the auxiliary function
-         Q(x) = tr(M^T*P*Y)-0.5*tr(P*M*Q*M^T) 
+         Q(x) = tr(M^T*P*Y)-0.5*tr(P*M*Q*M^T)
          Assumes Q and P positive semidefinite.
 
       Args:
@@ -979,7 +958,7 @@ from "matrix/sp-matrix.h":
         G:MatrixBase, P1:SpMatrix, P2:SpMatrix, Q1:SpMatrix, Q2:SpMatrix,
         opts:SolverOptions, M:MatrixBase) -> float:
       """Maximizes the auxiliary function
-         Q(M) = tr(M^T*G)-0.5*tr(P1*M*Q1 M^T)-0.5*tr(P2*M*Q2*M^T)        
+         Q(M) = tr(M^T*G)-0.5*tr(P1*M*Q1 M^T)-0.5*tr(P2*M*Q2*M^T)
          Assumes Q1, Q2, P1, and P2 are positive semidefinite.
 
       Args:
@@ -995,4 +974,3 @@ from "matrix/sp-matrix.h":
       Raises:
          Error in case of dimension mismatch
       """
-

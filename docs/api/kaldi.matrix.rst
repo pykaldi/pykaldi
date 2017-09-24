@@ -69,17 +69,16 @@ kaldi\.matrix\.functions
 
    .. autosummary::
    
+      add_outer_product_plus_minus
       assert_same_dim_matrix
+      complex_fft
+      compute_dct_matrix
+      compute_pca
+      real_fft
    
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      MatrixExponential
    
    
 

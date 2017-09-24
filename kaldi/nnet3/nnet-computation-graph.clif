@@ -44,8 +44,7 @@ from "nnet3/nnet-computation-graph.h":
     class CindexSet:
       def `operator()` as __contains__(self, cindex: tuple<int, Index>) -> bool
 
-      # FIXME: No idea what is wrong with this ???
-      # def __init__(self, graph: ComputationGraph)
+      def __init__(self, graph: ComputationGraph)
 
       # @add__init__
       # def `CindexSet` as new_from_computable(self, graph: ComputationGraph,

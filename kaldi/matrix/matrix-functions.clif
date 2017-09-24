@@ -5,77 +5,36 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/matrix-functions.h":
     namespace `kaldi`:
 
-        # Note (VM):
-        # Cannot be implemented as it is (v is both in/out)
-        # def ComplexFft(v:VectorBase, forward:bool, tmp_work:Vector)
+        def `ComplexFft` as complex_fft(v:VectorBase, forward:bool,
+                                        tmp_work:Vector = default)
 
-        # Cannot be implemented as it is (outputs before inputs)
-        # def ComplexFt(in:VectorBase, out:VectorBase, forward:bool)
+        def `RealFft` as real_fft(v:VectorBase, forward:bool)
 
-        # Cannot be implemented as it is (outputs before inputs)
-        # def RealFft(v:VectorBase, forward:bool)
+        def `ComputeDctMatrix` as compute_dct_matrix(M:Matrix)
 
-        # Cannot be implemented as it is (outputs before inputs)
-        # def RealFftInefficient(v:VectorBase, forward:bool)
-
-        #
-        # def ComputeDctMatrix(M:Matrix)
-
-        # Cannot be implemented as b is both in/out
+        # FIXME
+        # Needs C++ wrapper. b is both in/out
         # def ComplexMul(a_re:float, a_im:float, b_re:float, b_im:float)
 
-        # Cannot be implemented as c is both in/out
+        # Needs C++ wrapper. c is both in/out
         # def ComplexAddProduct(a_re:float, a_im:float, b_re:float, b_im:float, c_re:float, c_im:float)
 
-        # FIXME (VM):
-        # Either clif finds it in matrix-functions-inl.h or it doesnt find it at all
-        # def `ComplexImExp` as ComplexImExp(x:float) -> (a_re:`float` as float, a_im:`float` as float)
+        # Needs C++ wrapper. Defined in matrix-functions-inl.h.
+        # def `ComplexImExp` as ComplexImExp(x:`float` as float) -> (a_re:`float` as float, a_im:`float` as float)
 
-        class `MatrixExponential<float>` as MatrixExponential:
-          """This class allows you to compute the matrix exponential function
-             B = I + A + 1/2! A^2 + 1/3! A^3 + ...
-             This method is most accurate where the result is of the same order of
-             magnitude as the unit matrix (it will typically not work well when
-             the answer has almost-zero eigenvalues or is close to zero).
-             It also provides a function that allows you do back-propagate the
-             derivative of a scalar function through this calculation.
-          """
+        def `ComputePca` as compute_pca(
+            X:MatrixBase, U:MatrixBase, A:MatrixBase,
+            print_eigs:bool = default, exact:bool = default)
 
-#         FIXME(pavlos): Need C++ wrapper, does not feel pythonic
-          def Compute(self, M:MatrixBase, X:MatrixBase):
-            """Performs X=exp(M)
+        def `AddOuterProductPlusMinus` as add_outer_product_plus_minus(
+            alpha:`float` as float, a:VectorBase, b:VectorBase,
+            plus:MatrixBase, minus:MatrixBase)
 
-            Args: 
-                M(MatrixBase): A matrix
-                X(MatrixBase): A matrix, the output
-            """
-
-            # TODO (VM):
-            # def Compute(self, M:SpMatrix) -> (X:SpMatrix)
-
-#         FIXME(pavlos): Need C++ wrapper, does not feel pythonic
-          def `Backprop` as backprop(self, hX:MatrixBase, hM:MatrixBase):
-            """The the gradient of a scalar function f backwards through
-               this operation, i.e.: if the parameter dX represents df/dX
-               (with no transpose, so element i, j of dX is the derivative of
-               f w.r.t. E(i, j)), it sets dM to df/dM, again with no
-               transpose (of course, only the part thereof that comes through
-               the effect of A on B). This applies to the values of A and E
-               that were called most recently with Compute().
-            """
-
-            # TODO (VM):
-            # def `Backprop` as BackpropSp(self, hX:SpMatrix) -> (hM:SpMatrix)
-
-        # Cannot be implemented as it is (outputs before inputs)
-        # def ComputePca(X:MatrixBase, U:MatrixBase, A:MatrixBase, print_eigs:bool, exact:bool)
-
-        # Cannot be implemented as plus, minus is both in/out
-        # def AddOuterProductPlusMinus(alpha:float, a:VectorBase, b:VectorBase, plus:MatrixBase, minus:MatrixBase)
-
-        def `AssertSameDim` as assert_same_dim_matrix(mat1:MatrixBase, mat2:MatrixBase):
+        def `AssertSameDim` as assert_same_dim_matrix(mat1:MatrixBase,
+                                                      mat2:MatrixBase):
           """Checks if mat1 and mat2 have the same dimensions.
- 
+
           Raises:
-              Error if mat1.num_rows!=mat2.num_rows || mat1.num_cols!=mat2.num_cols
+              Error if mat1.num_rows!=mat2.num_rows
+              or mat1.num_cols!=mat2.num_cols
           """

@@ -8,9 +8,9 @@ add_pyclif_library("_full_gmm" full-gmm.clif
   RPATH $ORIGIN/../base:$ORIGIN/../matrix
 )
 add_pyclif_library("_diag_gmm" diag-gmm.clif
-  CLIF_DEPS _full_gmm _iostream _kaldi_matrix
+  CLIF_DEPS _full_gmm _iostream _kaldi_matrix _clusterable_classes
   LIBRARIES kaldi-gmm
-  RPATH $ORIGIN/../base:$ORIGIN/../matrix
+  RPATH $ORIGIN/../base:$ORIGIN/../matrix:$ORIGIN/../tree
 )
 add_pyclif_library("_am_diag_gmm" am-diag-gmm.clif
   CLIF_DEPS _options_itf _iostream _kaldi_vector _diag_gmm

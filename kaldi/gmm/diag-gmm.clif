@@ -2,6 +2,7 @@ from "base/iostream-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "gmm/full-gmm-clifwrap.h" import *
+from "tree/clusterable-classes-clifwrap.h" import *
 
 from "gmm/diag-gmm.h":
   namespace `kaldi`:
@@ -9,8 +10,9 @@ from "gmm/diag-gmm.h":
       @add__init__
       def `DiagGmm` as from_other(self, gmm: DiagGmm)
 
-      # @add__init__
-      # def `DiagGmm` as from_clusterable(self, gc: GaussClusterable)
+      @add__init__
+      def `DiagGmm` as from_clusterable(self, gc: GaussClusterable,
+                                        var_floor: float)
 
       # def CopyFromNormal(self, diag_gmm_normal: DiagGmmNormal)
 
@@ -62,14 +64,14 @@ from "gmm/diag-gmm.h":
             """
 
       def `GaussianSelection` as gaussian_selection(self, data: VectorBase, num_gselect: int) -> (log_like: float, output: list<int>):
-            """Get gaussian selection information for one frame. 
+            """Get gaussian selection information for one frame.
 
             Args:
               data (:class:`kaldi.matrix.VectorBase`) - data point
               num_gselect (int) - Output is the best "num_gselect" indices, sorted from best to worst.
 
             Returns:
-              log-likelihood for this frame.   
+              log-likelihood for this frame.
             """
 
       def `GaussianSelection` as gaussian_selection_matrix(self, data: MatrixBase, num_gselect: int) -> (log_like: float, output: list<list<int>>):
@@ -115,7 +117,7 @@ from "gmm/diag-gmm.h":
 
         Returns:
           Number that are invalid e.g. because of zero weights or variances.
-        """ 
+        """
 
       def `Generate` as generate(self, output: VectorBase)
 

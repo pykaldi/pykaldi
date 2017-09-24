@@ -124,9 +124,8 @@ from "nnet3/nnet-simple-component.h":
           self, other: NaturalGradientAffineComponent)
 
     class FixedAffineComponent(Component):
-      # @add__init__
-      # def `FixedAffineComponent` as new_from_affine(
-      #     self, c: AffineComponent)
+      @add__init__
+      def `FixedAffineComponent` as new_from_affine(self, c: AffineComponent)
 
       def Init(self, matrix: CuMatrixBase)
 
