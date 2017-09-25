@@ -1,0 +1,38 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+
+from "transform/lda-estimate.h":
+  namespace `kaldi`:
+    class LdaEstimateOptions:
+      remove_offset: bool
+      dim: int
+      allow_large_dim: bool
+      within_class_factor: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class LdaEstimate:
+      def `Init` as init(self, num_classes: int, dimension: int)
+
+      def `NumClasses` as num_classes(self) -> int
+
+      def `Dim` as dim(self) -> int
+
+      def `ZeroAccumulators` as zero_accumulators(self)
+
+      def `Scale` as scale(self, f: float)
+
+      def `TotCount` as tot_count(self) -> float
+
+      def `Accumulate` as accumulate(self, data: VectorBase, class_id: int,
+                                     weight: float = default)
+
+      def `Estimate` as estimate(self, opts: LdaEstimateOptions, M: Matrix,
+                                 Mfull: Matrix = default)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)

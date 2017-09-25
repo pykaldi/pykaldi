@@ -19,7 +19,9 @@ from . import feat
 from . import fstext
 from . import gmm
 from . import hmm
+from . import itf
 from . import matrix
 from . import nnet3
-from . import util
+from . import transform
 from . import tree
+from . import util

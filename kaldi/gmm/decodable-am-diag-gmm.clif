@@ -5,7 +5,18 @@ from "hmm/transition-model-clifwrap.h" import *
 
 from "gmm/decodable-am-diag-gmm.h":
   namespace `kaldi`:
-    class DecodableAmDiagGmmScaled(DecodableInterface):
+    class DecodableAmDiagGmmUnmapped(DecodableInterface):
+      def __init__(self, am: AmDiagGmm, feats: Matrix,
+                  log_sum_exp_prune: float = default)
+
+    class DecodableAmDiagGmm(DecodableAmDiagGmmUnmapped):
+      def __init__(self, am: AmDiagGmm, tm: TransitionModel, feats: Matrix,
+                   log_sum_exp_prune: float = default)
+
+      # FIXME: Add a work around wrapper
+      # def TransModel(self) -> TransitionModel
+
+    class DecodableAmDiagGmmScaled(DecodableAmDiagGmmUnmapped):
       def __init__(self, am: AmDiagGmm, tm: TransitionModel, feats: Matrix,
                    scale: float, log_sum_exp_prune: float = default)
 

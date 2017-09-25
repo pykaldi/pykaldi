@@ -1,0 +1,70 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "transform/transform-common-clifwrap.h" import *
+from "transform/regression-tree-clifwrap.h" import *
+
+from "transform/regtree-mllr-diag-gmm.h":
+  namespace `kaldi`:
+    class RegtreeMllrOptions:
+      min_count: float
+      use_regtree: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class RegtreeMllrDiagGmm:
+      def `Init` as init(self, num_xforms: int, dim: int)
+
+      def `SetUnit` as set_unit(self)
+
+      def `TransformModel` as transform_model(self, regtree: RegressionTree,
+                                              am: AmDiagGmm)
+
+      def `GetTransformedMeans` as get_transformed_means(self,
+          regtree: RegressionTree, am: AmDiagGmm, pdf_index: int,
+          out: MatrixBase)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `SetParameters` as set_parameters(self, mat: MatrixBase,
+                                            regclass: int)
+
+      def set_bclass2xforms(self, in: list<int>)
+
+      xform_matrices: list<Matrix> = property(`xform_matrices`)
+
+    class RegtreeMllrDiagGmmAccs:
+      def `Init` as init(self, num_bclass: int, dim: int)
+
+      def `SetZero` as set_zero(self)
+
+      def `AccumulateForGmm` as accumulate_for_gmm(self,
+          regtree: RegressionTree, am: AmDiagGmm, data: VectorBase,
+          pdf_index: int, weight: float) -> float
+
+      def `AccumulateForGaussian` as accumulate_for_gaussian(self,
+          regtree: RegressionTree, am: AmDiagGmm, data: VectorBase,
+          pdf_index: int, gauss_index: int, weight: float)
+
+      def `Update` as update(self, regtree: RegressionTree,
+                             opts: RegtreeMllrOptions,
+                             out_mllr: RegtreeMllrDiagGmm)
+          -> (auxf_impr: float, t: float)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool)
+
+      def `Dim` as dim(self) -> int
+
+      def `NumBaseClasses` as num_base_classes(self) -> int
+
+      baseclass_stats: list<AffineXformStats> = property(`baseclass_stats`)
+
+    # FIXME(Dogan):
+    # Need to defines a copy (or move) constructor for RegtreeMllrDiagGmm
+    # for wrapping table specilizations.

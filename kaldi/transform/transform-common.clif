@@ -1,0 +1,36 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+
+from "transform/transform-common.h":
+  namespace `kaldi`:
+    class AffineXformStats:
+      beta_: float
+      K_: DoubleMatrix
+      G_: list<DoubleSpMatrix>
+      dim_: int
+
+      def `Init` as init(self, dim: int, num_gs: int)
+
+      def `Dim` as dim(self) -> int
+
+      def `SetZero` as set_zero(self)
+
+      def `CopyStats` as copy_stats(self, other: AffineXformStats)
+
+      def `Add` as add(self, other: AffineXformStats)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool)
+
+      @add__init__
+      def `AffineXformStats` as new(self, other: AffineXformStats)
+
+    def `ComposeTransforms` as compose_transforms(a: Matrix, b: Matrix,
+                                                  b_is_affine: bool)
+        -> (success: bool, c: Matrix)
+
+    def `ApplyAffineTransform` as apply_affine_transform(xform: MatrixBase,
+                                                         vec: VectorBase)

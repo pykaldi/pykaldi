@@ -1,0 +1,19 @@
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "gmm/decodable-am-diag-gmm-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "transform/regression-tree-clifwrap.h" import *
+from "transform/regtree-fmllr-diag-gmm-clifwrap.h" import *
+from "transform/regtree-mllr-diag-gmm-clifwrap.h" import *
+
+from "transform/decodable-am-diag-gmm-regtree.h":
+  namespace `kaldi`:
+    class DecodableAmDiagGmmRegtreeFmllr(DecodableAmDiagGmmUnmapped):
+      def __init__(self, am: AmDiagGmm, tm: TransitionModel, feats: Matrix,
+                   fmllr_xform: RegtreeFmllrDiagGmm, regtree: RegressionTree,
+                   scale: float, log_sum_exp_prune: float = default)
+
+    class DecodableAmDiagGmmRegtreeMllr(DecodableAmDiagGmmUnmapped):
+      def __init__(self, am: AmDiagGmm, tm: TransitionModel, feats: Matrix,
+                   mllr_xform: RegtreeMllrDiagGmm, regtree: RegressionTree,
+                   scale: float, log_sum_exp_prune: float = default)

@@ -1,0 +1,42 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+
+from "transform/mllt.h":
+  namespace `kaldi`:
+    class MlltAccs:
+      @add__init__
+      def `MlltAccs` as new(self, dim: int, rand_prune: float = default)
+
+      def `Init` as init(self, dim: int, rand_prune: float = default)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Dim` as dim(self) -> int
+
+      def `Update` as update(self, M: MatrixBase)
+          -> (objf_impr_out: float, count_out: float)
+
+      @classmethod
+      def `Update` as update_static(cls, beta: float, G: list<DoubleSpMatrix>,
+                                    M: MatrixBase)
+          -> (objf_impr_out: float, count_out: float)
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self,
+          gmm: DiagGmm, data: VectorBase, posteriors: VectorBase)
+
+      def `AccumulateFromGmm` as accumulate_from_gmm(self,
+          gmm: DiagGmm, data: VectorBase, weight: float) -> float
+
+      def `AccumulateFromGmmPreselect` as accumulate_from_gmm_preselect(self,
+          gmm: DiagGmm, gselect: list<int>, data: VectorBase, weight: float)
+          -> float
+
+      rand_prune_: float
+      beta_: float
+      G_: list<DoubleSpMatrix>

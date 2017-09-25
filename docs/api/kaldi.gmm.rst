@@ -93,7 +93,9 @@ kaldi\.gmm\.decodable\_am\_diag
 
    .. autosummary::
    
+      DecodableAmDiagGmm
       DecodableAmDiagGmmScaled
+      DecodableAmDiagGmmUnmapped
    
    
 

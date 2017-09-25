@@ -1,0 +1,22 @@
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "transform/cmvn.h":
+  namespace `kaldi`:
+    def `InitCmvnStats` as init_cmvn_stats(dim: int, stats: DoubleMatrix)
+
+    def `AccCmvnStats` as acc_cmvn_stats_single_frame(
+        feat: VectorBase, weight: float, stats: DoubleMatrixBase)
+
+    def `AccCmvnStats` as acc_cmvn_stats(feat: MatrixBase,
+                                         weights: VectorBase,
+                                         stats: DoubleMatrixBase)
+
+    def `ApplyCmvn` as apply_cmvn(stats: DoubleMatrixBase, norm_vars: bool,
+                                  feats: MatrixBase)
+
+    def `ApplyCmvnReverse` as apply_cmvn_reverse(
+        stats: DoubleMatrixBase,norm_vars: bool, feats: MatrixBase)
+
+    def `FakeStatsForSomeDims` as fake_stats_for_some_dims(
+        dims: list<int>, stats: DoubleMatrixBase)

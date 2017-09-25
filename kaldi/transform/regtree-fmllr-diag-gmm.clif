@@ -1,0 +1,82 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "transform/transform-common-clifwrap.h" import *
+from "transform/regression-tree-clifwrap.h" import *
+
+from "transform/regtree-fmllr-diag-gmm.h":
+  namespace `kaldi`:
+    class RegtreeFmllrOptions:
+      update_type: str
+      min_count: float
+      num_iters: int
+      use_regtree: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class RegtreeFmllrDiagGmm:
+      @add__init__
+      def `RegtreeFmllrDiagGmm` as new(self, other: RegtreeFmllrDiagGmm)
+
+      def `Init` as init(self, num_xforms: int, dim: int)
+
+      def `Validate` as _validate(self)
+
+      def `SetUnit` as set_unit(self)
+
+      def `ComputeLogDets` as compute_log_dets(self)
+
+      def `TransformFeature` as transform_feature(self, in: VectorBase)
+          -> list<Vector>
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Dim` as dim(self) -> int
+
+      def `NumBaseClasses` as num_base_classes(self) -> int
+
+      def `NumRegClasses` as num_reg_classes(self) -> int
+
+      def `GetXformMatrix` as get_xform_matrix(self, xform_index: int)
+          -> Matrix
+
+      def `GetLogDets` as get_log_dets(self, out: VectorBase)
+
+      def `Base2RegClass` as base_to_reg_class(self, bclass: int) -> int
+
+      def `SetParameters` as set_parameters(self, mat: MatrixBase,
+                                            regclass: int)
+
+      def set_bclass2xforms(self, in: list<int>)
+
+    class RegtreeFmllrDiagGmmAccs:
+      def `Init` as init(self, num_bclass: int, dim: int)
+
+      def `SetZero` as set_zero(self)
+
+      def `AccumulateForGmm` as accumulate_for_gmm(self,
+          regtree: RegressionTree, am: AmDiagGmm, data: VectorBase,
+          pdf_index: int, weight: float) -> float
+
+      def `AccumulateForGaussian` as accumulate_for_gaussian(self,
+          regtree: RegressionTree, am: AmDiagGmm, data: VectorBase,
+          pdf_index: int, gauss_index: int, weight: float)
+
+      def `Update` as update(self, regtree: RegressionTree,
+                             opts: RegtreeFmllrOptions,
+                             out_mllr: RegtreeFmllrDiagGmm)
+          -> (auxf_impr: float, t: float)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool)
+
+      def `Dim` as dim(self) -> int
+
+      def `NumBaseClasses` as num_base_classes(self) -> int
+
+      baseclass_stats: list<AffineXformStats> = property(`baseclass_stats`)

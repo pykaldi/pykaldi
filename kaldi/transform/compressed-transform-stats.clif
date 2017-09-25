@@ -1,0 +1,18 @@
+from "base/iostream-clifwrap.h" import *
+from "transform/transform-common-clifwrap.h" import *
+
+from "transform/compressed-transform-stats.h":
+  namespace `kaldi`:
+    class CompressedAffineXformStats:
+      @add__init__
+      def `CompressedAffineXformStats` as new(self, input: AffineXformStats)
+
+      def `CopyFromAffineXformStats` as copy_from_affine_xform_stats(
+          self, input: AffineXformStats)
+
+      def `CopyToAffineXformStats` as copy_to_affine_xform_stats(self)
+          -> AffineXformStats
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)

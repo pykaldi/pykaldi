@@ -1,0 +1,28 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "transform/transform-common-clifwrap.h" import *
+
+from "transform/regression-tree.h":
+  namespace `kaldi`:
+    class RegressionTree:
+      def `BuildTree` as build_tree(self, state_occs: Vector,
+                                    sil_indices: list<int>, am: AmDiagGmm,
+                                    max_clusters: int)
+
+      def `GatherStats` as gather_stats(self, stats_in: list<AffineXformStats>,
+                                        min_count: float)
+          ->(success: bool, regclasses_out: list<int>,
+             stats_out: list<AffineXformStats>)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool, am: AmDiagGmm)
+
+      def `NumBaseclasses` as num_base_classes(self) -> int
+
+      def `GetBaseclass` as get_base_class(self, bclass: int)
+          -> list<tuple<int,int>>
+
+      def `Gauss2BaseclassId` as gauss_to_base_class_id(self, pdf_id: int,
+                                                        gauss_id: int) -> int
