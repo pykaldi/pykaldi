@@ -25,3 +25,11 @@ from . import nnet3
 from . import transform
 from . import tree
 from . import util
+
+# We do not want Python interpreter to abort on failed Kaldi assertions.
+base.set_abort_on_assert_failure(False)
+
+# Stack traces are useful during development. We are disabling them here to make
+# actual error messages easier to see in the interpreter. Users can still enable
+# them by calling set_print_stack_trace_on_error(True) in their own scripts.
+base.set_print_stack_trace_on_error(False)

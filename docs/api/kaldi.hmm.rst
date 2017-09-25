@@ -60,6 +60,12 @@ kaldi\.hmm\.topology
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      construct_topology
+   
    
 
    
@@ -101,8 +107,6 @@ kaldi\.hmm\.transition\_model
    
       AccumulateTreeStatsInfo
       AccumulateTreeStatsOptions
-      MapTransitionUpdateConfig
-      MleTransitionUpdateConfig
       TransitionModel
    
    

@@ -5,6 +5,15 @@ kaldi\.base
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_verbose_level
+      set_abort_on_assert_failure
+      set_print_stack_trace_on_error
+      set_verbose_level
+   
    
 
    

@@ -1,0 +1,9 @@
+from "base/kaldi-error.h":
+  namespace `kaldi`:
+    def `GetVerboseLevel` as get_verbose_level() -> int
+
+    def `SetVerboseLevel` as set_verbose_level(i: int)
+
+    def `SetAbortOnAssertFailure` as set_abort_on_assert_failure(a: bool)
+
+    def `SetPrintStackTraceOnError` as set_print_stack_trace_on_error(p: bool)

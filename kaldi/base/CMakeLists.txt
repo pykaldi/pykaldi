@@ -1,3 +1,7 @@
+add_pyclif_library("_kaldi_error" kaldi-error.clif
+  LIBRARIES kaldi-base
+)
+
 add_pyclif_library("_timer" timer.clif)
 
 add_pyclif_library("_iostream" iostream.clif)

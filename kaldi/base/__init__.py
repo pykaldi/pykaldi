@@ -1,6 +1,7 @@
 from . import io
 from . import math
 
+from ._kaldi_error import *
 from ._timer import *
 
 __all__ = [name for name in dir()
