@@ -3,6 +3,7 @@ from "itf/context-dep-itf-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "hmm/hmm-topology-clifwrap.h" import *
+from kaldi.hmm.topology import construct_topology
 
 from "hmm/transition-model.h":
   namespace `kaldi`:
@@ -32,7 +33,15 @@ from "hmm/transition-model.h":
 
       def `Write` as write(self, os: ostream, binary: bool)
 
-      def `GetTopo` as get_topo(self) -> HmmTopology
+      def `GetTopo` as get_topo(self) -> HmmTopology:
+        """Wrapper function for :kaldi:`kaldi::TransitionModel::GetTopo`.
+
+        This method returns the topology.
+
+        Returns:
+          The topology :class:`kaldi.hmm.topology.HmmTopology`
+        """
+        return construct_topology(...)
 
       def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int,
                                  self_loop_pdf: int) -> int
@@ -78,7 +87,7 @@ from "hmm/transition-model.h":
       def `MapUpdate` as map_update(self, stats: DoubleVector, cfg: MapTransitionUpdateConfig)
           -> (objf_impr_out: float, count_out: float)
 
-      def `Print` as print(self, os: ostream, phone_names: list<str>,
+      def `Print` as _print(self, os: ostream, phone_names: list<str>,
                 occs: DoubleVector = default)
 
       def `InitStats` as init_stats(self, stats: DoubleVector)

@@ -23,7 +23,7 @@ from "hmm/hmm-topology.h":
 
       def `Read` as read(self, is: istream, binary: bool)
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as _write(self, os: ostream, binary: bool)
 
       def `Check` as check(self)
 
@@ -35,7 +35,7 @@ from "hmm/hmm-topology.h":
 
       def `GetPhones` as get_phones(self) -> list<int>
 
-      def `GetPhoneToNumPdfClasses` as get_phone_to_num_pdf_classes(self) -> list<int>
+      def `GetPhoneToNumPdfClasses` as _get_phone_to_num_pdf_classes(self) -> list<int>
 
       def `MinLength` as min_length(self, phone: int) -> int
 
