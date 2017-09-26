@@ -1,0 +1,56 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "transform/transform-common-clifwrap.h" import *
+
+from "transform/basis-fmllr-diag-gmm.h":
+  namespace `kaldi`:
+    class BasisFmllrOptions:
+      num_iters: int
+      size_scale: float
+      min_count: float
+      step_size_iters: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class BasisFmllrAccus:
+      @add__init__
+      def `BasisFmllrAccus` as new_from_dim(self, dim: int)
+
+      def `ResizeAccus` as resize_accus(self, dim: int)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default)
+
+      def `AccuGradientScatter` as accu_gradient_scatter(self,
+          spk_stats: AffineXformStats)
+
+      grad_scatter_: SpMatrix
+      dim_: int
+      beta_: float
+
+    class BasisFmllrEstimate:
+      @add__init__
+      def `BasisFmllrEstimate` as new_from_dim(self, dim: int)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `EstimateFmllrBasis` as estimate_fmllr_basis(self,
+          am_gmm: AmDiagGmm, basis_accus: BasisFmllrAccus)
+
+      def `ComputeAmDiagPrecond` as compute_am_diag_precond(self,
+          am_gmm: AmDiagGmm, pre_cond: DoubleSpMatrix)
+
+      def `Dim` as dim(self) -> int
+
+      def `BasisSize` as basis_size(self) -> int
+
+      def `ComputeTransform` as compute_transform(self,
+          spk_stats: AffineXformStats, out_xform: Matrix, coefficients: Vector,
+          options: BasisFmllrOptions) -> float

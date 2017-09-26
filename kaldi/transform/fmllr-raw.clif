@@ -1,0 +1,37 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+
+from "transform/fmllr-raw.h":
+  namespace `kaldi`:
+    class FmllrRawOptions:
+      min_count: float
+      num_iters: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class FmllrRawAccs:
+      def `RawDim` as raw_dim(self) -> int
+
+      def `FullDim` as full_dim(self) -> int
+
+      def `SpliceWidth` as splice_width(self) -> int
+
+      def `ModelDim` as model_dim(self) -> int
+
+      @add__init__
+      def `FmllrRawAccs` as new(self, raw_dim: int, model_dim: int,
+                                full_transform: Matrix)
+
+      def `AccumulateForGmm` as accumulate_for_gmm(self,
+          gmm: DiagGmm, data: VectorBase, weight: float) -> float
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self,
+          gmm: DiagGmm, data: VectorBase, posteriors: VectorBase)
+
+      def `Update` as update(self, opts: FmllrRawOptions,
+                             raw_fmllr_mat: MatrixBase)
+          -> (objf_impr: float, count: float)
+
+      def `SetZero` as set_zero(self)

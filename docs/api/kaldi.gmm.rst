@@ -180,6 +180,35 @@ kaldi\.gmm\.full\_normal
    
    
    
+kaldi\.gmm\.mle\_am\_diag
+-------------------------
+
+.. automodule:: kaldi.gmm.mle_am_diag
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      map_am_diag_gmm_update
+      mle_am_diag_gmm_update
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AccumAmDiagGmm
+   
+   
+
+   
+   
+   
 kaldi\.gmm\.mle\_diag
 ---------------------
 

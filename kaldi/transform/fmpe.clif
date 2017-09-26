@@ -1,0 +1,86 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/matrix-ext.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "gmm/mle-am-diag-gmm-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+
+from "transform/fmpe.h":
+  namespace `kaldi`:
+    class FmpeOptions:
+      context_expansion: str
+      post_scale: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+    class FmpeUpdateOptions:
+      learning_rate: float
+      l2_weight: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class FmpeStats:
+      # FIXME(Dogan):
+      # Fmpe should be defined before use.
+      # @add__init__
+      # def `FmpeStats` as new_from_other(self, fmpe: Fmpe)
+
+      # def `Init` as init(self, fmpe: Fmpe)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default)
+
+      def `DerivPlus` as deriv_plus(self) -> SubMatrix
+
+      def `DerivMinus` as deriv_minus(self) -> SubMatrix
+
+      def `AccumulateChecks` as accumulate_checks(self, feats: MatrixBase,
+                                                  direct_deriv: MatrixBase,
+                                                  indirect_deriv: MatrixBase)
+
+      def `DoChecks` as do_checks(self)
+
+    class Fmpe:
+      @add__init__
+      def `Fmpe` as new(self, gmm: DiagGmm, config: FmpeOptions)
+
+      def `FeatDim` as feat_dim(self) -> int
+
+      def `NumGauss` as num_gauss(self) -> int
+
+      def `NumContexts` as num_contexts(self) -> int
+
+      def `ProjectionTNumRows` as projection_t_num_rows(self) -> int
+
+      def `ProjectionTNumCols` as projection_t_num_cols(self) -> int
+
+      def `ComputeFeatures` as compute_features(self, feat_in: MatrixBase,
+                                                gselect: list<list<int>>)
+          -> Matrix
+
+      def `AccStats` as acc_stats(self,
+          feat_in: MatrixBase, gselect: list<list<int>>,
+          direct_feat_deriv: MatrixBase, indirect_feat_deriv: MatrixBase,
+          stats: FmpeStats)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Update` as update(self, config: FmpeUpdateOptions, stats: FmpeStats)
+          -> float
+
+    def `ComputeAmGmmFeatureDeriv` as compute_am_gmm_feature_deriv(
+        am_gmm: AmDiagGmm, trans_model: TransitionModel,
+        posterior: list<list<tuple<int, float>>>,
+        features: MatrixBase, direct_deriv: Matrix,
+        model_diff: AccumAmDiagGmm = default, indirect_deriv: Matrix = default)
+        -> float

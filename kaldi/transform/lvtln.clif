@@ -1,0 +1,33 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "transform/fmllr-diag-gmm-clifwrap.h" import *
+
+from "transform/lvtln.h":
+  namespace `kaldi`:
+    class LinearVtln:
+      @add__init__
+      def `LinearVtln` as new(self, dim: int, num_classes: int,
+                              default_class: int)
+
+      def `SetTransform` as set_transform(self, i: int, transform: MatrixBase)
+
+      def `SetWarp` as set_warp(self, i: int, warp: float)
+
+      def `GetWarp` as get_warp(self, i: int) -> float
+
+      def `GetTransform` as get_transform(self, i: int, transform: MatrixBase)
+
+      # FIXME:
+      # Needs C++ wrapper
+      # def `ComputeTransform` as compute_transform(self,
+      #     accs: FmllrDiagGmmAccs, norm_type: str, logdet_scale: float,
+      #     Ws: MatrixBase, logdet_out: float, objf_impr: float, count: float)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Dim` as dim(self) -> int
+
+      def `NumClasses` as num_classes(self) -> int

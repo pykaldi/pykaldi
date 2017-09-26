@@ -1,0 +1,90 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+from "gmm/mle-full-gmm-clifwrap.h" import *
+from "transform/transform-common-clifwrap.h" import *
+
+from "transform/fmllr-diag-gmm.h":
+  namespace `kaldi`:
+    class FmllrOptions:
+      update_type: str
+      min_count: float
+      num_iters: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class FmllrDiagGmmAccs(AffineXformStats):
+      def __init__(self, opts: FmllrOptions = default)
+
+      @add__init__
+      def `FmllrDiagGmmAccs` as new_from_other(self, other: FmllrDiagGmmAccs)
+
+      @add__init__
+      def `FmllrDiagGmmAccs` as new_from_dim(self, dim: int,
+                                             opts: FmllrOptions = default)
+
+      @add__init__
+      def `FmllrDiagGmmAccs` as new_from_gmm(self, gmm: DiagGmm,
+                                             fgmm_accs: AccumFullGmm)
+
+      def `Init` as init(self, dim: int)
+
+      def `AccumulateForGmm` as accumulate_for_gmm(self,
+          gmm: DiagGmm, data: VectorBase, weight: float) -> float
+
+      def `AccumulateForGmmPreselect` as accumulate_for_gmm_preselect(self,
+          gmm: DiagGmm, gselect: list<int>, data: VectorBase, weight: float)
+          -> float
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self,
+          gmm: DiagGmm, data: VectorBase, posteriors: VectorBase)
+
+      def `AccumulateFromPosteriorsPreselect`
+        as accumulate_from_posteriors_preselect(
+          self, gmm: DiagGmm, gselect: list<int>, data: VectorBase,
+          posteriors: VectorBase)
+
+      def `Update` as update(self, opts: FmllrOptions, fmllr_mat: MatrixBase)
+          -> (objf_impr: float, count: float)
+
+    def `InitFmllr` as init_fmllr(dim: int) -> Matrix
+
+    def `ComputeFmllrLogDet` as compute_fmllr_log_det(fmllr_mat: Matrix)
+        -> float
+
+    def `ComputeFmllrMatrixDiagGmmFull` as compute_fmllr_matrix_diag_gmm_full(
+        in_xform: MatrixBase, stats: AffineXformStats, num_iters: int,
+        out_xform: MatrixBase) -> float
+
+    def `ComputeFmllrMatrixDiagGmmDiagonal`
+      as compute_fmllr_matrix_diag_gmm_diagonal(
+        in_xform: MatrixBase, stats: AffineXformStats, out_xform: MatrixBase)
+        -> float
+
+    def `ComputeFmllrMatrixDiagGmmOffset`
+      as compute_fmllr_matrix_diag_gmm_offset(
+        in_xform: MatrixBase, stats: AffineXformStats, out_xform: MatrixBase)
+        -> float
+
+    def `ComputeFmllrMatrixDiagGmm` as compute_fmllr_matrix_diag_gmm(
+        in_xform: MatrixBase, stats: AffineXformStats, fmllr_type: str,
+        num_iters: int, out_xform: MatrixBase) -> float
+
+    def `FmllrAuxFuncDiagGmm` as fmllr_aux_func_diag_gmm(
+        xform: MatrixBase, stats: AffineXformStats) -> `float` as float
+
+    def `FmllrAuxFuncDiagGmm` as fmllr_aux_func_diag_gmm_double(
+        xform: DoubleMatrixBase, stats: AffineXformStats) -> float
+
+    def `FmllrAuxfGradient` as fmllr_auxf_gradient(
+        xform: MatrixBase, stats: AffineXformStats, grad_out: MatrixBase)
+        -> float
+
+    def `ApplyFeatureTransformToStats` as apply_feature_transform_to_stats(
+        xform: MatrixBase, stats: AffineXformStats)
+
+    def `ApplyModelTransformToStats` as apply_model_transform_to_stats(
+        xform: MatrixBase, stats: AffineXformStats)
+
+    # FmllrInnerUpdate

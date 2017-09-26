@@ -1,0 +1,60 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import *
+from "gmm/mle-diag-gmm-clifwrap.h" import *
+
+
+from "gmm/mle-am-diag-gmm.h":
+  namespace `kaldi`:
+    class AccumAmDiagGmm:
+      def `Read` as read(self, is: istream, binary: bool, add: bool = default)
+
+      def `Write` as write(self, out_stream: ostream, binary: bool)
+
+      def `Init` as init(self, model: AmDiagGmm, flags: int)
+
+      def `Init` as init_with_dim(self, model: AmDiagGmm, dim: int, flags: int)
+
+      def `SetZero` as set_zero(self, flags: int)
+
+      def `AccumulateForGmm` as accumulate_for_gmm(self,
+          model: AmDiagGmm, data: VectorBase, gmm_index: int, weight: float)
+          -> float
+
+      def `AccumulateForGmmTwofeats` as accumulate_for_gmm_twofeats(self,
+          model: AmDiagGmm, data1: VectorBase, data2: VectorBase,
+          gmm_index: int, weight: float) -> float
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self,
+          model: AmDiagGmm, data: VectorBase, gmm_index: int,
+          posteriors: VectorBase)
+
+      def `AccumulateForGaussian` as accumulate_for_gaussian(self,
+          model: AmDiagGmm, data: VectorBase, gmm_index: int, gauss_index: int,
+          weight: float)
+
+      def `NumAccs` as num_accs(self) -> int
+
+      def `TotStatsCount` as tot_stats_count(self) -> float
+
+      def `TotCount` as tot_count(self) -> float
+
+      def `TotLogLike` as tot_log_like(self) -> float
+
+      def `GetAcc` as get_acc(self, index: int) -> AccumDiagGmm
+
+      def `Add` as add(self, scale: float, other: AccumAmDiagGmm)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Dim` as dim(self) -> int
+
+    def `MleAmDiagGmmUpdate` as mle_am_diag_gmm_update(
+        config: MleDiagGmmOptions, diag_gmm_acc: AccumAmDiagGmm, flags: int,
+        am_gmm: AmDiagGmm) -> (obj_change_out: float, count_out: float)
+
+    def `MapAmDiagGmmUpdate` as map_am_diag_gmm_update(
+        config: MapDiagGmmOptions, diag_gmm_acc: AccumAmDiagGmm, flags: int,
+        am_gmm: AmDiagGmm) -> (obj_change_out: float, count_out: float)
+
+    # Tables
