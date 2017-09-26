@@ -43,6 +43,11 @@ add_pyclif_library("_vector_fst" vector-fst.clif
             __mutable__fst_clifwrap::pyLatticeMutableFst
             __mutable__fst_clifwrap::pyCompactLatticeMutableFst
 )
+add_pyclif_library("_context_fst" context-fst.clif
+  NAMESPACES fst fst::internal
+  CLIF_DEPS _fst
+  BASETYPES __fst_clifwrap::pyStdFst
+)
 add_pyclif_library("_fst_ext" fst-ext.clif
   CLIF_DEPS _vector_fst _iostream
   LIBRARIES kaldi-fstext
@@ -75,6 +80,6 @@ add_pyclif_library("_encode" encode.clif
   CLIF_DEPS _mutable_fst _getters
 )
 add_pyclif_library("_fst_operations" fst-operations.clif
-  CLIF_DEPS _mutable_fst _getters
+  CLIF_DEPS _vector_fst _context_fst _getters
   NAMESPACES fst
 )

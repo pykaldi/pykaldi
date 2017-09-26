@@ -6,8 +6,8 @@ from __future__ import print_function
 import subprocess
 import sys
 
-# Relative or fully qualified absolute import of _getters and _weight modules do
-# not work in Python 3. For some reason, enums are assigned to the module
+# Relative or fully qualified absolute import of _getters and _weight modules
+# do not work in Python 3. For some reason, enums are assigned to the module
 # importlib._bootstrap ???
 from _getters import *
 from _weight import *
@@ -22,6 +22,7 @@ from ._fst import NO_STATE_ID, NO_LABEL
 from ._expanded_fst import CountStdFstStates
 from . import _mutable_fst
 from ._vector_fst import LatticeVectorFst, CompactLatticeVectorFst
+from ._context_fst import *
 from ._fst_ext import *
 from ._kaldi_fst_io import *
 from ._fstext_utils import *
@@ -31,8 +32,7 @@ from ._compiler import *
 from ._encode import StdEncode, StdDecode
 from ._fst_operations import *
 
-from ..base._fstream import ofstream
-from ..base._sstream import ostringstream, stringstream
+from ..base.io import ofstream, ostringstream, stringstream
 
 
 class StdEncodeMapper(_encode.StdEncodeMapper):

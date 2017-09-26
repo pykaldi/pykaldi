@@ -128,6 +128,9 @@ kaldi\.fstext
       TropicalWeightToCost
       WriteFstKaldi
       WriteString
+      std_add_subsequential_loop
+      std_compose_context
+      std_compose_context_fst
       stdarcmap
       stdcompose
       stddeterminize
@@ -193,6 +196,9 @@ kaldi\.fstext
       ReplaceLabelType
       ReweightType
       StdArc
+      StdContextFst
+      StdContextFstArcIterator
+      StdContextFstStateIterator
       StdEncodeMapper
       StdExpandedFst
       StdFst

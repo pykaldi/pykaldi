@@ -2,6 +2,7 @@
 #define PYKALDI_FSTEXT_FST_OPERATIONS_H_ 1
 
 #include "fst/fstlib.h"
+#include "fstext/context-fst.h"
 
 namespace fst {
 
@@ -525,6 +526,29 @@ void ShortestPathExt(
 template <class Arc>
 void SynchronizeExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst) {
   Synchronize(ifst, ofst);
+}
+
+// Kaldi FST operations
+
+template <class Arc>
+void ComposeContextFstExt(const ContextFst<Arc> &ifst1, const Fst<Arc> &ifst2,
+                          MutableFst<Arc> *ofst, bool connect =  true,
+                          ComposeFilter filter_type = AUTO_FILTER) {
+  ComposeContextFst(ifst1, ifst2, ofst, ComposeOptions(connect, filter_type));
+}
+
+void ComposeContextExt(const std::vector<int32> &disambig_syms,
+                       int N, int P,
+                       VectorFst<StdArc> *ifst,
+                       VectorFst<StdArc> *ofst,
+                       std::vector<std::vector<int32> > *ilabels_out) {
+  ComposeContext(disambig_syms, N, P, ifst, ofst, ilabels_out);
+}
+
+template<class Arc>
+void AddSubsequentialLoopExt(typename Arc::Label subseq_symbol,
+                             MutableFst<Arc> *fst){
+  AddSubsequentialLoop(subseq_symbol, fst);
 }
 
 }  // namespace fst

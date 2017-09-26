@@ -4,6 +4,8 @@ from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/context-fst-clifwrap.h" import *
 
 from "fstext/fst-operations.h":
   namespace `fst`:
@@ -150,3 +152,14 @@ from "fstext/fst-operations.h":
         delta: float = default,
         weight_threshold: TropicalWeight = default,
         state_threshold: int = default)
+
+    def `ComposeContextFstExt` as std_compose_context_fst(
+        ifst1: StdContextFst, ifst2: StdFst, ofst: StdMutableFst,
+        connect: bool = default, compose_filter: ComposeFilter = default)
+
+    def `ComposeContextExt` as std_compose_context(
+        disambig_syms: list<int>, N: int, P: int, ifst: StdVectorFst)
+        -> (ofst: StdVectorFst, ilabels_out: list<list<int>>)
+
+    def `AddSubsequentialLoopExt` as std_add_subsequential_loop(
+        subseq_symbol: int, fst: StdMutableFst)
