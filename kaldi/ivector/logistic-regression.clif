@@ -1,0 +1,32 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+
+from "ivector/logistic-regression.h":
+  namespace `kaldi`:
+
+    class LogisticRegressionConfig:
+      max_steps: int
+      mix_up: int
+      normalizer: float
+      power: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class LogisticRegression:
+      def `Train` as train(self, xs:Matrix, ys: list<int>, conf:LogisticRegressionConfig):
+        """xs and ys are the trainning data. Each row of xs is a vector corresponding to the class label in the same row of ys."""
+
+      def `GetLogPosteriors` as get_log_posteriors_matrix(self, xs: Matrix) -> (log_posteriors: Matrix):
+        """Calculates the log posterior of the class label given the input xs"""
+
+      def `GetLogPosteriors` as get_log_posteriors_vector(self, x: Vector) -> (log_posteriors: Vector):
+        """Calculates the log posterior of the class label given the input x."""
+
+      def `Write` as write(self, os: ostream, binary:bool)
+
+      def `Read` as read(self, os: istream, binary:bool)
+
+      def `ScalePriors` as scale_priors(self, prior_scales: Vector)
+

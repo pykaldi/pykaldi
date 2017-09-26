@@ -1,0 +1,15 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+
+from "ivector/voice-activity-detection.h":
+  namespace `kaldi`:
+    class VadEnergyOptions:
+      vad_energy_threshold: float
+      vad_energy_mean_scale: float 
+      vad_frames_context: int
+      vad_proportion_threshold: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    def `ComputeVadEnergy` as compute_vad_energy(opts: VadEnergyOptions, input_features: MatrixBase) -> (output_voiced: Vector)

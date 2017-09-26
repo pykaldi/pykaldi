@@ -1,0 +1,170 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+# from "hmm/posterior-clifwrap.h" import *
+from "gmm/full-gmm-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+
+
+from "ivector/ivector-extractor.h":
+  namespace `kaldi`:
+
+    class IvectorEstimationOptions:
+      """Options for estimating iVectors, during both trainning and test."""
+      acoustic_weight: float
+      max_count: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class IvectorExtractorUtteranceStats:
+      """Stats for a particular utterance, i.e., the sufficient stats for estimating an iVector"""
+
+      @add__init__
+      def `IvectorExtractorUtteranceStats` as new_with_params(self, num_gauss: int, feat_dim: int, need_2nd_order_stats: bool)
+
+      def `AccStats` as acc_stats(self, feats: MatrixBase, post: list<list<tuple<int, float>>>)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `NumFrames` as num_frames(self) -> float
+
+    class IvectorExtractorOptions:
+      ivector_dim: int
+      num_iters: int
+      use_weights: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class IvectorExtractor:
+
+      @add__init__
+      def `IvectorExtractor` as new_with_params(self, opts: IvectorExtractorOptions, fgmm: FullGmm)
+
+      def `GetIvectorDistribution` as get_ivector_distribution(self, utt_stats: IvectorExtractorUtteranceStats, mean: DoubleVectorBase, var: DoubleSpMatrix):
+        """Gets the distribution over ivectors (or the Gaussian approximation).
+
+        Args:
+          utt_stats (:class:`IvectorExtractorUtteranceStats`): stats for a particular utterance
+          mean (:class:`kaldi.matrix.VectorBase`): output means 
+          var (:class::`kaldi.matrix.packed.SpMatrix`): None if not needed, else must be the correct dimension (:meth:`ivector_dim`)
+        """
+
+      def `PriorOffset` as prior_offset(self) -> float:
+        """Offset of first dimension."""
+
+      def `GetAuxf` as get_auxf(self, utt_stats: IvectorExtractorUtteranceStats, mean: DoubleVectorBase, var: DoubleSpMatrix = default) -> float:
+        """Returns the data-dependent part of the log-likelihood objective function, summed over frames."""
+
+      def `GetPriorAuxf` as get_prior_auxf(self, mean: DoubleVectorBase, var: DoubleSpMatrix = default) -> float:
+        """Returns the prior-related part of the log-likelihood objective function."""
+
+      def `GetAcousticAuxfVariance` as get_acoustic_auxf_variance(self, utt_stats: IvectorExtractorUtteranceStats) -> float:
+        """Returns just the part of the acoustic auxf that relates to the variance of the utt_stats."""
+
+      def `GetAcousticAuxfMean` as get_acoustic_auxf_mean(self, utt_stats: IvectorExtractorUtteranceStats, mean: DoubleVectorBase, var: DoubleSpMatrix = default) -> float:
+        """Returns just the part of the acoustic auxf that relates to the speaker-dependent means"""
+
+      def `GetAcousticAuxfGconst` as get_acoustic_auxf_gconst(self, utt_stats: IvectorExtractorUtteranceStats) -> float:
+        """Returns the part of the acoustic auxf that relates to the gconsts of the Gaussian."""
+
+      def `GetAcousticAuxfWeight` as get_acoustic_auxf_weight(self, utt_stats: IvectorExtractorUtteranceStats, mean: DoubleVectorBase, var: DoubleSpMatrix = default) -> float:
+        """Returns the part of the acoustic auxf that relates to the Gaussian-specific weights."""
+
+      def `GetIvectorDistMean` as get_ivector_dist_mean(self, utt_stats: IvectorExtractorUtteranceStats, linear: DoubleVectorBase, quadratic: DoubleSpMatrix):
+        """Get the linear and quadratic terms in the distribution over iVectors"""
+
+      def `GetIvectorDistPrior` as get_ivector_dist_prior(self, utt_stats: IvectorExtractorUtteranceStats, linear: DoubleVectorBase, quadratic: DoubleSpMatrix):
+        """Gets the linear and quadratic terms in the distribution over iVectors that arise from the prior."""
+
+      def `GetIvectorDistWeight` as get_ivector_dist_weight(self, utt_stats: IvectorExtractorUtteranceStats, mean: DoubleVectorBase, linear: DoubleVectorBase, quadratic: DoubleSpMatrix):
+        """Gets the linear and quadratic terms in the distribution over iVectors that arise from the weights"""  
+
+      def `FeatDim` as feat_dim(self) -> int 
+
+      def `IvectorDim` as ivector_dim(self) -> int
+
+      def `NumGauss` as num_gauss(self) -> int
+
+      def `IvectorDependentWeights` as ivector_dependent_weights(self) -> bool
+
+      def `Write` as write(self, os: ostream, binary:bool)
+
+      def `Read` as read(self, os: istream, binary:bool)
+
+
+
+    class OnlineIvectorEstimationStats:
+      @add__init__
+      def `OnlineIvectorEstimationStats` as new_with_params(self, ivector_dim: int, prior_offset: float, max_count: float)
+
+      @add__init__
+      def `OnlineIvectorEstimationStats` as new_with_other(self, other: OnlineIvectorEstimationStats)
+
+      def `AccStats` as acc_stats(self, extractor: IvectorExtractor, feature: VectorBase, gauss_post: list<tuple<int, float>>)
+
+      def `IvectorDim` as ivector_dim(self) -> int
+
+      def `GetIvector` as get_ivector(self, num_cg_iters: int, ivector: DoubleVectorBase):
+        """Gets the current estimate of the iVector."""
+
+      def `NumFrames` as num_frames(self) -> float
+
+      def `PriorOffset` as prior_offset(self) -> float
+
+      def `ObjfChange` as objf_change(self, ivector: DoubleVectorBase) -> float:
+        """Returns the change in objective function per frame from using the default value."""
+
+      def `Count` as count(self) -> float
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Write` as write(self, os: ostream, binary:bool)
+
+      def `Read` as read(self, os: istream, binary:bool)
+
+
+    def `EstimateIvectorsOnline` as estimate_ivectors_online(feats: Matrix, post: list<list<tuple<int, float>>>, extractor: IvectorExtractor, ivector_period: int, num_cg_iters: int, max_count: float) -> (objf_improvement:float, ivectors: Matrix):
+      """Obtains periodically an estimate of the iVector including all frames up to that point."""
+
+    class IvectorExtractorStatsOptions:
+      update_variances: bool
+      compute_auxf: bool 
+      num_samples_for_weights: int
+      cache_size: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class IvectorExtractorEstimationOptions:
+      variance_floor_factor: float
+      gaussian_min_count: float
+      num_threads: int
+      diagonalize: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class IvectorExtractorStats:
+      @add__init__
+      def `IvectorExtractorStats` as new(self, extractor: IvectorExtractor, stats_opts: IvectorExtractorStatsOptions)
+
+      def `Add` as add(self, other: IvectorExtractorStats)
+
+      def `AccStatsForUtterance` as acc_stats_for_utterance(self, extractor: IvectorExtractor, feats: MatrixBase, post: list<list<tuple<int, float>>>)
+
+      # def AccStatsForUtterance
+
+      def `Write` as write(self, os: ostream, binary:bool)
+
+      def `Read` as read(self, os: istream, binary:bool)
+
+      # NOTE (VM): Is this the correct signature?
+      def `Update` as update(self, opts: IvectorExtractorEstimationOptions, extractor: IvectorExtractor) -> float:
+        """Returns the objf improvement per frame"""
+
+      def `AuxfPerFrame` as auxf_per_frame(self) -> float
+
+      def `IvectorVarianceDiagnostic` as ivector_variance_diagnostic(self, extractor: IvectorExtractor):
+        """Prints the proportion of the variance explained by the Ivector model versus the Gaussians."""
+
+
+

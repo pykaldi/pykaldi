@@ -25,6 +25,16 @@ from "feat/feature-common-ext.h":
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        """Computes the features for one file (one sequence of features).
+
+        Args:
+          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
+          sample_freq (float): The sampling frequency with which wave is sampled. If sample_freq is higher than the frequency specified in the config, Kaldi will downsample the waveform
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+
+        Returns:
+          The matrix of features, where the row-index is the frame index
+        """
         return construct_matrix(...)
 
       def `Dim` as dim(self) -> int
@@ -44,6 +54,16 @@ from "feat/feature-common-ext.h":
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        """Computes the features for one file (one sequence of features).
+
+        Args:
+          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
+          sample_freq (float): The sampling frequency with which wave is sampled. If sample_freq is higher than the frequency specified in the config, Kaldi will downsample the waveform
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+
+        Returns:
+          The matrix of features, where the row-index is the frame index
+        """
         return construct_matrix(...)
 
       def `Dim` as dim(self) -> int
@@ -63,6 +83,16 @@ from "feat/feature-common-ext.h":
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        """Computes the features for one file (one sequence of features).
+
+        Args:
+          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
+          sample_freq (float): The sampling frequency with which wave is sampled. If sample_freq is higher than the frequency specified in the config, Kaldi will downsample the waveform
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+
+        Returns:
+          The matrix of features, where the row-index is the frame index
+        """
         return construct_matrix(...)
 
       def `Dim` as dim(self) -> int
@@ -82,6 +112,16 @@ from "feat/feature-common-ext.h":
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        """Computes the features for one file (one sequence of features).
+
+        Args:
+          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
+          sample_freq (float): The sampling frequency with which wave is sampled. If sample_freq is higher than the frequency specified in the config, Kaldi will downsample the waveform
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+
+        Returns:
+          The matrix of features, where the row-index is the frame index
+        """
         return construct_matrix(...)
 
       def `Dim` as dim(self) -> int
