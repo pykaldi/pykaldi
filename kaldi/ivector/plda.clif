@@ -1,0 +1,64 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+
+from "ivector/plda.h":
+  namespace `kaldi`:
+    class PldaConfig:
+      normalize_length: bool
+      simple_length_norm: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class Plda:
+      # def `TransformIvector` as transform_ivector(self, config: PldaConfig, ivector: DoubleVectorBase, num_examples: int, DoubleVectorBase transformed_ivector) -> float
+
+      def `LogLikelihoodRatio` as log_likelihood_ratio(self, transformed_train_ivector:DoubleVectorBase, num_train_utts: int, transformed_test_ivector:DoubleVectorBase) -> float
+
+      def `SmoothWithinClassCovariance` as smooth_within_class_covariance(self, smoothing_factor: float)
+
+      def `Dim` as dim(self) -> int
+
+      def `Write` as write(self, os: ostream, binary:bool)
+
+      def `Read` as read(self, os: istream, binary:bool)
+
+    class PldaStats:
+
+      def `AddSamples` as add_samples(self, weight:float, group:DoubleMatrix)
+
+      def `Dim` as dim(self) -> int
+
+      def `Init` as init(self, dim:int)
+
+      def `Sort` as sort(self)
+
+      def `IsSorted` as is_sorted(self) -> bool
+
+    class PldaEstimationConfig:
+      num_em_iters: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    # TODO (VM):
+    # Fix in Kaldi (remove line 274: KALDI_DISALLOW_COPY_AND_ASSIGN)
+    # class PldaEstimator:
+    #   @add__init__
+    #   def `PldaEstimator` as new_with_stats(self, stats:PldaStats)
+
+    #   def `Estimate` as estimate(self, config: PldaEstimationConfig) -> (output: Plda)
+
+    class PldaUnsupervisedAdaptorConfig:
+      mean_diff_scale: float
+      within_covar_scale: float
+      between_covar_scale: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class PldaUnsupervisedAdaptor:
+      def `AddStats` as add_double_stats(self, weight: float, ivector:DoubleVector)
+
+      def `AddStats` as add_stats(self, weight: float, ivector:Vector)
+
+      def `UpdatePlda` as update_plda(self, config: PldaUnsupervisedAdaptorConfig, plda: Plda)
