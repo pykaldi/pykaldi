@@ -7,6 +7,7 @@
 #include "fstext/determinize-lattice.h"
 #include "fstext/determinize-star.h"
 #include "fstext/remove-eps-local.h"
+#include "fstext/fstext-utils.h"
 
 namespace fst {
 
@@ -600,6 +601,19 @@ void RemoveEpsLocalExt(MutableFst<Arc> *fst) {
 
 void RemoveEpsLocalSpecialExt(MutableFst<StdArc> *fst) {
   RemoveEpsLocalSpecial(fst);
+}
+
+void PushInLogExt(VectorFst<StdArc> *fst, uint32 ptype,
+                  float delta = kDelta, bool to_final = false) {
+  if (to_final)
+    PushInLog<REWEIGHT_TO_FINAL>(fst, ptype, delta);
+  else
+    PushInLog<REWEIGHT_TO_INITIAL>(fst, ptype, delta);
+}
+
+void DeterminizeStarInLogExt(VectorFst<StdArc> *fst, float delta = kDelta,
+                             int max_states = -1) {
+  DeterminizeStarInLog(fst, delta, NULL, max_states);
 }
 
 }  // namespace fst

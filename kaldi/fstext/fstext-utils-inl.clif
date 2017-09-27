@@ -1,0 +1,109 @@
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/expanded-fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/fstext-utils.h" import *
+
+from "fstext/fstext-utils-inl.h":
+  namespace `fst`:
+    def `HighestNumberedOutputSymbol` as std_highest_numbered_output_symbol(
+      fst: StdFst) -> int
+
+    def `HighestNumberedInputSymbol` as std_highest_numbered_input_symbol(
+      fst: StdFst) -> int
+
+    # NumArcs == CountArcs
+
+    def `GetInputSymbols` as std_get_input_symbols(
+      fst: StdFst, include_eps: bool) -> list<int>
+
+    def `GetOutputSymbols` as std_get_output_symbols(
+      fst: StdFst, include_eps: bool) -> list<int>
+
+    def `ClearSymbols` as std_clear_symbols(
+      clear_input: bool, clear_output: bool, fst: StdMutableFst)
+
+    def `GetSymbols` as get_symbols(
+      symtab: SymbolTable, include_eps: bool) -> list<int>
+
+    def `GetLinearSymbolSequence` as std_get_linear_symbol_sequence(
+      fst: StdFst) -> (success: bool, isymbols_out: list<int>,
+                       osymbols_out: list<int>, tot_weight_out: TropicalWeight)
+
+    def `ConvertNbestToVector` as std_convert_nbest_to_vector(fst: StdFst)
+      -> list<StdVectorFst>
+
+    def `NbestAsFsts` as std_nbest_as_fsts(fst: StdFst, n: int)
+      -> list<StdVectorFst>
+
+    def `MakeLinearAcceptor` as std_make_linear_acceptor(labels: list<int>,
+                                                         ofst: StdMutableFst)
+
+    def `MakeLinearAcceptorWithAlternatives`
+        as std_make_linear_acceptor_with_alternatives(labels: list<list<int>>,
+                                                      ofst: StdMutableFst)
+
+    def `SafeDeterminizeWrapper` as std_safe_determinize_wrapper(
+      ifst: StdMutableFst, ofst: StdMutableFst, delta: float = default)
+
+    def `SafeDeterminizeMinimizeWrapper`
+        as std_safe_determinize_minimize_wrapper(
+      ifst: StdMutableFst, ofst: StdVectorFst, delta: float = default)
+
+    def `SafeDeterminizeMinimizeWrapperInLog`
+        as std_safe_determinize_minimize_wrapper_in_log(
+      ifst: StdVectorFst, ofst: StdVectorFst, delta: float = default)
+
+    def `RemoveSomeInputSymbols` as std_remove_some_input_symbols(
+      to_remove: list<int>, fst: StdMutableFst)
+
+    def `MapInputSymbols` as std_map_input_symbols(symbol_map: list<int>,
+                                                   fst: StdMutableFst)
+
+    def `RemoveWeights` as std_remove_weights(fst: StdMutableFst)
+
+    def `PrecedingInputSymbolsAreSame` as std_preceding_input_symbols_are_same(
+      start_is_epsilon: bool, fst: StdFst) -> bool
+
+    def `FollowingInputSymbolsAreSame` as std_following_input_symbols_are_same(
+      end_is_epsilon: bool, fst: StdFst) -> bool
+
+    def `MakePrecedingInputSymbolsSame`
+        as std_make_preceding_input_symbols_same(
+      start_is_epsilon: bool, fst: StdMutableFst)
+
+    def `MakeFollowingInputSymbolsSame`
+        as std_make_following_input_symbols_same(
+      end_is_epsilon: bool, fst: StdMutableFst)
+
+    # def `MakeLoopFst` as std_make_loop_fst(fsts: list<StdExpandedFst>)
+    #   -> StdVectorFst
+
+    def `ApplyProbabilityScale` as std_apply_probability_scale(
+      scale: float, fst: StdMutableFst)
+
+    def `EqualAlign` as std_equal_align(ifst: StdFst, length: int,
+                                        rand_seed: int, ofst: StdMutableFst,
+                                        num_retries: int = default) -> bool
+
+    def `RemoveUselessArcs` as std_remove_useless_arcs(fst: StdMutableFst)
+
+    def `PhiCompose` as std_phi_compose(fst1: StdFst, fst2: StdFst,
+                                        phi_label: int, ofst: StdMutableFst)
+
+    def `PropagateFinal` as std_propagate_final(phi_label: int,
+                                                fst: StdMutableFst)
+
+    def `RhoCompose` as std_rho_compose(fst1: StdFst, fst2: StdFst,
+                                        rho_label: int, ofst: StdMutableFst)
+
+    def `IsStochasticFst` as std_is_stochastic_fst(
+      fst: StdFst, delta: float = default, min_sum: TropicalWeight = default,
+      max_sum: TropicalWeight = default) -> bool
+
+    def `IsStochasticFstInLog` as std_is_stochastic_fst_in_log(
+      fst: StdFst, delta: float = default, min_sum: TropicalWeight = default,
+      max_sum: TropicalWeight = default) -> bool

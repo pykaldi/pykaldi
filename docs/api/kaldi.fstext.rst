@@ -128,16 +128,47 @@ kaldi\.fstext
       cast_or_convert_to_vector_fst
       determinize_lattice
       determinize_lattice_to_compact
+      determinize_star_in_log
+      get_symbols
+      push_in_log
       push_special
       read_fst_kaldi_generic
       remove_eps_local_special
       std_add_subsequential_loop
+      std_apply_probability_scale
+      std_clear_symbols
       std_compose_context
       std_compose_context_fst
       std_compose_deterministic_on_demand
       std_compose_deterministic_on_demand_inverse
+      std_convert_nbest_to_vector
       std_determinize_star
+      std_equal_align
+      std_following_input_symbols_are_same
+      std_get_input_symbols
+      std_get_linear_symbol_sequence
+      std_get_output_symbols
+      std_highest_numbered_input_symbol
+      std_highest_numbered_output_symbol
+      std_is_stochastic_fst
+      std_is_stochastic_fst_in_log
+      std_make_following_input_symbols_same
+      std_make_linear_acceptor
+      std_make_linear_acceptor_with_alternatives
+      std_make_preceding_input_symbols_same
+      std_map_input_symbols
+      std_nbest_as_fsts
+      std_phi_compose
+      std_preceding_input_symbols_are_same
+      std_propagate_final
       std_remove_eps_local
+      std_remove_some_input_symbols
+      std_remove_useless_arcs
+      std_remove_weights
+      std_rho_compose
+      std_safe_determinize_minimize_wrapper
+      std_safe_determinize_minimize_wrapper_in_log
+      std_safe_determinize_wrapper
       std_table_compose
       std_table_compose_cache
       stdarcmap

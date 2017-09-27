@@ -190,3 +190,10 @@ from "fstext/fst-operations.h":
 
     def `RemoveEpsLocalSpecialExt` as remove_eps_local_special(
       fst: StdMutableFst)
+
+    def `PushInLogExt` as push_in_log(fst: StdVectorFst, ptype: int,
+                                      delta: float = default,
+                                      to_final: bool = default)
+
+    def `DeterminizeStarInLogExt` as determinize_star_in_log(
+      fst: StdVectorFst, delta: float = default, max_states: int = default)

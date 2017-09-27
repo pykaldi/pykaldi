@@ -76,6 +76,11 @@ add_pyclif_library("_fstext_utils" fstext-utils.clif
   CLIF_DEPS _vector_fst
   LIBRARIES kaldi-fstext
 )
+add_pyclif_library("_fstext_utils_inl" fstext-utils-inl.clif
+  NAMESPACES fst
+  CLIF_DEPS _vector_fst
+  LIBRARIES kaldi-fstext
+)
 add_pyclif_library("_drawer" drawer.clif
   CLIF_DEPS _fst _iostream
   RPATH $ORIGIN/../base

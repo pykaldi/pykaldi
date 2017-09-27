@@ -1,6 +1,6 @@
 from "fstext/weight-clifwrap.h" import *
 
-from "fstext/float-weight.h":
+from "fstext/float-weight-ext.h":
   namespace `fst`:
     class `FloatLimits<float>` as FloatLimits:
       @classmethod

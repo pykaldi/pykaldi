@@ -131,6 +131,7 @@ function(add_pyclif_library name pyclif_file)
           --modname=${module_name}
           -I${CMAKE_SOURCE_DIR}/kaldi
           -I${CMAKE_BINARY_DIR}/kaldi
+          -I${KALDI_SRC_DIR}
           "-f-I${PYTHON_INCLUDE_DIRS} \
              -I${CMAKE_SOURCE_DIR} \
              -I${CMAKE_SOURCE_DIR}/kaldi \

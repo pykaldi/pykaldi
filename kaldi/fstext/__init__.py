@@ -30,6 +30,7 @@ from ._table_matcher import *
 from ._fst_ext import *
 from ._kaldi_fst_io import *
 from ._fstext_utils import *
+from ._fstext_utils_inl import *
 from ._drawer import *
 from ._printer import *
 from ._compiler import *
