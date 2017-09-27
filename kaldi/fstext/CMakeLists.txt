@@ -45,8 +45,22 @@ add_pyclif_library("_vector_fst" vector-fst.clif
 )
 add_pyclif_library("_context_fst" context-fst.clif
   NAMESPACES fst fst::internal
-  CLIF_DEPS _fst
+  CLIF_DEPS _vector_fst
   BASETYPES __fst_clifwrap::pyStdFst
+)
+add_pyclif_library("_deterministic_fst" deterministic-fst.clif
+  NAMESPACES fst
+  CLIF_DEPS _mutable_fst
+)
+add_pyclif_library("_determinize_lattice" determinize-lattice.clif)
+add_pyclif_library("_push_special" push-special.clif
+  NAMESPACES fst
+  CLIF_DEPS _vector_fst
+  LIBRARIES kaldi-fstext
+)
+add_pyclif_library("_table_matcher" table-matcher.clif
+  NAMESPACES fst
+  CLIF_DEPS _getters _mutable_fst
 )
 add_pyclif_library("_fst_ext" fst-ext.clif
   CLIF_DEPS _vector_fst _iostream
@@ -54,8 +68,9 @@ add_pyclif_library("_fst_ext" fst-ext.clif
   RPATH $ORIGIN/../base
 )
 add_pyclif_library("_kaldi_fst_io" kaldi-fst-io.clif
-  CLIF_DEPS _vector_fst
+  CLIF_DEPS _iostream _vector_fst
   LIBRARIES kaldi-fstext
+  RPATH $ORIGIN/../base
 )
 add_pyclif_library("_fstext_utils" fstext-utils.clif
   CLIF_DEPS _vector_fst
@@ -80,6 +95,6 @@ add_pyclif_library("_encode" encode.clif
   CLIF_DEPS _mutable_fst _getters
 )
 add_pyclif_library("_fst_operations" fst-operations.clif
-  CLIF_DEPS _vector_fst _context_fst _getters
+  CLIF_DEPS _vector_fst _context_fst _deterministic_fst _determinize_lattice _getters
   NAMESPACES fst
 )

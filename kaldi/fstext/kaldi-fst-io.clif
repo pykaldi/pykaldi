@@ -1,10 +1,22 @@
+from "base/iostream-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 
 from "fstext/kaldi-fst-io.h":
   namespace `fst`:
-    def ReadFstKaldiGeneric(rxfilename: str,
-                            throw_on_err: bool = default) -> StdFst
-    def CastOrConvertToVectorFst(fst: StdFst) -> StdVectorFst
-    def WriteFstKaldi(fst: StdVectorFst, wxfilename: str)
+    # def `ReadFstKaldi` as read_fst_kaldi(rxfilename: str) -> StdVectorFst
+
+    def `ReadFstKaldiGeneric` as read_fst_kaldi_generic(
+      rxfilename: str, throw_on_err: bool = default) -> StdFst
+
+    def `CastOrConvertToVectorFst` as cast_or_convert_to_vector_fst(
+      fst: StdFst) -> StdVectorFst
+
+    def `WriteFstKaldi` as write_fst_kaldi(fst: StdVectorFst, wxfilename: str)
+
+    # def `WriteFstKaldi` as write_std_fst_kaldi_stream(
+    #   os: ostream, binary: bool, fst: StdVectorFst)
+    #
+    # def `ReadFstKaldi` as read_std_fst_kaldi_stream(
+    #   is: istream, binary: bool) -> StdVectorFst

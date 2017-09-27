@@ -1,0 +1,7 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from "fstext/push-special.h":
+  namespace `fst`:
+    def `PushSpecial` as push_special(fst: StdVectorFst,
+                                      delta: float = default)

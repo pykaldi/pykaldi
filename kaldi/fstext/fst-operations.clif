@@ -6,6 +6,8 @@ from "fstext/fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "fstext/context-fst-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "fstext/determinize-lattice-clifwrap.h" import *
 
 from "fstext/fst-operations.h":
   namespace `fst`:
@@ -163,3 +165,28 @@ from "fstext/fst-operations.h":
 
     def `AddSubsequentialLoopExt` as std_add_subsequential_loop(
         subseq_symbol: int, fst: StdMutableFst)
+
+    def `ComposeDeterministicOnDemandExt`
+        as std_compose_deterministic_on_demand(
+      fst1: StdFst, fst2: StdDeterministicOnDemandFst, ofst: StdMutableFst)
+
+    def `ComposeDeterministicOnDemandInverseExt`
+        as std_compose_deterministic_on_demand_inverse(
+      fst1: StdFst, fst2: StdDeterministicOnDemandFst, ofst: StdMutableFst)
+
+    def `DeterminizeLatticeExt` as determinize_lattice(
+      ifst: LatticeFst, ofst: LatticeMutableFst,
+      opts: DeterminizeLatticeOptions = default) -> bool
+
+    def `DeterminizeLatticeExt` as determinize_lattice_to_compact(
+      ifst: LatticeFst, ofst: CompactLatticeMutableFst,
+      opts: DeterminizeLatticeOptions = default) -> bool
+
+    def `DeterminizeStarExt` as std_determinize_star(
+      ifst: StdFst, ofst: StdMutableFst, delta: float = default,
+      max_states: int = default, allow_partial: bool = default) -> bool
+
+    def `RemoveEpsLocalExt` as std_remove_eps_local(fst: StdMutableFst)
+
+    def `RemoveEpsLocalSpecialExt` as remove_eps_local_special(
+      fst: StdMutableFst)

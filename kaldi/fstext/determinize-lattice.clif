@@ -1,0 +1,9 @@
+
+
+from "fstext/determinize-lattice.h":
+  namespace `fst`:
+    class DeterminizeLatticeOptions:
+      delta: float
+      max_mem: int
+      max_loop: int
+    

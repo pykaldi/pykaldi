@@ -23,6 +23,10 @@ from ._expanded_fst import CountStdFstStates
 from . import _mutable_fst
 from ._vector_fst import LatticeVectorFst, CompactLatticeVectorFst
 from ._context_fst import *
+from ._deterministic_fst import *
+from ._determinize_lattice import *
+from ._push_special import *
+from ._table_matcher import *
 from ._fst_ext import *
 from ._kaldi_fst_io import *
 from ._fstext_utils import *

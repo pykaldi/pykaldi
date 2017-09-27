@@ -20,7 +20,6 @@ kaldi\.fstext
       BytesToStdFst
       BytesToStdVectorFst
       CastLogToStd
-      CastOrConvertToVectorFst
       CastStdToLog
       CompactLatticeApproxEqual
       CompactLatticeCompare
@@ -73,7 +72,6 @@ kaldi\.fstext
       LogPower
       LogTimes
       ReadFstKaldi
-      ReadFstKaldiGeneric
       RelabelSymbolTable
       RemoveAlignmentsFromCompactLattice
       ScaleCompactLattice
@@ -126,11 +124,22 @@ kaldi\.fstext
       TropicalPower
       TropicalTimes
       TropicalWeightToCost
-      WriteFstKaldi
       WriteString
+      cast_or_convert_to_vector_fst
+      determinize_lattice
+      determinize_lattice_to_compact
+      push_special
+      read_fst_kaldi_generic
+      remove_eps_local_special
       std_add_subsequential_loop
       std_compose_context
       std_compose_context_fst
+      std_compose_deterministic_on_demand
+      std_compose_deterministic_on_demand_inverse
+      std_determinize_star
+      std_remove_eps_local
+      std_table_compose
+      std_table_compose_cache
       stdarcmap
       stdcompose
       stddeterminize
@@ -152,6 +161,7 @@ kaldi\.fstext
       stdshortestpath
       stdstatemap
       stdsynchronize
+      write_fst_kaldi
    
    
 
@@ -171,6 +181,7 @@ kaldi\.fstext
       CompactLatticeVectorFst
       CompactLatticeWeight
       ComposeFilter
+      DeterminizeLatticeOptions
       DeterminizeType
       DivideType
       EncodeType
@@ -190,15 +201,20 @@ kaldi\.fstext
       LogFstPrinter
       LogWeight
       MapType
+      MatchType
       ProjectType
       QueueType
       RandArcSelection
       ReplaceLabelType
       ReweightType
       StdArc
+      StdBackoffDeterministicOnDemandFst
+      StdCacheDeterministicOnDemandFst
+      StdComposeDeterministicOnDemandFst
       StdContextFst
       StdContextFstArcIterator
       StdContextFstStateIterator
+      StdDeterministicOnDemandFst
       StdEncodeMapper
       StdExpandedFst
       StdFst
@@ -206,11 +222,15 @@ kaldi\.fstext
       StdFstDrawer
       StdFstPrinter
       StdMutableFst
+      StdTableComposeCache
+      StdUnweightedNgramFst
       StdVectorFst
       StdVectorFstCompiler
       SymbolTable
       SymbolTableIterator
       SymbolTableTextOptions
+      TableComposeOptions
+      TableMatcherOptions
       TropicalWeight
       ofstream
       ostringstream

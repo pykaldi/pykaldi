@@ -5,6 +5,7 @@ from "fst/script/getters.h":
     enum DeterminizeType
     enum EncodeType
     enum EpsNormalizeType
+    enum MatchType
     enum ProjectType
     enum QueueType
     enum ReplaceLabelType

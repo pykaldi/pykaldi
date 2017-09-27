@@ -1,0 +1,34 @@
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+
+from "fstext/deterministic-fst.h":
+  namespace `fst`:
+    class `DeterministicOnDemandFst<StdArc>` as StdDeterministicOnDemandFst:
+      def `Start` as start(self) -> int
+
+      def `Final` as final(self, state: int) -> TropicalWeight
+
+      def `GetArc` as get_arc(self, s: int, i: int)
+        -> (success: bool, oarc: StdArc)
+
+    class `BackoffDeterministicOnDemandFst<StdArc>`
+        as StdBackoffDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      def __init__(self, fst_: StdFst)
+
+    class `UnweightedNgramFst<StdArc>`
+        as StdUnweightedNgramFst(StdDeterministicOnDemandFst):
+      def __init__(self, n: int)
+
+    class `ComposeDeterministicOnDemandFst<StdArc>`
+        as StdComposeDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      def __init__(self, fst1: StdDeterministicOnDemandFst,
+                   fst2: StdDeterministicOnDemandFst)
+
+    class `CacheDeterministicOnDemandFst<StdArc>`
+        as StdCacheDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      def __init__(self, fst: StdDeterministicOnDemandFst,
+                   num_cached_arcs: int = default)

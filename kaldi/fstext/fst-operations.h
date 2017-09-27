@@ -3,6 +3,10 @@
 
 #include "fst/fstlib.h"
 #include "fstext/context-fst.h"
+#include "fstext/deterministic-fst.h"
+#include "fstext/determinize-lattice.h"
+#include "fstext/determinize-star.h"
+#include "fstext/remove-eps-local.h"
 
 namespace fst {
 
@@ -549,6 +553,53 @@ template<class Arc>
 void AddSubsequentialLoopExt(typename Arc::Label subseq_symbol,
                              MutableFst<Arc> *fst){
   AddSubsequentialLoop(subseq_symbol, fst);
+}
+
+template<class Arc>
+void ComposeDeterministicOnDemandExt(const Fst<Arc> &fst1,
+                                     DeterministicOnDemandFst<Arc> *fst2,
+                                     MutableFst<Arc> *fst_composed) {
+  ComposeDeterministicOnDemand(fst1, fst2, fst_composed);
+}
+
+template<class Arc>
+void ComposeDeterministicOnDemandInverseExt(const Fst<Arc> &fst1,
+                                            DeterministicOnDemandFst<Arc> *fst2,
+                                            MutableFst<Arc> *fst_composed) {
+  ComposeDeterministicOnDemandInverse(fst1, fst2, fst_composed);
+}
+
+template<class Weight>
+bool DeterminizeLatticeExt(
+    const Fst<ArcTpl<Weight> > &ifst,
+    MutableFst<ArcTpl<Weight> > *ofst,
+    DeterminizeLatticeOptions opts = DeterminizeLatticeOptions()) {
+  return DeterminizeLattice<Weight, int32>(ifst, ofst, opts);
+}
+
+template<class Weight, class IntType>
+bool DeterminizeLatticeExt(
+    const Fst<ArcTpl<Weight> >&ifst,
+    MutableFst<ArcTpl<CompactLatticeWeightTpl<Weight, IntType> > > *ofst,
+    DeterminizeLatticeOptions opts = DeterminizeLatticeOptions()) {
+  return DeterminizeLattice(ifst, ofst, opts);
+}
+
+template<class F>
+bool DeterminizeStarExt(F &ifst, MutableFst<typename F::Arc> *ofst,
+                        float delta = kDelta,
+                        int max_states = -1,
+                        bool allow_partial = false) {
+  return DeterminizeStar(ifst, ofst, delta, NULL, max_states, allow_partial);
+}
+
+template<class Arc>
+void RemoveEpsLocalExt(MutableFst<Arc> *fst) {
+  RemoveEpsLocal(fst);
+}
+
+void RemoveEpsLocalSpecialExt(MutableFst<StdArc> *fst) {
+  RemoveEpsLocalSpecial(fst);
 }
 
 }  // namespace fst
