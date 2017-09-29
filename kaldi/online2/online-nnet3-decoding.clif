@@ -1,0 +1,8 @@
+
+
+
+
+from "online2/online-nnet3-decoding.h":
+  namespace `kaldi`:
+    class SingleUtteranceNnet3Decoder:
+      # def `SingleUtteranceNnet3Decoder` as __init__(self, decoder_opts: LatticeFasterDecoderConfig, trans_model: TransitionModel, info: DecodableNnetSimpleLoopedInfo, fst: StdFst, )

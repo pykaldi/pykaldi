@@ -1,0 +1,140 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import * 
+from "ivector/ivector-extractor-clifwrap.h" import *
+from "feat/online-feature-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
+from "itf/online-feature-itf-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "online2/online-ivector-feature.h":
+  namespace `kaldi`:
+
+    class OnlineIvectorExtractionConfig:
+      lda_mat_rxfilename: str
+      global_cmvn_stats_rxfilename: str
+      splice_config_rxfilename: str
+      cmvn_config_rxfilename: str
+      diag_ubm_rxfilename: str
+      ivector_extractor_rxfilename: str
+      ivector_period: int
+      num_gselect: int
+      min_post:float
+      posterior_scale: float
+      max_count: float
+      num_cg_iters: int
+      use_most_recent_ivector: bool
+      greedy_ivector_extractor: bool
+      max_remembered_frames: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class OnlineIvectorExtractionInfo:
+      lda_mat: Matrix
+      global_cmvn_stats: DoubleMatrix
+
+      cmvn_opts: OnlineCmvnOptions
+      splice_opts: OnlineSpliceOptions
+
+      # FIXME (VM):
+      # diag_ubm: DiagGmm
+      extractor: IvectorExtractor
+
+      ivector_period: int
+      num_gselect: int
+      min_post: float
+      posterior_scale: float
+      max_count: float
+      num_cg_iters: int
+      use_most_recent_ivector: bool
+      greedy_ivector_extractor: bool
+      max_remembered_frames: float
+
+      # FIXME (VM):
+      # @add__init__
+      # def `OnlineIvectorExtractionInfo` as new_with_config(self, config: OnlineIvectorExtractionConfig)
+
+      def `Init` as init(self, config: OnlineIvectorExtractionConfig)
+
+      def `Check` as check(self)
+
+    class OnlineIvectorExtractorAdaptationState:
+      cmvn_state: OnlineCmvnState
+      ivector_stats: OnlineIvectorEstimationStats
+
+      # FIXME (VM):
+      # @add__init__
+      # def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: OnlineIvectorExtractionInfo)
+      
+      @add__init__
+      def `OnlineIvectorExtractorAdaptationState` as new_with_other(self, other: OnlineIvectorExtractorAdaptationState)
+
+      def `LimitFrames` as limit_frames(self, max_remembered_frames: float, posterior_scale: float):
+        """Scales down the stats if needed to ensure the number of frames in the speaker-specific CMVN stats does not exceed max_remembered_frames"""
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+    class OnlineIvectorFeature(OnlineFeatureInterface):
+      """OnlineIvectorFeature is an online feature-extraction class that's responsible
+      for extracting iVectors from raw features such as MFCC, PLP or filterbank."""
+
+      def `OnlineIvectorFeature` as __init__(self, info: OnlineIvectorExtractionInfo, base_feature: OnlineFeatureInterface):
+        """Constructor
+
+        Args:
+          base_feature (OnlineIvectorFeature): raw MFCC or PLP or filterbank used to train the iVector extractor
+        """
+
+      def `Dim` as dim(self) -> int:
+        """Returns the iVector dimension"""
+      
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `NumFramesReady` as num_ready_frames(self) -> int
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
+      def `SetAdaptationState` as set_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
+        """Set the adaptation state to a particular value"""
+
+      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
+        """Get the adaptation state"""
+
+      # UbmLogLikePerFrame
+
+      # ObjfImprPerFrame
+
+      def `NumFrames` as num_frames(self) -> float
+
+      def `UpdateFrameWeights` as update_weight_frames(self, delta_weights: list<tuple<int, float>>)
+
+    class OnlineSilenceWeightingConfig:
+      silence_phones_str: str
+
+      silence_weight: float
+
+      max_state_duration: float
+
+      new_data_weight: float
+
+      def `Active` as active(self) -> bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+      def `RegisterWithPrefix` as register_with_prefix(self, prefix: str, opts: OptionsItf)
+
+    class OnlineSilenceWeighting:
+      def `OnlineSilenceWeighting` as __init__(self, trans_model: TransitionModel, config: OnlineSilenceWeightingConfig, frame_subsampling_factor: int = default)
+
+      def `Active` as active(self) -> bool
+
+      def `ComputeCurrentTraceback` as compute_current_traceback(self, decoder: LatticeFasterOnlineDecoder)
+
+      # def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int, delta_weights: list<tuple<int, float>>)
+

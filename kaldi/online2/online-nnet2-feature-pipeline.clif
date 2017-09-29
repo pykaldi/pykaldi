@@ -1,0 +1,80 @@
+from "online2/online-ivector-feature-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "itf/online-feature-itf-clifwrap.h" import *
+from "feat/feature-mfcc-clifwrap.h" import *
+from "feat/feature-plp-clifwrap.h" import *
+from "feat/feature-fbank-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+
+from "online2/online-nnet2-feature-pipeline.h":
+  namespace `kaldi`:
+    class OnlineNnet2FeaturePipelineConfig:
+      feature_type: str
+      mfcc_config: str
+      plp_config: str
+      fbank_config: str
+      add_pitch: bool
+      online_pitch_config: str
+      ivector_extraction_config:str
+      silence_weighting_config: OnlineSilenceWeightingConfig
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class OnlineNnet2FeaturePipelineInfo:
+
+      # FIXME (VM):
+      # @add__init__
+      # def `OnlineNnet2FeaturePipelineInfo` as new_with_config(self, config: OnlineNnet2FeaturePipelineConfig)
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      feature_type: str
+
+      # mfcc_config: MfccOptions
+
+      plp_opts: PlpOptions
+
+      fbank_opts: FbankOptions
+
+      add_pitch: bool
+
+      # pitch_opts: PitchExtractOptions
+
+      # pitch_process_opts: ProcessPitchOptions
+
+      use_ivectors: bool
+
+      # ivector_extractor_info: OnlineIvectorExtractionInfo
+
+      silence_weighting_config: OnlineSilenceWeightingConfig
+
+      def `IvectorDim` as ivector_dim(self) -> int 
+
+    class OnlineNnet2FeaturePipeline(OnlineFeatureInterface):
+
+      @add__init__
+      def `OnlineNnet2FeaturePipeline` as new_with_info(self, info: OnlineNnet2FeaturePipelineInfo)
+
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame:int, feat: VectorBase)
+
+      def `SetAdaptationState` as set_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState)
+
+      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState)
+
+      # def `AcceptWaveForm` as accept_waveform(self) -> float
+
+      def `InputFinished` as input_finished(self)
+
+      # def IvectorFeature
+
+      # def InputFeature
+
+
+

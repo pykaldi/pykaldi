@@ -1,0 +1,110 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import * 
+from "transform/basis-fmllr-diag-gmm-clifwrap.h" import *
+from "transform/fmllr-diag-gmm-clifwrap.h" import *
+from "feat/online-feature-clifwrap.h" import *
+from "online2/online-feature-pipeline-clifwrap.h" import *
+from "online2/online-gmm-decodable-clifwrap.h" import *
+from "online2/online-endpoint-clifwrap.h" import *
+from "decoder/lattice-faster-decoder-clifwrap.h" import *
+from "hmm/posterior-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from "online2/online-gmm-decoding.h":
+  namespace `kaldi`:
+    class OnlineGmmDecodingAdaptationPolicyConfig:
+      adaptation_first_utt_delay: float
+      adaptation_first_utt_ratio: float
+      adaptation_delay: float
+      adaptation_ratio: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+      def `Check` as check(self)
+
+      def `DoAdapt` as do_adapt(self, chunk_begin_secs: float, chuck_end_secs:float, is_first_utterance: bool) -> bool
+
+    class OnlineGmmDecodingConfig:
+      fmllr_lattice_beam: float
+      basis_opts: BasisFmllrOptions
+      faster_decoder_opts: LatticeFasterDecoderOptions
+      adaptation_policy_opts: OnlineGmmDecodingAdaptationPolicyConfig
+
+      online_alimdl_rxfilename: str
+      model_rxfilename: str
+      rescore_model_rxfilename: str
+      fmllr_basis_rxfilename: str
+
+      acoustic_scale: float
+
+      silence_phones: str
+      silence_weight: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    # class OnlineGmmDecodingModels:
+      
+      # FIXME (VM):
+      # Clif gets confused between class name and constructor name
+      # def __init__(self, config: OnlineGmmDecodingConfig)
+
+      # FIXME (VM):
+      # def `GetTransitionModel` as get_transition_model(self) -> TransitionModel
+
+      # FIXME (VM):
+      # def `GetOnlineAlignmentModel` as get_online_alignment_model(self) -> AmDiagGmm
+
+      # def `GetModel` as get_model(self) -> AmDiagGmm
+
+      # def `GetFinalModel` as get_final_model(self) -> AmDiagGmm
+
+      # def `GetFmllrBasis` as basis_fmllr_estimate(self) -> BasisFmllrEstimate
+
+    class OnlineGmmAdaptationState:
+      cmvn_state: OnlineCmvnState
+
+      # FIXME (VM):
+      # spk_stats: FmllrDiagGmmAccs
+      
+      transform: Matrix
+
+      def `Write` as write(self, out_stream: ostream, binary: bool)
+
+      def `Read` as read(self, in_stream: istream, binary: bool)
+
+    class SingleUtteranceGmmDecoder:
+      # TODO (VM):
+      # def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels, feature_prototype: OnlineFeaturePipeline, fst: StdFst, adaptation_state: OnlineGmmAdaptationState)
+
+      def `FeaturePipeline` as feature_pipeline(self) -> OnlineFeaturePipeline
+
+      def `AdvanceDecoding` as advance_decoding(self):
+        """Advance the decoding as far as we can."""
+
+      def `FinalizeDecoding` as finalize_decoding(self):
+        """Finalize the decoding"""
+
+      def `HaveTransform` as have_transform(self) -> bool:
+        """Returns true if we already have a fMLLR transform"""
+
+      def `EstimateFmllr` as estimate_fmllr(self, end_of_utterance: bool):
+        """Estimate the [basis-]fMLLR transform and apply it to the features"""
+
+      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineGmmAdaptationState)
+
+      # CompactLatticeVectorFst == CompactLattice
+      def `GetLattice` as get_lattice(self, rescore_if_needed: bool, end_of_utterance: bool, clat: CompactLatticeVectorFst):
+        """Gets the lattice. If rescore_if_needed is true and if there is any point in rescoring the state-level lattice, it will rescore the lattice."""
+
+      # LatticeVectorFst == lattice
+      def `GetBestPath` as get_best_path(self, end_of_utterance: bool, best_path: LatticeVectorFst):
+        """Outputs an FST corresponding to the single best path through the current lattice."""
+
+      def `FinalRelativeCost` as final_relative_cost(self) -> float:
+        """Outputs to final_relative_cost, if non-NULL, a number >= 0 that will be close to zero if the final-probs were close to the best probs active on the final state."""
+
+      def `EndpointDetected` as endpoint_detected(self, config: OnlineEndpointConfig) -> bool
