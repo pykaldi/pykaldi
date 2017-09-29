@@ -1,22 +1,21 @@
 from __future__ import division
 import unittest
-import numpy as np 
-from kaldi.matrix import Matrix, SubMatrix
-from kaldi.matrix.packed import SpMatrix
+import numpy as np
+from kaldi.matrix import Matrix, SubMatrix, SpMatrix
 
 class TestMatrix(unittest.TestCase):
 
-    def test_copy_(self):
+    def test_copy(self):
         m = Matrix()
-        m1 = Matrix().copy_(m)
+        m1 = Matrix().copy(m)
         self.assertTupleEqual((0, 0), m1.shape)
 
         m = Matrix(5, 5)
-        m1 = Matrix(5, 5).copy_(m)
+        m1 = Matrix(5, 5).copy(m)
         self.assertTupleEqual((5, 5), m1.shape)
 
         m = Matrix.new([[1., 2.], [3., 4.]])
-        m1 = Matrix(2, 2).copy_(m)
+        m1 = Matrix(2, 2).copy(m)
         self.assertEqual(m[0, 0], m1[0, 0])
         self.assertEqual(m[0, 1], m1[0, 1])
         self.assertEqual(m[1, 1], m1[1, 1])
@@ -26,7 +25,7 @@ class TestMatrix(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             m = Matrix(5, 5)
-            m1 = Matrix(2, 2).copy_(m)
+            m1 = Matrix(2, 2).copy(m)
 
     def test_clone(self):
         m = Matrix()
@@ -36,7 +35,7 @@ class TestMatrix(unittest.TestCase):
         m = Matrix(5, 5)
         m1 = m.clone()
         self.assertTupleEqual((5, 5), m1.shape)
-        
+
         m = Matrix.new([[1., 2.], [3., 4.]])
         m1 = m.clone()
 
@@ -131,10 +130,10 @@ class TestMatrix(unittest.TestCase):
         self.assertAlmostEqual(5.0, m[0, 1])
         self.assertAlmostEqual(7.0, m[1, 0])
         self.assertAlmostEqual(11.0, m[1, 1])
-        
+
         with self.assertRaises(IndexError):
             m[2, 0] = 10.0
-            
+
         with self.assertRaises(IndexError):
             m[0, 2] = 10.0
 
@@ -161,7 +160,7 @@ class TestMatrix(unittest.TestCase):
         self.assertAlmostEqual(15.0, m[0, :].numpy().prod())
         self.assertAlmostEqual(33.0, m[1, :].numpy().prod())
         self.assertAlmostEqual(9.0, m[:, 0].numpy().prod())
-        self.assertAlmostEqual(55.0, m[:, 1].numpy().prod())   
+        self.assertAlmostEqual(55.0, m[:, 1].numpy().prod())
 
     def test_empty(self):
         m = Matrix()
@@ -173,7 +172,7 @@ class TestMatrix(unittest.TestCase):
 
         with self.assertRaises(IndexError):
             m = Matrix.new([[], []])
-        
+
     def test_nonempty(self):
         m = Matrix(100, 100)
         self.assertIsNotNone(m)
@@ -183,11 +182,11 @@ class TestMatrix(unittest.TestCase):
         m = Matrix.new([[3, 5], [7, 11]])
         self.assertIsNotNone(m)
         self.assertTupleEqual((2, 2), m.size())
-                
+
         m2 = Matrix.new(np.array([[3, 5], [7, 11]]))
         self.assertIsNotNone(m2)
         self.assertTupleEqual((2, 2), m2.size())
-        
+
         self.assertTrue(m.equal(m2))
         self.assertTrue(m2.equal(m))
 
@@ -217,7 +216,7 @@ class testSubMatrix(unittest.TestCase):
             m.set_randn()
             self.assertAlmostEqual(m.sum(), sb.sum())
 
-        
+
 
 if __name__ == '__main__':
     unittest.main()

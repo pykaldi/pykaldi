@@ -5,7 +5,7 @@ from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
 
-from kaldi.matrix import construct_matrix
+from kaldi.matrix import _construct_matrix
 
 from "feat/feature-common-ext.h":
   namespace `kaldi`:
@@ -21,7 +21,7 @@ from "feat/feature-common-ext.h":
 
       def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
           -> Matrix:
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
@@ -35,7 +35,7 @@ from "feat/feature-common-ext.h":
         Returns:
           The matrix of features, where the row-index is the frame index
         """
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `Dim` as dim(self) -> int
 
@@ -50,7 +50,7 @@ from "feat/feature-common-ext.h":
 
       def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
           -> Matrix:
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
@@ -64,7 +64,7 @@ from "feat/feature-common-ext.h":
         Returns:
           The matrix of features, where the row-index is the frame index
         """
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `Dim` as dim(self) -> int
 
@@ -79,7 +79,7 @@ from "feat/feature-common-ext.h":
 
       def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
           -> Matrix:
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
@@ -93,7 +93,7 @@ from "feat/feature-common-ext.h":
         Returns:
           The matrix of features, where the row-index is the frame index
         """
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `Dim` as dim(self) -> int
 
@@ -108,7 +108,7 @@ from "feat/feature-common-ext.h":
 
       def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
           -> Matrix:
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
@@ -122,6 +122,6 @@ from "feat/feature-common-ext.h":
         Returns:
           The matrix of features, where the row-index is the frame index
         """
-        return construct_matrix(...)
+        return _construct_matrix(...)
 
       def `Dim` as dim(self) -> int

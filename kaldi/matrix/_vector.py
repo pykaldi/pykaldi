@@ -676,7 +676,7 @@ class SubVector(VectorBase, _matrix_ext.SubVector):
 # Define Vector Utility Functions
 ################################################################################
 
-def construct_vector(vector):
+def _construct_vector(vector):
     """Construct a new :class:`Vector` instance from the input vector.
 
     This is a destructive operation. Contents of the input vector are moved to

@@ -5,8 +5,8 @@ import unittest
 import numpy as np
 
 from kaldi.base import math as kaldi_math
-from kaldi.matrix import MatrixTransposeType, Matrix, Vector
-from kaldi.matrix.packed import SpMatrix, TpMatrix, vec_sp_vec
+from kaldi.matrix import (MatrixTransposeType, Matrix, Vector,
+                          SpMatrix, TpMatrix, vec_sp_vec)
 from kaldi.gmm.common import GmmUpdateFlags
 from kaldi.gmm.diag import DiagGmm
 from kaldi.gmm.full import FullGmm
