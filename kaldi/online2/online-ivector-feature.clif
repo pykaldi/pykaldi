@@ -52,9 +52,8 @@ from "online2/online-ivector-feature.h":
       greedy_ivector_extractor: bool
       max_remembered_frames: float
 
-      # FIXME (VM):
-      # @add__init__
-      # def `OnlineIvectorExtractionInfo` as new_with_config(self, config: OnlineIvectorExtractionConfig)
+      @add__init__
+      def `OnlineIvectorExtractionInfo` as new_with_config(self, config: OnlineIvectorExtractionConfig)
 
       def `Init` as init(self, config: OnlineIvectorExtractionConfig)
 
@@ -64,9 +63,8 @@ from "online2/online-ivector-feature.h":
       cmvn_state: OnlineCmvnState
       ivector_stats: OnlineIvectorEstimationStats
 
-      # FIXME (VM):
-      # @add__init__
-      # def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: OnlineIvectorExtractionInfo)
+      @add__init__
+      def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: OnlineIvectorExtractionInfo)
       
       @add__init__
       def `OnlineIvectorExtractorAdaptationState` as new_with_other(self, other: OnlineIvectorExtractorAdaptationState)

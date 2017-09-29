@@ -46,11 +46,11 @@ from "online2/online-gmm-decoding.h":
 
       def `Register` as register(self, opts: OptionsItf)
 
-    # class OnlineGmmDecodingModels:
+    class OnlineGmmDecodingModels:
       
       # FIXME (VM):
       # Clif gets confused between class name and constructor name
-      # def __init__(self, config: OnlineGmmDecodingConfig)
+      def __init__(self, config: OnlineGmmDecodingConfig)
 
       # FIXME (VM):
       # def `GetTransitionModel` as get_transition_model(self) -> TransitionModel

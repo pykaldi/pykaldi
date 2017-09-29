@@ -23,9 +23,8 @@ from "online2/online-nnet2-feature-pipeline.h":
 
     class OnlineNnet2FeaturePipelineInfo:
 
-      # FIXME (VM):
-      # @add__init__
-      # def `OnlineNnet2FeaturePipelineInfo` as new_with_config(self, config: OnlineNnet2FeaturePipelineConfig)
+      @add__init__
+      def `OnlineNnet2FeaturePipelineInfo` as new_with_config(self, config: OnlineNnet2FeaturePipelineConfig)
 
       def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
 

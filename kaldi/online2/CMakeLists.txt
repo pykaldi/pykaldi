@@ -1,3 +1,6 @@
+add_pyclif_library("_online_timing" online-timing.clif
+    LIBRARIES kaldi-online2
+)
 add_pyclif_library("_online_endpoint" online-endpoint.clif
     CLIF_DEPS _options_itf _lattice_faster_online_decoder _transition_model
     LIBRARIES kaldi-online2
@@ -29,6 +32,12 @@ add_pyclif_library("_online_ivector_feature" online-ivector-feature.clif
 )
 add_pyclif_library("_online_nnet2_feature_pipeline" online-nnet2-feature-pipeline.clif
 	CLIF_DEPS _options_itf _kaldi_vector _online_feature _online_ivector_feature _online_feature_itf
+    LIBRARIES kaldi-online2
 	BASETYPES __online__feature__itf_clifwrap::pyOnlineFeatureInterface
 	RPATH $ORIGIN/../matrix:$ORIGIN/../feat:$ORIGIN/../itf
+)
+add_pyclif_library("_online_nnet3_decoding" online-nnet3-decoding.clif
+	CLIF_DEPS _online_endpoint _online_nnet2_feature_pipeline _lattice_faster_decoder _lattice_faster_online_decoder _transition_model _decodable_online_looped _fst _vector_fst
+    LIBRARIES kaldi-online2
+	RPATH $ORIGIN/../hmm:$ORIGIN/../decoder:$ORIGIN/../fstext:$ORIGIN/../nnet3
 )

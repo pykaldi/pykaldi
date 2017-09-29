@@ -47,9 +47,8 @@ from "online2/online-feature-pipeline.h":
       lda_rxfilename: str
       global_cmvn_stats_rxfilename: str
 
-      # FIXME (VM):
-      # @add__init__
-      # def `OnlineFeaturePipelineConfig` as new_with_config(self, cmdline_config: OnlineFeaturePipelineCommandLineConfig)
+      @add__init__
+      def `OnlineFeaturePipelineConfig` as new_with_config(self, cmdline_config: OnlineFeaturePipelineCommandLineConfig)
 
       def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
 
