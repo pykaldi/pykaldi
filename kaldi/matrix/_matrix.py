@@ -653,7 +653,7 @@ class SubMatrix(MatrixBase, _matrix_ext.SubMatrix):
 # Define Matrix Utility Functions
 ################################################################################
 
-def construct_matrix(matrix):
+def _construct_matrix(matrix):
     """Construct a new :class:`Matrix` instance from the input matrix.
 
     This is a destructive operation. Contents of the input matrix are moved to

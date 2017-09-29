@@ -402,7 +402,7 @@ from "matrix/kaldi-matrix.h":
            S.dim == num_rows, U is either NULL or num_rows by num_cols,
            and V is either NULL or num_cols by num_cols. The singular values are
            not sorted (use SortSvd for that). Note that Vt is the transpose of V.
-      
+
         Args:
             s(VectorBase): A vector of length num_rows of self.
                            It must be that s.dim = self.num_cols
@@ -410,18 +410,18 @@ from "matrix/kaldi-matrix.h":
                            will be filled with the U part of SVD
             Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
                             will be filled with the U part of SVD
-      
+
         Raises:
             Error if self.num_rows<self.num_cols, or if U is not self.num_rows
               by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
         """
-      
+
       def `Svd` as _svd(self, s: VectorBase, U: MatrixBase, Vt: MatrixBase):
         """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
            transposed; the normal formulation is U diag(s) V^T. Null pointers
            for U or V mean we don't want that output (this saves computation time).
            The singular values are not sorted (use SortSvd for that).
-      
+
         Args:
             s(VectorBase): A vector of length min(self.num_rows, self.num_cols)
             U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
@@ -429,10 +429,10 @@ from "matrix/kaldi-matrix.h":
             Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
                             will be filled with the U part of SVD
         """
-      
+
       def `Svd` as _singular_values(self, s: VectorBase):
         """Compute SVD but only retain the singular values.
-      
+
         Args:
             s(VectorBase): The vector where the singular values of self will be stored.
                            Its length must be min(self.num_rows, self.num_cols)
@@ -999,7 +999,7 @@ from "matrix/kaldi-matrix.h":
       # explicit Matrix(const CuMatrixBase<OtherReal> &cu,
       #                 MatrixTransposeType trans = kNoTrans);
 
-      def `Swap` as swap(self, other:Matrix):
+      def `Swap` as _swap(self, other:Matrix):
         """Swaps the contents of self and other. Shallow swap."""
 
       # TODO:
@@ -1035,12 +1035,12 @@ from "matrix/kaldi-matrix.h":
           Error if i> num_rows
         """
 
-      def `Transpose` as transpose(self):
+      def `Transpose` as _transpose(self):
         """Transposes the matrix."""
 
-      def `Resize` as resize(self, r:int, c:int,
-                             resize_type:MatrixResizeType = default,
-                             stride_type:MatrixStrideType = default):
+      def `Resize` as _resize(self, r:int, c:int,
+                              resize_type:MatrixResizeType = default,
+                              stride_type:MatrixStrideType = default):
         """Resizes a matrix.
 
         If the resize_type is kSetZero, the new data will be zero. If the
@@ -1636,7 +1636,7 @@ from "matrix/kaldi-matrix.h":
              S.dim == num_rows, U is either NULL or num_rows by num_cols,
              and V is either NULL or num_cols by num_cols. The singular values are
              not sorted (use SortSvd for that). Note that Vt is the transpose of V.
-      
+
         Args:
             s(VectorBase): A vector of length num_rows of self.
                            It must be that s.dim = self.num_cols
@@ -1644,18 +1644,18 @@ from "matrix/kaldi-matrix.h":
                            will be filled with the U part of SVD
             Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
                             will be filled with the U part of SVD
-      
+
         Raises:
             Error if self.num_rows<self.num_cols, or if U is not self.num_rows
             by self.num_cols of self, or if Vt is not self.num_cols by self.num_cols
         """
-      
+
       def `Svd` as _svd(self, s: DoubleVectorBase, U: DoubleMatrixBase, Vt: DoubleMatrixBase):
         """Compute SVD self = U*diag(s)*Vt. Note that the V in the call is already
              transposed; the normal formulation is U diag(s) V^T. Null pointers
              for U or V mean we don't want that output (this saves computation time).
              The singular values are not sorted (use SortSvd for that).
-      
+
         Args:
             s(VectorBase): A vector of length min(self.num_rows, self.num_cols)
             U(MatrixBase): A Matrix of size num_rowsxnum_cols of self which
@@ -1663,10 +1663,10 @@ from "matrix/kaldi-matrix.h":
             Vt(MatrixBase): A Matrix of size num_colsxnum_cols of self which
                             will be filled with the U part of SVD
         """
-      
+
       def `Svd` as _singular_values(self, s: DoubleVectorBase):
         """Compute SVD but only retain the singular values.
-      
+
           Args:
               s(VectorBase): The vector where the singular values of self will be stored.
                              Its length must be min(self.num_rows, self.num_cols)
@@ -2334,7 +2334,7 @@ from "matrix/kaldi-matrix.h":
           Error if ||A-B||_F > tol
       """
 
-    def `SortSvd` as sort_double_svd(s: DoubleVectorBase, U: DoubleMatrixBase, 
+    def `SortSvd` as sort_double_svd(s: DoubleVectorBase, U: DoubleMatrixBase,
        Vt: DoubleMatrixBase = default, sort_on_absolute_value: bool = default):
       """Function to ensure that SVD is sorted. This function is made as generic as possible,
          to be applicable to other types of problems. s->Dim() should be the same as U->NumCols(),

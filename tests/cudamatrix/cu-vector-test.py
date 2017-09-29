@@ -1,12 +1,11 @@
 from kaldi.base import math as kaldi_math
-from kaldi.matrix import Vector
-from kaldi.matrix.packed import TpMatrix
+from kaldi.matrix import Vector, TpMatrix
 
 from kaldi.cudamatrix.device import CuDevice
 from kaldi.cudamatrix.vector import CuVector, CuSubVector
 
 import unittest
-import numpy as np 
+import numpy as np
 
 class TestCuVector(unittest.TestCase):
     def testCuVectorNewFromSize(self):
@@ -15,25 +14,25 @@ class TestCuVector(unittest.TestCase):
         self.assertEqual(0, vec.dim())
 
         for i in range(10):
-            dim = 10 * i 
+            dim = 10 * i
             vec = CuVector.new_from_size(dim)
             self.assertIsNotNone(vec)
             self.assertEqual(dim, vec.dim())
 
     def testCuVectorResize(self):
         for i in range(10):
-            dim = 10 * i 
+            dim = 10 * i
             vec = CuVector()
             vec.resize(dim)
             self.assertEqual(dim, vec.dim())
 
     @unittest.skip("TODO")
     def testCuVectorRead(self):
-        pass 
+        pass
 
     @unittest.skip("TODO")
     def testCuVectorWrite(self):
-        pass 
+        pass
 
     def testCuVectorSwap(self):
         N = [2, 3, 5, 7, 13]
@@ -63,7 +62,7 @@ class TestCuVector(unittest.TestCase):
         # C.CopyFromVec(A)
 
         for i in range(10):
-            dim = 10 * i 
+            dim = 10 * i
             A = Vector(dim)
             A.set_randn()
             D = CuVector.new_from_size(dim)
@@ -76,7 +75,7 @@ class TestCuVector(unittest.TestCase):
             M1 = 1 + kaldi_math.rand() % 10
             M2 = 1 + kaldi_math.rand() % 1
             M3 = 1 + kaldi_math.rand() % 10
-            M = M1 + M2 + M3 
+            M = M1 + M2 + M3
 
             m = kaldi_math.rand() % M2
 
@@ -129,7 +128,7 @@ if __name__ == '__main__':
             CuDevice.Instantiate().SelectGpuId("no")
         else:
             CuDevice.Instantiate().SelectGpuId("yes")
-        
+
         unittest.main()
 
         CuDevice.Instantiate().PrintProfile()

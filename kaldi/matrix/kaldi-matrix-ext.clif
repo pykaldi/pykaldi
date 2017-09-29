@@ -8,50 +8,52 @@ from "matrix/compressed-matrix-clifwrap.h" import *
 
 from "matrix/kaldi-matrix-ext.h":
   namespace `kaldi`:
-    def `CopyFromMat` as copy_from_mat(self: MatrixBase, M: CompressedMatrix):
+    def `CopyFromMat` as _copy_from_mat(self: MatrixBase, M: CompressedMatrix):
       """Copy data to self from a compressed matrix.
-    
+
       Args:
           M(CompressedMatrix): The compressed matrix to copy from.
-    
+
       Raises:
           Error in case of dimension mismatch
       """
 
-    def `CopyFromSp` as copy_from_sp(self: MatrixBase, M: SpMatrix):
+    def `CopyFromSp` as _copy_from_sp(self: MatrixBase, M: SpMatrix):
       """Copy data to self from a symmetric positive definite matrix.
-    
+
       Args:
           M(SpMatrix): The symmetric positive definite  matrix to copy from.
-    
+
       Raises:
           Error in case of dimension mismatch
       """
 
-    def `CopyFromTp` as copy_from_tp(self: MatrixBase, M: TpMatrix):
+    def `CopyFromTp` as _copy_from_tp(self: MatrixBase, M: TpMatrix):
       """Copy data to self from a symmetric positive definite matrix.
-    
+
       Args:
           M(TpMatrix): The triangular  matrix to copy from.
-    
+
       Raises:
           Error in case of dimension mismatch
-      """                                                               
- 
-    def `AddSp` as add_sp(self: MatrixBase, alpha: float, S: SpMatrix):
+      """
+
+    def `AddSp` as _add_sp(self: MatrixBase, alpha: float, S: SpMatrix):
       """Performs the self = self+alpha*S
-         
+
          Args:
              alpha(float): A constant
              S(SpMatrix): A symmetric matrix
- 
+
          Raises:
              Error if S is not square
       """
 
-    def `AddSpMat` as add_sp_mat(self: MatrixBase, alpha: float, A: SpMatrix, B: MatrixBase, transB: MatrixTransposeType, beta: float):
+    def `AddSpMat` as _add_sp_mat(self: MatrixBase, alpha: float, A: SpMatrix,
+                                  B: MatrixBase, transB: MatrixTransposeType,
+                                  beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
-         
+
          Args:
              alpha(float): A constant
              A(SpMatrix): A symmetric matrix
@@ -59,14 +61,16 @@ from "matrix/kaldi-matrix-ext.h":
              transB(MatrixTransposeType): kTrans if the matrix is to be transposed
                                           or kNoTrans(default otherwise)
              beta(float): A constant
-         
+
          Raises:
              Error in case of dimension mismatch
       """
 
-    def `AddTpMat` as add_tp_mat(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: MatrixBase, transB: MatrixTransposeType, beta: float):
+    def `AddTpMat` as _add_tp_mat(self: MatrixBase, alpha: float, A: TpMatrix,
+                                 transA: MatrixTransposeType, B: MatrixBase,
+                                 transB: MatrixTransposeType, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
-        
+
         Args:
             alpha(float): A constant
             A(TpMatrix): A triangular matrix
@@ -76,14 +80,16 @@ from "matrix/kaldi-matrix-ext.h":
             transB(MatrixTransposeType): kTrans if the matrix is to be transposed
                                          or kNoTrans(default otherwise)
             beta(float): A constant
-        
+
         Raises:
             Error in case of dimension mismatch
       """
-   
-    def `AddMatSp` as add_mat_sp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: SpMatrix, beta: float):
+
+    def `AddMatSp` as _add_mat_sp(self: MatrixBase, alpha: float,
+                                  A: MatrixBase, transA: MatrixTransposeType,
+                                  B: SpMatrix, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
-         
+
          Args:
              alpha(float): A constant
              A(MatrixBase): A  matrix
@@ -91,14 +97,17 @@ from "matrix/kaldi-matrix-ext.h":
                                           or kNoTrans(default otherwise)
              B(SpMatrix): A symmetric matrix
              beta(float): A constant
-         
+
          Raises:
              Error in case of dimension mismatch
       """
 
-    def `AddMatTp` as add_mat_tp(self: MatrixBase, alpha: float, A: MatrixBase, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float):
+    def `AddMatTp` as _add_mat_tp(self: MatrixBase, alpha: float,
+                                  A: MatrixBase, transA: MatrixTransposeType,
+                                  B: TpMatrix, transB: MatrixTransposeType,
+                                  beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
-        
+
          Args:
              alpha(float): A constant
              A(MatrixBase): A  matrix
@@ -108,14 +117,16 @@ from "matrix/kaldi-matrix-ext.h":
              transB(MatrixTransposeType): kTrans if the matrix is to be transposed
                                           or kNoTrans(default otherwise)
              beta(float): A constant
-         
+
          Raises:
              Error in case of dimension mismatch
       """
 
-    def `AddTpTp` as add_tp_tp(self: MatrixBase, alpha: float, A: TpMatrix, transA: MatrixTransposeType, B: TpMatrix, transB: MatrixTransposeType, beta: float):
+    def `AddTpTp` as _add_tp_tp(self: MatrixBase, alpha: float, A: TpMatrix,
+                                transA: MatrixTransposeType, B: TpMatrix,
+                                transB: MatrixTransposeType, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
-        
+
          Args:
              alpha(float): A constant
              A(TpMatrix): A triangular  matrix
@@ -125,24 +136,25 @@ from "matrix/kaldi-matrix-ext.h":
              transB(MatrixTransposeType): kTrans if the matrix is to be transposed
                                           or kNoTrans(default otherwise)
              beta(float): A constant
-         
+
          Raises:
              Error in case of dimension mismatch
       """
-   
-    def `AddSpSp` as add_sp_sp(self: MatrixBase, alpha: float, A: SpMatrix, B: SpMatrix, beta: float):
+
+    def `AddSpSp` as _add_sp_sp(self: MatrixBase, alpha: float, A: SpMatrix,
+                               B: SpMatrix, beta: float):
       """Performs the operation self = beta*shelf + alpha*A*B
-        
+
          Args:
              alpha(float): A constant
              A(SpMatrix): A symmetric matrix
              B(SpMatrix): A symmetric matrix
              beta(float): A constant
-         
+
          Raises:
              Error in case of dimension mismatch
       """
 
-    # FIXME: 
+    # FIXME:
     # MatrixBase constructor is protected...
     # def GroupPnormDeriv(self: MatrixBase, input: MatrixBase, power: float) -> (output:Matrix)

@@ -7,19 +7,16 @@ from "matrix/matrix-ext.h" import *
 from "matrix/packed-matrix.h":
   namespace `kaldi`:
     class `PackedMatrix<float>` as PackedMatrix:
-#     FIXME(pavlos): Why this class has both num_rows and num_cols?
-      """Base class for triangular and symmetric matrices.
- 
-      Args:
-          _num_rows(int): The number of rows
-          _num_cols(int): The number of columns
-      """
-      _num_rows: int = property(`NumRows`)
-      _num_cols: int = property(`NumCols`)
+      """Base class for triangular and symmetric matrices."""
+
+      num_rows: int = property(`NumRows`)
+      """The number of rows."""
+      num_cols: int = property(`NumCols`)
+      """The number of columns."""
 
       @add__init__
-      def `PackedMatrix` as new_with_size(
-          self, r:int, resize_type: MatrixResizeType = default):
+      def `PackedMatrix` as new_with_size(self,
+        r:int, resize_type: MatrixResizeType = default):
         """Class initialization through size. Only the number or rows is important
            since this is a class for square matrices (triangular or symmetric)
            If the resize_type is kSetZero, the new data will be zero. If the resize type is kUndefined,
@@ -27,7 +24,7 @@ from "matrix/packed-matrix.h":
            the new data will be the same as the old data in any shared positions,
            and zero elsewhere. stride_type defines how data will be read from memory,
            we advise to let it in its default value.
- 
+
         Args:
             r(int): The number of rows
             resize_type(MatrixResizeType): Default is kSetZero.
@@ -53,7 +50,8 @@ from "matrix/packed-matrix.h":
       def `Trace` as trace(self) -> float:
         """Return the trace of the matrix"""
 
-      def `Resize` as resize(self, num_rows:int, resize_type: MatrixResizeType = default):
+      def `Resize` as _resize(self, num_rows:int,
+                              resize_type: MatrixResizeType = default):
         """Resizes a matrix. If the resize_type is kSetZero,
            the new data will be zero. If the resize type is kUndefined,
            the new data will be undefined. Finally if the resize type is kCopyData,
@@ -93,7 +91,7 @@ from "matrix/packed-matrix.h":
 
         Args:
             orig(PackedMatrix): The packed matrix whose data we will copy
-        
+
         Raises:
             Error in case of dimension mismatch
         """
@@ -101,19 +99,13 @@ from "matrix/packed-matrix.h":
       def `CopyFromVec` as copy_from_vec(self, orig: SubVector):
         """Interprets the vector as having the same layout as the packed matrix.
            Must have the same dimension, i.e. orig.size==(seld.num_rows*self.num_cols+1)/2;
-          
+
         Args:
             orig(SubVector): A vector of class SubVector
         """
 
       def `NumRows` as __len__(self) -> int:
         """Return the number of rows."""
-
-      def `NumRows` as num_rows(self) -> int:
-        """Return the number of rows."""
-
-      def `NumCols` as num_cols(self) -> int:
-        """Return the number of columns."""
 
       def `SizeInBytes` as size_in_bytes(self) -> int:
         """Return the size of the matrix in memory, in bytes."""
@@ -124,7 +116,7 @@ from "matrix/packed-matrix.h":
         Args:
             r(int): The index for row. Indexing starts from 0
             c(int): The index for column. Indexing starts from 0
- 
+
         Returns:
             The indexed element
 
