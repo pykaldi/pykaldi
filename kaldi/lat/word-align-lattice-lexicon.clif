@@ -1,0 +1,37 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "lat/word-align-lattice-lexicon.h":
+  namespace `kaldi`:
+    def `ReadLexiconForWordAlign` as read_lexicon_for_word_align(is: istream)
+      -> (success: bool, lexicon: list<list<int>>)
+
+    class WordAlignLatticeLexiconInfo:
+      def __init__(self, lexicon: list<list<int>>)
+
+      def `IsValidEntry` as is_valid_entry(self, entry: list<int>) -> bool
+
+      def `EquivalenceClassOf` as equivalence_class_of(self, word: int) -> int
+
+    class WordAlignLatticeLexiconOpts:
+      partial_word_label: int
+      reorder: bool
+      test: bool
+      allow_duplicate_paths: bool
+      max_expand: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    def `WordAlignLatticeLexicon` as word_align_lattice_lexicon(
+      lat: CompactLatticeVectorFst, tmodel: TransitionModel,
+      lexicon_info: WordAlignLatticeLexiconInfo,
+      opts: WordAlignLatticeLexiconOpts)
+      -> (success: bool, lat_out: CompactLatticeVectorFst)
+
+    # def `TestWordAlignedLatticeLexicon` as test_word_aligned_lattice_lexicon(
+    #   lat: CompactLatticeVectorFst, tmodel: TransitionModel,
+    #   lexicon: list<list<int>>, aligned_lat: CompactLatticeVectorFst,
+    #   allow_duplicate_paths: bool)

@@ -1,0 +1,17 @@
+from "base/iostream-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from "lat/kaldi-lattice.h":
+  namespace `kaldi`:
+    def `WriteCompactLattice` as write_compact_lattice(
+      os: ostream, binary: bool, clat: CompactLatticeVectorFst) -> bool
+
+    def `WriteLattice` as write_lattice(
+      os: ostream, binary: bool, clat: LatticeVectorFst) -> bool
+
+    def `ReadCompactLattice` as read_compact_lattice(is: istream, binary: bool)
+      -> (success: bool, clat: CompactLatticeVectorFst)
+
+    def `ReadLattice` as read_lattice(is: istream, binary: bool)
+      -> (success: bool, clat: LatticeVectorFst)

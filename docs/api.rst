@@ -10,6 +10,7 @@
    api/kaldi.hmm
    api/kaldi.itf
    api/kaldi.ivector
+   api/kaldi.lat
    api/kaldi.matrix
    api/kaldi.nnet3
    api/kaldi.transform

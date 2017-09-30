@@ -1,0 +1,18 @@
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "lat/phone-align-lattice.h":
+  namespace `kaldi`:
+    class PhoneAlignLatticeOptions:
+      reorder: bool
+      remove_epsilon: bool
+      replace_output_symbols: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    def `PhoneAlignLattice` as phone_align_lattice(
+      lat: CompactLatticeVectorFst, tmodel: TransitionModel,
+      opts: PhoneAlignLatticeOptions)
+      -> (success: bool, lat_out: CompactLatticeVectorFst)

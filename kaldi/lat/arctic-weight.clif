@@ -1,0 +1,32 @@
+from "fstext/weight-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+
+from "lat/arctic-weight-ext.h":
+  namespace `fst`:
+    class `ArcticWeightTpl<float>` as ArcticWeight(FloatWeight):
+      @add__init__
+      def `TropicalWeightTpl` as new(self, f: float)
+      @add__init__
+      def `TropicalWeightTpl` as from_other(self, weight: ArcticWeight)
+
+      @classmethod
+      def `Zero` as zero(cls) -> ArcticWeight
+      @classmethod
+      def `One` as one(cls) -> ArcticWeight
+      @classmethod
+      def `NoWeight` as noweight(cls) -> ArcticWeight
+      @classmethod
+      def `Type` as type(cls) -> str
+      @classmethod
+      def Properties(cls) -> int
+
+      def Member(self) -> bool
+      def Quantize(self, delta: float = default) -> ArcticWeight
+      def Reverse(self) -> ArcticWeight
+
+    def `Plus` as ArcticPlus(w1: ArcticWeight,
+                             w2: ArcticWeight) -> ArcticWeight
+    def `Times` as ArcticTimes(w1: ArcticWeight,
+                               w2: ArcticWeight) -> ArcticWeight
+    def `Divide` as ArcticDivide(w1: ArcticWeight, w2: ArcticWeight,
+                                 typ: DivideType = default) -> ArcticWeight

@@ -1,0 +1,58 @@
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/expanded-fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "lat/determinize-lattice-pruned.h":
+  namespace `fst`:
+    class DeterminizeLatticePrunedOptions:
+      delta: float
+      max_mem: int
+      max_loop: int
+      max_states: int
+      max_arcs: int
+      retry_cutoff: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class DeterminizeLatticePhonePrunedOptions:
+      delta: float
+      max_mem: int
+      phone_determinize: bool
+      word_determinize: bool
+      minimize: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    def `DeterminizeLatticePruned` as determinize_lattice_pruned(
+      ifst: LatticeExpandedFst, prune: float, ofst: LatticeMutableFst,
+      opts: DeterminizeLatticePrunedOptions = default) -> bool
+
+    def `DeterminizeLatticePruned` as determinize_lattice_pruned_to_compact(
+      ifst: LatticeExpandedFst, prune: float, ofst: CompactLatticeMutableFst,
+      opts: DeterminizeLatticePrunedOptions = default) -> bool
+
+    def `DeterminizeLatticeInsertPhones` as determinize_lattice_insert_phones(
+      trans_model: TransitionModel, fst: LatticeMutableFst) -> int
+
+    def `DeterminizeLatticeDeletePhones` as determinize_lattice_delete_phones(
+      first_phone_label: int, fst: LatticeMutableFst)
+
+    def `DeterminizeLatticePhonePruned`
+        as determinize_lattice_phone_pruned(
+      trans_model: TransitionModel, ifst: LatticeExpandedFst, prune: float,
+      ofst: CompactLatticeMutableFst,
+      opts: DeterminizeLatticePhonePrunedOptions = default) -> bool
+
+    def `DeterminizeLatticePhonePruned`
+        as determinize_lattice_phone_pruned_destructive(
+      trans_model: TransitionModel, ifst: LatticeMutableFst, prune: float,
+      ofst: CompactLatticeMutableFst,
+      opts: DeterminizeLatticePhonePrunedOptions = default) -> bool
+
+    def `DeterminizeLatticePhonePrunedWrapper`
+        as determinize_lattice_phone_pruned_wrapper(
+      trans_model: TransitionModel, ifst: LatticeMutableFst, prune: float,
+      ofst: CompactLatticeMutableFst,
+      opts: DeterminizeLatticePhonePrunedOptions = default) -> bool

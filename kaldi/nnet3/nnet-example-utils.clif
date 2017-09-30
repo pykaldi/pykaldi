@@ -4,8 +4,10 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "nnet3/nnet-example-clifwrap.h" import *
 from "nnet3/nnet-computation-clifwrap.h" import *
 from "nnet3/nnet-nnet-clifwrap.h" import *
-# To import kaldi table wrapper, we need to import wave reader wrapper first.
+# To import kaldi table wrapper, we need to import wave reader wrapper
+# and kaldi lattice first.
 from "feat/wave-reader-clifwrap.h" import *
+from "lat/kaldi-lattice.h" import *
 from "util/kaldi-table-clifwrap.h" import *
 
 from "nnet3/nnet-example-utils.h":

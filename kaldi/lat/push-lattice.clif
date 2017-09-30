@@ -1,0 +1,10 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "lat/push-lattice.h":
+  namespace `fst`:
+    def `PushCompactLatticeStrings` as push_compact_lattice_strings(
+      clat: CompactLatticeMutableFst) -> bool
+
+    def `PushCompactLatticeWeights` as push_compact_lattice_weights(
+      clat: CompactLatticeMutableFst) -> bool

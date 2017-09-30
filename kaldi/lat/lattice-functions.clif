@@ -1,0 +1,125 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "itf/decodable-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+
+from "lat/lattice-functions.h":
+  namespace `kaldi`:
+    def `GetPerFrameAcousticCosts` as get_per_frame_acoustic_costs(
+      nbest: LatticeVectorFst) -> Vector
+
+    def `LatticeStateTimes` as lattice_state_times(lat: LatticeVectorFst)
+      -> (num_frames: int, times: list<int>)
+
+    def `CompactLatticeStateTimes` as compact_lattice_state_times(
+      clat: CompactLatticeVectorFst) -> (num_frames: int, times: list<int>)
+
+    # def `LatticeForwardBackward` as lattice_forward_backward(
+    #   lat: LatticeVectorFst)
+    #   -> (total_prob: float, arc_post: list<tuple<int,float>>,
+    #       acoustic_like_sum: float)
+
+    def `ComputeCompactLatticeAlphas` as compute_compact_lattice_alphas(
+      clat: CompactLatticeVectorFst) -> (success: bool, alpha: list<float>)
+
+    def `ComputeCompactLatticeBetas` as compute_compact_lattice_betas(
+      clat: CompactLatticeVectorFst) -> (success: bool, beta: list<float>)
+
+    def `ComputeLatticeAlphasAndBetas`
+        as compute_lattice_alphas_and_betas(
+      clat: LatticeVectorFst, viterbi: bool)
+      -> (total_prob: float, alpha: list<float>, beta: list<float>)
+
+    def `ComputeLatticeAlphasAndBetas`
+        as compute_compact_lattice_alphas_and_betas(
+      clat: CompactLatticeVectorFst, viterbi: bool)
+      -> (total_prob: float, alpha: list<float>, beta: list<float>)
+
+    def `TopSortCompactLatticeIfNeeded` as top_sort_compact_lattice_if_needed(
+      clat: CompactLatticeVectorFst)
+
+    def `TopSortLatticeIfNeeded` as top_sort_lattice_if_needed(
+      clat: LatticeVectorFst)
+
+    # def `CompactLatticeDepth` as compact_lattice_depth(
+    #   clat: CompactLatticeVectorFst) -> (depth: float, num_frames: int)
+
+    def `CompactLatticeDepthPerFrame` as compact_lattice_depth_per_frame(
+      clat: CompactLatticeVectorFst) -> list<int>
+
+    def `CompactLatticeLimitDepth` as compact_lattice_limit_depth(
+      max_arcs_per_frame: int, clat: CompactLatticeVectorFst)
+
+    def `LatticeActivePhones` as lattice_active_phones(
+      lat: LatticeVectorFst, trans: TransitionModel, sil_phones: list<int>)
+      -> list<`std::set` as set<int>>
+
+    def `ConvertLatticeToPhones` as convert_lattice_to_phones(
+      trans_model: TransitionModel, lat: LatticeVectorFst)
+
+    def `ConvertCompactLatticeToPhones` as convert_compact_lattice_to_phones(
+      trans_model: TransitionModel, lat: CompactLatticeVectorFst)
+
+    def `PruneLattice` as prune_lattice(beam: float, lat: LatticeVectorFst)
+      -> bool
+
+    def `PruneLattice` as prune_compact_lattice(
+      beam: float, lat: CompactLatticeVectorFst) -> bool
+
+    def `LatticeBoost` as lattice_boost(
+      trans: TransitionModel, alignment: list<int>, silence_phones: list<int>,
+      b: float, max_silence_error: float, lat: LatticeVectorFst) -> bool
+
+    def `LatticeForwardBackwardMpeVariants`
+        as lattice_forward_backward_mpe_variants(
+      trans: TransitionModel, silence_phones: list<int>, lat: LatticeVectorFst,
+      num_ali: list<int>, criterion: str, one_silence_class: bool)
+      -> (objf_val: float, post: list<list<tuple<int, float>>>)
+
+    def `LatticeForwardBackwardMmi`
+        as lattice_forward_backward_mmi(
+      trans: TransitionModel, lat: LatticeVectorFst, num_ali: list<int>,
+      drop_frames: bool, convert_to_pdf_ids: bool, cancel: bool)
+      -> (objf_val: float, post: list<list<tuple<int, float>>>)
+
+    def `CompactLatticeToWordAlignment` as compact_lattice_word_alignement(
+      clat: CompactLatticeVectorFst)
+      -> (success: bool, words: list<int>, begin_times: list<int>,
+          lengths: list<int>)
+
+    def `CompactLatticeToWordProns` as compact_lattice_word_prons(
+      tmodel: TransitionModel, clat: CompactLatticeVectorFst)
+      -> (success: bool, words: list<int>, begin_times: list<int>,
+          lengths: list<int>, prons: list<list<int>>,
+          phone_lengths: list<list<int>>)
+
+    def `CompactLatticeShortestPath` as compact_lattice_shortest_path(
+      clat: CompactLatticeVectorFst) -> CompactLatticeVectorFst
+
+    def `AddWordInsPenToCompactLattice` as add_word_ins_pen_to_compact_lattice(
+      word_ins_penalty: float, clat: CompactLatticeVectorFst)
+
+    def `RescoreLattice` as rescore_lattice(
+      decodable: DecodableInterface, lat: LatticeVectorFst) -> bool
+
+    def `RescoreCompactLattice` as rescore_compact_lattice(
+      decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool
+
+    def `LongestSentenceLength` as longest_sentence_length_in_lattice(
+      lat: LatticeVectorFst) -> int
+
+    def `LongestSentenceLength` as longest_sentence_length_in_compact_lattice(
+      lat: CompactLatticeVectorFst) -> int
+
+    def `RescoreCompactLatticeSpeedup` as rescore_compact_lattice_speedup(
+      tmodel: TransitionModel, speedup_factor: float,
+      decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool
+
+    def `ComposeCompactLatticeDeterministic`
+        as compose_compact_lattice_deterministic(
+      clat: CompactLatticeVectorFst, det_fst: StdDeterministicOnDemandFst)
+      -> CompactLatticeVectorFst

@@ -1,0 +1,42 @@
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from "lat/sausages.h":
+  namespace `kaldi`:
+    class MinimumBayesRiskOptions:
+      decode_mbr: bool
+      print_silence: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class MinimumBayesRisk:
+      def __init__(self, clat: CompactLatticeVectorFst,
+                   opts: MinimumBayesRiskOptions = default)
+
+      @add__init__
+      def `MinimumBayesRisk` as new_with_words(
+        self, clat: CompactLatticeVectorFst, words: list<int>,
+        opts: MinimumBayesRiskOptions = default)
+
+      @add__init__
+      def `MinimumBayesRisk` as new_with_words_times(
+        self, clat: CompactLatticeVectorFst,
+        words: list<int>, times: list<tuple<float, float>>,
+        opts: MinimumBayesRiskOptions = default)
+
+      def `GetOneBest` as get_one_best(self) -> list<int>
+
+      def `GetSausageTimes` as get_sausage_times(self)
+        -> list<tuple<float, float>>
+
+      def `GetOneBestTimes` as get_one_best_times(self)
+        -> list<tuple<float, float>>
+
+      def `GetOneBestConfidences` as get_one_best_confidences(self)
+        -> list<float>
+
+      def `GetBayesRisk` as get_bayes_risk(self) -> float
+
+      def `GetSausageStats` as get_sausage_stats(self)
+        -> list<list<tuple<int, float>>>

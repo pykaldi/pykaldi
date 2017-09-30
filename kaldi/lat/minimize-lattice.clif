@@ -1,0 +1,7 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "lat/minimize-lattice.h":
+  namespace `fst`:
+    def `MinimizeCompactLattice` as minimize_compact_lattice(
+      clat: CompactLatticeMutableFst, delta: float = default) -> bool
