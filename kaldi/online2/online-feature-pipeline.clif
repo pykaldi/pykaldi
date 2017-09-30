@@ -1,0 +1,92 @@
+from "itf/options-itf-clifwrap.h" import *
+from "feat/feature-mfcc-clifwrap.h" import *
+from "feat/feature-plp-clifwrap.h" import *
+from "feat/feature-fbank-clifwrap.h" import *
+from "feat/online-feature-clifwrap.h" import *
+from "feat/pitch-functions-clifwrap.h" import *
+from "feat/feature-functions-clifwrap.h" import *
+from "itf/online-feature-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+
+from "online2/online-feature-pipeline.h":
+  namespace `kaldi`:
+
+    class OnlineFeaturePipelineCommandLineConfig:
+      feature_type: str
+      mfcc_config: str
+      plp_config: str
+      fbank_config: str
+      add_pitch: bool
+      pitch_config: str
+      pitch_process_config: str
+      cmvn_config: str
+      global_cmvn_stats_rxfilename: str
+      add_deltas: bool
+      delta_config: str
+      splice_feats: bool
+      splice_config: str
+      lda_rxfilename:str
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class OnlineFeaturePipelineConfig:
+      feature_type: str
+      mfcc_opts: MfccOptions
+      plp_opts: PlpOptions
+      fbank_opts: FbankOptions
+      add_pitch: bool
+      pitch_opts: PitchExtractionOptions
+      pitch_process_opts: ProcessPitchOptions
+      cmvn_opts: OnlineCmvnOptions
+      add_deltas: bool
+      delta_opts: DeltaFeaturesOptions
+      splice_feats: bool
+      splice_opts: OnlineSpliceOptions
+      lda_rxfilename: str
+      global_cmvn_stats_rxfilename: str
+
+      @add__init__
+      def `OnlineFeaturePipelineConfig` as new_with_config(self, cmdline_config: OnlineFeaturePipelineCommandLineConfig)
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+    class OnlineFeaturePipeline(OnlineFeatureInterface):
+
+      def __init__(self, config: OnlineFeaturePipelineConfig)
+
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
+      # # def `GetAsMatrix` as get_as_matrix(self, feats: Matrix)
+
+      def `FreezeCmvn` as freeze_cmvn(self)
+
+      # # FIXME (VM):
+      # # Maybe add a property?
+      def `SetCmvnState` as set_cmvn_state(self, cmvn_state: OnlineCmvnState)
+
+      def `GetCmvnState` as get_cmvn_state(self) -> OnlineCmvnState
+
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `InputFinished` as input_finished(self):
+        """Tells the class that you wont be providing any more waveform"""
+
+      def `SetTransform` as set_transform(self, transform: MatrixBase):
+        """This is used to set the fMLLR transform"""
+
+      def `HaveFmllrTransform` as have_fmllr_transform(self) -> bool:
+        """Returns true if an fMLLR transform has been set"""
+
+      # FIXME (VM):
+      # Maybe should be @add__init__
+      def `New` as new(self) -> OnlineFeaturePipeline

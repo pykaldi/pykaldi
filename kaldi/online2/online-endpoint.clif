@@ -1,0 +1,47 @@
+from "itf/options-itf-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
+
+from "online2/online-endpoint.h":
+  namespace `kaldi`:
+    class OnlineEndpointRule:
+      must_contain_nonsilence: bool
+      min_trailing_silence: float
+      max_relative_cost: float
+      min_utterance_length: float
+
+      # FIXME (VM):
+      # @add__init__
+      # def `OnlineEndpointRule` as new_with_params(self, must_contain_nonsilence: bool = default, min_trailing_silence: float = default, max_relative_cost: float = default, min_utterance_length: float = default)
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class OnlineEndpointConfig:
+      silence_phones: str
+        """colon separated list of phones to be considered as silence"""
+      rule1: OnlineEndpointRule
+        """Rule1 times out after 5 seconds of silence if decoded nothing"""
+      rule2: OnlineEndpointRule
+        """Rule2 times out after 0.5 seconds of silence if reached final-state"""
+      rule3: OnlineEndpointRule
+        """Rule3 times out after 1.0 seconds of silence if reached final-state"""
+      rule4: OnlineEndpointRule
+        """Rule4 times out after 2.0 seconds of silence after decoding something"""
+      rule5: OnlineEndpointRule
+        """Rule5 times out after the utterance is 20.0 seconds"""
+
+      def `Register` as register(self, opts: OptionsItf)
+    
+    def `EndpointDetected` as endpoint_detected(config: OnlineEndpointConfig, num_frames_decoded: int, trailing_silence_frames: int, frame_shift_in_seconds: float, final_relative_cost: float) -> bool:
+      """Returns true if this set of endpointing rules thinks we should terminate decoding"""
+
+    def `TrailingSilenceLength` as trailing_silence_length(tmodel: TransitionModel, silence_phones: str, decoder: LatticeFasterOnlineDecoder) -> int:
+      """Returns the number of frames of trailing silence in the best-path traceback
+
+      Args:
+        silence_phones (str): colon-separated list of integer ids of phones to be considered silence
+      """
+
+    def `EndpointDetected` as endpoint_detected_with_transition_model(config: OnlineEndpointConfig, tmodel: TransitionModel, frame_shift_in_seconds: float, decoder: LatticeFasterOnlineDecoder) -> bool:
+      """This is a higher-level convenience function that works out the arguments to the :meth:`endpoint_detected` function"""
+

@@ -1,0 +1,18 @@
+from "itf/online-feature-itf-clifwrap.h" import *
+from "itf/decodable-itf-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "gmm/am-diag-gmm-clifwrap.h" import * 
+
+from "online2/online-gmm-decodable.h":
+  namespace `kaldi`:
+
+  	class DecodableDiagGmmScaledOnline(DecodableInterface):
+  		def __init__(self, am: AmDiagGmm, trans_model: TransitionModel, scale: float, input_feats: OnlineFeatureInterface)
+
+  		def `LogLikelihood` as loglikelihood(self, frame: int, index: int) -> float
+
+  		def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+  		def `NumFramesReady` as num_frames_ready(self) -> int
+
+  		def `NumIndices` as num_indices(self) -> int
