@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #ifndef CLIF_PYTHON_PYOBJ_H_
 #define CLIF_PYTHON_PYOBJ_H_
 /*
@@ -27,19 +42,27 @@ class Object {
   Object(const Object& p) : p_(p.get()) { Py_XINCREF(p_); }
   Object(Object&& p) : p_(p.release()) {}
 
-  Object& operator=(PyObject* p) {
-    Py_XDECREF(p_);
-    p_ = p;
-    Py_XINCREF(p_);
-    return *this;
-  }
-
   Object& operator=(Object p) {
     swap(*this, p);
     return *this;
   }
 
-  ~Object() { Py_XDECREF(p_); }
+  Object& operator=(PyObject* p) {
+    PyGILState_STATE state = PyGILState_Ensure();
+    Py_XDECREF(p_);
+    p_ = p;
+    Py_XINCREF(p_);
+    PyGILState_Release(state);
+    return *this;
+  }
+
+  ~Object() {
+    if (p_) {
+      PyGILState_STATE state = PyGILState_Ensure();
+      Py_DECREF(p_);
+      PyGILState_Release(state);
+    }
+  }
 
   friend void swap(Object& p, Object& q) {
     using std::swap;

@@ -26,7 +26,8 @@ PyObject* Clif_PyObjFrom(const std::string& c, py::PostConv pc) {
 PyObject* UnicodeFromBytes(PyObject* b) {
   if (!b || PyUnicode_Check(b)) return b;
   if (!PyBytes_Check(b)) {
-    PyErr_Format(PyExc_TypeError, "expecting bytes, got %s", ClassName(b));
+    PyErr_Format(PyExc_TypeError, "expecting bytes, got %s %s",
+                 ClassName(b), ClassType(b));
     Py_DECREF(b);
     return nullptr;
   }

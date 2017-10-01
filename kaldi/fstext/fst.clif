@@ -28,11 +28,9 @@ from "fst/fst.h":
 
       def Copy(self, safe: bool = default) -> StdFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> StdFst
 
-      @async
       def Write(self, filename: str) -> bool
 
       def InputSymbols(self) -> SymbolTable
@@ -91,11 +89,9 @@ from "fst/fst.h":
 
       def Copy(self, safe: bool = default) -> LogFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> LogFst
 
-      @async
       def Write(self, filename: str) -> bool
 
       def InputSymbols(self) -> SymbolTable
@@ -154,11 +150,9 @@ from "fst/fst.h":
 
       def Copy(self, safe: bool = default) -> LatticeFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> LatticeFst
 
-      @async
       def Write(self, filename: str) -> bool
 
       def InputSymbols(self) -> SymbolTable
@@ -217,11 +211,9 @@ from "fst/fst.h":
 
       def Copy(self, safe: bool = default) -> CompactLatticeFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> CompactLatticeFst
 
-      @async
       def Write(self, filename: str) -> bool
 
       def InputSymbols(self) -> SymbolTable

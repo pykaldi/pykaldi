@@ -41,7 +41,7 @@ from "gmm/mle-am-diag-gmm.h":
 
       def `TotLogLike` as tot_log_like(self) -> float
 
-      def `GetAcc` as get_acc(self, index: int) -> AccumDiagGmm
+      def `GetAccPtr` as get_acc(self, index: int) -> AccumDiagGmm
 
       def `Add` as add(self, scale: float, other: AccumAmDiagGmm)
 

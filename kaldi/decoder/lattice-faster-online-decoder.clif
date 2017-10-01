@@ -24,7 +24,6 @@ from "decoder/lattice-faster-online-decoder.h":
       def `GetOptions` as get_options(self) -> LatticeFasterDecoderOptions:
         """Gets decoder options."""
 
-      @async
       def `Decode` as decode(self, decodable: DecodableInterface) -> bool:
         """Decodes all frames in the decodable object.
 
@@ -101,7 +100,6 @@ from "decoder/lattice-faster-online-decoder.h":
         then call :meth:`advance_decoding` (posible multiple times) .
         """
 
-      @async
       def `AdvanceDecoding` as advance_decoding(self,
           decodable: DecodableInterface, max_num_frames: int = default):
         """Advances decoding.

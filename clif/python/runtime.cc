@@ -14,33 +14,68 @@
 
 #include "clif/python/runtime.h"
 
-extern "C" {
-void Clif_PyType_GenericFree(PyObject* self) {
-  Py_TYPE(self)->tp_free(self);
-}
+extern "C"
 int Clif_PyType_Inconstructible(PyObject* self, PyObject* a, PyObject* kw) {
   PyErr_Format(PyExc_ValueError, "Class %s has no default constructor",
                Py_TYPE(self)->tp_name);
   return -1;
 }
-}  // extern "C"
 
 namespace clif {
 
+void PyObjRef::Init(PyObject* self) {
+  self_ = PyWeakref_NewRef(self, nullptr);
+  // We don't care about non-weakrefencable objects (most likely the
+  // CLIF-generated wrapper object), so nullptr is fine, just clear the error.
+  PyErr_Clear();
+}
+
+void PyObjRef::HoldPyObj(PyObject* self) {
+    pyowner_ = self;
+  Py_INCREF(pyowner_);
+}
+void PyObjRef::DropPyObj() {
+  Py_CLEAR(pyowner_);
+}
+
+PyObject* PyObjRef::PoisonPill() const {
+  // Memory pattern mnemonic is _______CallInit.
+  return reinterpret_cast<PyObject*>(0xCA771417);
+}
+
+PyObject* PyObjRef::self() const {
+    if (self_ == nullptr) return nullptr;
+  PyGILState_STATE threadstate = PyGILState_Ensure();
+  PyObject* py = PyWeakref_GetObject(self_);
+  if (py == Py_None) py = nullptr;
+  Py_XINCREF(py);
+  PyGILState_Release(threadstate);
+  return py;
+}
+
+SafePyObject::~SafePyObject() {
+  if (py_) {
+    PyGILState_STATE threadstate = PyGILState_Ensure();
+    Py_DECREF(py_);
+    PyGILState_Release(threadstate);
+  }
+}
+
 // Resource management for virtual override methods.
-SafeGetAttrString::SafeGetAttrString(PyObject* pyobj, const char* name) {
+SafeAttr::SafeAttr(PyObject* pyobj, const char* name) {
   state_ = PyGILState_Ensure();
-  meth_ = PyObject_GetAttrString(pyobj, name);
+  meth_ = pyobj ? PyObject_GetAttrString(pyobj, name) : nullptr;
+  Py_XDECREF(pyobj);  // Assume that method descriptor keeps the obj alive.
   if (meth_ == nullptr) {
     if (PyErr_ExceptionMatches(PyExc_AttributeError)) {
       PyErr_Clear();
-    } else {
+    } else if (PyErr_Occurred()) {
       PyErr_PrintEx(0);
     }
     PyGILState_Release(state_);
   }
 }
-SafeGetAttrString::~SafeGetAttrString() {
+SafeAttr::~SafeAttr() {
   if (meth_ != nullptr) {
     Py_DECREF(meth_);
     PyGILState_Release(state_);
@@ -107,6 +142,9 @@ bool CallableNeedsNarguments(PyObject* callable, int nargs) {
   Py_DECREF(getcallargs);
   Py_DECREF(args);
   if (!binded) return false;  // PyExc_TypeError is set.
+  // explicitly clear references to give to garbage collector more information
+  // this potentially can cause faster collecting of unused objects
+  PyDict_Clear(binded);
   Py_DECREF(binded);
   return true;
 }
@@ -124,12 +162,13 @@ PyObject* ArgError(const char func[],
   PyObject* exc = PyErr_Occurred();
   if (exc == nullptr) {
     PyErr_Format(
-        PyExc_TypeError, "%s() argument %s is not valid for %s (%s given)",
-        func, argname, ctype, ClassName(arg));
+        PyExc_TypeError, "%s() argument %s is not valid for %s (%s %s given)",
+        func, argname, ctype, ClassName(arg), ClassType(arg));
   } else if (exc == PyExc_TypeError) {
     PyErr_Format(
-        exc, "%s() argument %s is not valid for %s (%s given): %s",
-        func, argname, ctype, ClassName(arg), python::ExcStr(false).c_str());
+        exc, "%s() argument %s is not valid for %s (%s %s given): %s",
+        func, argname, ctype, ClassName(arg), ClassType(arg),
+        python::ExcStr(false).c_str());
   } else {
     PyErr_Format(
         exc, "%s() argument %s is not valid: %s",

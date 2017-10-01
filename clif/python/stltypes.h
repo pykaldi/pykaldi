@@ -16,6 +16,8 @@
 #ifndef CLIF_PYTHON_STLTYPES_H_
 #define CLIF_PYTHON_STLTYPES_H_
 
+// Conversion functions for std types.
+
 /*
 From .../python-2.7.3-docs-html/c-api/intro.html#include-files:
 Since Python may define some pre-processor definitions which affect the
@@ -42,7 +44,8 @@ headers are included.
 namespace clif {
 
 // Ensure that the current thread is ready to call the Python C API.
-struct GilLock {
+class GilLock {
+ public:
   GilLock() { threadstate_ = PyGILState_Ensure(); }
   ~GilLock() { PyGILState_Release(threadstate_); }
  private:
@@ -66,25 +69,57 @@ inline void HandlePyExc() {
 
 // ------------------------------------------------------------------
 
+template<typename Container, typename ContainerIter>
+class Iterator {
+ private:  // Have a short type name alias to make it more readable.
+  using T = typename ContainerIter::value_type;
+
+ public:
+  explicit Iterator(std::shared_ptr<Container> obj)
+  : self_(std::move(obj)),
+    // Allow to find custom begin() via ADL.
+    it_([&] { using std::begin; return begin(*self_); }()) {}
+
+  Iterator(std::shared_ptr<Container> obj, ContainerIter&& start)
+  : self_(std::move(obj)), it_(std::move(start)) {}
+
+  static_assert(std::is_same<T&,
+                typename std::iterator_traits<ContainerIter>::reference>::value,
+      "Iterators returning proxy refererence not currently supported.");
+
+  const T* Next() noexcept {
+    if (!self_) return nullptr;
+    using std::end;  // Allow to find custom end() via ADL.
+    if (it_ != end(*self_)) return &*it_++;
+    self_.reset();
+    return nullptr;
+  }
+
+ private:
+  std::shared_ptr<Container> self_;  // Shared with CLIF-wrapped class.
+  ContainerIter it_;
+};
+
+// ------------------------------------------------------------------
+
 namespace callback {
 
 using std::swap;
 
 // Convert arguments.
 
-inline void ArgIn(PyObject** a, Py_ssize_t idx) {}
+inline void ArgIn(PyObject** a, Py_ssize_t idx, py::PostConv pc) {}
 
 template<typename T1, typename... T>
-void ArgIn(PyObject** a, Py_ssize_t idx, T1&& c1, T&&... c) {
+void ArgIn(PyObject** a, Py_ssize_t idx, py::PostConv pc, T1&& c1, T&&... c) {
   if (a && *a) {
-    // TODO: Pass real py::PostConv parameter.
-    PyObject* py = Clif_PyObjFrom(std::forward<T1>(c1), {});
+    PyObject* py = Clif_PyObjFrom(std::forward<T1>(c1), pc.Get(idx));
     if (!py) {
       Py_CLEAR(*a);
     } else {
       PyTuple_SET_ITEM(*a, idx, py);
     }
-    ArgIn(a, idx+1, std::forward<T>(c)...);
+    ArgIn(a, idx+1, pc, std::forward<T>(c)...);
   }
 }
 
@@ -124,9 +159,10 @@ class ReturnValue<void> {
 template<typename R, typename... T>
 class Func {
  public:
-  explicit Func(PyObject* callable)
+  explicit Func(PyObject* callable, py::PostConv pc)
       : callback_(CHECK_NOTNULL(callable),
-                  [] (PyObject* obj) { GilLock holder; Py_CLEAR(obj); }) {
+                  [] (PyObject* obj) { GilLock holder; Py_CLEAR(obj); }),
+        pc_(pc) {
     GilLock holder;
     Py_INCREF(callable);
   }
@@ -135,7 +171,7 @@ class Func {
     GilLock holder;  // Hold GIL during Python callback.
     int nargs = sizeof...(T);
     PyObject* pyargs = PyTuple_New(nargs);
-    if (pyargs && nargs) ArgIn(&pyargs, 0, std::forward<T>(arg)...);
+    if (pyargs && nargs) ArgIn(&pyargs, 0, pc_, std::forward<T>(arg)...);
     if (!pyargs || PyErr_Occurred()) {
       // Error converting arg1 to Python.
       Py_XDECREF(pyargs);
@@ -153,6 +189,7 @@ class Func {
   // User-provided Python callback.
   // shared_ptr provides copy safety for this functor used for std::function arg
   std::shared_ptr<PyObject> callback_;
+  py::PostConv pc_;
 };
 
 }  // namespace callback
@@ -180,7 +217,8 @@ PyObject* FunctionCapsule(std::function<R(T...)> cfunction) {
 }
 
 template<typename R, typename... T>
-bool Clif_PyObjAs(PyObject* py, std::function<R(T...)>* c) {
+bool Clif_PyObjAs(PyObject* py, std::function<R(T...)>* c,
+                  py::PostConv pc = {}) {
   assert(c != nullptr);
   if (!PyCallable_Check(py)) {
     PyErr_SetString(PyExc_TypeError, "callable expected");
@@ -188,7 +226,7 @@ bool Clif_PyObjAs(PyObject* py, std::function<R(T...)>* c) {
   }
   // Ensure we have enough args for callback. (Catch T* output args misuse.)
   if (!CallableNeedsNarguments(py, sizeof...(T))) return false;
-  *c = callback::Func<R, T...>(py);
+  *c = callback::Func<R, T...>(py, pc);
   return true;
 }
 
@@ -237,9 +275,13 @@ bool Clif_PyObjAs(PyObject* py, std::pair<T, U>* c) {
   using Key = typename std::remove_const<T>::type;
   using Val = typename std::remove_const<U>::type;
   Key k;
-  if (!Clif_PyObjAs(PySequence_GetItem(py, 0), &k)) return false;
+  PyObject* item = PySequence_ITEM(py, 0);
+  if (!item || !Clif_PyObjAs(item, &k)) { Py_XDECREF(item); return false; }
+  Py_DECREF(item);
   Val v;
-  if (!Clif_PyObjAs(PySequence_GetItem(py, 1), &v)) return false;
+  item = PySequence_ITEM(py, 1);
+  if (!item || !Clif_PyObjAs(item, &v)) { Py_XDECREF(item); return false; }
+  Py_DECREF(item);
   const_cast<Key&>(c->first) = std::move(k);
   const_cast<Val&>(c->second) = std::move(v);
   return true;
@@ -270,14 +312,14 @@ PyObject* ListFromSizableCont(T&& c, py::PostConv pc) {
   PyObject* py = PyList_New(c.size());
   if (py == nullptr) return nullptr;
   py::PostConv pct = pc.Get(0);
-  PyObject* j;
+  PyObject* v;
   Py_ssize_t i = 0;
-  for (auto& v : c) {
-    if ((j = Clif_PyObjFrom(forward_subobject<T>(v), pct)) == nullptr) {
+  for (auto& j : c) {
+    if ((v = Clif_PyObjFrom(forward_subobject<T>(j), pct)) == nullptr) {
       Py_DECREF(py);
       return nullptr;
     }
-    PyList_SET_ITEM(py, i++, j);
+    PyList_SET_ITEM(py, i++, v);
   }
   return py;
 }
@@ -287,41 +329,30 @@ PyObject* ListFromIterators(T begin, T end, py::PostConv pc) {
   PyObject* py = PyList_New(std::distance(begin, end));
   if (py == nullptr) return nullptr;
   py::PostConv pct = pc.Get(0);
-  PyObject* j;
+  PyObject* v;
   Py_ssize_t i = 0;
   for (auto it = begin; it != end; ++it) {
-    if ((j = Clif_PyObjFrom(std::forward<typename std::iterator_traits<T>
+    if ((v = Clif_PyObjFrom(std::forward<typename std::iterator_traits<T>
                                          ::value_type>(*it), pct)) == nullptr) {
       Py_DECREF(py);
       return nullptr;
     }
-    PyList_SET_ITEM(py, i++, j);
+    PyList_SET_ITEM(py, i++, v);
   }
   return py;
 }
 
-// The following two specializations are needed for handling vector<bool>
-// subobjects in STL containers, e.g. vector<vector<bool>>
-template<>
-PyObject* ListFromSizableCont(const std::vector<bool>& c,
-                              py::PostConv pc) {
-  return ListFromIterators(begin(c), end(c), pc);
-}
-template<>
-PyObject* ListFromSizableCont(std::vector<bool>& c, py::PostConv pc) {
-  return ListFromIterators(begin(c), end(c), pc);
-}
-
 template<typename T>
 PyObject* DictFromCont(T&& c, py::PostConv pc) {
+  using std::get;
   PyObject* py = PyDict_New();
   if (py == nullptr) return nullptr;
   py::PostConv pck = pc.Get(0);
   py::PostConv pcv = pc.Get(1);
   for (const auto& i : c) {
     PyObject *k, *v{};
-    if ((k = Clif_PyObjFrom(i.first, pck)) == nullptr ||
-        (v = Clif_PyObjFrom(forward_subobject<T>(i.second), pcv)) == nullptr ||
+    if ((k = Clif_PyObjFrom(get<0>(i), pck)) == nullptr ||
+        (v = Clif_PyObjFrom(forward_subobject<T>(get<1>(i)), pcv)) == nullptr ||
         PyDict_SetItem(py, k, v) < 0) {
       Py_DECREF(py);
       Py_XDECREF(k);
@@ -387,26 +418,28 @@ template<>struct Tuple<0> {
 }  // namespace py
 
 // tuple
-#define _TUPLE_SIZE std::tuple_size<decltype(c)>::value
+#define _TUPLE_SIZE(t) \
+    std::tuple_size<typename std::remove_reference<decltype(t)>::type>::value
+
 template<typename... T>
 PyObject* Clif_PyObjFrom(const std::tuple<T...>& c, py::PostConv pc) {
-  PyObject* py = PyTuple_New(_TUPLE_SIZE);
+  PyObject* py = PyTuple_New(_TUPLE_SIZE(c));
   if (py == nullptr) return nullptr;
-  if (!py::Tuple<_TUPLE_SIZE>::FillFrom(py, c, pc)) return nullptr;
+  if (!py::Tuple<_TUPLE_SIZE(c)>::FillFrom(py, c, pc)) return nullptr;
   return py;
 }
 template<typename... T>
 bool Clif_PyObjAs(PyObject* py, std::tuple<T...>* c) {
   assert(c != nullptr);
   Py_ssize_t len = PyTuple_Size(py);
-  if (len != _TUPLE_SIZE) {
+  if (len != _TUPLE_SIZE(*c)) {
     if (len != -1) {
       PyErr_Format(PyExc_ValueError, "expected a tuple"
-                   " with len==%zd, got %zd", _TUPLE_SIZE, len);
+                   " with len==%zd, got %zd", _TUPLE_SIZE(*c), len);
     }
     return false;
   }
-  return py::Tuple<_TUPLE_SIZE>::As(py, c);
+  return py::Tuple<_TUPLE_SIZE(*c)>::As(py, c);
 }
 #undef _TUPLE_SIZE
 
@@ -415,17 +448,17 @@ template<typename T, typename... Args>
 PyObject* Clif_PyObjFrom(const std::vector<T, Args...>& c, py::PostConv pc) {
   return py::ListFromSizableCont(c, pc);
 }
+template <typename... Args>
+PyObject* Clif_PyObjFrom(const std::vector<bool, Args...>& c, py::PostConv pc) {
+  return py::ListFromIterators(c.cbegin(), c.cend(), pc);
+}
 template<typename T, typename... Args>
 PyObject* Clif_PyObjFrom(std::vector<T, Args...>&& c, py::PostConv pc) {
   return py::ListFromSizableCont(std::move(c), pc);
 }
 template <typename... Args>
 PyObject* Clif_PyObjFrom(std::vector<bool, Args...>&& c, py::PostConv pc) {
-  return py::ListFromIterators(begin(c), end(c), pc);
-}
-template <typename... Args>
-PyObject* Clif_PyObjFrom(const std::vector<bool, Args...>& c, py::PostConv pc){
-  return py::ListFromIterators(begin(c), end(c), pc);
+  return py::ListFromIterators(c.cbegin(), c.cend(), pc);
 }
 template<typename T, typename... Args>
 PyObject* Clif_PyObjFrom(const std::list<T, Args...>& c, py::PostConv pc) {
@@ -583,7 +616,7 @@ bool Clif_PyObjAs(PyObject* py, std::unordered_map<T, U, Args...>* c) {
   assert(c != nullptr);
   c->clear();
   return py::ItemsToMap<T, U>(py, [&c](typename std::pair<T, U>&& i) {  //NOLINT: build/c++11
-    // TODO: Use insert_or_assign since c++17
+    // 
     (*c)[i.first] = std::move(i.second);
   });
 }

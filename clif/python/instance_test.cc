@@ -12,28 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "clif/python/shared_ptr.h"
+#include "clif/python/instance.h"
 #include "testing/base/public/gunit.h"
 
 namespace clif {
+
+class PrivateDestructor {
+ public:
+  PrivateDestructor() = default;
+  PrivateDestructor(const PrivateDestructor& other) = delete;
+  PrivateDestructor& operator=(const PrivateDestructor& other) = delete;
+
+  void Delete() { delete this; }
+
+ private:
+  ~PrivateDestructor() = default;
+};
 
 class MyData {
  public:
   int a_, b_, c_;
 };
 
-class SharedPtrTest : public ::testing::Test {
-};
-
-TEST_F(SharedPtrTest, TestCreationFromRawPointerOwn) {
-  SharedPtr<MyData> csp1(new MyData, OwnedResource());
+TEST(InstanceTest, TestCreationFromRawPointerOwn) {
+  Instance<MyData> csp1(new MyData, OwnedResource());
 
   std::unique_ptr<MyData> up1 = MakeStdUnique(&csp1);
   EXPECT_TRUE(up1);
   EXPECT_FALSE(csp1);
   EXPECT_TRUE(csp1 == nullptr);
 
-  SharedPtr<MyData> csp2(up1.release(), OwnedResource());
+  Instance<MyData> csp2(up1.release(), OwnedResource());
   std::shared_ptr<MyData> sp = MakeStdShared(csp2);
   std::unique_ptr<MyData> up2 = MakeStdUnique(&csp2);
   EXPECT_FALSE(up2);
@@ -42,9 +51,9 @@ TEST_F(SharedPtrTest, TestCreationFromRawPointerOwn) {
   EXPECT_TRUE(csp2 != nullptr);
 }
 
-TEST_F(SharedPtrTest, TestCreationFromRawPointerNotOwn) {
+TEST(InstanceTest, TestCreationFromRawPointerNotOwn) {
   std::unique_ptr<MyData> up(new MyData);
-  SharedPtr<MyData> csp1(up.get(),  UnOwnedResource());
+  Instance<MyData> csp1(up.get(),  UnOwnedResource());
 
   std::unique_ptr<MyData> up1 = MakeStdUnique(&csp1);
   EXPECT_FALSE(up1);
@@ -57,9 +66,17 @@ TEST_F(SharedPtrTest, TestCreationFromRawPointerNotOwn) {
   EXPECT_TRUE(sp);
 }
 
-TEST_F(SharedPtrTest, TestCreationFromUniquePointer) {
+TEST(InstanceTest, TestCreateUnownedPrivateDestructpr) {
+  PrivateDestructor* obj = new PrivateDestructor();
+  Instance<PrivateDestructor> shared(obj, UnOwnedResource());
+  EXPECT_FALSE(shared == nullptr);
+  shared.Destruct();
+  obj->Delete();
+}
+
+TEST(InstanceTest, TestCreationFromUniquePointer) {
   std::unique_ptr<MyData> up(new MyData);
-  SharedPtr<MyData> csp1(std::move(up));
+  Instance<MyData> csp1(std::move(up));
 
   EXPECT_FALSE(up);
 
@@ -67,7 +84,7 @@ TEST_F(SharedPtrTest, TestCreationFromUniquePointer) {
   EXPECT_TRUE(up1);
   EXPECT_FALSE(csp1);
 
-  SharedPtr<MyData> csp2(move(up1));
+  Instance<MyData> csp2(move(up1));
   std::shared_ptr<MyData> sp = MakeStdShared(csp2);
   std::unique_ptr<MyData> up2 = MakeStdUnique(&csp2);
   EXPECT_FALSE(up2);
@@ -75,9 +92,17 @@ TEST_F(SharedPtrTest, TestCreationFromUniquePointer) {
   EXPECT_TRUE(sp);
 }
 
-TEST_F(SharedPtrTest, TestCreationFromSharedPointer) {
+TEST(InstanceTest, TestCreationFromUniquePointerWithDefaultDeleter) {
+  std::unique_ptr<MyData, std::default_delete<MyData>> up(new MyData);
+  EXPECT_TRUE(up);
+  Instance<MyData> csp3(move(up));
+  EXPECT_FALSE(up);
+  EXPECT_TRUE(csp3);
+}
+
+TEST(InstanceTest, TestCreationFromSharedPointer) {
   std::shared_ptr<MyData> sp1(new MyData);
-  SharedPtr<MyData> csp1(sp1);
+  Instance<MyData> csp1(sp1);
 
   EXPECT_TRUE(sp1);
   EXPECT_TRUE(csp1);

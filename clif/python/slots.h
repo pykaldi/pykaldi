@@ -74,10 +74,6 @@ PyObject* getitem(PyObject* self, Py_ssize_t idx) {
   return res;
 }
 
-// Richcompare function not implemented.
-PyObject* noop_py2();
-PyObject* noop_py3();
-
 template<typename R> R error_value();  // Common error value for type R.
 template<> inline int error_value() { return -1; }
 template<> inline long error_value() { return -1; }  //NOLINT: runtime/int

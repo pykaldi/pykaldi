@@ -34,6 +34,9 @@ headers are included.
 #include <unordered_set>
 #include <vector>
 #include <type_traits>
+// 
+// CLIF use `::proto2::Message` as proto2_Message
+#include "clif/python/pyproto.h"
 #include "clif/python/postconv.h"
 #include "clif/python/runtime.h"
 #if PY_MAJOR_VERSION >= 3
@@ -175,8 +178,16 @@ PyObject* UnicodeFromBytes(PyObject*);
 // CLIF use `std::stack` as list
 // CLIF use `std::deque` as list
 // CLIF use `std::vector` as list
+
 template<typename T, typename... Args>
 PyObject* Clif_PyObjFrom(const std::vector<T, Args...>& c, py::PostConv);
+template<typename... Args>
+PyObject* Clif_PyObjFrom(const std::vector<bool, Args...>& c, py::PostConv);
+template<typename T, typename... Args>
+PyObject* Clif_PyObjFrom(std::vector<T, Args...>&& c, py::PostConv);
+template<typename... Args>
+PyObject* Clif_PyObjFrom(std::vector<bool, Args...>&& c, py::PostConv);
+
 template<typename T, typename... Args>
 bool Clif_PyObjAs(PyObject* py, std::vector<T, Args...>* c);
 
@@ -185,6 +196,11 @@ template<typename T, typename U>
 PyObject* Clif_PyObjFrom(const std::pair<T, U>& c, py::PostConv);
 template<typename T, typename U>
 bool Clif_PyObjAs(PyObject* py, std::pair<T, U>* c);
+template<typename... T>
+PyObject* Clif_PyObjFrom(const std::tuple<T...>& c, py::PostConv);
+template<typename... T>
+bool Clif_PyObjAs(PyObject* py, std::tuple<T...>* c);
+
 
 // CLIF use `std::map` as dict
 // CLIF use `std::unordered_map` as dict

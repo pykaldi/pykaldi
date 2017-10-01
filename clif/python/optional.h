@@ -540,24 +540,4 @@ void swap(optional<T>& a, optional<T>& b) {
 }
 
 }  // namespace gtl
-
-namespace std {
-
-// std::hash specialization for gtl::optional.  Normally std::hash
-// specializations are banned in Google code, but the arbiters granted a
-// styleguide exception for this one in cl/95369397, as optional is following
-// a standard library component.
-template <class T>
-struct hash<::gtl::optional<T>> {
-  size_t operator()(const ::gtl::optional<T>& opt) const {
-    if (opt) {
-      return hash<T>()(*opt);
-    } else {
-      return static_cast<size_t>(0x297814aaad196e6dULL);
-    }
-  }
-};
-
-}  // namespace std
-
 #endif  // UTIL_GTL_OPTIONAL_H_

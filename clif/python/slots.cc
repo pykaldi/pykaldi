@@ -68,7 +68,7 @@ int as_bool(PyObject* res) {
 #endif
 
 long as_hash(PyObject* res) {    //NOLINT: runtime/int
-  long i = PyLong_Check(res)? PyLong_Type.tp_hash(res): PyInt_AsLong(res);  //NOLINT: runtime/int
+  long i = PyLong_Check(res) ? PyLong_Type.tp_hash(res) : PyInt_AsLong(res);  //NOLINT: runtime/int
   Py_DECREF(res);
   if (i == -1) {
     if (PyErr_Occurred()) {
@@ -92,17 +92,7 @@ int as_cmp(PyObject* res) {
 
 int ignore(PyObject* res) {
   Py_XDECREF(res);
-  return (res == nullptr || PyErr_Occurred())? -1: 0;
-}
-
-// Richcompare function not implemented.
-PyObject* noop_py2() {
-  PyErr_SetNone(PyExc_NotImplementedError);
-  return nullptr;
-}
-PyObject* noop_py3() {
-  PyErr_SetNone(PyExc_TypeError);
-  return nullptr;
+  return (res == nullptr || PyErr_Occurred()) ? -1 : 0;
 }
 }  // namespace slot
 }  // namespace clif

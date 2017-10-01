@@ -70,7 +70,7 @@ namespace pySubVector {
 
 struct wrapper {
   PyObject_HEAD
-  ::clif::SharedPtr<::kaldi::SubVector<float>> cpp;
+  ::clif::Instance<::kaldi::SubVector<float>> cpp;
   PyObject* base;
 };
 static ::kaldi::SubVector<float>* ThisPtr(PyObject*);
@@ -358,7 +358,7 @@ namespace pySubMatrix {
 
 struct wrapper {
   PyObject_HEAD
-  ::clif::SharedPtr<::kaldi::SubMatrix<float>> cpp;
+  ::clif::Instance<::kaldi::SubMatrix<float>> cpp;
   PyObject* base;
 };
 static ::kaldi::SubMatrix<float>* ThisPtr(PyObject*);
@@ -972,21 +972,21 @@ bool Clif_PyObjAs(PyObject* py, ::gtl::optional<::kaldi::SubVector<float>>* c) {
 PyObject* Clif_PyObjFrom(::kaldi::SubVector<float>* c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
   PyObject* py = PyType_GenericNew(&__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(c, ::clif::UnOwnedResource());
+  reinterpret_cast<__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::Instance<::kaldi::SubVector<float>>(c, ::clif::UnOwnedResource());
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubVector<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
   PyObject* py = PyType_GenericNew(&__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(std::move(c));
+  reinterpret_cast<__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::Instance<::kaldi::SubVector<float>>(std::move(c));
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubVector<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
   PyObject* py = PyType_GenericNew(&__matrix__ext::pySubVector::wrapper_Type, NULL, NULL);
-  reinterpret_cast<__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubVector<float>>(c);
+  reinterpret_cast<__matrix__ext::pySubVector::wrapper*>(py)->cpp = ::clif::Instance<::kaldi::SubVector<float>>(c);
   return py;
 }
 
@@ -1049,21 +1049,21 @@ bool Clif_PyObjAs(PyObject* py, ::gtl::optional<::kaldi::SubMatrix<float>>* c) {
 PyObject* Clif_PyObjFrom(::kaldi::SubMatrix<float>* c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
   PyObject* py = PyType_GenericNew(&__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(c, ::clif::UnOwnedResource());
+  reinterpret_cast<__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::Instance<::kaldi::SubMatrix<float>>(c, ::clif::UnOwnedResource());
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubMatrix<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
   PyObject* py = PyType_GenericNew(&__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(std::move(c));
+  reinterpret_cast<__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::Instance<::kaldi::SubMatrix<float>>(std::move(c));
   return py;
 }
 
 PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubMatrix<float>> c, py::PostConv unused) {
   if (c == nullptr) Py_RETURN_NONE;
   PyObject* py = PyType_GenericNew(&__matrix__ext::pySubMatrix::wrapper_Type, NULL, NULL);
-  reinterpret_cast<__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::SharedPtr<::kaldi::SubMatrix<float>>(c);
+  reinterpret_cast<__matrix__ext::pySubMatrix::wrapper*>(py)->cpp = ::clif::Instance<::kaldi::SubMatrix<float>>(c);
   return py;
 }
 

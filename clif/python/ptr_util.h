@@ -137,7 +137,7 @@ MakeUnique(Args&&... /* args */) = delete;
 // RawPtr(ptr) extracts the raw pointer from pointer-like 'ptr'.
 template <typename T>
 auto RawPtr(T&& ptr) -> decltype(&*ptr) {  // NOLINT
-  // ptr is a universal reference to support Ts with non-const operators.
+  // ptr is a forwarding reference to support Ts with non-const operators.
   return (ptr != nullptr) ? &*ptr : nullptr;
 }
 inline std::nullptr_t RawPtr(std::nullptr_t) { return nullptr; }

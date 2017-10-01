@@ -14,7 +14,6 @@ from "fst/expanded-fst.h":
 
       def Copy(self, safe: bool = default) -> StdExpandedFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> StdExpandedFst
 
@@ -30,7 +29,6 @@ from "fst/expanded-fst.h":
 
       def Copy(self, safe: bool = default) -> LogExpandedFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> LogExpandedFst
 
@@ -46,7 +44,6 @@ from "fst/expanded-fst.h":
 
       def Copy(self, safe: bool = default) -> LatticeExpandedFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> LatticeExpandedFst
 
@@ -62,7 +59,6 @@ from "fst/expanded-fst.h":
 
       def Copy(self, safe: bool = default) -> CompactLatticeExpandedFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> CompactLatticeExpandedFst
 

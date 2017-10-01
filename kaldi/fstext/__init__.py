@@ -1666,7 +1666,7 @@ class StdVectorFstCompiler(object):
     def __init__(self, isymbols=None, osymbols=None, ssymbols=None,
                  acceptor=False, keep_isymbols=False, keep_osymbols=False,
                  keep_state_numbering=False, allow_negative_labels=False):
-        self._strm = stringstream()
+        self._sstrm = stringstream()
         self._isymbols = isymbols
         self._osymbols = osymbols
         self._ssymbols = ssymbols

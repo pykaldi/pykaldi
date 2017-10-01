@@ -59,7 +59,7 @@ class PostConv {
         return c_.at(i);
   }
   PostConv() : noop_(true), f_(nullptr) {}
-  PostConv(Func f) : noop_(false), f_(f? f: postconv::PASS) {}
+  PostConv(Func f) : noop_(false), f_(f ? f : postconv::PASS) {}
   PostConv(std::initializer_list<PostConv> lst)
       : noop_(!lst.size()), f_(nullptr), c_(lst) {}
 

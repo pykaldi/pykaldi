@@ -18,7 +18,7 @@ from "nnet3/nnet-common.h":
 
       def __add__(self, other: Index) -> Index
 
-      def __iadd__(self, other: Index) -> Index
+      def __iadd__(self, other: Index) -> self
 
       def `Write` as write(self, os: ostream, binary: bool)
 

@@ -36,10 +36,9 @@ from "util/kaldi-io.h":
 
     class Input:
       @add__init__
-      def `Input` as new(self, rxfilename: str,
-                         contents_binary: bool = default)
+      def `Input` as new(self, rxfilename: str)
 
-      def `Open` as open(self, rxfilename: str, contents_binary: bool = default) -> bool
+      def `Open` as open(self, rxfilename: str) -> (success: bool, contents_binary: bool)
 
       def `OpenTextMode` as open_text_mode(self, rxfilename: str) -> bool
 

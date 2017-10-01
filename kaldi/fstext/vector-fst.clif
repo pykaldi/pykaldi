@@ -21,11 +21,9 @@ from "fst/vector-fst.h":
 
       def Copy(self, safe: bool = default) -> StdVectorFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> StdVectorFst
 
-      @async
       def Write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<StdArc>>` as StdVectorFstStateIterator:
@@ -95,11 +93,9 @@ from "fst/vector-fst.h":
 
       def Copy(self, safe: bool = default) -> LogVectorFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> LogVectorFst
 
-      @async
       def Write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<LogArc>>` as LogVectorFstStateIterator:
@@ -169,11 +165,9 @@ from "fst/vector-fst.h":
 
       def Copy(self, safe: bool = default) -> LatticeVectorFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> LatticeVectorFst
 
-      @async
       def Write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeVectorFstStateIterator:
@@ -243,11 +237,9 @@ from "fst/vector-fst.h":
 
       def Copy(self, safe: bool = default) -> CompactLatticeVectorFst
 
-      @async
       @classmethod
       def Read(cls, filename: str) -> CompactLatticeVectorFst
 
-      @async
       def Write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeVectorFstStateIterator:
