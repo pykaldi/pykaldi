@@ -1,0 +1,24 @@
+from "chain/chain-training-clifwrap.h" import *
+from "chain/chain-den-graph-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+
+
+from "chain/chain-denominator.h":
+  namespace `kaldi::chain`:
+    class DenominatorComputation:
+      def __init__(self, opts: ChainTrainingOptions, den_graph: DenominatorGraph, num_sequences: int, nnet_output: CuMatrixBase):
+        """Constructor. 
+
+        Args:
+          opts (ChainTrainingOptions): Options
+          graph (DenominatorGraph): The HMM to use for denominator
+          num_sequences (int): Number of separate time sequences to work with
+          nnet_output (CuMatrix): The output of the neural network for this minibatch
+        """
+
+      def `Forward` as forward(self) -> float
+
+      # nnet_output_deriv is output and input
+      # def `Backward` as backward(self, deriv_weight: float, nnet_output_deriv: CuMatrixBase )-> bool
+
+

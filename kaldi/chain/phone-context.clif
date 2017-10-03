@@ -1,0 +1,36 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+
+from "chain/phone-context.h":
+  namespace `kaldi::chain`:
+    class PhoneContext(StdDeterministicOnDemandFst):
+      def `Start` as start(self) -> int
+
+      # def `Final` as final(self, s: int) -> float
+
+      def `GetArc` as get_arc(self, s: int, phone: int) -> (success: bool, oarc: StdArc)
+
+      def `NumStates` as num_states(self) -> int
+
+      # @add__init__
+      # def `PhoneContext` as new_with_context(self, num_phones: int, ctx_dep: )
+
+      def `NumPhones` as num_phones(self) -> int
+
+      def `GetNumLabels` as get_num_labels(self, phone: int) -> bool
+
+      def `NumLogicalCdPhones` as num_logical_cd_phones(self) -> int
+
+      def `NumPhysicalCdPhones` as num_physical_cd_phones(self) -> int
+
+      def `LeftContext` as left_context(self) -> int
+
+      def `LogicalToPhone` as logical_to_phone(self, logical_cd_phone: int) -> int
+
+      def `LogicalToPhysical` as logical_to_physical(self, logical_cd_phone: int) -> int
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream)

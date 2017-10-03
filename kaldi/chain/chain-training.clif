@@ -1,0 +1,13 @@
+from "itf/options-itf-clifwrap.h" import *
+
+
+from "chain/chain-training.h":
+  namespace `kaldi::chain`:
+    class ChainTrainingOptions:
+      l2_regularize: float
+      leaky_hmm_coefficient: float
+      xent_regularize: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    # def `ComputeChainObjfAndDeriv` as compute_chain_objf_and_deriv(self, opts: ChainTrainingOptions, den_graph: DenominatorGraph, supervision: Supervision) -> (nnet_output: CuMatrix, objf: float, l2_term: float, weight: float, nnet_output_deriv: CuMatrix, xent_output_deriv: CuMatrix)
