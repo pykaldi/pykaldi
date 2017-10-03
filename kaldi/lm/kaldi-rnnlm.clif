@@ -1,0 +1,31 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+
+from "lm/kaldi-rnnlm.h":
+  namespace `kaldi`:
+    class KaldiRnnlmWrapperOpts:
+      unk_symbol: str
+      eos_symbol: str
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class KaldiRnnlmWrapper:
+      def __init__(self, opts: KaldiRnnlmWrapperOpts, unk_prob_rspecifier: str, word_symbol_table_rxfilename: str, rnnlm_rxfilename: str)
+
+      def `GetHiddenLayerSize` as get_hidden_layer_size(self) -> int
+
+      def `GetEos` as get_eos(self) -> int
+
+      def `GetLogProb` as get_log_prob(self, word: int, wseq: list<int>, context_in: list<float>) -> (logprob: float, context_out: list<float>)
+
+    class RnnlmDeterministicFst(StdDeterministicOnDemandFst):
+      def __init__(self, max_ngram_order: int, rnnlm: KaldiRnnlmWrapper)
+
+      def `Start` as start(self) -> int
+
+      def `Final` as final(self, s: int) -> TropicalWeight
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int, oarc: StdArc) -> bool

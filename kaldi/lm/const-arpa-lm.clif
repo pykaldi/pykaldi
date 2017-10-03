@@ -1,0 +1,46 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "lm/arpa-file-parser-clifwrap.h" import *
+
+from "lm/const-arpa-lm.h":
+  namespace `kaldi`:
+    class ConstArpaLm:
+
+      # FIXME (VM):
+      # unigram_states: int**, lm_states_size: int64
+      # @add__init__
+      # def `ConstArpaLm` as new_with_params(self, bos_symbol: int, eos_symbol: int, unk_symbol: int, ngram_order: int, num_words: int, overflow_buffer_size: int, lm_states_size: int, unigram_states: int, overflow_buffer: int, lm_states: int)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `WriteArpa` as write_arpa(self, os: ostream)
+
+      def `GetNgramLogprob` as get_ngram_log_prob(self, word: int, hist: list<int>) -> float:
+        """Wrapper of GetNgramLogprobRecurse. It first maps possible out-of-vocabulary words to <unk>, if <unk> is defined, and then calls GetNgramLogprobRecurse."""
+
+      def `HistoryStateExists` as history_state_exists(self, hist:list<int>) -> bool:
+        """Returns true if the history word sequence <hist> has successor, which means <hist> will be a state in the FST format language model."""
+
+      def `BosSymbol` as get_bos_symbol(self) -> int
+
+      def `EosSymbol` as get_eos_symbol(self) -> int
+
+      def `UnkSymbol` as get_unk_symbol(self) -> int
+
+      def `NgramOrder` as get_ngram_order(self) -> int
+
+    class ConstArpaLmDeterministicFst(StdDeterministicOnDemandFst):
+      def __init__(self, lm: ConstArpaLm)
+
+      def `Start` as start(self) -> int
+
+    #   def `Final` as final(self, s: int) -> float
+
+      # def `GetArc` as get_arc(self, s: int, ilabel: int, oarc: StdArc)
+
+    def `BuildConstArpaLm` as build_const_arpa_lm(options: ArpaParseOptions, arpa_rxfilename: str, const_arpa_wxfilename: str) -> bool:
+      """Reads in an Arpa format language model and converts it into ConstArpaLm"""

@@ -1,0 +1,38 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+
+from "lm/arpa-file-parser.h":
+  namespace `kaldi`:
+    class ArpaParseOptions:
+      enum OovHandling with:
+        `kRaiseError` as RAISE_ERROR
+        `kAddToSymbols` as ADD_TO_SYMBOLS
+        `kReplaceWithUnk` as REPLACE_WITH_UNK
+        `kSkipNGram` as SKIP_N_GRAM
+
+      bos_symbol: int
+      eos_symbol: int
+      unk_symbol: int
+      oov_handling: OovHandling
+      max_warnings: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class NGram:
+      words: list<int>
+      logprob: float
+      backoff: float
+
+    class ArpaFileParser:
+    # FIXME(VM)
+    # Clif complains about pure virtual functions
+    #   def `ArpaFileParser` as __init__(self, options: ArpaParseOptions, symbols: SymbolTable)
+
+      def `Read` as read(self, is:istream, binary: bool)
+
+      def `Options` as get_options(self) -> ArpaParseOptions
+
+
+

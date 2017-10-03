@@ -1,0 +1,19 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+# from "base/iostream-clifwrap.h" import *
+# from "itf/options-itf-clifwrap.h" import *
+from "lm/arpa-file-parser-clifwrap.h" import *
+
+
+from "lm/arpa-lm-compiler.h":
+  namespace `kaldi`:
+    class ArpaLmCompiler(ArpaFileParser):
+
+      def __init__(self, options: ArpaParseOptions, sub_eps: int, symbols: SymbolTable)
+
+      def `Fst` as fst(self) -> StdVectorFst
+
+      def `MutableFst` as mutable_fst(self) -> StdVectorFst
+
+      
