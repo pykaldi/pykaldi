@@ -1,0 +1,97 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "sgmm2/am-sgmm2-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+
+from "sgmm2/estimate-am-sgmm2.h":
+  namespace `kaldi`:
+    class MleAmSgmm2Options:
+      tau_c: float
+      cov_floor: float
+      cov_diag_ratio: float
+      max_cond: float
+
+      renormalize_V: bool
+      renormalize_N: bool
+
+      weight_projections_iters: int
+
+      epsilon: float
+      max_impr_u: float
+
+      tau_map_M: float
+      map_M_prior_iters: int
+      full_row_cov: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class MleAmSgmm2Accs:
+      def __init__(self, rand_prune: float = default)
+
+      @add__init__
+      def `MleAmSgmm2Accs` as new_with_params(self, model: AmSgmm2, flags: int, have_spk_vecs: bool, rand_prune: float = default)
+
+      def `Read` as read(self, in_stream: istream, binary: bool, add: bool)
+
+      def `Write` as write(self, out_stream: ostream, binary: bool)
+
+      def `Check` as check(self, model: AmSgmm2, show_properties: bool = default):
+        """Checks the various accumulators for correct sizes given a model. With wrong sizes, assertion failure occurs. When the show_properties argument is set to true, dimensions and presence/absence of the various accumulators is printed"""
+
+      def `ResizeAccumulators` as resize_accumulators(self, model: AmSgmm2, flags: int, have_spk_vecs: bool):
+        """Resizes the accumulators to the correct sizes given the model. The flags argument controls which accumulators to resize"""
+
+      def `Accumulate` as accumulate(self, model: AmSgmm2, frame_vars: Sgmm2PerFrameDerivedVars, pdf_index: int, weight: float, spk_vars: Sgmm2PerSpkDerivedVars) -> float:
+        """
+        Returns
+          Likelihood
+        """
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self, model: AmSgmm2, frame_vars: Sgmm2PerFrameDerivedVars, posteriors: Matrix, pdf_index: int, spk_vars: Sgmm2PerSpkDerivedVars) -> float:
+        """Returns count accumulated"""
+
+      def `CommitStatsForSpk` as commit_stats_for_spk(self, model: AmSgmm2, spk_vars: Sgmm2PerSpkDerivedVars)
+
+      def `GetStateOccupancies` as get_state_occupancies(self) -> (occs: Vector)
+
+      def `FeatureDim` as feature_dim(self) -> int
+
+      def `PhoneSpaceDim` as phone_space_dim(self) -> int
+
+      def `NumPdfs` as num_pdfs(self) -> int
+
+      def `NumGroups` as num_groups(self) -> int
+
+      def `NumGauss` as num_gauss(self) -> int
+
+    class MleAmSgmm2Updater:
+      def __init__(self, options: MleAmSgmm2Options)
+
+      def `Reconfigure` as reconfigure(self, options: MleAmSgmm2Options)
+
+      def `Update` as update(self, accs: MleAmSgmm2Accs, model: AmSgmm2, flags: int)
+
+    class MleSgmm2SpeakerAccs:
+      def __init__(self, model: AmSgmm2, rand_prune: float = default)
+
+      def `Clear` as clear(self)
+
+      def `Accumulate` as accumulate(self, model: AmSgmm2, frame_vars: Sgmm2PerFrameDerivedVars, pdf_index: int, weight: float, spk_vars: Sgmm2PerSpkDerivedVars) -> float:
+        """Accumulate statistics.  Returns per-frame log-likelihood."""
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self, model: AmSgmm2, frame_vars: Sgmm2PerFrameDerivedVars, posteriors: Matrix, pdf_index: int, spk_vars: Sgmm2PerSpkDerivedVars) -> float:
+        """Accumulate statistics, given posteriors.  
+
+        Returns
+          Total count accumulated
+        """
+
+      # FIXME (VM):
+      # float*
+      # def `Update` as update(self, model: AmSgmm2, min_count: float, v_s: Vector, objf_impr_out: float, cou)
+
+    # FIXME (VM):
+    # Where is MultiThreadable?? 
+    # class UpdateWClass(MultiThreadable)
+

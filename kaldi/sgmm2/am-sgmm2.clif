@@ -1,0 +1,207 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "gmm/full-gmm-clifwrap.h" import *
+from "gmm/diag-gmm-clifwrap.h" import *
+
+from "sgmm2/am-sgmm2.h":
+  namespace `kaldi`:
+    class Sgmm2SplitSubstatesConfig:
+      split_substates: int
+      perturb_factor: float
+      power: float
+      max_cond: float
+      min_count: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class Sgmm2GselectConfig:
+      full_gmm_nbest: int
+      diag_gmm_nbest: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class Sgmm2PerFrameDerivedVars:
+      gselect: list<int>
+      xt: Vector
+      xti: Matrix
+      zti: Matrix
+      nti: Vector
+
+      def `Resize` as resize(self, ngauss: int, feat_dim: int, phn_dim: int)
+
+    class Sgmm2PerSpkDerivedVars:
+      def `Clear` as clear(self)
+
+      def `Empty` as empty(self) -> bool
+
+      # NOTE (VM):
+      # Maybe add property
+      def `GetSpeakerVector` as get_speaker_vector(self) -> Vector
+
+      def `SetSpeakerVector` as set_speaker_vector(self, v_s_in: Vector)
+
+    class Sgmm2LikelihoodCache:
+      def __init__(self, num_groups: int, num_pdfs: int)
+
+      class SubstateCacheElement:
+        likes: Vector
+        remaining_log_like: float
+        t: int
+
+      class PdfCacheElement:
+        log_like: float
+        t: int 
+
+      def `NextFrame` as next_frame(self):
+        """Increments t"""
+
+      substate_cache: list<SubstateCacheElement>
+      pdf_cache: list<PdfCacheElement>
+      t: int
+
+    class AmSgmm2:
+      """Class for definition of subspace Gmm acoustic model"""
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      # SgmmWriteFlagsType == int
+      def `Write` as write(self, os: ostream, binary: bool, write_params: int)
+
+      def `Check` as check(self, show_properties: bool = default):
+        """Checks the various components for correct sizes. When the argument is set to true, dimensions of the various components is printed"""
+
+      def `InitializeFromFullGmm` as initialize_from_full_gmm(self, gmm: FullGmm, pdf2group: list<int>, phn_subspace_dim: int, spk_subspace_dim: int, speaker_dependent_weights: bool, self_weight: float):
+        """Initializes the SGMM parameters from a full-covariance UBM. The state2group vector maps from a state to the corresponding cluster of states [i.e., j2 to j1]. For conventionally structured systems (no 2-level tree), this can just be [0 1 ... n-1 ]"""
+
+      def `CopyGlobalsInitVecs` as copy_globals_init_vecs(self, other: AmSgmm2, pdf2group: list<int>, self_weight: float):
+        """Copies the global parameters from the supplied model, but sets the state vectors to zero."""
+
+      def `CopyFromSgmm2` as copy_from_sgmm2(self, other: AmSgmm2, copy_normalizers: bool, copy_weights: bool):
+        """Copies models"""
+
+      # FIXME (VM):
+      # def `GaussianSelection` as gaussian_selection(self, config: Sgmm2GselectConfig, data: Vector, gselect: list<int>) -> float:
+        # """Computes the top-scoring Gaussian indices (used for pruning of later stages of computation). 
+
+        # Returns:
+          # Frame log-likelihood given selected Gaussians from full UBM
+        # """
+
+      # NOTE (VM):
+      # Is this the output of this function?
+      def `ComputePerFrameVars` as computer_per_frame_vars(self, data: Vector, gselect: list<int>, spk_vars: Sgmm2PerSpkDerivedVars) -> (per_frame_vars: Sgmm2PerFrameDerivedVars)
+
+      def `ComputePerSpkDerivedVars` as compute_per_spk_derived_vars(self, vars: Sgmm2PerSpkDerivedVars):
+        """Computes the per-speaker derived vars; assumes vars->v_s is already set up."""
+
+      def `LogLikelihood` as loglikelihood(self, per_frame_vars: Sgmm2PerFrameDerivedVars, j2: int, cache: Sgmm2LikelihoodCache, spk_vars: Sgmm2PerSpkDerivedVars, log_prune: float = default) -> float:
+        """This does a log-likelihood computation for a given state using the pre-selected Gaussian components (in per_frame_vars). If the log_prune parameter is non-zero, the LogSumExp stage is prunes, which is a significant speedup"""
+
+      def `ComponentPosteriors` as component_posteriors(self, per_frame_vars: Sgmm2PerFrameDerivedVars, j2: int, spk_vars: Sgmm2PerSpkDerivedVars) -> (loglike: float, post: Matrix):
+        """Similar to :meth:`loglikelihood` but also computes the posterior probabilities for the pre-selected Gaussian components and all substates."""
+
+      def `SplitSubstates` as split_substates(self, state_occupancies: Vector, config: Sgmm2SplitSubstatesConfig):
+        """Increases the total number of substates based on the state occupancies"""
+
+      def `IncreasePhoneSpaceDim` as increase_phone_space_dim(self, target_dim: int, norm_xform: Matrix):
+        """Functions for increasing the phonetic and speaker space dimensions"""
+
+      def `IncreaseSpkSpaceDim` as increase_spk_space_dim(self, target_dim: int, norm_xform: Matrix, speaker_dependent_weights: bool):
+        """Increase the subspace dimensions for speakers. speaker_dependent_weights only makes a difference if increasing the subspace dimension from zero"""
+
+      def `ComputeDerivedVars` as compute_derived_vars(self):
+        """Computes (and initializes if neccesary) derived vars"""
+
+      def `ComputeNormalizers` as compute_normalizers(self):
+        """Computes the data-independent terms in the log-likelihood computation for each Gaussian component and all substates"""
+
+      def `ComputeWeights` as compute_weights(self):
+        """Computes the weights w_jmi_, which is needed for loglikelihood evaluation"""
+
+      # NOTE (VM):
+      # Check the signature of this function
+      def `ComputeFmllrPreXform` as compute_fmllr_pre_xform(self, pdf_occs: Vector) -> (xform: Matrix, inv_xform: Matrix, diag_mean_scatter: Vector):
+        """Computes the LDA-like pre-transform and its inverse as well as the eigenvalues of the scatter of the means used in FMLLR estimation"""
+
+      def `NumPdfs` as num_pdfs(self) -> int
+
+      def `NumGroups` as num_groups(self) -> int
+
+      def `Pdf2Group` as pdf2group(self, j2: int) -> int
+
+      def `NumSubstatesForPdf` as num_substates_for_pdf(self, j2: int) -> int
+
+      def `NumSubstatesForGroup` as num_substates_for_group(self, j1: int) -> int
+
+      def `NumGauss` as num_gauss(self) -> int
+
+      def `PhoneSpaceDim` as phone_space_dim(self) -> int
+
+      def `SpkSpaceDim` as spk_space_dim(self) -> int
+
+      def `FeatureDim` as feature_dim(self) -> int
+
+      def `HasSpeakerDependentWeights` as has_speaker_dependent_weights(self) -> bool:
+        """True if doing SSGMM"""
+
+      def `HasSpeakerSpace` as has_speaker_space(self) -> bool
+
+      def `RemoveSpeakerSpace` as remove_speaker_space(self)
+
+      # NOTE (VM):
+      # Maybe spk_vars is output?
+      def `GetDjms` as get_djms(self, j1: int, m: int, spk_vars: Sgmm2PerSpkDerivedVars) -> float
+
+
+      # Accessors
+      # FIXME (VM)
+      # full_ubm:FullGmm = property(`full_ubm`)
+      # diag_ubm:DiagGmm = property(`diag_ubm`)
+
+      def `GetInvCovars` as get_inv_covars(self, gauss_index: int) -> (out: SpMatrix)
+      
+      def `GetInvCovars` as get_inv_covars_double(self, gauss_index: int) -> (out: DoubleSpMatrix)
+
+      def `GetSubstateMean` as get_substate_mean(self, j1: int, m: int, i: int, mean_out: VectorBase)
+
+      def `GetSubstateMean` as get_substate_mean_double(self, j1: int, m: int, i: int, mean_out: DoubleVectorBase)
+
+      def `GetNtransSigmaInv` as get_ntrans_sigma_inv(self) -> (out: list<Matrix>)
+
+      def `GetNtransSigmaInv` as get_ntrans_sigma_inv_double(self) -> (out: list<DoubleMatrix>)
+
+      def `GetSubstateSpeakerMean` as get_substate_speaker_mean(self, j1: int, substate: int, gauss: int, spk: Sgmm2PerSpkDerivedVars, mean_out: VectorBase)
+
+      def `GetSubstateSpeakerMean` as get_substate_speaker_mean_double(self, j1: int, substate: int, gauss: int, spk: Sgmm2PerSpkDerivedVars, mean_out: DoubleVectorBase)
+
+      def `GetVarScaledSubstateSpeakerMean` as get_var_scaled_substate_speaker_mean(self, j1: int, substate: int, gauss: int, spk: Sgmm2PerSpkDerivedVars, mean_out: VectorBase)
+
+      def `GetVarScaledSubstateSpeakerMean` as get_var_scaled_substate_speaker_mean_double(self, j1: int, substate: int, gauss: int, spk: Sgmm2PerSpkDerivedVars, mean_out: DoubleVectorBase)
+
+      def `ComputeH` as compute_h(self) -> (H_i: list<SpMatrix>):
+        """Computes :math:`M_i \Sigma_i^{-1} M_i^T`"""
+
+      def `ComputeH` as compute_h_double(self) -> (H_i: list<DoubleSpMatrix>):
+        """Computes :math:`M_i \Sigma_i^{-1} M_i^T`"""
+
+
+    def `ComputeFeatureNormalizingTransform` as compute_feature_normalizing_transform(gmm: FullGmm) -> (xform: Matrix)
+
+    class Sgmm2GauPostElement:
+      gselect: list<int>
+      tids: list<int>
+      posteriors: list<Matrix>
+
+    # FIXME (VM):
+    # class Sgmm2GauPost(list<Sgmm2GauPostElement>):
+    #   def __init__(self, i: int)
+
+    #   def `Write` as write(self, os: ostream, binary: bool)
+
+    #   def `Read` as read(self, is: istream, binary: bool)
+
+
+

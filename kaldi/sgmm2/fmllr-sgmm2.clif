@@ -1,0 +1,61 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "sgmm2/am-sgmm2-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+
+from "sgmm2/fmllr-sgmm2.h":
+  namespace `kaldi`:
+    class Sgmm2FmllrConfig:
+      fmllr_iters: int
+      step_iters: int
+      fmllr_min_count_basis: float
+      fmllr_min_count: float
+      fmllr_min_count_full: float
+      num_fmllr_bases: int
+      bases_occ_scale: float
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class Sgmm2FmllrGlobalParams:
+      def `Init` as init(self, sgmm:AmSgmm2, state_occs: Vector)
+
+      def `Write` as write(self, out_stream: ostream, binary: bool)
+
+      def `Read` as read(self, in_stream: istream, binary: bool)
+
+      def `IsEmpty` as is_empty(self) -> bool
+
+      def `HasBasis` as has_basis(self) -> bool
+
+      pre_xform_: Matrix
+      inv_xform_: Matrix
+      mean_scatter_: Vector
+      fmllr_bases_: list<Matrix>
+
+    class FmllrSgmm2Accs:
+      def `Init` as init(self, dim: int, num_gaussians: int)
+
+      def `SetZero` as set_zero(self)
+
+      def `Write` as write(self, out_stream: ostream, binary: bool)
+
+      def `Read` as read(self, in_stream: istream, binary: bool, add: bool)
+
+      def `Accumulate` as accumulate(self, sgmm: AmSgmm2, data: VectorBase, frame_vars: Sgmm2PerFrameDerivedVars, statE_index: int, weights: float, spk: Sgmm2PerSpkDerivedVars) -> float
+
+      def `AccumulateFromPosteriors` as accumulate_from_posteriors(self, sgmm: AmSgmm2, spk: Sgmm2PerSpkDerivedVars, data:VectorBase, gauss_select: list<int>, posteriors: Matrix, state_index: int)
+
+      def `AccumulateForFmllrSubspace` as accumulate_for_fmll_subspace(self, sgmm: AmSgmm2, fmllr_globals: Sgmm2FmllrGlobalParams, grad_scatter: DoubleSpMatrix)
+
+      def `FmllrObjGradient` as fmllr_obj_gradient(self, sgmm: AmSgmm2, xform: Matrix) -> (gradient: float, grad_out: Matrix, G_out: Matrix)
+
+      # FIXME(VM):
+      # output has float*
+      # def `Update` as update(self, model: AmSgmm2, fmllr_globals: Sgmm2FmllrGlobalParams, opts: Sgmm2FmllrConfig) -> (updt: bool, out_xform: Matrix, frame_count: float, auxf_improv: float)
+
+      def `Dim` as dim(self) -> int
+
+      # TODO (VM)
+      # def stats(self) -> AffineXformStats
