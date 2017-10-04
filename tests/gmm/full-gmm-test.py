@@ -7,12 +7,8 @@ import numpy as np
 from kaldi.base import math as kaldi_math
 from kaldi.matrix import (MatrixTransposeType, Matrix, Vector,
                           SpMatrix, TpMatrix, vec_sp_vec)
-from kaldi.gmm.common import GmmUpdateFlags
-from kaldi.gmm.diag import DiagGmm
-from kaldi.gmm.full import FullGmm
-from kaldi.gmm.full_normal import *
+from kaldi.gmm import *
 from kaldi.gmm._model_test_common import *
-from kaldi.gmm.mle_full import AccumFullGmm, MleFullGmmOptions, mle_full_gmm_update
 
 def RandPosdefSpMatrix(dim):
     """
