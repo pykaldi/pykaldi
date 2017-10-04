@@ -1,3 +1,4 @@
+from __future__ import print_function
 from . import _transition_model
 from ._tree_accu import *
 
