@@ -2,10 +2,8 @@ from "base/iostream-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
-from "fstext/fst-clifwrap.h" import *
-from "fstext/mutable-fst-clifwrap.h" import *
-from "fstext/vector-fst-clifwrap.h" import *
 
+from kaldi.fstext._fst import StdFst
 
 from "fstext/context-fst.h":
   namespace `fst`:

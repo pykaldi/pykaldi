@@ -1,9 +1,10 @@
 from "matrix/matrix-common-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
-from "matrix/packed-matrix-clifwrap.h" import *
 from "matrix/sp-matrix-clifwrap.h" import *
 from "matrix/matrix-ext.h" import *
+
+from kaldi.matrix._packed_matrix import PackedMatrix
 
 from "matrix/tp-matrix.h":
   namespace `kaldi`:
@@ -41,11 +42,11 @@ from "matrix/tp-matrix.h":
 
       def `operator()` as get(self, r: int, c: int) -> float:
         """Indexing operator.
-   
+
          Args:
              r(int): The row. Indexing starts from 0
              c(int): The column. Indexing starts from 0
-   
+
          Returns:
              The value of the indexed element
          """
@@ -82,7 +83,7 @@ from "matrix/tp-matrix.h":
 
         Raises:
             Error if M is not square or if dimensions of self and M are different.
-        """              
+        """
 
       def `CopyFromTp` as copy_from_tp(self, other:TpMatrix):
         """Copy data from another triangular matrix of the same size.
@@ -96,7 +97,7 @@ from "matrix/tp-matrix.h":
 
       def `AddTp` as add_tp(self, alpha: float, M:TpMatrix):
         """Performs self = self+alpha*M.
- 
+
         Args:
             alpha(float): A constant
             M(TpMatrix): A triangular matrix

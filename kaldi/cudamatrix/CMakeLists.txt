@@ -1,9 +1,6 @@
 if(CUDA)
   add_pyclif_library("_cu_device" cu-device.clif
-    CLIF_DEPS _timer
-    BASETYPES __timer_clifwrap::pyTimer
     LIBRARIES kaldi-cudamatrix
-    RPATH $ORIGIN/../base
   )
 endif(CUDA)
 

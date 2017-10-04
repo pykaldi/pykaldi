@@ -1,5 +1,6 @@
 from "fstext/weight-clifwrap.h" import *
-from "fstext/float-weight-clifwrap.h" import *
+
+from kaldi.fstext._float_weight import FloatWeight
 
 from "lat/arctic-weight-ext.h":
   namespace `fst`:

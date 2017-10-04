@@ -1,4 +1,6 @@
-from "base/iostream-clifwrap.h" import *
+from kaldi.base._iostream import istream
+from kaldi.base._iostream import ostream
+from kaldi.base._iostream import iostream
 
 from "sstream":
   namespace `::std`:
@@ -8,14 +10,20 @@ from "sstream":
 
       def `str` as to_str(self) -> str
 
+      def `str` as to_bytes(self) -> bytes
+
     class ostringstream(ostream):
       @add__init__
       def `ostringstream` as new_from_str(self, str: str)
 
       def `str` as to_str(self) -> str
 
+      def `str` as to_bytes(self) -> bytes
+
     class stringstream(iostream):
       @add__init__
       def `stringstream` as new_from_str(self, str: str)
 
       def `str` as to_str(self) -> str
+
+      def `str` as to_bytes(self) -> bytes

@@ -1,8 +1,9 @@
 from "matrix/matrix-common-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
-from "matrix/packed-matrix-clifwrap.h" import *
 from "matrix/matrix-ext.h" import *
+
+from kaldi.matrix._packed_matrix import PackedMatrix
 
 from "matrix/sp-matrix.h":
   namespace `kaldi`:

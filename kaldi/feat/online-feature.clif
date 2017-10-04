@@ -8,6 +8,9 @@ from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
 
+from kaldi.itf._online_feature_itf import OnlineFeatureInterface
+from kaldi.itf._online_feature_itf import OnlineBaseFeature
+
 from "feat/online-feature.h":
   namespace `kaldi`:
     class `OnlineGenericBaseFeature<MfccComputer>`

@@ -37,26 +37,16 @@ add_pyclif_library("_nnet_simple_component" nnet-simple-component.clif
   CLIF_DEPS _cu_matrix _nnet_component_itf
   LIBRARIES kaldi-nnet3
   RPATH $ORIGIN/../cudamatrix
-  BASETYPES __nnet__component__itf_clifwrap::pyComponent
-            __nnet__component__itf_clifwrap::pyRandomComponent
-            __nnet__component__itf_clifwrap::pyNonlinearComponent
-            __nnet__component__itf_clifwrap::pyUpdatableComponent
 )
 
 add_pyclif_library("_nnet_convolutional_component" nnet-convolutional-component.clif
-  CLIF_DEPS _nnet_component_itf
   LIBRARIES kaldi-nnet3
-  BASETYPES __nnet__component__itf_clifwrap::pyUpdatableComponent
 )
 
 add_pyclif_library("_nnet_general_component" nnet-general-component.clif
-  CLIF_DEPS _cu_array _cu_vector _nnet_component_itf
+  CLIF_DEPS _cu_array _cu_vector
   LIBRARIES kaldi-nnet3
   RPATH $ORIGIN/../cudamatrix
-  BASETYPES __nnet__component__itf_clifwrap::pyComponent
-            __nnet__component__itf_clifwrap::pyRandomComponent
-            __nnet__component__itf_clifwrap::pyUpdatableComponent
-            __nnet__component__itf_clifwrap::pyComponentPrecomputedIndexes
 )
 
 add_pyclif_library("_nnet_descriptor" nnet-descriptor.clif
@@ -159,22 +149,19 @@ add_pyclif_library("_am_nnet_simple" am-nnet-simple.clif
 )
 
 add_pyclif_library("_nnet_am_decodable_simple" nnet-am-decodable-simple.clif
-  CLIF_DEPS _options_itf _decodable_itf _kaldi_matrix _transition_model _am_nnet_simple _nnet_compute _nnet_optimize
+  CLIF_DEPS _options_itf _kaldi_matrix _transition_model _am_nnet_simple _nnet_compute _nnet_optimize
   LIBRARIES kaldi-nnet3
   RPATH $ORIGIN/../itf:$ORIGIN/../matrix:$ORIGIN/../hmm
-  BASETYPES __decodable__itf_clifwrap::pyDecodableInterface
 )
 
 add_pyclif_library("_decodable_simple_looped" decodable-simple-looped.clif
-  CLIF_DEPS _options_itf _decodable_itf _kaldi_matrix _cu_vector _transition_model _am_nnet_simple _nnet_compute _nnet_optimize
+  CLIF_DEPS _options_itf _kaldi_matrix _cu_vector _transition_model _am_nnet_simple _nnet_compute _nnet_optimize
   LIBRARIES kaldi-nnet3
   RPATH $ORIGIN/../itf:$ORIGIN/../matrix:$ORIGIN/../cudamatrix:$ORIGIN/../hmm
-  BASETYPES __decodable__itf_clifwrap::pyDecodableInterface
 )
 
 add_pyclif_library("_decodable_online_looped" decodable-online-looped.clif
-  CLIF_DEPS _decodable_itf _online_feature_itf _transition_model _decodable_simple_looped
+  CLIF_DEPS _online_feature_itf _transition_model _decodable_simple_looped
   LIBRARIES kaldi-nnet3
   RPATH $ORIGIN/../itf:$ORIGIN/../hmm
-  BASETYPES __decodable__itf_clifwrap::pyDecodableInterface
 )

@@ -1,4 +1,4 @@
-from "base/timer-clifwrap.h" import *
+from kaldi.base._timer import Timer
 
 from "cudamatrix/cu-device.h":
   namespace `kaldi`:

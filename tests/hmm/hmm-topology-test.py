@@ -11,7 +11,7 @@ def get_default_topology(phones):
 
     topo_string = """<Topology>
     <TopologyEntry>
-    <ForPhones> 
+    <ForPhones>
     """
     for i in phones:
         topo_string += str(i) + " "
@@ -21,7 +21,7 @@ def get_default_topology(phones):
     <Transition> 0 0.5
     <Transition> 1 0.5
     </State>
-    <State> 1 <PdfClass> 1 
+    <State> 1 <PdfClass> 1
     <Transition> 1 0.5
     <Transition> 2 0.5
     </State>
@@ -48,7 +48,7 @@ class TestHMMTopology(unittest.TestCase):
         input_str = """<Topology>
         <TopologyEntry>
         <ForPhones> 1 2 3 4 5 6 7 8 9 </ForPhones>
-        <State> 0 <PdfClass> 0 
+        <State> 0 <PdfClass> 0
         <Transition> 0 0.5
         <Transition> 1 0.5
         </State>
@@ -103,7 +103,7 @@ class TestHMMTopology(unittest.TestCase):
                 topo.write(oss, binary)
 
                 topo2 = HmmTopology()
-                iss2 = istringstream.new_from_str(oss.to_str())
+                iss2 = istringstream.new_from_str(oss.to_bytes())
                 topo2.read(iss2, binary)
 
                 # Test equality

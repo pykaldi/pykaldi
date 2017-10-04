@@ -1,5 +1,4 @@
 from "itf/options-itf-clifwrap.h" import *
-from "itf/decodable-itf-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
@@ -9,6 +8,8 @@ from "nnet3/nnet-nnet-clifwrap.h" import *
 from "nnet3/nnet-compute-clifwrap.h" import *
 from "nnet3/nnet-optimize-clifwrap.h" import *
 from "nnet3/am-nnet-simple-clifwrap.h" import *
+
+from kaldi.itf._decodable_itf import DecodableInterface
 
 from "nnet3/decodable-simple-looped.h":
   namespace `kaldi::nnet3`:

@@ -30,21 +30,19 @@ add_pyclif_library("_packed_matrix" packed-matrix.clif
   RPATH $ORIGIN/../base
 )
 add_pyclif_library("_sp_matrix" sp-matrix.clif
-  CLIF_DEPS _packed_matrix
+  CLIF_DEPS _matrix_ext
   LIBRARIES kaldi-matrix
-  BASETYPES __packed__matrix_clifwrap::pyPackedMatrix
 )
 add_pyclif_library("_tp_matrix" tp-matrix.clif
-  CLIF_DEPS _packed_matrix _sp_matrix
+  CLIF_DEPS _sp_matrix
   LIBRARIES kaldi-matrix
-  BASETYPES __packed__matrix_clifwrap::pyPackedMatrix
 )
 add_pyclif_library("_kaldi_vector_ext" kaldi-vector-ext.clif
-  CLIF_DEPS _tp_matrix _sp_matrix
+  CLIF_DEPS _packed_matrix _tp_matrix
   LIBRARIES kaldi-matrix
 )
 add_pyclif_library("_kaldi_matrix_ext" kaldi-matrix-ext.clif
-  CLIF_DEPS _compressed_matrix _tp_matrix _sp_matrix
+  CLIF_DEPS _compressed_matrix _tp_matrix
   LIBRARIES kaldi-matrix
 )
 add_pyclif_library("_matrix_functions" matrix-functions.clif

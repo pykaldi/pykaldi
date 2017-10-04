@@ -4,6 +4,9 @@ from "itf/options-itf-clifwrap.h" import *
 from "util/options-ext-clifwrap.h" import *
 from "itf/online-feature-itf-clifwrap.h" import *
 
+from kaldi.itf._online_feature_itf import OnlineFeatureInterface
+from kaldi.itf._online_feature_itf import OnlineBaseFeature
+
 from "feat/pitch-functions.h":
   namespace `kaldi`:
     class PitchExtractionOptions:

@@ -1,6 +1,7 @@
-from "itf/context-dep-itf-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "tree/event-map-clifwrap.h" import *
+
+from kaldi.itf._context_dep_itf import ContextDependencyInterface
 
 from "tree/context-dep.h":
   namespace `kaldi`:

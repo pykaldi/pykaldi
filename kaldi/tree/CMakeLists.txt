@@ -4,16 +4,14 @@ add_pyclif_library("_event_map" event-map.clif
 )
 
 add_pyclif_library("_context_dep" context-dep.clif
-  CLIF_DEPS _iostream _context_dep_itf _event_map
+  CLIF_DEPS _iostream _event_map
   LIBRARIES kaldi-tree
-  BASETYPES __context__dep__itf_clifwrap::pyContextDependencyInterface
   RPATH $ORIGIN/../base:$ORIGIN/../itf
 )
 
 add_pyclif_library("_clusterable_classes" clusterable-classes.clif
-  CLIF_DEPS _iostream _clusterable_itf _kaldi_vector
+  CLIF_DEPS _iostream _kaldi_vector
   LIBRARIES kaldi-tree
-  BASETYPES __clusterable__itf_clifwrap::pyClusterable
   RPATH $ORIGIN/../base:$ORIGIN/../itf:$ORIGIN/../matrix
 )
 

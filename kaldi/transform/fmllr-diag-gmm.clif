@@ -5,6 +5,8 @@ from "gmm/diag-gmm-clifwrap.h" import *
 from "gmm/mle-full-gmm-clifwrap.h" import *
 from "transform/transform-common-clifwrap.h" import *
 
+from kaldi.transform._transform_common import AffineXformStats
+
 from "transform/fmllr-diag-gmm.h":
   namespace `kaldi`:
     class FmllrOptions:

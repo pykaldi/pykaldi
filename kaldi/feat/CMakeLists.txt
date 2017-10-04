@@ -55,14 +55,10 @@ add_pyclif_library("_feature_common_ext" feature-common-ext.clif
 add_pyclif_library("_online_feature" online-feature.clif
   CLIF_DEPS _online_feature_itf _feature_functions _feature_mfcc _feature_plp _feature_fbank _kaldi_matrix _iostream _options_ext
   LIBRARIES kaldi-feat
-  BASETYPES __online__feature__itf_clifwrap::pyOnlineFeatureInterface
-            __online__feature__itf_clifwrap::pyOnlineBaseFeature
   RPATH $ORIGIN/../base:$ORIGIN/../itf:$ORIGIN/../util:$ORIGIN/../matrix
 )
 add_pyclif_library("_pitch_functions" pitch-functions.clif
   CLIF_DEPS _online_feature_itf _kaldi_matrix _options_ext
   LIBRARIES kaldi-feat
-  BASETYPES __online__feature__itf_clifwrap::pyOnlineFeatureInterface
-            __online__feature__itf_clifwrap::pyOnlineBaseFeature
   RPATH $ORIGIN/../itf:$ORIGIN/../util:$ORIGIN/../matrix
 )

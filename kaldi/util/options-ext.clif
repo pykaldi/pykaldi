@@ -1,5 +1,7 @@
 from "itf/options-itf-clifwrap.h" import *
 
+from kaldi.itf._options_itf import OptionsItf
+
 from "util/options-ext.h":
   namespace `kaldi`:
 

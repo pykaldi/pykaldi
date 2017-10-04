@@ -5,22 +5,6 @@
 #include "matrix/kaldi-matrix.h"
 #include "clif/python/postconv.h"
 
-namespace __kaldi__vector_clifwrap {
-
-namespace pyVectorBase {
-  extern PyTypeObject wrapper_Type;
-}
-
-}  // namespace __kaldi__vector_clifwrap
-
-namespace __kaldi__matrix_clifwrap {
-
-namespace pyMatrixBase {
-  extern PyTypeObject wrapper_Type;
-}
-
-}  // namespace __kaldi__matrix_clifwrap
-
 namespace kaldi {
 using namespace ::clif;
 

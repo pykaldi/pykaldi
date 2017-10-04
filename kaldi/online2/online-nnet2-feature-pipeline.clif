@@ -1,11 +1,11 @@
 from "online2/online-ivector-feature-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
-from "itf/online-feature-itf-clifwrap.h" import *
 from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 
+from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 
 from "online2/online-nnet2-feature-pipeline.h":
   namespace `kaldi`:
@@ -48,7 +48,7 @@ from "online2/online-nnet2-feature-pipeline.h":
 
       silence_weighting_config: OnlineSilenceWeightingConfig
 
-      def `IvectorDim` as ivector_dim(self) -> int 
+      def `IvectorDim` as ivector_dim(self) -> int
 
     class OnlineNnet2FeaturePipeline(OnlineFeatureInterface):
 
@@ -74,6 +74,3 @@ from "online2/online-nnet2-feature-pipeline.h":
       # def IvectorFeature
 
       # def InputFeature
-
-
-

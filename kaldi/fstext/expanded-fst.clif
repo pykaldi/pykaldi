@@ -1,7 +1,10 @@
-# from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
-# from "fstext/arc-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
+
+from kaldi.fstext._fst import StdFst
+from kaldi.fstext._fst import LogFst
+from kaldi.fstext._fst import LatticeFst
+from kaldi.fstext._fst import CompactLatticeFst
 
 from "fst/expanded-fst.h":
   namespace `fst`:

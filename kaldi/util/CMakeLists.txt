@@ -1,7 +1,6 @@
 add_pyclif_library("_options_ext" options-ext.clif
   CLIF_DEPS _options_itf
   LIBRARIES kaldi-util
-  BASETYPES __options__itf_clifwrap::pyOptionsItf
   RPATH $ORIGIN/../itf
 )
 

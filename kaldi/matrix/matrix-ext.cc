@@ -18,54 +18,6 @@ using namespace clif;
 #define _0 py::postconv::PASS
 #define _1 UnicodeFromBytes
 
-// Lifted this from pytorch
-// https://github.com/pytorch/pytorch/blob/master/torch/csrc/utils/object_ptr.h
-// class PyObjectPtr {
-// public:
-//   PyObjectPtr(): ptr(nullptr) {};
-//   explicit PyObjectPtr(PyObject* ptr): ptr(ptr) {};
-//   PyObjectPtr(PyObjectPtr &&p) {
-//     free();
-//     ptr = p.ptr;
-//     p.ptr = nullptr;
-//   };
-//
-//   ~PyObjectPtr() { free(); };
-//   PyObject* get() { return ptr; }
-//   const PyObject* get() const { return ptr; }
-//   PyObject* release() {
-//     PyObject* tmp = ptr;
-//     ptr = NULL;
-//     return tmp;
-//   }
-//   operator PyObject*() { return ptr; }
-//   PyObjectPtr& operator =(PyObject* new_ptr) {
-//     free();
-//     ptr = new_ptr;
-//     return *this;
-//   }
-//   PyObjectPtr& operator =(PyObjectPtr &&p) {
-//     free();
-//     ptr = p.ptr;
-//     p.ptr = nullptr;
-//     return *this;
-//   }
-//   PyObject* operator ->() { return ptr; }
-//   operator bool() { return ptr != nullptr; }
-//
-// private:
-//   void free() { if (ptr) Py_DECREF(ptr); }
-//   PyObject* ptr = nullptr;
-// };
-
-// Custom deleter for decrementing the reference count of the pointed PyObject
-// struct PyObjectDeleter {
-//   void operator()(PyObject *obj) {
-//     Py_XDECREF(obj);
-//   }
-// };
-// typedef std::unique_ptr<PyObject, PyObjectDeleter> PyObjectPtr
-
 namespace pySubVector {
 
 struct wrapper {
@@ -150,85 +102,11 @@ static PyObject* wrapSubVector_float_as___init__(PyObject* self,
   Py_RETURN_NONE;
 }
 
-// NOTE: It is unlikely that this method will be useful in Python.
-// // @classmethod NewWithSubVector(s:SubVector) -> SubVector
-// static PyObject* wrapSubVector_as_NewWithSubVector(PyObject* cls,
-//                                                    PyObject* args,
-//                                                    PyObject* kw) {
-//   PyObject* a[1];
-//   char* names[] = {
-//       C("src"),
-//       nullptr
-//   };
-//   if (!PyArg_ParseTupleAndKeywords(args, kw, "O:NewWithSubVector", names, &a[0]))
-//     return nullptr;
-//   ::kaldi::SubVector<float>* arg1;
-//   if (!Clif_PyObjAs(a[0], &arg1))
-//     return ArgError("NewWithSubVector", names[0],
-//                     "::kaldi::SubVector<float>", a[0]);
-//   // Call actual C++ method.
-//   std::unique_ptr<::kaldi::SubVector<float>> ret0;
-//   PyObject* err_type = nullptr;
-//   string err_msg{"C++ exception"};
-//   try {
-//     ret0 = ::gtl::MakeUnique<::kaldi::SubVector<float>>(*arg1);
-//   } catch(const std::exception& e) {
-//     err_type = PyExc_RuntimeError;
-//     err_msg += string(": ") + e.what();
-//   } catch (...) {
-//     err_type = PyExc_RuntimeError;
-//   }
-//   if (err_type) {
-//     PyErr_SetString(err_type, err_msg.c_str());
-//     return nullptr;
-//   }
-//   PyObject* ret = Clif_PyObjFrom(std::move(ret0), {});
-//   // Reference count of a[0] will be decremented when ret is deallocated.
-//   Py_INCREF(a[0]);
-//   reinterpret_cast<wrapper*>(ret)->base = a[0];
-//   return ret;
-// }
-
-// NOTE: It is better to implement the Range method by initializing a new
-// kaldi.matrix.Vector object in Python since the user facing Vector class
+// Range(start:int, length:int) -> SubVector
+// NOTE: Range method is implemented in Python by initializing a new
+// kaldi.matrix.SubVector object since the user facing SubVector class
 // (kaldi.matrix.Vector) is defined in Python and is a child class of the
 // SubVector type provided by this wrapper.
-// // Range(start:int, length:int) -> SubVector
-// static PyObject* wrapRange(PyObject* self, PyObject* args, PyObject* kw) {
-//   PyObject* a[2];
-//   char* names[] = { C("start"), C("length"), nullptr };
-//   if (!PyArg_ParseTupleAndKeywords(args, kw, "OO:Range", names, &a[0], &a[1]))
-//     return nullptr;
-//   ::kaldi::MatrixIndexT arg1;
-//   if (!Clif_PyObjAs(a[0], &arg1))
-//     return ArgError("Range", names[0], "::kaldi::MatrixIndexT", a[0]);
-//   ::kaldi::MatrixIndexT arg2;
-//   if (!Clif_PyObjAs(a[1], &arg2))
-//     return ArgError("Range", names[1], "::kaldi::MatrixIndexT", a[1]);
-//   // Call actual C++ method.
-//   ::kaldi::SubVector<float>* c = ThisPtr(self);
-//   if (!c) return nullptr;
-//   ::gtl::optional<::kaldi::SubVector<float>> ret0;
-//   PyObject* err_type = nullptr;
-//   string err_msg{"C++ exception"};
-//   try {
-//     ret0 = c->Range(std::move(arg1), std::move(arg2));
-//   } catch(const std::exception& e) {
-//     err_type = PyExc_RuntimeError;
-//     err_msg += string(": ") + e.what();
-//   } catch (...) {
-//     err_type = PyExc_RuntimeError;
-//   }
-//   if (err_type) {
-//     PyErr_SetString(err_type, err_msg.c_str());
-//     return nullptr;
-//   }
-//   PyObject* ret = Clif_PyObjFrom(std::move(ret0.value()), {});
-//   // Reference count of self will be decremented when ret is deallocated.
-//   Py_INCREF(self);
-//   reinterpret_cast<wrapper*>(ret)->base = self;
-//   return ret;
-// }
 
 // Implicit cast this as ::kaldi::VectorBase<float>*
 static PyObject* as_kaldi_VectorBase_float(PyObject* self) {
@@ -239,8 +117,6 @@ static PyObject* as_kaldi_VectorBase_float(PyObject* self) {
 
 static PyMethodDef Methods[] = {
   {C("__init__"), (PyCFunction)wrapSubVector_float_as___init__, METH_VARARGS | METH_KEYWORDS, C("__init__(t:VectorBase, start:int, length:int)\n  Calls C++ function\n  void ::kaldi::SubVector<float>::SubVector(::kaldi::VectorBase<float>, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
-  // {C("NewWithSubVector"), (PyCFunction)wrapSubVector_as_NewWithSubVector, METH_VARARGS | METH_KEYWORDS | METH_CLASS, C("NewWithSubVector(s:SubVector) -> SubVector\n  Calls C++ function\n  std::unique_ptr<::kaldi::SubVector<float>> ::kaldi::SubVector<float>::SubVector(::kaldi::SubVector<float>)")},
-  // {C("Range"), (PyCFunction)wrapRange, METH_VARARGS | METH_KEYWORDS, C("Range(offset:int, length:int) -> SubVector\n  Calls C++ function\n  ::kaldi::SubVector<float> ::kaldi::VectorBase<float>::Range(::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
   {C("as_kaldi_VectorBase_float"), (PyCFunction)as_kaldi_VectorBase_float, METH_NOARGS, C("Upcast to ::kaldi::VectorBase<float>*")},
   {}
 };
@@ -261,7 +137,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "matrix_ext.SubVector",              // tp_name
+  "_matrix_ext.SubVector",              // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -383,11 +259,11 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
     }
     int dtype = PyArray_TYPE((PyArrayObject*)a[0]);
     if (dtype == NPY_FLOAT) {
-      // Kaldi requires each row to be a contiguous chunk of well behaved
+      // Kaldi requires each matrix row to be a contiguous chunk of well behaved
       // memory. There can be gaps between rows but no gaps are allowed between
-      // items in a row. Also, the stride for the first matrix dimension can
-      // not be smaller than the size of a row. If any of these requirements
-      // are not satisfied by the input array, a new array will be allocated.
+      // items in a row. Also, the row stride can not be smaller than the size
+      // of a row. If any of these requirements are not satisfied by the input
+      // array, a new array will be allocated.
       int requirements = NPY_ARRAY_BEHAVED;  // aligned and writeable
       npy_intp dim1 = PyArray_DIM((PyArrayObject*)a[0], 1);
       npy_intp stride0 = PyArray_STRIDE((PyArrayObject*)a[0], 0);
@@ -449,39 +325,11 @@ static PyObject* wrapSubMatrix_float_as___init__(PyObject* self, PyObject* args,
   Py_RETURN_NONE;
 }
 
-// NOTE: It is unlikely that this method will be useful in Python.
-// // @classmethod NewWithSubMatrix(other:SubMatrix) -> SubMatrix
-// static PyObject* wrapSubMatrix_as_NewWithSubMatrix(PyObject* cls, PyObject* args, PyObject* kw) {
-//   PyObject* a[1];
-//   char* names[] = {
-//       C("other"),
-//       nullptr
-//   };
-//   if (!PyArg_ParseTupleAndKeywords(args, kw, "O:NewWithSubMatrix", names, &a[0])) return nullptr;
-//   ::kaldi::SubMatrix<float>* arg1;
-//   if (!Clif_PyObjAs(a[0], &arg1)) return ArgError("NewWithSubMatrix", names[0], "::kaldi::SubMatrix<float>", a[0]);
-//   // Call actual C++ method.
-//   std::unique_ptr<::kaldi::SubMatrix<float>> ret0;
-//   PyObject* err_type = nullptr;
-//   string err_msg{"C++ exception"};
-//   try {
-//     ret0 = ::gtl::MakeUnique<::kaldi::SubMatrix<float>>(*arg1);
-//   } catch(const std::exception& e) {
-//     err_type = PyExc_RuntimeError;
-//     err_msg += string(": ") + e.what();
-//   } catch (...) {
-//     err_type = PyExc_RuntimeError;
-//   }
-//   if (err_type) {
-//     PyErr_SetString(err_type, err_msg.c_str());
-//     return nullptr;
-//   }
-//   PyObject* ret = Clif_PyObjFrom(std::move(ret0), {});
-//   // Reference count of a[0] will be decremented when ret is deallocated.
-//   Py_INCREF(a[0]);
-//   reinterpret_cast<wrapper*>(ret)->base = a[0];
-//   return ret;
-// }
+// Range(row_start:int, num_rows:int, col_start:int, num_cols:int) -> SubMatrix
+// NOTE: Range method is implemented in Python by initializing a new
+// kaldi.matrix.SubMatrix object since the user facing SubMatrix class
+// (kaldi.matrix.SubMatrix) is defined in Python and is a child class of the
+// SubMatrix type provided by this wrapper.
 
 // Implicit cast this as ::kaldi::MatrixBase<float>*
 static PyObject* as_kaldi_MatrixBase_float(PyObject* self) {
@@ -492,7 +340,6 @@ static PyObject* as_kaldi_MatrixBase_float(PyObject* self) {
 
 static PyMethodDef Methods[] = {
   {C("__init__"), (PyCFunction)wrapSubMatrix_float_as___init__, METH_VARARGS | METH_KEYWORDS, C("__init__(T:MatrixBase, ro:int, r:int, co:int, c:int)\n  Calls C++ function\n  void ::kaldi::SubMatrix<float>::SubMatrix(::kaldi::MatrixBase<float>, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT, ::kaldi::MatrixIndexT)")},
-  // {C("NewWithSubMatrix"), (PyCFunction)wrapSubMatrix_as_NewWithSubMatrix, METH_VARARGS | METH_KEYWORDS | METH_CLASS, C("NewWithSubMatrix(other:SubMatrix) -> SubMatrix\n  Calls C++ function\n  std::unique_ptr<::kaldi::SubMatrix<float>> ::kaldi::SubMatrix<float>::SubMatrix(::kaldi::SubMatrix<float>)")},
   {C("as_kaldi_MatrixBase_float"), (PyCFunction)as_kaldi_MatrixBase_float, METH_NOARGS, C("Upcast to ::kaldi::MatrixBase<float>*")},
   {}
 };
@@ -513,7 +360,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "matrix_ext.SubMatrix",              // tp_name
+  "_matrix_ext.SubMatrix",              // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -643,62 +490,6 @@ static PyObject* VectorToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   return array;
 }
 
-// numpy_to_vector(a:ndarray) -> SubVector
-static PyObject* NumpyToVector(PyObject* self, PyObject* args, PyObject* kw) {
-  PyObject* obj;
-  char* names[] = { C("array"), nullptr };
-  if (!PyArg_ParseTupleAndKeywords(args, kw, "O:numpy_to_vector",
-                                   names, &obj)) {
-    return nullptr;
-  }
-  if (!PyArray_Check(obj)) {
-    PyErr_SetString(PyExc_RuntimeError, "Input is not a numpy ndarray.");
-    return nullptr;
-  }
-  if (PyArray_NDIM((PyArrayObject*)obj) != 1) {
-    PyErr_SetString(PyExc_RuntimeError, "Input ndarray is not 1-dimensional.");
-    return nullptr;
-  }
-  int dtype = PyArray_TYPE((PyArrayObject*)obj);
-  if (dtype == NPY_FLOAT) {
-    // Kaldi requires each vector to be a contiguous chunk of well behaved
-    // memory. No gaps are allowed between the items. If this requirement is
-    // not satisfied by the input array, a new array will be allocated.
-    PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
-                                        NPY_ARRAY_DEFAULT);
-    std::unique_ptr<::kaldi::SubVector<float>> subvector;
-    PyObject* err_type = nullptr;
-    string err_msg{"C++ exception"};
-    try {
-      subvector = ::gtl::MakeUnique<::kaldi::SubVector<float>>(
-          (float*)PyArray_DATA((PyArrayObject*)array),
-          PyArray_DIM((PyArrayObject*)array, 0));
-    } catch(const std::exception& e) {
-      err_type = PyExc_RuntimeError;
-      err_msg += string(": ") + e.what();
-    } catch (...) {
-      err_type = PyExc_RuntimeError;
-    }
-    if (err_type) {
-      Py_DECREF(array);
-      PyErr_SetString(err_type, err_msg.c_str());
-      return nullptr;
-    }
-    PyObject* ret;
-    if ((ret=Clif_PyObjFrom(std::move(subvector), {})) == nullptr) {
-      Py_DECREF(array);
-      return nullptr;
-    }
-    // Reference count of array will be decremented when ret is deallocated.
-    reinterpret_cast<pySubVector::wrapper*>(ret)->base = array;
-    return ret;
-  }
-  PyErr_SetString(PyExc_RuntimeError,
-                  "Cannot convert given ndarray to a SubVector since "
-                  "it has an invalid dtype. Supported dtypes: float.");
-  return nullptr;
-}
-
 // matrix_to_numpy(matrix:MatrixBase) -> ndarray
 static PyObject* MatrixToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   PyObject* obj;
@@ -740,100 +531,27 @@ static PyObject* MatrixToNumpy(PyObject* self, PyObject* args, PyObject* kw) {
   return array;
 }
 
-// numpy_to_matrix(a:ndarray) -> SubMatrix
-static PyObject* NumpyToMatrix(PyObject* self, PyObject* args, PyObject* kw) {
-  PyObject* obj;
-  char* names[] = { C("array"), nullptr };
-  if (!PyArg_ParseTupleAndKeywords(args, kw, "O:numpy_to_matrix",
-                                   names, &obj)) {
-    return nullptr;
-  }
-  if (!PyArray_Check(obj)) {
-    PyErr_SetString(PyExc_RuntimeError, "Input is not a numpy ndarray.");
-    return nullptr;
-  }
-  if (PyArray_NDIM((PyArrayObject*)obj) != 2) {
-    PyErr_SetString(PyExc_RuntimeError, "Input ndarray is not 2-dimensional.");
-    return nullptr;
-  }
-  int dtype = PyArray_TYPE((PyArrayObject*)obj);
-  if (dtype == NPY_FLOAT) {
-    // Kaldi requires each matrix row to be a contiguous chunk of well behaved
-    // memory. There can be gaps between rows but no gaps are allowed between
-    // items in a row. Also, the stride for the first matrix dimension can
-    // not be smaller than the size of a row. If any of these requirements
-    // are not satisfied by the input array, a new array will be allocated.
-    int requirements = NPY_ARRAY_BEHAVED;  // aligned and writeable
-    npy_intp dim1 = PyArray_DIM((PyArrayObject*)obj, 1);
-    npy_intp stride0 = PyArray_STRIDE((PyArrayObject*)obj, 0);
-    npy_intp stride1 = PyArray_STRIDE((PyArrayObject*)obj, 1);
-    long item_size = ((long)sizeof(float));
-    // We do not ask for a contiguous memory region, if we can do without one.
-    if (((dim1 > 1) and (stride1 != item_size)) || (stride0 < item_size * dim1)) {
-      requirements |= NPY_ARRAY_C_CONTIGUOUS;
-    }
-    PyObject *array = PyArray_FromArray((PyArrayObject*)obj, nullptr,
-                                        requirements);
-    std::unique_ptr<::kaldi::SubMatrix<float>> submatrix;
-    PyObject* err_type = nullptr;
-    string err_msg{"C++ exception"};
-    try {
-      submatrix = ::gtl::MakeUnique<::kaldi::SubMatrix<float>>(
-          (float*)PyArray_DATA((PyArrayObject*)array),
-          PyArray_DIM((PyArrayObject*)array, 0),
-          PyArray_DIM((PyArrayObject*)array, 1),
-          PyArray_STRIDE((PyArrayObject*)array, 0) / ((long)sizeof(float)));
-    } catch(const std::exception& e) {
-      err_type = PyExc_RuntimeError;
-      err_msg += string(": ") + e.what();
-    } catch (...) {
-      err_type = PyExc_RuntimeError;
-    }
-    if (err_type) {
-      Py_DECREF(array);
-      PyErr_SetString(err_type, err_msg.c_str());
-      return nullptr;
-    }
-    PyObject* ret;
-    if ((ret=Clif_PyObjFrom(std::move(submatrix), {})) == nullptr) {
-      Py_DECREF(array);
-      return nullptr;
-    }
-    // Reference count of array will be decremented when ret is deallocated.
-    reinterpret_cast<pySubVector::wrapper*>(ret)->base = array;
-    return ret;
-  }
-  PyErr_SetString(PyExc_RuntimeError,
-                  "Cannot convert given ndarray to a SubMatrix since "
-                  "it has an invalid dtype. Supported dtypes: float.");
-  return nullptr;
-}
-
 }  // namespace numpy
 
 static PyMethodDef Methods[] = {
   { C("vector_to_numpy"), (PyCFunction)numpy::VectorToNumpy,
     METH_VARARGS | METH_KEYWORDS,
     C("vector_to_numpy(vector:VectorBase) -> ndarray\n Convert Kaldi vector to 1-D numpy array.") },
-  { C("numpy_to_vector"), (PyCFunction)numpy::NumpyToVector,
-    METH_VARARGS | METH_KEYWORDS,
-    C("numpy_to_vector(array:ndarray) -> SubVector\n Convert 1-D numpy array to Kaldi vector.") },
   { C("matrix_to_numpy"), (PyCFunction)numpy::MatrixToNumpy,
     METH_VARARGS | METH_KEYWORDS,
     C("matrix_to_numpy(matrix:MatrixBase) -> ndarray\n Convert Kaldi matrix to 2-D numpy array.") },
-  { C("numpy_to_matrix"), (PyCFunction)numpy::NumpyToMatrix,
-    METH_VARARGS | METH_KEYWORDS,
-    C("numpy_to_matrix(array:ndarray) -> SubMatrix\n Convert 2-D numpy array to Kaldi matrix.") },
   {}
 };
 
 bool Ready() {
-  if (PyType_Ready(&__kaldi__vector_clifwrap::pyVectorBase::wrapper_Type) < 0) return false;
-  pySubVector::wrapper_Type.tp_base = &__kaldi__vector_clifwrap::pyVectorBase::wrapper_Type;
+  PyObject* base_cls = ImportFQName("kaldi.matrix._kaldi_vector.VectorBase");
+  if (base_cls == nullptr) return false;
+  pySubVector::wrapper_Type.tp_base = reinterpret_cast<PyTypeObject*>(base_cls);
   if (PyType_Ready(&pySubVector::wrapper_Type) < 0) return false;
   Py_INCREF(&pySubVector::wrapper_Type);  // For PyModule_AddObject to steal.
-  if (PyType_Ready(&__kaldi__matrix_clifwrap::pyMatrixBase::wrapper_Type) < 0) return false;
-  pySubMatrix::wrapper_Type.tp_base = &__kaldi__matrix_clifwrap::pyMatrixBase::wrapper_Type;
+  base_cls = ImportFQName("kaldi.matrix._kaldi_matrix.MatrixBase");
+  if (base_cls == nullptr) return false;
+  pySubMatrix::wrapper_Type.tp_base = reinterpret_cast<PyTypeObject*>(base_cls);
   if (PyType_Ready(&pySubMatrix::wrapper_Type) < 0) return false;
   Py_INCREF(&pySubMatrix::wrapper_Type);  // For PyModule_AddObject to steal.
   return true;
@@ -845,7 +563,7 @@ PyObject* Init() {
                                     "kaldi matrix extension module");
   if (!module) {
     PyErr_SetString(PyExc_ImportError,
-                    "Cannot initialize matrix_ext module.");
+                    "Cannot initialize _matrix_ext module.");
     return nullptr;
   }
   if (PyObject* m = PyImport_ImportModule("_matrix_common")) Py_DECREF(m);

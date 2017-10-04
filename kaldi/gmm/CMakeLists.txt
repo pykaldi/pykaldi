@@ -18,9 +18,8 @@ add_pyclif_library("_am_diag_gmm" am-diag-gmm.clif
   RPATH $ORIGIN/../itf:$ORIGIN/../base:$ORIGIN/../matrix
 )
 add_pyclif_library("_decodable_am_diag_gmm" decodable-am-diag-gmm.clif
-  CLIF_DEPS _decodable_itf _am_diag_gmm _transition_model _kaldi_matrix
+  CLIF_DEPS _am_diag_gmm _transition_model _kaldi_matrix
   LIBRARIES kaldi-gmm
-  BASETYPES __decodable__itf_clifwrap::pyDecodableInterface
   RPATH $ORIGIN/../itf:$ORIGIN/../base:$ORIGIN/../hmm:$ORIGIN/../matrix
 )
 add_pyclif_library("_mle_diag_gmm" mle-diag-gmm.clif

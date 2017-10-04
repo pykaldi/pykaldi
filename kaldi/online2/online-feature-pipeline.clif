@@ -5,10 +5,10 @@ from "feat/feature-fbank-clifwrap.h" import *
 from "feat/online-feature-clifwrap.h" import *
 from "feat/pitch-functions-clifwrap.h" import *
 from "feat/feature-functions-clifwrap.h" import *
-from "itf/online-feature-itf-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 
+from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 
 from "online2/online-feature-pipeline.h":
   namespace `kaldi`:

@@ -1,13 +1,15 @@
 from "itf/options-itf-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
-from "gmm/diag-gmm-clifwrap.h" import * 
+from "gmm/diag-gmm-clifwrap.h" import *
 from "ivector/ivector-extractor-clifwrap.h" import *
 from "feat/online-feature-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
 from "itf/online-feature-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
+
+from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 
 from "online2/online-ivector-feature.h":
   namespace `kaldi`:
@@ -65,7 +67,7 @@ from "online2/online-ivector-feature.h":
 
       @add__init__
       def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: OnlineIvectorExtractionInfo)
-      
+
       @add__init__
       def `OnlineIvectorExtractorAdaptationState` as new_with_other(self, other: OnlineIvectorExtractorAdaptationState)
 
@@ -89,7 +91,7 @@ from "online2/online-ivector-feature.h":
 
       def `Dim` as dim(self) -> int:
         """Returns the iVector dimension"""
-      
+
       def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
 
       def `NumFramesReady` as num_ready_frames(self) -> int
@@ -135,4 +137,3 @@ from "online2/online-ivector-feature.h":
       def `ComputeCurrentTraceback` as compute_current_traceback(self, decoder: LatticeFasterOnlineDecoder)
 
       # def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int, delta_weights: list<tuple<int, float>>)
-

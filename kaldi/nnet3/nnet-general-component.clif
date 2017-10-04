@@ -1,7 +1,11 @@
 from "cudamatrix/cu-matrixdim-clifwrap.h" import *
 from "cudamatrix/cu-array-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
-from "nnet3/nnet-component-itf-clifwrap.h" import *
+
+from kaldi.nnet3._nnet_component_itf import Component
+from kaldi.nnet3._nnet_component_itf import RandomComponent
+from kaldi.nnet3._nnet_component_itf import UpdatableComponent
+from kaldi.nnet3._nnet_component_itf import ComponentPrecomputedIndexes
 
 from "nnet3/nnet-general-component.h":
   namespace `kaldi::nnet3`:
@@ -42,8 +46,8 @@ from "nnet3/nnet-general-component.h":
                                                recurrence_interval: int)
 
       def `Init` as init(self, dim: int, scale: float, clipping_threshold: float,
-               zeroing_threshold: float, zeroing_interval: int,
-               recurrence_interval: int)
+                         zeroing_threshold: float, zeroing_interval: int,
+                         recurrence_interval: int)
 
     class BackpropTruncationComponentPrecomputedIndexes(ComponentPrecomputedIndexes):
       zeroing: CuVector

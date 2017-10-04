@@ -43,7 +43,6 @@ add_pyclif_library("_fmpe" fmpe.clif
 add_pyclif_library("_fmllr_diag_gmm" fmllr-diag-gmm.clif
   CLIF_DEPS _options_itf _kaldi_matrix _diag_gmm _mle_full_gmm _transform_common
   LIBRARIES kaldi-transform
-  BASETYPES __transform__common_clifwrap::pyAffineXformStats
   RPATH $ORIGIN/../gmm:$ORIGIN/../itf:$ORIGIN/../matrix
 )
 
@@ -78,8 +77,7 @@ add_pyclif_library("_basis_fmllr_diag_gmm" basis-fmllr-diag-gmm.clif
 )
 
 add_pyclif_library("_decodable_am_diag_gmm_regtree" decodable-am-diag-gmm-regtree.clif
-  CLIF_DEPS _kaldi_matrix _decodable_am_diag_gmm _transition_model _regtree_fmllr_diag_gmm _regtree_mllr_diag_gmm
+  CLIF_DEPS _kaldi_matrix _transition_model _regtree_fmllr_diag_gmm _regtree_mllr_diag_gmm
   LIBRARIES kaldi-transform
-  BASETYPES __decodable__am__diag__gmm_clifwrap::pyDecodableAmDiagGmmUnmapped
   RPATH $ORIGIN/../gmm:$ORIGIN/../hmm:$ORIGIN/../matrix
 )

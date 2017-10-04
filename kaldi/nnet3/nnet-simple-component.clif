@@ -2,6 +2,11 @@ from "cudamatrix/cu-vector-clifwrap.h" import *
 from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "nnet3/nnet-component-itf-clifwrap.h" import *
 
+from kaldi.nnet3._nnet_component_itf import Component
+from kaldi.nnet3._nnet_component_itf import RandomComponent
+from kaldi.nnet3._nnet_component_itf import NonlinearComponent
+from kaldi.nnet3._nnet_component_itf import UpdatableComponent
+
 from "nnet3/nnet-simple-component.h":
   namespace `kaldi::nnet3`:
     class PnormComponent(Component):

@@ -112,7 +112,7 @@ class _StdFstBase(object):
             self.Properties(ACCEPTOR, True) == ACCEPTOR,
             "", 8.5, 11, True, False, 0.4, 0.25, 14, 5, "g", False)
         fstdrawer.Draw(sstrm, "_repr_svg")
-        (sout, serr) = proc.communicate(sstrm.to_str().encode("utf8"))
+        (sout, serr) = proc.communicate(sstrm.to_bytes())
         if proc.returncode != 0:  # Just to be explicit.
             raise subprocess.CalledProcessError(proc.returncode, "dot -Tsvg")
         return sout.decode("utf8")

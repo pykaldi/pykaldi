@@ -1,7 +1,8 @@
 from "itf/online-feature-itf-clifwrap.h" import *
-from "itf/decodable-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
-from "gmm/am-diag-gmm-clifwrap.h" import * 
+from "gmm/am-diag-gmm-clifwrap.h" import *
+
+from kaldi.itf._decodable_itf import DecodableInterface
 
 from "online2/online-gmm-decodable.h":
   namespace `kaldi`:

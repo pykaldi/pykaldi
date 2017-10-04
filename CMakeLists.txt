@@ -144,10 +144,6 @@ function(add_pyclif_library name pyclif_file)
           ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
       COMMAND
           ${CMAKE_SOURCE_DIR}/use_namespace.sh ${gen_cc} ${PYCLIF_LIBRARY_NAMESPACES}
-      COMMAND
-          ${CMAKE_SOURCE_DIR}/add_namespace.sh ${gen_cc} ${PYCLIF_LIBRARY_BASETYPES}
-      COMMAND
-          ${CMAKE_SOURCE_DIR}/extern_base.sh ${gen_h} ${PYCLIF_LIBRARY_BASETYPES}
       VERBATIM
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
   )
