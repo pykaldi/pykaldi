@@ -129,6 +129,8 @@ function(add_pyclif_library name pyclif_file)
           --matcher_bin=${CLIF_MATCHER}
           --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
           --modname=${module_name}
+          --prepend=clif/python/types.h
+          -I${CMAKE_SOURCE_DIR}
           -I${CMAKE_SOURCE_DIR}/kaldi
           -I${CMAKE_BINARY_DIR}/kaldi
           -I${KALDI_SRC_DIR}
