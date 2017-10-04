@@ -10,9 +10,8 @@ from kaldi.fstext import (StdFst, LatticeVectorFst, CompactLatticeVectorFst,
                           SymbolTable, GetLinearSymbolSequenceFromLatticeFst,
                           AcousticLatticeScale, ScaleLattice,
                           ConvertLatticeToCompactLattice)
-from kaldi.gmm.am_diag import AmDiagGmm
-from kaldi.gmm.decodable_am_diag import DecodableAmDiagGmmScaled
-from kaldi.hmm.transition_model import TransitionModel
+from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
+from kaldi.hmm import TransitionModel
 from kaldi.util.io import Input
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import IntVectorWriter, SequentialMatrixReader
