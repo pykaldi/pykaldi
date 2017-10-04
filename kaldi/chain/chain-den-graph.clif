@@ -1,0 +1,35 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "cudamatrix/cu-matrixdim-clifwrap.h" import *
+from "cudamatrix/cu-vector-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "tree/context-dep-clifwrap.h" import *
+
+
+from "chain/chain-den-graph.h":
+  namespace `kaldi::chain`:
+      class DenominatorGraph:
+        def `NumStates` as num_states(self) -> int
+
+        def `NumPdfs` as num_pdfs(self) -> int
+
+        @add__init__
+        def `DenominatorGraph` as new_with_fst(self, fst: StdVectorFst, num_pdfs: int)
+
+        def `ForwardTransitions` as forward_transitions(self) -> IntPair
+
+        def `BackwardTransitions` as backward_transitions(self) -> IntPair
+
+        # def `Transitions` as transitions(self) -> DenominatorGraphTransition
+
+        def `InitialProbs` as initial_probs(self) -> CuVector
+
+        def `GetNormalizationFst` as get_normalization_fst(self, ifst: StdVectorFst) -> (ofst: StdVectorFst)
+
+        def `ScaleInitialProbs` as scale_initial_probs(self, s: float)
+
+      def `MinimizeAcceptorNoPush` as minimize_acceptor_no_push(fst: StdVectorFst)
+
+      def `MapFstToPdfIdsPlusOne` as map_fst_to_pdf_ids_plus_one(trans_model: TransitionModel, fst: StdVectorFst)
+
+      def `CreateDenominatorFst` as create_denominator_fst(ctx_dep: ContextDependency, trans_model: TransitionModel, phone_lm: StdVectorFst) -> (den_graph: StdVectorFst)

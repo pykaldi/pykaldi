@@ -1,0 +1,49 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from "chain/chain-supervision.h":
+  namespace `kaldi::chain`:
+    class SupervisionOptions:
+      left_tolerance: int
+      right_tolerance: int
+      frame_subsampling_factor: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+      def `Check` as check(self)
+
+    class ProtoSupervision:
+      allowed_phones: list<list<int>>
+      fst: StdVectorFst
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+    def `AlignmentToProtoSupervision` as alignment_to_proto_supervision(opts: SupervisionOptions, phones: list<int>, durations: list<int>) -> (success: bool, proto_supervision: ProtoSupervision):
+      """Creates a ProtoSupervision from a vector of phones and their durations,
+      such as might be derived from a training-data alignment. 
+
+      Returns:
+        True on success (the only possible failure is that total duration < opts.subsampling_factor).
+      """
+
+    def `AlignmentToProtoSupervision` as alignment_to_proto_supervision_with_phone_durs(opts: SupervisionOptions, phones_durs: list<tuple<int, int>>) -> (success: bool, proto_supervision: ProtoSupervision)
+
+    def `PhoneLatticeToProtoSupervision` as phone_lattice_to_proto_supervision(opts: SupervisionOptions, clat: CompactLatticeVectorFst) -> (success: bool, proto_supervision: ProtoSupervision)
+
+    def `ModifyProtoSupervisionTimes` as modify_proto_supervision_times(options: SupervisionOptions) -> (proto_supervision: ProtoSupervision)
+
+    class TimeEnforcerFst(StdDeterministicOnDemandFst):
+      def __init__(self, trans_model: TransitionModel, allowed_phones: list<list<int>>)
+
+      def `Start` as start(self) -> int
+
+      # FIXME (VM):
+      # def `Final` as final(self, s: int) -> float
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int) -> (success: bool, oarc: StdArc)

@@ -1,0 +1,21 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+
+from "chain/language-model.h":
+  namespace `kaldi::chain`:
+    class LanguageModelOptions:
+      ngram_order: int
+      num_extra_lm_states: int
+      no_prune_ngram_order: int
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class LanguageModelEstimator:
+      def __init__(self, opts: LanguageModelOptions)
+
+      def `AddCounts` as add_counts(self, sentence: list<int>)
+
+      def `Estimate` as estimate(self) -> (fst:StdVectorFst)
+
+      

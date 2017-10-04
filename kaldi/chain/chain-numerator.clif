@@ -1,0 +1,13 @@
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+
+
+
+from "chain/chain-numerator.h":
+  namespace `kaldi::chain`:
+    class NumeratorComputation:
+      def `NumeratorComputation` as numerator_computation(self, supervision: Supervision, nnet_ouput: CuMatrixBase)
+
+      def `Forward` as forward(self) -> float
+
+      def `Backward` as backward(self, nnet_output_deriv: CuMatrixBase)
+
