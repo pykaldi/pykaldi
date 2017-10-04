@@ -4,9 +4,8 @@ add_pyclif_library("_am_sgmm2" am-sgmm2.clif
 	RPATH $ORIGIN/../itf:$ORIGIN/../matrix
 )
 add_pyclif_library("_decodable_am_sgmm2" decodable-am-sgmm2.clif
-	CLIF_DEPS _transition_model _am_sgmm2 _kaldi_matrix _decodable_itf
+	CLIF_DEPS _transition_model _am_sgmm2 _kaldi_matrix
 	LIBRARIES kaldi-sgmm2
-	BASETYPES __decodable__itf_clifwrap::pyDecodableInterface
 	RPATH $ORIGIN/../itf:$ORIGIN/../matrix:$ORIGIN/../hmm/
 )
 add_pyclif_library("_estimate_am_sgmm2" estimate-am-sgmm2.clif

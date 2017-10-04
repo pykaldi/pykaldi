@@ -53,7 +53,7 @@ from "sgmm2/am-sgmm2.h":
 
       class PdfCacheElement:
         log_like: float
-        t: int 
+        t: int
 
       def `NextFrame` as next_frame(self):
         """Increments t"""
@@ -84,7 +84,7 @@ from "sgmm2/am-sgmm2.h":
 
       # FIXME (VM):
       # def `GaussianSelection` as gaussian_selection(self, config: Sgmm2GselectConfig, data: Vector, gselect: list<int>) -> float:
-        # """Computes the top-scoring Gaussian indices (used for pruning of later stages of computation). 
+        # """Computes the top-scoring Gaussian indices (used for pruning of later stages of computation).
 
         # Returns:
           # Frame log-likelihood given selected Gaussians from full UBM
@@ -162,7 +162,7 @@ from "sgmm2/am-sgmm2.h":
       # diag_ubm:DiagGmm = property(`diag_ubm`)
 
       def `GetInvCovars` as get_inv_covars(self, gauss_index: int) -> (out: SpMatrix)
-      
+
       def `GetInvCovars` as get_inv_covars_double(self, gauss_index: int) -> (out: DoubleSpMatrix)
 
       def `GetSubstateMean` as get_substate_mean(self, j1: int, m: int, i: int, mean_out: VectorBase)
@@ -182,10 +182,10 @@ from "sgmm2/am-sgmm2.h":
       def `GetVarScaledSubstateSpeakerMean` as get_var_scaled_substate_speaker_mean_double(self, j1: int, substate: int, gauss: int, spk: Sgmm2PerSpkDerivedVars, mean_out: DoubleVectorBase)
 
       def `ComputeH` as compute_h(self) -> (H_i: list<SpMatrix>):
-        """Computes :math:`M_i \Sigma_i^{-1} M_i^T`"""
+        """Computes :math:`M_i \\Sigma_i^{-1} M_i^T`"""
 
       def `ComputeH` as compute_h_double(self) -> (H_i: list<DoubleSpMatrix>):
-        """Computes :math:`M_i \Sigma_i^{-1} M_i^T`"""
+        """Computes :math:`M_i \\Sigma_i^{-1} M_i^T`"""
 
 
     def `ComputeFeatureNormalizingTransform` as compute_feature_normalizing_transform(gmm: FullGmm) -> (xform: Matrix)
@@ -202,6 +202,3 @@ from "sgmm2/am-sgmm2.h":
     #   def `Write` as write(self, os: ostream, binary: bool)
 
     #   def `Read` as read(self, is: istream, binary: bool)
-
-
-

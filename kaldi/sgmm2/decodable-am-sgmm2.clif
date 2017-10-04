@@ -1,8 +1,8 @@
-from "itf/decodable-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "sgmm2/am-sgmm2-clifwrap.h" import *
 
+from kaldi.itf._decodable_itf import DecodableInterface
 
 from "sgmm2/decodable-am-sgmm2.h":
   namespace `kaldi`:

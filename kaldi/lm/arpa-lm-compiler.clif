@@ -5,6 +5,7 @@ from "fstext/symbol-table-clifwrap.h" import *
 # from "itf/options-itf-clifwrap.h" import *
 from "lm/arpa-file-parser-clifwrap.h" import *
 
+from kaldi.lm._arpa_file_parser import ArpaFileParser
 
 from "lm/arpa-lm-compiler.h":
   namespace `kaldi`:
@@ -15,5 +16,3 @@ from "lm/arpa-lm-compiler.h":
       def `Fst` as fst(self) -> StdVectorFst
 
       def `MutableFst` as mutable_fst(self) -> StdVectorFst
-
-      

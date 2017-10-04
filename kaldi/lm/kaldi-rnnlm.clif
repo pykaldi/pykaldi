@@ -1,8 +1,9 @@
 from "fstext/lattice-weight-clifwrap.h" import *
-from "fstext/deterministic-fst-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 from "fstext/float-weight-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
+
+from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
 
 from "lm/kaldi-rnnlm.h":
   namespace `kaldi`:
