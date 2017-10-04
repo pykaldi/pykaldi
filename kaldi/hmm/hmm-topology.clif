@@ -15,27 +15,28 @@ from "hmm/hmm-topology.h":
         def `HmmState` as with_pdf(self, pdf_class: int)
 
         @add__init__
-        def `HmmState` as with_forward_and_self_pdf(self,
-                                                    forward_pdf_class: int,
-                                                    self_loop_pdf_class: int)
+        def `HmmState` as with_forward_and_self_pdf(
+          self, forward_pdf_class: int, self_loop_pdf_class: int)
 
         def __eq__(self, other: HmmState) -> bool
 
       def `Read` as read(self, is: istream, binary: bool)
 
-      def `Write` as _write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool)
 
       def `Check` as check(self)
 
       def `IsHmm` as is_hmm(self) -> bool
 
-      def `TopologyForPhone` as topology_for_phone(self, phone: int) -> list<HmmState>
+      def `TopologyForPhone` as topology_for_phone(self, phone: int)
+        -> list<HmmState>
 
       def `NumPdfClasses` as num_pdf_classes(self, phone: int) -> int
 
       def `GetPhones` as get_phones(self) -> list<int>
 
-      def `GetPhoneToNumPdfClasses` as _get_phone_to_num_pdf_classes(self) -> list<int>
+      def `GetPhoneToNumPdfClasses` as get_phone_to_num_pdf_classes(self)
+        -> list<int>
 
       def `MinLength` as min_length(self, phone: int) -> int
 

@@ -5,9 +5,29 @@ kaldi\.hmm
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      accumulate_tree_stats
+      get_pdfs_for_phones
+      get_phones_for_pdfs
+      read_phone_map
+   
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AccumulateTreeStatsInfo
+      AccumulateTreeStatsOptions
+      HmmTopology
+      MapTransitionUpdateConfig
+      MleTransitionUpdateConfig
+      TransitionModel
    
    
 
@@ -40,74 +60,6 @@ kaldi\.hmm\.posterior
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      GaussPostHolder
-      PosteriorHolder
-   
-   
-
-   
-   
-   
-kaldi\.hmm\.topology
---------------------
-
-.. automodule:: kaldi.hmm.topology
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      construct_topology
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      HmmTopology
-   
-   
-
-   
-   
-   
-kaldi\.hmm\.transition\_model
------------------------------
-
-.. automodule:: kaldi.hmm.transition_model
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      accumulate_tree_stats
-      get_pdfs_for_phones
-      get_phones_for_pdfs
-      read_phone_map
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      AccumulateTreeStatsInfo
-      AccumulateTreeStatsOptions
-      TransitionModel
    
    
 

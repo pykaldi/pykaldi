@@ -1,10 +1,8 @@
-from collections import defaultdict
-
-from kaldi.base.math import *
-from kaldi.hmm.topology import *
-from kaldi.base.io import istringstream, ostringstream
-
+import random
 import unittest
+
+from kaldi.base.io import istringstream, ostringstream
+from kaldi.hmm import HmmTopology
 
 def get_default_topology(phones):
     phones = sorted(phones)
@@ -89,7 +87,7 @@ class TestHMMTopology(unittest.TestCase):
         """
 
         for i in range(10):
-            binary = True if (rand()%2 == 0) else False
+            binary = random.choice([True, False])
 
             with self.subTest(binary = binary):
                 topo = HmmTopology()

@@ -1,5 +1,7 @@
-from . import topology
-from . import transition_model
+from ._hmm_topology import *
+from ._transition_model import *
+from ._tree_accu import *
+
 from . import posterior
 
 __all__ = [name for name in dir()

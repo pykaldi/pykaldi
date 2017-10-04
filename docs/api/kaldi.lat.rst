@@ -9,10 +9,10 @@ kaldi\.lat
 
    .. autosummary::
    
-      ArcticDivide
-      ArcticPlus
-      ArcticTimes
       add_word_ins_pen_to_compact_lattice
+      arctic_divide
+      arctic_plus
+      arctic_times
       compact_lattice_depth_per_frame
       compact_lattice_limit_depth
       compact_lattice_shortest_path

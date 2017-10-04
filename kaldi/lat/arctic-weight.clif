@@ -25,9 +25,9 @@ from "lat/arctic-weight-ext.h":
       def Quantize(self, delta: float = default) -> ArcticWeight
       def Reverse(self) -> ArcticWeight
 
-    def `Plus` as ArcticPlus(w1: ArcticWeight,
-                             w2: ArcticWeight) -> ArcticWeight
-    def `Times` as ArcticTimes(w1: ArcticWeight,
-                               w2: ArcticWeight) -> ArcticWeight
-    def `Divide` as ArcticDivide(w1: ArcticWeight, w2: ArcticWeight,
-                                 typ: DivideType = default) -> ArcticWeight
+    def `Plus` as arctic_plus(w1: ArcticWeight,
+                              w2: ArcticWeight) -> ArcticWeight
+    def `Times` as arctic_times(w1: ArcticWeight,
+                                w2: ArcticWeight) -> ArcticWeight
+    def `Divide` as arctic_divide(w1: ArcticWeight, w2: ArcticWeight,
+                                  typ: DivideType = default) -> ArcticWeight

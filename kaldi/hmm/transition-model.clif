@@ -3,7 +3,6 @@ from "itf/context-dep-itf-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "hmm/hmm-topology-clifwrap.h" import *
-from kaldi.hmm.topology import construct_topology
 
 from "hmm/transition-model.h":
   namespace `kaldi`:
@@ -25,26 +24,16 @@ from "hmm/transition-model.h":
 
     class TransitionModel:
       @add__init__
-      def `TransitionModel` as from_topo(self,
-                                         ctx_dep: ContextDependencyInterface,
-                                         hmm_topo: HmmTopology)
+      def `TransitionModel` as from_topo(
+        self, ctx_dep: ContextDependencyInterface, hmm_topo: HmmTopology)
 
       def `Read` as read(self, is: istream, binary: bool)
 
       def `Write` as write(self, os: ostream, binary: bool)
 
-      def `GetTopo` as get_topo(self) -> HmmTopology:
-        """Wrapper function for :kaldi:`kaldi::TransitionModel::GetTopo`.
+      def `GetTopo` as get_topo(self) -> HmmTopology
 
-        This method returns the topology.
-
-        Returns:
-          The topology :class:`kaldi.hmm.topology.HmmTopology`
-        """
-        return construct_topology(...)
-
-      def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int,
-                                 self_loop_pdf: int) -> int
+      def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int, self_loop_pdf: int) -> int
       def `PairToTransitionId` as pair_to_transition_id(self, trans_state: int, trans_index: int) -> int
       def `TransitionIdToTransitionState` as transition_id_to_transition_state(self, trans_id: int) -> int
       def `TransitionIdToTransitionIndex` as transition_id_to_transition_index(self, trans_id: int) -> int
@@ -81,23 +70,28 @@ from "hmm/transition-model.h":
       def `GetTransitionLogProbIgnoringSelfLoops` as get_transition_log_prob_ignoring_self_loops(self, trans_id: int) -> float
       def `GetNonSelfLoopLogProb` as get_non_self_loop_log_prob(self, trans_id: int) -> float
 
-      def `MleUpdate` as mle_update(self, stats: DoubleVector, cfg: MleTransitionUpdateConfig)
-          -> (objf_impr_out: float, count_out: float)
+      def `MleUpdate` as mle_update(self, stats: DoubleVector,
+                                    cfg: MleTransitionUpdateConfig)
+        -> (objf_impr_out: float, count_out: float)
 
-      def `MapUpdate` as map_update(self, stats: DoubleVector, cfg: MapTransitionUpdateConfig)
-          -> (objf_impr_out: float, count_out: float)
+      def `MapUpdate` as map_update(self, stats: DoubleVector,
+                                    cfg: MapTransitionUpdateConfig)
+        -> (objf_impr_out: float, count_out: float)
 
-      def `Print` as _print(self, os: ostream, phone_names: list<str>,
-                occs: DoubleVector = default)
+      def `Print` as print(self, os: ostream, phone_names: list<str>,
+                           occs: DoubleVector = default)
 
       def `InitStats` as init_stats(self, stats: DoubleVector)
 
-      def `Accumulate` as accumulate(self, prob: float, trans_id: int, stats: DoubleVector)
+      def `Accumulate` as accumulate(self, prob: float, trans_id: int,
+                                     stats: DoubleVector)
 
       def `Compatible` as compatible(self, other: TransitionModel) -> bool
 
-    def `GetPdfsForPhones` as get_pdfs_for_phones(trans_model: TransitionModel, phones: list<int>)
-        -> (ret: bool, pdfs: list<int>)
+    def `GetPdfsForPhones` as get_pdfs_for_phones(trans_model: TransitionModel,
+                                                  phones: list<int>)
+      -> (ret: bool, pdfs: list<int>)
 
-    def `GetPhonesForPdfs` as get_phones_for_pdfs(trans_model: TransitionModel, pdfs: list<int>)
-        -> (ret: bool, phones: list<int>)
+    def `GetPhonesForPdfs` as get_phones_for_pdfs(trans_model: TransitionModel,
+                                                  pdfs: list<int>)
+      -> (ret: bool, phones: list<int>)
