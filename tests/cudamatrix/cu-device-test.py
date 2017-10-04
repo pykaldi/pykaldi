@@ -1,6 +1,5 @@
 from kaldi.matrix import *
-from kaldi.cudamatrix.device import CuDevice
-from kaldi.cudamatrix.matrix import CuMatrix
+from kaldi.cudamatrix import CuDevice, CuMatrix
 from kaldi.base import math as kaldi_math
 from kaldi.base import Timer
 

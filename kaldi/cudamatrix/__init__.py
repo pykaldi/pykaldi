@@ -1,13 +1,18 @@
-from . import device
-from . import matrixdim
-from . import array
-from . import vector
-from . import matrix
+try:
+    from ._cu_device import *
+    def cuda_available():
+        """Check if cuda is available."""
+        return True
+except ImportError:
+    def cuda_available():
+        """Check if cuda is available."""
+        return False
+
+from ._cu_matrixdim import *
+from ._cu_array import *
+from ._cu_vector import *
+from ._cu_matrix import *
 
 __all__ = [name for name in dir()
            if name[0] != '_'
            and not name.endswith('Base')]
-
-# Expose cuda_available as a part of this model,
-# but leave it out of the __all__
-from .device import cuda_available

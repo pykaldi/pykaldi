@@ -1,8 +1,7 @@
 from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, TpMatrix
 
-from kaldi.cudamatrix.device import CuDevice
-from kaldi.cudamatrix.vector import CuVector, CuSubVector
+from kaldi.cudamatrix import CuDevice, CuVector, CuSubVector
 
 import unittest
 import numpy as np

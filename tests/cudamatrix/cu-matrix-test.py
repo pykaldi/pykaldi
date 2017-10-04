@@ -1,9 +1,8 @@
 from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, Matrix
 
-from kaldi.cudamatrix.matrix import CuMatrix, approx_equal_cu_matrix, same_dim_cu_matrix
-from kaldi.cudamatrix.vector import CuVector
-from kaldi.cudamatrix.device import CuDevice
+from kaldi.cudamatrix import (CuDevice, CuMatrix, CuVector,
+                              approx_equal_cu_matrix, same_dim_cu_matrix)
 
 import unittest
 import numpy as np
