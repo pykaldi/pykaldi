@@ -4,6 +4,7 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 
 from kaldi.fstext._fst import StdFst
+from kaldi.util import _value_error_on_false
 
 from "fstext/context-fst.h":
   namespace `fst`:
@@ -18,7 +19,8 @@ from "fstext/context-fst.h":
       def `Copy` as copy(self, safe: bool = default) -> StdContextFst
 
       def `CreateArc` as create_arc(self, s: int, olabel: int)
-          -> (success: bool, oarc: StdArc)
+        -> (success: bool, oarc: StdArc):
+        return _value_error_on_false(...)
 
       def `ILabelInfo` as ilabel_info(self) -> list<list<int>>
 

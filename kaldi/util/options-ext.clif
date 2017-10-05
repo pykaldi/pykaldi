@@ -1,6 +1,7 @@
 from "itf/options-itf-clifwrap.h" import *
 
 from kaldi.itf._options_itf import OptionsItf
+from kaldi.util import _value_error_on_false
 
 from "util/options-ext.h":
   namespace `kaldi`:
@@ -42,7 +43,9 @@ from "util/options-ext.h":
 
       def `GetOptionInfoList` as get_option_info_list(self) -> list<tuple<str, OptionInfo>>
 
-      def `GetOptionType` as get_option_type(self, key: str) -> (success: bool, type: OptionType)
+      def `GetOptionType` as get_option_type(self, key: str)
+        -> (success: bool, type: OptionType):
+        return _value_error_on_false(...)
 
     class `ParseOptionsExt` as ParseOptions(OptionsItf):
       def __init__(self, usage: str)

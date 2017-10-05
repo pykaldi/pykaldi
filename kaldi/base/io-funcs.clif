@@ -1,5 +1,7 @@
 from "base/iostream-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "base/io-funcs-ext.h":
   namespace `kaldi`:
 
@@ -7,4 +9,5 @@ from "base/io-funcs-ext.h":
                                                                binary: bool)
 
     def `InitKaldiInputStreamExt` as init_kaldi_input_stream(is: istream)
-        -> (success: bool, binary: bool)
+      -> (success: bool, binary: bool):
+      return _value_error_on_false(...)

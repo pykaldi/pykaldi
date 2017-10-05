@@ -1,3 +1,5 @@
+from kaldi.util import _value_error_on_false
+
 from "fst/script/getters.h":
   namespace `fst`:
     enum ClosureType
@@ -16,21 +18,25 @@ from "fst/script/getters.h":
     enum MapType
     enum RandArcSelection
 
-    def GetArcSortType(str: str) -> (success: bool, sort_type: ArcSortType)
+    def GetArcSortType(str: str) -> (success: bool, sort_type: ArcSortType):
+      return _value_error_on_false(...)
 
     def GetClosureType(closure_plus: bool) -> ClosureType
 
     def GetComposeFilter(str: str)
-        -> (success: bool, compose_filter: ComposeFilter)
+      -> (success: bool, compose_filter: ComposeFilter):
+      return _value_error_on_false(...)
 
     def GetDeterminizeType(str: str)
-        -> (success: bool, det_type: DeterminizeType)
+      -> (success: bool, det_type: DeterminizeType):
+      return _value_error_on_false(...)
 
     def GetEncodeFlags(encode_labels: bool, encode_weights: bool) -> int
 
     def GetEpsNormalizeType(eps_norm_output: bool) -> EpsNormalizeType
 
-    def GetMapType(str: str) -> (success: bool, sort_type: MapType)
+    def GetMapType(str: str) -> (success: bool, sort_type: MapType):
+      return _value_error_on_false(...)
 
     def GetProjectType(project_output: bool) -> ProjectType
 
@@ -38,11 +44,15 @@ from "fst/script/getters.h":
                      remove_total_weight: bool,
                      remove_common_affix: bool) -> int
 
-    def GetQueueType(str: str) -> (success: bool, queue_type: QueueType)
+    def GetQueueType(str: str) -> (success: bool, queue_type: QueueType):
+      return _value_error_on_false(...)
 
-    def GetRandArcSelection(str: str) -> (success: bool, ras: RandArcSelection)
+    def GetRandArcSelection(str: str)
+      -> (success: bool, ras: RandArcSelection):
+      return _value_error_on_false(...)
 
     def GetReplaceLabelType(str: str, epsilon_on_replace: bool)
-        -> (success: bool, rlt: ReplaceLabelType)
+      -> (success: bool, rlt: ReplaceLabelType):
+      return _value_error_on_false(...)
 
     def GetReweightType(to_final: bool) -> ReweightType

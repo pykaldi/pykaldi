@@ -7,6 +7,8 @@ from "fstext/vector-fst-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "fstext/fst-ext.h":
   namespace `fst`:
     def `FstToString` as StdFstToString(fst: StdFst,
@@ -71,5 +73,6 @@ from "fstext/fst-ext.h":
         as CompactLatticeHasAlignment(fst: CompactLatticeExpandedFst) -> bool
 
     def GetLinearSymbolSequenceFromLatticeFst(fst: LatticeFst)
-        -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>,
-            tot_weight_out: LatticeWeight)
+      -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>,
+          tot_weight_out: LatticeWeight):
+      return _value_error_on_false(...)

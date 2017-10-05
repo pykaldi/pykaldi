@@ -4,6 +4,7 @@ from "fstext/arc-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
 
 from "fstext/deterministic-fst.h":
   namespace `fst`:
@@ -13,7 +14,8 @@ from "fstext/deterministic-fst.h":
       def `Final` as final(self, state: int) -> TropicalWeight
 
       def `GetArc` as get_arc(self, s: int, i: int)
-        -> (success: bool, oarc: StdArc)
+        -> (success: bool, oarc: StdArc):
+        return _value_error_on_false(...)
 
     class `BackoffDeterministicOnDemandFst<StdArc>`
         as StdBackoffDeterministicOnDemandFst(StdDeterministicOnDemandFst):

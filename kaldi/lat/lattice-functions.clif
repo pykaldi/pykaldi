@@ -7,6 +7,8 @@ from "fstext/deterministic-fst-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "lat/lattice-functions.h":
   namespace `kaldi`:
     def `GetPerFrameAcousticCosts` as get_per_frame_acoustic_costs(
@@ -24,10 +26,12 @@ from "lat/lattice-functions.h":
     #       acoustic_like_sum: float)
 
     def `ComputeCompactLatticeAlphas` as compute_compact_lattice_alphas(
-      clat: CompactLatticeVectorFst) -> (success: bool, alpha: list<float>)
+      clat: CompactLatticeVectorFst) -> (success: bool, alpha: list<float>):
+      return _value_error_on_false(...)
 
     def `ComputeCompactLatticeBetas` as compute_compact_lattice_betas(
-      clat: CompactLatticeVectorFst) -> (success: bool, beta: list<float>)
+      clat: CompactLatticeVectorFst) -> (success: bool, beta: list<float>):
+      return _value_error_on_false(...)
 
     def `ComputeLatticeAlphasAndBetas`
         as compute_lattice_alphas_and_betas(
@@ -65,14 +69,17 @@ from "lat/lattice-functions.h":
       trans_model: TransitionModel, lat: CompactLatticeVectorFst)
 
     def `PruneLattice` as prune_lattice(beam: float, lat: LatticeVectorFst)
-      -> bool
+      -> bool:
+      return _value_error_on_false(...)
 
     def `PruneLattice` as prune_compact_lattice(
-      beam: float, lat: CompactLatticeVectorFst) -> bool
+      beam: float, lat: CompactLatticeVectorFst) -> bool:
+      return _value_error_on_false(...)
 
     def `LatticeBoost` as lattice_boost(
       trans: TransitionModel, alignment: list<int>, silence_phones: list<int>,
-      b: float, max_silence_error: float, lat: LatticeVectorFst) -> bool
+      b: float, max_silence_error: float, lat: LatticeVectorFst) -> bool:
+      return _value_error_on_false(...)
 
     def `LatticeForwardBackwardMpeVariants`
         as lattice_forward_backward_mpe_variants(
@@ -89,13 +96,15 @@ from "lat/lattice-functions.h":
     def `CompactLatticeToWordAlignment` as compact_lattice_word_alignement(
       clat: CompactLatticeVectorFst)
       -> (success: bool, words: list<int>, begin_times: list<int>,
-          lengths: list<int>)
+          lengths: list<int>):
+      return _value_error_on_false(...)
 
     def `CompactLatticeToWordProns` as compact_lattice_word_prons(
       tmodel: TransitionModel, clat: CompactLatticeVectorFst)
       -> (success: bool, words: list<int>, begin_times: list<int>,
           lengths: list<int>, prons: list<list<int>>,
-          phone_lengths: list<list<int>>)
+          phone_lengths: list<list<int>>):
+      return _value_error_on_false(...)
 
     def `CompactLatticeShortestPath` as compact_lattice_shortest_path(
       clat: CompactLatticeVectorFst) -> CompactLatticeVectorFst
@@ -104,10 +113,12 @@ from "lat/lattice-functions.h":
       word_ins_penalty: float, clat: CompactLatticeVectorFst)
 
     def `RescoreLattice` as rescore_lattice(
-      decodable: DecodableInterface, lat: LatticeVectorFst) -> bool
+      decodable: DecodableInterface, lat: LatticeVectorFst) -> bool:
+      return _value_error_on_false(...)
 
     def `RescoreCompactLattice` as rescore_compact_lattice(
-      decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool
+      decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool:
+      return _value_error_on_false(...)
 
     def `LongestSentenceLength` as longest_sentence_length_in_lattice(
       lat: LatticeVectorFst) -> int
@@ -117,7 +128,8 @@ from "lat/lattice-functions.h":
 
     def `RescoreCompactLatticeSpeedup` as rescore_compact_lattice_speedup(
       tmodel: TransitionModel, speedup_factor: float,
-      decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool
+      decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool:
+      return _value_error_on_false(...)
 
     def `ComposeCompactLatticeDeterministic`
         as compose_compact_lattice_deterministic(

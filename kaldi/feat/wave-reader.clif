@@ -1,5 +1,6 @@
 from "matrix/kaldi-matrix-clifwrap.h" import *
-from kaldi.matrix import _construct_matrix
+
+from kaldi.matrix import _postprocess_matrix
 
 from "feat/wave-reader.h":
   namespace `kaldi`:
@@ -20,7 +21,7 @@ from "feat/wave-reader.h":
         Returns:
           :class:`kaldi.matrix.Matrix` with the wave data.
         """
-        return _construct_matrix(...)
+        return _postprocess_matrix(...)
 
       samp_freq: float = property(`SampFreq`)
       """Sampling frequency"""

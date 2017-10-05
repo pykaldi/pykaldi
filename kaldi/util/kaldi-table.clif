@@ -7,15 +7,19 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "lat/kaldi-lattice.h" import *
 
-from kaldi.matrix import _construct_vector
-from kaldi.matrix import _construct_matrix
+from kaldi.matrix import _postprocess_vector
+from kaldi.matrix import _postprocess_matrix
+from kaldi.util import _value_error_on_false
 
 from "util/kaldi-table.h":
   namespace `kaldi`:
-    def `ReadScriptFile` as read_script_file(rxfilename: str, print_warnings:bool)
-        -> (success: bool, script_out: list<tuple<str,str>>)
+    def `ReadScriptFile` as read_script_file(rxfilename: str,
+                                             print_warnings: bool)
+      -> (success: bool, script_out: list<tuple<str,str>>):
+      return _value_error_on_false(...)
 
-    def `WriteScriptFile` as write_script_file(wxfilename: str, script: list<tuple<str,str>>) -> bool
+    def `WriteScriptFile` as write_script_file(
+      wxfilename: str, script: list<tuple<str,str>>) -> bool
 
     # Sequential Readers
 
@@ -33,7 +37,7 @@ from "util/kaldi-table.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> Vector:
-        return _construct_vector(...)
+        return _postprocess_vector(...)
 
       def `Next` as _next(self)
 
@@ -58,7 +62,7 @@ from "util/kaldi-table.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> Matrix:
-        return _construct_matrix(...)
+        return _postprocess_matrix(...)
 
       def `Next` as _next(self)
 
@@ -340,7 +344,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Vector:
-        return _construct_vector(...)
+        return _postprocess_vector(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -359,7 +363,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Matrix:
-        return _construct_matrix(...)
+        return _postprocess_matrix(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -578,7 +582,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Vector:
-        return _construct_vector(...)
+        return _postprocess_vector(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -598,7 +602,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Matrix:
-        return _construct_matrix(...)
+        return _postprocess_matrix(...)
 
       def `IsOpen` as is_open(self) -> bool
 

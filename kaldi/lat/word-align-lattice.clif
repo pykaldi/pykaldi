@@ -4,6 +4,8 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "lat/word-align-lattice.h":
   namespace `kaldi`:
     class WordBoundaryInfoNewOpts:
@@ -40,7 +42,8 @@ from "lat/word-align-lattice.h":
     def `WordAlignLattice` as word_align_lattice(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,
       info: WordBoundaryInfo, max_states: int)
-      -> (success: bool, lat_out: CompactLatticeVectorFst)
+      -> (success: bool, lat_out: CompactLatticeVectorFst):
+      return _value_error_on_false(...)
 
     def `TestWordAlignedLattice` as test_word_aligned_lattice(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,

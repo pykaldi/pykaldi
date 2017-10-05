@@ -3,6 +3,8 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "lat/phone-align-lattice.h":
   namespace `kaldi`:
     class PhoneAlignLatticeOptions:
@@ -15,4 +17,5 @@ from "lat/phone-align-lattice.h":
     def `PhoneAlignLattice` as phone_align_lattice(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,
       opts: PhoneAlignLatticeOptions)
-      -> (success: bool, lat_out: CompactLatticeVectorFst)
+      -> (success: bool, lat_out: CompactLatticeVectorFst):
+      return _value_error_on_false(...)

@@ -7,6 +7,8 @@ from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "fstext/fstext-utils.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "fstext/fstext-utils-inl.h":
   namespace `fst`:
     def `HighestNumberedOutputSymbol` as std_highest_numbered_output_symbol(
@@ -31,7 +33,9 @@ from "fstext/fstext-utils-inl.h":
 
     def `GetLinearSymbolSequence` as std_get_linear_symbol_sequence(
       fst: StdFst) -> (success: bool, isymbols_out: list<int>,
-                       osymbols_out: list<int>, tot_weight_out: TropicalWeight)
+                       osymbols_out: list<int>,
+                       tot_weight_out: TropicalWeight):
+      return _value_error_on_false(...)
 
     def `ConvertNbestToVector` as std_convert_nbest_to_vector(fst: StdFst)
       -> list<StdVectorFst>

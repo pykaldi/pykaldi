@@ -14,7 +14,8 @@ from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
 from kaldi.hmm import TransitionModel
 from kaldi.util.io import Input
 from kaldi.util.options import ParseOptions
-from kaldi.util.table import IntVectorWriter, SequentialMatrixReader
+from kaldi.util.table import (IntVectorWriter, SequentialMatrixReader,
+                              CompactLatticeWriter)
 
 
 def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
@@ -23,13 +24,13 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
     trans_model = TransitionModel()
     am_gmm = AmDiagGmm()
     ki = Input.new(model_rxfilename)
-    success, binary = init_kaldi_input_stream(ki.stream())
+    binary = init_kaldi_input_stream(ki.stream())
     trans_model.read(ki.stream(), binary)
     am_gmm.read(ki.stream(), binary)
 
     words_writer = IntVectorWriter(words_wspecifier)
     alignment_writer = IntVectorWriter(alignment_wspecifier)
-    # clat_writer = CompactLatticeWriter(lattice_wspecifier)
+    clat_writer = CompactLatticeWriter(lattice_wspecifier)
 
     word_syms = None
     if opts.word_symbol_table != "":
@@ -80,7 +81,7 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
                     ScaleLattice(scale, decoded)
                 clat = CompactLatticeVectorFst()
                 ConvertLatticeToCompactLattice(decoded, clat, true)
-                # clat_writer[key] = clat
+                clat_writer[key] = clat
 
             if word_syms:
                 print(key, end=' ', file=sys.stderr)
@@ -114,7 +115,8 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
     words_writer.close()
     if alignment_writer.is_open():
         alignment_writer.close()
-    # clat_writer.Close()
+    if clat_writer.is_open():
+        clat_writer.close()
 
     return True if num_success != 0 else False
 

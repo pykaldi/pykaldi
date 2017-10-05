@@ -368,8 +368,9 @@ class _StdMutableFstBase(_StdFstBase):
 
         See also: `topsort`.
         """
-        success, sort_type_enum = GetArcSortType(sort_type)
-        if not success:
+        try:
+            sort_type_enum = GetArcSortType(sort_type)
+        except ValueError:
             raise ValueError("Unknown sort type {!r}".format(sort_type))
         StdArcSort(self, sort_type_enum)
         self._check_mutating_imethod()
@@ -931,8 +932,9 @@ def stdarcmap(ifst, delta=DELTA, map_type="identity", weight=None):
     See also: `statemap`.
     """
     # NB: Weight conversion mappers are not supported.
-    success, map_type_enum = GetMapType(map_type)
-    if not success:
+    try:
+        map_type_enum = GetMapType(map_type)
+    except ValueError:
         raise ValueError("Unknown map type: {!r}".format(map_type))
     if weight is None:
         if map_type_enum == MapType.TIMES_MAPPER:
@@ -968,8 +970,9 @@ def stdcompose(ifst1, ifst2, compose_filter="auto", connect=True):
 
     See also: `arcsort`.
     """
-    success, compose_filter_enum = GetComposeFilter(compose_filter)
-    if not success:
+    try:
+        compose_filter_enum = GetComposeFilter(compose_filter)
+    except ValueError:
         raise ValueError("Unknown compose filter: {!r}"
                          .format(compose_filter))
     ofst = StdVectorFst()
@@ -1012,8 +1015,9 @@ def stddeterminize(ifst, delta=DELTA, weight=None, nstate=NO_STATE_ID,
 
     See also: `disambiguate`, `rmepsilon`.
     """
-    success, det_type_enum = GetDeterminizeType(det_type)
-    if not success:
+    try:
+        det_type_enum = GetDeterminizeType(det_type)
+    except ValueError:
         raise ValueError("Unknown determinization type: {!r}".format(det_type))
     # Threshold is set to semiring Zero (no pruning) if weight is None.
     if weight is None:
@@ -1047,8 +1051,9 @@ def stddifference(ifst1, ifst2, compose_filter="auto", connect=True):
     Returns:
         An FST representing the difference of the two input FSTs.
     """
-    success, compose_filter_enum = GetComposeFilter(compose_filter)
-    if not success:
+    try:
+        compose_filter_enum = GetComposeFilter(compose_filter)
+    except ValueError:
         raise ValueError("Unknown compose filter: {!r}"
                          .format(compose_filter))
     ofst = StdVectorFst()
@@ -1187,8 +1192,9 @@ def stdintersect(ifst1, ifst2, compose_filter="auto", connect=True):
     Returns:
         An equivalent epsilon-normalized FST.
     """
-    success, compose_filter_enum = GetComposeFilter(compose_filter)
-    if not success:
+    try:
+        compose_filter_enum = GetComposeFilter(compose_filter)
+    except ValueError:
         raise ValueError("Unknown compose filter: {!r}"
                          .format(compose_filter))
     ofst = StdVectorFst()
@@ -1327,8 +1333,9 @@ def stdrandequivalent(ifst1, ifst2, npath=1, delta=DELTA, seed=None,
 
     See also: `equal`, `equivalent`, `isomorphic`, `randgen`.
     """
-    success, ras = GetRandArcSelection(select)
-    if not success:
+    try:
+        ras = GetRandArcSelection(select)
+    except ValueError:
         raise ValueError("Unknown random arc selection type: {!r}"
                          .format(select))
     if seed is None:
@@ -1371,8 +1378,9 @@ def stdrandgen(ifst, npath=1, seed=None, select="uniform",
 
     See also: `randequivalent`.
     """
-    success, ras = GetRandArcSelection(select)
-    if not success:
+    try:
+        ras = GetRandArcSelection(select)
+    except ValueError:
         raise ValueError("Unknown random arc selection type: {!r}"
                          .format(select))
     if seed is None:
@@ -1420,12 +1428,14 @@ def stdreplace(pairs, root_label, call_arc_labeling="input",
     Returns:
         An FST resulting from expanding the input RTN.
     """
-    success, cal = GetReplaceLabelType(call_arc_labeling, epsilon_on_replace)
-    if not success:
+    try:
+        cal = GetReplaceLabelType(call_arc_labeling, epsilon_on_replace)
+    except ValueError:
         raise ValueError("Unknown call arc replace label type: {!r}"
                          .format(call_arc_labeling))
-    success, ral = GetReplaceLabelType(return_arc_labeling, epsilon_on_replace)
-    if not success:
+    try:
+        ral = GetReplaceLabelType(return_arc_labeling, epsilon_on_replace)
+    except ValueError:
         raise ValueError("Unknown return arc replace label type: {!r}"
                          .format(return_arc_labeling))
     ofst = StdVectorFst()
@@ -1479,8 +1489,9 @@ def stdrmepsilon(ifst, connect=True, delta=DELTA, nstate=NO_STATE_ID,
     Returns:
         An equivalent FST with no epsilon transitions.
     """
-    success, queue_type_enum = GetQueueType(queue_type)
-    if not success:
+    try:
+        queue_type_enum = GetQueueType(queue_type)
+    except ValueError:
         raise ValueError("Unknown queue type: {!r}".format(queue_type))
     # Threshold is set to semiring Zero (no pruning) if weight is None.
     if weight is None:
@@ -1521,8 +1532,9 @@ def stdshortestdistance(ifst, delta=DELTA, source=NO_STATE_ID,
         A list of Weight objects representing the shortest distance for each
         state.
     """
-    success, queue_type_enum = GetQueueType(queue_type)
-    if not success:
+    try:
+        queue_type_enum = GetQueueType(queue_type)
+    except ValueError:
         raise ValueError("Unknown queue type: {!r}".format(queue_type))
     return StdShortestDistance(ifst, queue_type_enum, source, delta, reverse)
 
@@ -1557,8 +1569,9 @@ def stdshortestpath(ifst, delta=DELTA, nshortest=1, nstate=NO_STATE_ID,
     Returns:
         An FST containing the n-shortest paths.
     """
-    success, queue_type_enum = GetQueueType(queue_type)
-    if not success:
+    try:
+        queue_type_enum = GetQueueType(queue_type)
+    except ValueError:
         raise ValueError("Unknown queue type: {!r}".format(queue_type))
     # Threshold is set to semiring Zero (no pruning) if weight is None.
     if weight is None:

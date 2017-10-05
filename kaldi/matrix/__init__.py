@@ -629,7 +629,7 @@ class Vector(VectorBase, _kaldi_vector.Vector):
         self.remove_element(index)
 
 
-def _construct_vector(vector):
+def _postprocess_vector(vector):
     """Construct a new :class:`Vector` instance from the input vector.
 
     This is a destructive operation. Contents of the input vector are moved to
@@ -1252,7 +1252,7 @@ class Matrix(MatrixBase, _kaldi_matrix.Matrix):
         self.remove_row(index)
 
 
-def _construct_matrix(matrix):
+def _postprocess_matrix(matrix):
     """Construct a new :class:`Matrix` instance from the input matrix.
 
     This is a destructive operation. Contents of the input matrix are moved to

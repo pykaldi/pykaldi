@@ -3,10 +3,8 @@
 import random
 import unittest
 
-from kaldi.base.io import stringstream as sstream
 from kaldi.base.io import istringstream, ostringstream
-from kaldi.cudamatrix.matrix import approx_equal_cu_matrix, CuMatrix
-from kaldi.cudamatrix.device import cuda_available
+from kaldi.cudamatrix import cuda_available, approx_equal_cu_matrix, CuMatrix
 from kaldi.matrix import Matrix, Vector, approx_equal_vector
 from kaldi.nnet3 import *
 

@@ -1,5 +1,7 @@
 from "base/iostream-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "tree/event-map.h":
   namespace `kaldi`:
     def `MakeEventPair` as make_event_pair(k: int, v: int) -> tuple<int, int>
@@ -10,18 +12,20 @@ from "tree/event-map.h":
 
       @classmethod
       def `Lookup` as lookup(cls, event: list<tuple<int, int>>, key: int)
-          -> (success: bool, ans: int)
+        -> (success: bool, ans: int):
+        return _value_error_on_false(...)
 
       def `Map` as map(self, event: list<tuple<int, int>>)
-          -> (success: bool, ans: int)
+        -> (success: bool, ans: int):
+        return _value_error_on_false(...)
 
       def `MultiMap` as multi_map(self, event: list<tuple<int, int>>)
-          -> list<int>
+        -> list<int>
 
       def `GetChildren` as get_children(self) -> list<EventMap>
 
       def `Copy` as copy_with_new_leaves(self, new_leaves: list<EventMap>)
-          -> EventMap
+        -> EventMap
 
       def `Copy` as copy(self) -> EventMap
 
@@ -58,4 +62,4 @@ from "tree/event-map.h":
                    yes: EventMap, no: EventMap)
 
     def `GetTreeStructure` as get_tree_structure(map: EventMap)
-        -> (has_tree_structure: bool, num_leaves: int, parents: list<int>)
+      -> (has_tree_structure: bool, num_leaves: int, parents: list<int>)

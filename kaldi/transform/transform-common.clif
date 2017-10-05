@@ -3,6 +3,8 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/sp-matrix-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "transform/transform-common.h":
   namespace `kaldi`:
     class AffineXformStats:
@@ -30,7 +32,9 @@ from "transform/transform-common.h":
 
     def `ComposeTransforms` as compose_transforms(a: Matrix, b: Matrix,
                                                   b_is_affine: bool)
-        -> (success: bool, c: Matrix)
+      -> (success: bool, c: Matrix):
+      return _value_error_on_false(...)
+
 
     def `ApplyAffineTransform` as apply_affine_transform(xform: MatrixBase,
                                                          vec: VectorBase)

@@ -4,6 +4,8 @@ from "fstext/vector-fst-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "tree/context-dep-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "decoder/training-graph-compiler.h":
   namespace `kaldi`:
     class TrainingGraphCompilerOptions:
@@ -24,15 +26,19 @@ from "decoder/training-graph-compiler.h":
                    opts: TrainingGraphCompilerOptions)
 
       def `CompileGraph` as compile_graph(self, word_fst: StdVectorFst)
-          -> (success: bool, out_fst: StdVectorFst)
+        -> (success: bool, out_fst: StdVectorFst):
+        return _value_error_on_false(...)
 
       # FIXME(Dogan)
       # CLIF does not like the constant fsts in the input list :(
-      # def CompileGraphs(self, word_fsts: list<StdVectorFst>)
-      #     -> (success: bool, out_fsts: list<StdVectorFst>)
+      # def `CompileGraphs` as compile_graphs(self, word_fsts: list<StdVectorFst>)
+      #   -> (success: bool, out_fsts: list<StdVectorFst>):
+      #   return _value_error_on_false(...)
 
       def `CompileGraphFromText` as compile_graph_from_text(self, transcript: list<int>)
-          -> (success: bool, out_fst: StdVectorFst)
+        -> (success: bool, out_fst: StdVectorFst):
+        return _value_error_on_false(...)
 
       def `CompileGraphsFromText` as compile_graphs_from_text(self, transcripts: list<list<int>>)
-          -> (success: bool, out_fsts: list<StdVectorFst>)
+        -> (success: bool, out_fsts: list<StdVectorFst>):
+        return _value_error_on_false(...)

@@ -2,6 +2,8 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "util/kaldi-io.h":
   namespace `kaldi`:
     enum OutputType with:
@@ -38,7 +40,9 @@ from "util/kaldi-io.h":
       @add__init__
       def `Input` as new(self, rxfilename: str)
 
-      def `Open` as open(self, rxfilename: str) -> (success: bool, contents_binary: bool)
+      def `Open` as open(self, rxfilename: str)
+        -> (success: bool, contents_binary: bool):
+        return _value_error_on_false(...)
 
       def `OpenTextMode` as open_text_mode(self, rxfilename: str) -> bool
 
