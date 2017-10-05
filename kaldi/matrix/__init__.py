@@ -534,6 +534,43 @@ class VectorBase(object):
         else:
             self.numpy().__setitem__(index, value)
 
+    # Numpy array interface methods were adapted from PyTorch.
+    # https://github.com/pytorch/pytorch/commit/c488a9e9bf9eddca6d55957304612b88f4638ca7
+
+    # Numpy array interface, to support `numpy.asarray(vector) -> ndarray`
+    def __array__(self, dtype=None):
+        if dtype is None:
+            return self.numpy()
+        else:
+            return self.numpy().astype(dtype, copy=False)
+
+    # Wrap Numpy array in a vector or matrix when done, to support e.g.
+    # `numpy.sin(vector) -> vector` or `numpy.greater(vector, 0) -> vector`
+    def __array_wrap__(self, array):
+        if array.ndim == 0:
+            if array.dtype.kind == 'b':
+                return bool(array)
+            elif array.dtype.kind in ('i', 'u'):
+                return int(array)
+            elif array.dtype.kind == 'f':
+                return float(array)
+            elif array.dtype.kind == 'c':
+                return complex(array)
+            else:
+                raise RuntimeError('bad scalar {!r}'.format(array))
+        elif array.ndim == 1:
+            if array.dtype != numpy.float32:
+                # Kaldi vector stores single precision floats.
+                array = array.astype('float32')
+            return SubVector(array)
+        elif array.ndim == 2:
+            if array.dtype != numpy.float32:
+                # Kaldi vector stores single precision floats.
+                array = array.astype('float32')
+            return SubMatrix(array)
+        else:
+            raise RuntimeError('{} dimensional array cannot be converted to a '
+                               'Kaldi vector or matrix type'.format(array.ndim))
 
 class Vector(VectorBase, _kaldi_vector.Vector):
     """Python wrapper for kaldi::Vector<float>.
@@ -1116,6 +1153,43 @@ class MatrixBase(object):
 
         __kaldi_matrix_ext._add_sp_sp(self, alpha, A, B, beta)
 
+    # Numpy array interface methods were adapted from PyTorch.
+    # https://github.com/pytorch/pytorch/commit/c488a9e9bf9eddca6d55957304612b88f4638ca7
+
+    # Numpy array interface, to support `numpy.asarray(vector) -> ndarray`
+    def __array__(self, dtype=None):
+        if dtype is None:
+            return self.numpy()
+        else:
+            return self.numpy().astype(dtype, copy=False)
+
+    # Wrap Numpy array in a vector or matrix when done, to support e.g.
+    # `numpy.sin(vector) -> vector` or `numpy.greater(vector, 0) -> vector`
+    def __array_wrap__(self, array):
+        if array.ndim == 0:
+            if array.dtype.kind == 'b':
+                return bool(array)
+            elif array.dtype.kind in ('i', 'u'):
+                return int(array)
+            elif array.dtype.kind == 'f':
+                return float(array)
+            elif array.dtype.kind == 'c':
+                return complex(array)
+            else:
+                raise RuntimeError('bad scalar {!r}'.format(array))
+        elif array.ndim == 1:
+            if array.dtype != numpy.float32:
+                # Kaldi vector stores single precision floats.
+                array = array.astype('float32')
+            return SubVector(array)
+        elif array.ndim == 2:
+            if array.dtype != numpy.float32:
+                # Kaldi vector stores single precision floats.
+                array = array.astype('float32')
+            return SubMatrix(array)
+        else:
+            raise RuntimeError('{} dimensional array cannot be converted to a '
+                               'Kaldi vector or matrix type'.format(array.ndim))
 
 class Matrix(MatrixBase, _kaldi_matrix.Matrix):
     """Python wrapper for kaldi::Matrix<float>.

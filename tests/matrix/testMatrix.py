@@ -1,7 +1,7 @@
 from __future__ import division
 import unittest
 import numpy as np
-from kaldi.matrix import Matrix, SubMatrix, SpMatrix
+from kaldi.matrix import Matrix, SubMatrix, SpMatrix, SubVector
 
 class TestMatrix(unittest.TestCase):
 
@@ -55,13 +55,13 @@ class TestMatrix(unittest.TestCase):
 
     def test_equal(self):
         m = Matrix()
-        self.assertTrue(m, m.clone())
+        self.assertTrue(m == m.clone())
 
         m = Matrix(4, 4)
         m.set_zero()
         m1 = Matrix(4, 4)
         m1.set_zero()
-        self.assertTrue(m, m1)
+        self.assertTrue(m == m1)
 
         m = Matrix(4, 4)
         m1 = SpMatrix(4)
@@ -76,12 +76,53 @@ class TestMatrix(unittest.TestCase):
         n = m.numpy()
         self.assertTupleEqual((5, 5), n.shape)
 
-        m = Matrix.new([[1.0, 2.0], [3.0, 4.0]])
+        m = Matrix.new([[1.0, -2.0], [3.0, -4.0]])
         n = m.numpy()
         self.assertTupleEqual((2, 2), n.shape)
         self.assertEqual(1.0, n[0, 0])
-        self.assertEqual(2.0, n[0, 1])
-        self.assertEqual(4.0, n[1, 1])
+        self.assertEqual(-2.0, n[0, 1])
+        self.assertEqual(-4.0, n[1, 1])
+
+        # Test __array__
+        n = np.asarray(m)
+        self.assertIsInstance(n, np.ndarray)
+        self.assertEqual(n.dtype, np.float32)
+        for i in range(m.num_rows):
+            for j in range(m.num_cols):
+                self.assertEqual(m[i,j], n[i,j])
+
+        # Test __array__wrap__
+        abs_m = np.abs(m)
+        abs_n = np.abs(n)
+        self.assertIsInstance(abs_m, SubMatrix)
+        for i in range(m.num_rows):
+            for j in range(m.num_cols):
+                self.assertEqual(abs_m[i,j], abs_n[i,j])
+
+        # Test some ufuncs
+        for func in ['sin', 'exp', 'square']:
+            ufunc = getattr(np, func)
+            res_m = ufunc(m)
+            res_n = ufunc(n)
+            self.assertIsInstance(res_m, SubMatrix)
+            for i in range(m.num_rows):
+                for j in range(m.num_cols):
+                    self.assertEqual(res_m[i,j], res_n[i,j])
+
+        # Test a ufunc with boolean return value
+        geq0_m = np.greater_equal(m, 0)
+        geq0_n = np.greater_equal(n, 0).astype('float32')
+        self.assertIsInstance(geq0_m, SubMatrix)
+        for i in range(m.num_rows):
+            for j in range(m.num_cols):
+                self.assertEqual(geq0_m[i,j], geq0_n[i,j])
+
+        # Test a ufunc method that change the number of dimensions
+        max0_m = np.maximum.reduce(m)
+        max0_n = np.maximum.reduce(n)
+        self.assertIsInstance(max0_m, SubVector)
+        for i in range(len(max0_m)):
+            self.assertEqual(max0_m[i], max0_n[i])
 
     def test_range(self):
         m = Matrix()

@@ -1,6 +1,6 @@
 from __future__ import division
 import unittest
-import numpy as np 
+import numpy as np
 from kaldi.matrix import Vector, SubVector
 
 class TestVector(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestVector(unittest.TestCase):
         v = Vector(5)
         with self.assertRaises(ValueError):
             v1 = Vector().copy(v)
-        
+
         v.set_zero()
         v1 = Vector(len(v)).copy(v)
         self.assertEqual(len(v), len(v1))
@@ -44,7 +44,7 @@ class TestVector(unittest.TestCase):
         # Clone with data
         v = Vector.new(np.array([3, 5, 7]))
         v2 = v.clone()
-    
+
         self.assertEqual(v[0], v2[0])
         self.assertEqual(v[1], v2[1])
         self.assertEqual(v[2], v2[2])
@@ -59,7 +59,7 @@ class TestVector(unittest.TestCase):
     def test_shape(self):
         v = Vector()
         self.assertTupleEqual((0,), v.shape)
-        
+
         v = Vector(5)
         self.assertTupleEqual((5,), v.shape)
 
@@ -91,9 +91,39 @@ class TestVector(unittest.TestCase):
         v1 = v.numpy()
         self.assertTupleEqual((5, ), v1.shape)
 
-        v = Vector.new([1.0, 2.0, 3.0])
+        v = Vector.new([1.0, -2.0, 3.0])
         v1 = v.numpy()
-        self.assertTrue(np.all(np.array([1.0, 2.0, 3.0]) == v1))
+        self.assertTrue(np.all(np.array([1.0, -2.0, 3.0]) == v1))
+
+        # Test __array__
+        n = np.asarray(v)
+        self.assertIsInstance(n, np.ndarray)
+        self.assertEqual(n.dtype, np.float32)
+        for i in range(len(v)):
+            self.assertEqual(v[i], n[i])
+
+        # Test __array__wrap__
+        abs_v = np.abs(v)
+        abs_n = np.abs(n)
+        self.assertIsInstance(abs_v, SubVector)
+        for i in range(len(v)):
+            self.assertEqual(abs_v[i], abs_n[i])
+
+        # Test some ufuncs
+        for func in ['sin', 'exp', 'square']:
+            ufunc = getattr(np, func)
+            res_v = ufunc(v)
+            res_n = ufunc(n)
+            self.assertIsInstance(res_v, SubVector)
+            for i in range(len(v)):
+                self.assertEqual(res_v[i], res_n[i])
+
+        # Test a ufunc with boolean return value
+        geq0_v = np.greater_equal(v, 0)
+        geq0_n = np.greater_equal(n, 0).astype('float32')
+        self.assertIsInstance(geq0_v, SubVector)
+        for i in range(len(v)):
+            self.assertEqual(geq0_v[i], geq0_n[i])
 
     def test_range(self):
         v = Vector.new(np.array([3, 5, 7, 11, 13]))
@@ -116,7 +146,7 @@ class TestVector(unittest.TestCase):
         self.assertEqual(0, v.size())
 
         v = Vector.new([])
-        
+
     def test_nonempty(self):
         v = Vector(100)
         self.assertIsNotNone(v)
@@ -126,7 +156,7 @@ class TestVector(unittest.TestCase):
         v = Vector.new([3, 5, 7, 11, 13])
         self.assertEqual(5, v.size())
         self.assertAlmostEqual(15015.0, v.numpy().prod())
-        
+
         v2 = Vector.new(np.array([3, 5, 7, 11, 13]))
         self.assertEqual(5, v2.size())
         self.assertAlmostEqual(15015.0, v2.numpy().prod())
