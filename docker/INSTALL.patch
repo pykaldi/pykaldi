@@ -1,0 +1,12 @@
+--- INSTALL.sh	2017-10-04 16:25:04.000000000 -0700
++++ INSTALL_new.sh	2017-10-04 16:24:50.000000000 -0700
+@@ -112,6 +112,9 @@
+       -DCMAKE_BUILD_TYPE=Release \
+       -DLLVM_BUILD_DOCS=false \
+       -DLLVM_TARGETS_TO_BUILD=X86 \
++      -DPYTHON_INCLUDE_DIR="/usr/include/python3.5" \
++      -DPYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython3.5m.so" \
++      -DPYTHON_EXECUTABLE="/usr/bin/python3.5" \
+       "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
+ "$MAKE_OR_NINJA" "${MAKE_PARALLELISM[@]}" clif-matcher clif_python_utils_proto_util
+ "$MAKE_OR_NINJA" "${MAKE_INSTALL_PARALLELISM[@]}" install
