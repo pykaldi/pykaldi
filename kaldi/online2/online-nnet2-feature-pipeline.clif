@@ -4,6 +4,7 @@ from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "feat/pitch-functions-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 
@@ -30,7 +31,7 @@ from "online2/online-nnet2-feature-pipeline.h":
 
       feature_type: str
 
-      # mfcc_config: MfccOptions
+      mfcc_opts: MfccOptions
 
       plp_opts: PlpOptions
 
@@ -38,13 +39,13 @@ from "online2/online-nnet2-feature-pipeline.h":
 
       add_pitch: bool
 
-      # pitch_opts: PitchExtractOptions
+      pitch_opts: PitchExtractionOptions
 
-      # pitch_process_opts: ProcessPitchOptions
+      pitch_process_opts: ProcessPitchOptions
 
       use_ivectors: bool
 
-      # ivector_extractor_info: OnlineIvectorExtractionInfo
+      # ivector_extractor_info: _OnlineIvectorExtractionInfo
 
       silence_weighting_config: OnlineSilenceWeightingConfig
 
@@ -67,10 +68,14 @@ from "online2/online-nnet2-feature-pipeline.h":
 
       def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState)
 
-      # def `AcceptWaveForm` as accept_waveform(self) -> float
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform:VectorBase)
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
 
       def `InputFinished` as input_finished(self)
 
-      # def IvectorFeature
+      def `IvectorFeature` as ivector_feature(self) -> OnlineIvectorFeature:
+        """Returns the ivector-extracting part of the feature pipeline (or NULL if iVectors are not being used)."""
 
-      # def InputFeature
+      def `InputFeature` as input_feature(self) -> OnlineIvectorFeature:
+        """Returns a part of the feature pipeline that would be given as the primary (non-iVector) input to neural network in nnet3"""

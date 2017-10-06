@@ -4,8 +4,7 @@ from "online2/online-timing.h":
       def `Print` as print(self, online: bool = default)
 
     class OnlineTimer:
-      # FIXME (VM):
-      # def `OnlineTimer` as __init__(self, utterance_id: str)
+      def __init__(self, utterance_id: str)
 
       def `SleepUntil` as sleep_until(self, cur_utterance_length: float):
         """Will sleep until cur_utterance_length seconds after this object was initialized"""

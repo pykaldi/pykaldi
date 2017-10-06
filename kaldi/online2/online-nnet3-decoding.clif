@@ -1,7 +1,7 @@
 from "decoder/lattice-faster-decoder-clifwrap.h" import *
 from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
-from "nnet3/decodable-online-looped-clifwrap.h" import *
+from "nnet3/decodable-simple-looped-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "online2/online-nnet2-feature-pipeline-clifwrap.h" import *
@@ -11,8 +11,8 @@ from "online2/online-endpoint-clifwrap.h" import *
 from "online2/online-nnet3-decoding.h":
   namespace `kaldi`:
     class SingleUtteranceNnet3Decoder:
-      # FIXME (VM):
-      # def `SingleUtteranceNnet3Decoder` as __init__(self, decoder_opts: LatticeFasterDecoderOptions, trans_model: TransitionModel, info: DecodableNnetSimpleLoopedInfo, fst: StdFst, features: OnlineNnet2FeaturePipeline)
+
+      def `SingleUtteranceNnet3Decoder` as __init__(self, decoder_opts: LatticeFasterDecoderOptions, trans_model: TransitionModel, info: DecodableNnetSimpleLoopedInfo, fst: StdFst, features: OnlineNnet2FeaturePipeline)
 
       def `AdvanceDecoding` as advance_decoding(self)
 
@@ -24,7 +24,6 @@ from "online2/online-nnet3-decoding.h":
 
       def `EndpointDetected` as endpoint_detected(self, config: OnlineEndpointConfig) -> bool
 
-      # FIXME (VM):
       # def `Decoder` as decoder(self) -> LatticeFasterOnlineDecoder
 
 

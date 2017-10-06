@@ -10,6 +10,7 @@ from "itf/online-feature-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
+from kaldi.matrix import _postprocess_matrix
 
 from "online2/online-ivector-feature.h":
   namespace `kaldi`:
@@ -33,9 +34,11 @@ from "online2/online-ivector-feature.h":
 
       def `Register` as register(self, opts: OptionsItf)
 
-    class OnlineIvectorExtractionInfo:
-      lda_mat: Matrix
-      global_cmvn_stats: DoubleMatrix
+    class `OnlineIvectorExtractionInfo` as _OnlineIvectorExtractionInfo:
+      
+      # Needs a wrapper
+      `lda_mat` as _lda_mat: Matrix
+      `global_cmvn_stats` as _global_cmvn_stats: DoubleMatrix
 
       cmvn_opts: OnlineCmvnOptions
       splice_opts: OnlineSpliceOptions
@@ -66,7 +69,7 @@ from "online2/online-ivector-feature.h":
       ivector_stats: OnlineIvectorEstimationStats
 
       @add__init__
-      def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: OnlineIvectorExtractionInfo)
+      def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: _OnlineIvectorExtractionInfo)
 
       @add__init__
       def `OnlineIvectorExtractorAdaptationState` as new_with_other(self, other: OnlineIvectorExtractorAdaptationState)
@@ -82,7 +85,7 @@ from "online2/online-ivector-feature.h":
       """OnlineIvectorFeature is an online feature-extraction class that's responsible
       for extracting iVectors from raw features such as MFCC, PLP or filterbank."""
 
-      def `OnlineIvectorFeature` as __init__(self, info: OnlineIvectorExtractionInfo, base_feature: OnlineFeatureInterface):
+      def `OnlineIvectorFeature` as __init__(self, info: _OnlineIvectorExtractionInfo, base_feature: OnlineFeatureInterface):
         """Constructor
 
         Args:
@@ -106,9 +109,11 @@ from "online2/online-ivector-feature.h":
       def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
         """Get the adaptation state"""
 
-      # UbmLogLikePerFrame
+      def `UbmLogLikePerFrame` as ubm_loglike_per_frame(self) -> float:
+        """UBM log-like per frame"""
 
-      # ObjfImprPerFrame
+      def `ObjfImprPerFrame` as objf_impr_per_frame(self) -> float:
+        """Objective improvement per frame from iVector estimation"""
 
       def `NumFrames` as num_frames(self) -> float
 
@@ -136,4 +141,9 @@ from "online2/online-ivector-feature.h":
 
       def `ComputeCurrentTraceback` as compute_current_traceback(self, decoder: LatticeFasterOnlineDecoder)
 
-      # def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int, delta_weights: list<tuple<int, float>>)
+      def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int) -> (delta_weights: list<tuple<int, float>>):
+        """Calling this function gets the changes in weight that require us to modify the stats. Output format is (frame-index, delta-weight).
+
+        Args:
+          num_frames_ready_in (int): number of frames available at the input of the online iVector extractor class
+        """

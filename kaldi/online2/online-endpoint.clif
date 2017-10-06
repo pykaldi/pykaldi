@@ -11,8 +11,9 @@ from "online2/online-endpoint.h":
       min_utterance_length: float
 
       # FIXME (VM):
-      # @add__init__
-      # def `OnlineEndpointRule` as new_with_params(self, must_contain_nonsilence: bool = default, min_trailing_silence: float = default, max_relative_cost: float = default, min_utterance_length: float = default)
+      # Since we cannot wrap infinity in max_relative_cost,
+      # this is a workaround which hides some arguments in the constructor
+      def `OnlineEndpointRule` as __init__(self, must_contain_nonsilence: bool = default, min_trailing_silence: float = default)
 
       def `Register` as register(self, opts: OptionsItf)
 

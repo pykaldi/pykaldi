@@ -48,21 +48,17 @@ from "online2/online-gmm-decoding.h":
 
     class OnlineGmmDecodingModels:
       
-      # FIXME (VM):
-      # Clif gets confused between class name and constructor name
       def __init__(self, config: OnlineGmmDecodingConfig)
 
-      # FIXME (VM):
-      # def `GetTransitionModel` as get_transition_model(self) -> TransitionModel
+      def `GetTransitionModel` as get_transition_model(self) -> TransitionModel
 
-      # FIXME (VM):
-      # def `GetOnlineAlignmentModel` as get_online_alignment_model(self) -> AmDiagGmm
+      def `GetOnlineAlignmentModel` as get_online_alignment_model(self) -> AmDiagGmm
 
-      # def `GetModel` as get_model(self) -> AmDiagGmm
+      def `GetModel` as get_model(self) -> AmDiagGmm
 
-      # def `GetFinalModel` as get_final_model(self) -> AmDiagGmm
+      def `GetFinalModel` as get_final_model(self) -> AmDiagGmm
 
-      # def `GetFmllrBasis` as basis_fmllr_estimate(self) -> BasisFmllrEstimate
+      def `GetFmllrBasis` as basis_fmllr_estimate(self) -> BasisFmllrEstimate
 
     class OnlineGmmAdaptationState:
       cmvn_state: OnlineCmvnState
@@ -70,15 +66,15 @@ from "online2/online-gmm-decoding.h":
       # FIXME (VM):
       # spk_stats: FmllrDiagGmmAccs
       
-      transform: Matrix
+      # This needs a python wrapper
+      # transform: Matrix
 
       def `Write` as write(self, out_stream: ostream, binary: bool)
 
       def `Read` as read(self, in_stream: istream, binary: bool)
 
     class SingleUtteranceGmmDecoder:
-      # TODO (VM):
-      # def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels, feature_prototype: OnlineFeaturePipeline, fst: StdFst, adaptation_state: OnlineGmmAdaptationState)
+      def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels, feature_prototype: OnlineFeaturePipeline, fst: StdFst, adaptation_state: OnlineGmmAdaptationState)
 
       def `FeaturePipeline` as feature_pipeline(self) -> OnlineFeaturePipeline
 

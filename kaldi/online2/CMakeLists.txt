@@ -27,7 +27,7 @@ add_pyclif_library("_online_ivector_feature" online-ivector-feature.clif
   RPATH $ORIGIN/../itf:$ORIGIN/../gmm:$ORIGIN/../matrix:$ORIGIN/../base:$ORIGIN/../decoder:$ORIGIN/../itf:$ORIGIN/../hmm:$ORIGIN/../ivector
 )
 add_pyclif_library("_online_nnet2_feature_pipeline" online-nnet2-feature-pipeline.clif
-  CLIF_DEPS _options_itf _kaldi_vector _online_feature _online_ivector_feature
+  CLIF_DEPS _options_itf _kaldi_vector _online_feature _online_ivector_feature _pitch_functions
   LIBRARIES kaldi-online2
   RPATH $ORIGIN/../matrix:$ORIGIN/../feat:$ORIGIN/../itf
 )
