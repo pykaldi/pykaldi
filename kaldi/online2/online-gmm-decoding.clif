@@ -14,6 +14,8 @@ from "hmm/posterior-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 
+from kaldi.matrix import _postprocess_matrix
+
 from "online2/online-gmm-decoding.h":
   namespace `kaldi`:
     class OnlineGmmDecodingAdaptationPolicyConfig:
@@ -65,9 +67,16 @@ from "online2/online-gmm-decoding.h":
 
       # FIXME (VM):
       # spk_stats: FmllrDiagGmmAccs
+      def `spk_stats` as get_spk_stats(self) -> FmllrDiagGmmAccs
+
+      def `spk_stats` as set_spk_stats(self, val: FmllrDiagGmmAccs)
       
       # This needs a python wrapper
       # transform: Matrix
+      def `transform` as get_transform(self) -> Matrix:
+        return _postprocess_matrix(...)
+
+      def `transform` as set_transform(self, val: Matrix)
 
       def `Write` as write(self, out_stream: ostream, binary: bool)
 

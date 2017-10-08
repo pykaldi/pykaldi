@@ -1,3 +1,4 @@
+from "matrix/kaldi-vector-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
@@ -5,6 +6,8 @@ from "fstext/vector-fst-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
+# from "tree/context-dep-clifwrap.h" import *
+from "itf/context-dep-itf-clifwrap.h" import *
 
 from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
 from kaldi.util import _value_error_on_false
@@ -58,3 +61,67 @@ from "chain/chain-supervision.h":
       def `GetArc` as get_arc(self, s: int, ilabel: int)
         -> (success: bool, oarc: StdArc):
         return _value_error_on_false(...)
+
+    class Supervision:
+      weight: float
+
+      num_sequences: int
+
+      frames_per_sequence: int
+
+      label_dim: int
+
+      fst: StdVectorFst
+
+      @add__init__
+      def `Supervision` as new_with_other(self, other: Supervision)
+
+      def `Swap` as swap(self, other: Supervision)
+
+      def `Check` as check(self, trans_model: TransitionModel):
+        """Checks that this supervision objects satisfies some of the properties expected"""      
+
+      def `Write` as write(self, os:ostream, binary: bool)
+
+      def `Read` as read(self, is:istream, binary: bool)
+
+    def `ProtoSupervisionToSupervision` as proto_supervision_to_supervision(ctx_dep: ContextDependencyInterface, trans_model: TransitionModel, proto_supervision: ProtoSupervision) -> (success: bool, supervision: Supervision):
+      return _value_error_on_false(...)
+
+    def `SortBreadthFirstSearch` as sort_breadth_first_search(fst: StdVectorFst)
+
+    class SupervisionSplitter:
+      def __init__(self, supervision: Supervision)
+
+      def `GetFrameRange` as get_frame_range(self, begin_frame: int, frames_per_sequence: int) -> (supervision: Supervision)
+
+    def `AddWeightToSupervisionFst` as add_weight_to_supervision_fst(normalization_fst: StdVectorFst) -> (success: bool, supervision: Supervision):
+      return _value_error_on_false(...)
+
+    def `ComputeFstStateTimes` as compute_fst_state_times(fst: StdVectorFst) -> (path_length: int, state_times: list<int>):
+      """Returns the total number of frames under certain assumptions.
+
+      Args:
+        fst (StdVectorFst): Input fst; epsilon-free; connected; nonempty; should have the property that all paths to a given state should have the same number of arcs; and its states should be sorted on this path length
+
+      Returns:
+        path_length (int): the path length
+        state_times (list of int): state times set to a vector with dimension fst.num_states
+      """
+
+    # This function will crash if the values of label_dim in the inputs are note all the same
+    # def `AppendSupervision` as _append_supervision(input: list<Supervision>, compactify: bool) -> (output: list<Supervision>)
+
+    def `SplitIntoRanges` as split_into_ranges(num_frames: int, frames_per_range: int) -> (range_starts: list<int>):
+      """Pseudo-randomly split a sequence of length num_frames into pieces of length exactly frames_per_range"""
+
+    def `GetWeightsForRanges` as get_weights_for_ranges(range_length: int, range_starts: list<int>) -> (weights: list<Vector>):
+      """This function gets the weights for the derivatives.
+
+      Args:
+        range_starts (list of int): obtained from :meth:`split_into_ranges`
+        range_length (int): length in frames (maybe longer that the one supplied in split_into_ranges)
+
+      Returns:
+        Output vector weights with the same dimension as range_starts.
+      """

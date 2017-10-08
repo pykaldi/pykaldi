@@ -36,3 +36,8 @@ add_pyclif_library("_online_nnet3_decoding" online-nnet3-decoding.clif
   LIBRARIES kaldi-online2
   RPATH $ORIGIN/../hmm:$ORIGIN/../decoder:$ORIGIN/../fstext:$ORIGIN/../nnet3
 )
+add_pyclif_library("_onlinebin_util" onlinebin-util.clif
+  CLIF_DEPS _fst
+  LIBRARIES kaldi-online2
+  RPATH $ORIGIN/../fst
+)

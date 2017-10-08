@@ -1,0 +1,6 @@
+from "chain/chain-datastruct.h":
+
+  class DenominatorGraphTransition:
+    transition_prob: float
+    pdf_id: int
+    hmm_state: int

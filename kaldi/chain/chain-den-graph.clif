@@ -4,7 +4,7 @@ from "cudamatrix/cu-matrixdim-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "tree/context-dep-clifwrap.h" import *
-
+from "chain/chain-datastruct-clifwrap.h" import *
 
 from "chain/chain-den-graph.h":
   namespace `kaldi::chain`:
@@ -19,7 +19,7 @@ from "chain/chain-den-graph.h":
 
         def `BackwardTransitions` as backward_transitions(self) -> IntPair
 
-        # def `Transitions` as transitions(self) -> DenominatorGraphTransition
+        def `Transitions` as transitions(self) -> DenominatorGraphTransition
 
         def `InitialProbs` as initial_probs(self) -> CuVector
 

@@ -1,0 +1,16 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+
+from "online2/onlinebin-util.h":
+  namespace `kaldi`:
+    def `ReadDecodeGraph` as read_decode_graph(filename: str) -> StdFst:
+      """Reads a decoding graph from a file"""
+
+    def `PrintPartialResult` as print_partial_result(words: list<int>, word_syms: SymbolTable, line_break: bool):
+      """Prints a string corresponding to (a possibly partial) decode result
+
+      Args:
+        line_break: if True adds a "new line" character
+      """
+
