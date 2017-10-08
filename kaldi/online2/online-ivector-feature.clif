@@ -56,11 +56,11 @@ from "online2/online-ivector-feature.h":
       splice_opts: OnlineSpliceOptions
 
       # diag_ubm: DiagGmm
-      @getter
-      def `diag_ubm` as get_diag_ubm(self) -> DiagGmm
+      # @getter
+      # def `diag_ubm` as get_diag_ubm(self) -> DiagGmm
 
-      @setter
-      def `diag_ubm` as set_diag_ubm(self, val: DiagGmm)
+      # @setter
+      # def `diag_ubm` as set_diag_ubm(self, val: DiagGmm)
 
 
       extractor: IvectorExtractor

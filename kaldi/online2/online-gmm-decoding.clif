@@ -65,17 +65,18 @@ from "online2/online-gmm-decoding.h":
     class OnlineGmmAdaptationState:
       cmvn_state: OnlineCmvnState
 
-      # FIXME (VM):
-      # spk_stats: FmllrDiagGmmAccs
-      def `spk_stats` as get_spk_stats(self) -> FmllrDiagGmmAccs
+      # FIXME
+      # @getter
+      # def `spk_stats` as get_spk_stats(self) -> FmllrDiagGmmAccs
 
-      def `spk_stats` as set_spk_stats(self, val: FmllrDiagGmmAccs)
+      # @setter
+      # def `spk_stats` as set_spk_stats(self, val: FmllrDiagGmmAccs)
       
-      # This needs a python wrapper
-      # transform: Matrix
+      @getter
       def `transform` as get_transform(self) -> Matrix:
         return _postprocess_matrix(...)
 
+      @setter
       def `transform` as set_transform(self, val: Matrix)
 
       def `Write` as write(self, out_stream: ostream, binary: bool)

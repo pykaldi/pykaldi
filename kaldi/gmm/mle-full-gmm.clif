@@ -6,6 +6,7 @@ from "gmm/full-gmm-clifwrap.h" import *
 from "gmm/full-gmm-normal-clifwrap.h" import *
 from "gmm/diag-gmm-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
+from "base/iostream-clifwrap.h" import *
 
 from "gmm/mle-full-gmm.h":
   namespace `kaldi`:
@@ -29,9 +30,9 @@ from "gmm/mle-full-gmm.h":
       @add__init__
       def `AccumFullGmm` as new_with_other(self, gmm:AccumFullGmm)
 
-      # TODO:
-      # def Read
-      # def Write
+      def `Read` as read(self, in_stream: istream, binary: bool, add: bool)
+
+      def `Write` as write(self, out_stream: ostream, binary: bool)
 
       def `Resize` as resize(self, num_comp:int, dim:int, flags:int)
 

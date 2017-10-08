@@ -17,7 +17,7 @@ add_pyclif_library("_online_gmm_decodable" online-gmm-decodable.clif
   RPATH $ORIGIN/../itf:$ORIGIN/../gmm:$ORIGIN/../hmm
 )
 add_pyclif_library("_online_gmm_decoding" online-gmm-decoding.clif
-  CLIF_DEPS _options_itf _transition_model _am_diag_gmm _basis_fmllr_diag_gmm _online_feature _lattice_faster_decoder _online_endpoint _online_feature_pipeline
+  CLIF_DEPS _online_gmm_decodable _options_itf _transition_model _am_diag_gmm _basis_fmllr_diag_gmm _online_feature _lattice_faster_decoder _online_endpoint _online_feature_pipeline
   LIBRARIES kaldi-online2
   RPATH $ORIGIN/../itf:$ORIGIN/../hmm:$ORIGIN/../gmm:$ORIGIN/../decoder:$ORIGIN/../fstext:$ORIGIN/../transform
 )

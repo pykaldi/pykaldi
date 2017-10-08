@@ -38,7 +38,7 @@ add_pyclif_library("_full_gmm_normal" full-gmm-normal.clif
   RPATH $ORIGIN/../matrix
 )
 add_pyclif_library("_mle_full_gmm" mle-full-gmm.clif
-  CLIF_DEPS _full_gmm _diag_gmm _options_itf
+  CLIF_DEPS _full_gmm _diag_gmm _options_itf _full_gmm_normal _iostream
   LIBRARIES kaldi-gmm
   RPATH $ORIGIN/../matrix:$ORIGIN/../itf
 )
