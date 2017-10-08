@@ -1,0 +1,14 @@
+from "itf/decodable-itf-clifwrap.h" import *
+
+from kaldi.itf._decodable_itf import DecodableInterface
+
+from "decoder/decodable-mapped.h":
+  namespace `kaldi`:
+    class DecodableMapped(DecodableInterface):
+      def __init__(self, index_map: list<int>, d: DecodableInterface)
+
+      def `LogLikelihood` as loglikelihood(self, frame: int, state_index: int) -> float
+
+      def `NumIndices` as num_indices(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool

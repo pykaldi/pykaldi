@@ -1,0 +1,30 @@
+from "itf/decodable-itf-clifwrap.h" import *
+from kaldi.itf._decodable_itf import DecodableInterface
+
+from "decoder/decodable-sum.h":
+  namespace `kaldi`:
+    class DecodableSum(DecodableInterface):
+      def __init__(self, d1: DecodableInterface, w1: float, d2: DecodableInterface, w2: float)
+
+      @add__init__
+      def `DecodableSum` as new(self, decodables: list<tuple<DecodableInterface, float>>)
+
+      def `CheckSizes` as check_sizes(self)
+
+      def `LogLikelihood` as log_likelihood(self, frame: int, state_index: int) -> float
+
+      def `NumIndices` as num_indices(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+    class DecodableSumScaled(DecodableSum):
+      # def __init__(d1: DecodableInterface, w1: float, d2: DecodableInterface, w2: float, scale: float)
+
+      @add__init__
+      def `DecodableSumScaled` as new(self, decodables: list<tuple<DecodableInterface, float>>, scale: float)
+
+      def `LogLikelihood` as log_likelihood(self, frame: int, state_index: int) -> float
+
+      
+
+
