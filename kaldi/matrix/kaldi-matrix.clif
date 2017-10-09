@@ -1301,7 +1301,7 @@ from "matrix/kaldi-matrix.h":
         """Sets the elements to random values of a uniform(0,1) distribution."""
 
       # Copy methods
-      def `CopyFromMat` as copy_from_mat(self, M:DoubleMatrixBase,
+      def `CopyFromMat` as _copy_from_mat(self, M:DoubleMatrixBase,
                       trans:MatrixTransposeType = default):
         """Copy data from another matrix of the same size
 
@@ -2192,7 +2192,7 @@ from "matrix/kaldi-matrix.h":
       def `Transpose` as transpose(self):
         """Transposes the matrix"""
 
-      def `Resize` as resize(self, r:int, c:int,
+      def `Resize` as _resize(self, r:int, c:int,
                  resize_type:MatrixResizeType = default,
                  stride_type:MatrixStrideType = default):
         """Resizes a matrix. If the resize_type is kSetZero,

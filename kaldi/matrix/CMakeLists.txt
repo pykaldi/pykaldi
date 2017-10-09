@@ -53,3 +53,7 @@ add_pyclif_library("_optimization" optimization.clif
   CLIF_DEPS _kaldi_vector _sp_matrix
   LIBRARIES kaldi-matrix
 )
+add_CC_library("_double_matrix_ext" double-matrix-ext.cc
+  CLIF_DEPS _kaldi_matrix
+  LIBRARIES kaldi-matrix
+)
