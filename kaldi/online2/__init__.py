@@ -4,6 +4,7 @@ from ._online_feature_pipeline import *
 from ._online_feature_pipeline import _OnlineFeaturePipeline
 from ._online_gmm_decodable import *
 from ._online_gmm_decoding import *
+from ._online_gmm_decoding import _SingleUtteranceGmmDecoder
 from ._online_ivector_feature import *
 from ._online_ivector_feature import _OnlineIvectorExtractionInfo
 from ._online_nnet2_feature_pipeline import *
@@ -34,6 +35,10 @@ class OnlineFeaturePipeline(_OnlineFeaturePipeline):
 
     def new(self):
         return OnlineFeaturePipeline(self._new())
+
+class SingleUtteranceGmmDecoder(_SingleUtteranceGmmDecoder):
+    def feature_pipeline(self):
+        return OnlineFeaturePipeline(self._feature_pipeline())
 
 __all__ = [name for name in dir()
            if name[0] != '_'
