@@ -1,9 +1,9 @@
 from __future__ import division
 import unittest
 import numpy as np
-from kaldi.matrix._double import DoubleMatrix as Matrix,\
-                                 DoubleSubMatrix as SubMatrix,\
-                                 DoubleSubVector as SubVector
+from kaldi.matrix import DoubleMatrix as Matrix,\
+                         DoubleSubMatrix as SubMatrix,\
+                         DoubleSubVector as SubVector
 
 class TestMatrix(unittest.TestCase):
 

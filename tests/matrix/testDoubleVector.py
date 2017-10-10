@@ -1,8 +1,8 @@
 from __future__ import division
 import unittest
 import numpy as np
-from kaldi.matrix._double import DoubleVector as Vector,\
-                                 DoubleSubVector as SubVector
+from kaldi.matrix import DoubleVector as Vector,\
+                         DoubleSubVector as SubVector
 
 class TestVector(unittest.TestCase):
 
