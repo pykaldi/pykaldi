@@ -72,12 +72,7 @@ from "online2/online-gmm-decoding.h":
       # @setter
       # def `spk_stats` as set_spk_stats(self, val: FmllrDiagGmmAccs)
       
-      @getter
-      def `transform` as get_transform(self) -> Matrix:
-        return _postprocess_matrix(...)
-
-      @setter
-      def `transform` as set_transform(self, val: Matrix)
+      `transform` as _transform: Matrix 
 
       def `Write` as write(self, out_stream: ostream, binary: bool)
 

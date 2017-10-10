@@ -53,7 +53,7 @@ from "online2/online-feature-pipeline.h":
 
       def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
 
-    class OnlineFeaturePipeline(OnlineFeatureInterface):
+    class `OnlineFeaturePipeline` as _OnlineFeaturePipeline(OnlineFeatureInterface):
 
       def __init__(self, config: OnlineFeaturePipelineConfig)
 
@@ -66,8 +66,7 @@ from "online2/online-feature-pipeline.h":
       def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
 
       # Method for debugging purposes
-      def `GetAsMatrix` as get_as_matrix(self) -> (feats: Matrix):
-        return _postprocess_matrix(...)
+      def `GetAsMatrix` as _get_as_matrix(self) -> (feats: Matrix)
 
       def `FreezeCmvn` as freeze_cmvn(self)
 
@@ -90,6 +89,5 @@ from "online2/online-feature-pipeline.h":
       def `HaveFmllrTransform` as have_fmllr_transform(self) -> bool:
         """Returns true if an fMLLR transform has been set"""
 
-      # FIXME (VM):
-      def `New` as new(self) -> OnlineFeaturePipeline:
+      def `New` as _new(self) -> _OnlineFeaturePipeline:
         """Returns a newly initialized copy of *this"""

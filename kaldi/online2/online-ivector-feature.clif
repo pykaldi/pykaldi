@@ -10,7 +10,6 @@ from "itf/online-feature-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
-from kaldi.matrix import _postprocess_matrix
 
 from "online2/online-ivector-feature.h":
   namespace `kaldi`:
@@ -36,26 +35,12 @@ from "online2/online-ivector-feature.h":
 
     class `OnlineIvectorExtractionInfo` as _OnlineIvectorExtractionInfo:
       
-      # Needs a wrapper
-      # `lda_mat` as _lda_mat: Matrix
-      @getter
-      def `lda_mat` as get_lda_mat(self) -> Matrix:
-        return _postprocess_matrix(...)
-
-      @setter
-      def `lda_mat` as set_lda_mat(self, val: Matrix)
-
-      # `global_cmvn_stats` as _global_cmvn_stats: DoubleMatrix
-      @getter
-      def `global_cmvn_stats` as get_global_cmvn_stats(self) -> DoubleMatrix
-
-      @setter
-      def `global_cmvn_stats` as set_global_cmvn_stats(self, val: DoubleMatrix)
+      `lda_mat` as _lda_mat: Matrix
+      `global_cmvn_stats` as _global_cmvn_stats: DoubleMatrix
 
       cmvn_opts: OnlineCmvnOptions
       splice_opts: OnlineSpliceOptions
 
-      # diag_ubm: DiagGmm
       # @getter
       # def `diag_ubm` as get_diag_ubm(self) -> DiagGmm
 
