@@ -3,6 +3,12 @@ from "tree/cluster-utils-clifwrap.h" import *
 
 from "tree/build-tree-questions.h":
   namespace `kaldi`:
+
+    enum AllKeysType with:
+      `kAllKeysInsistIdentical` as ALL_KEYS_INSIST_IDENTICAL
+      `kAllKeysIntersection` as ALL_KEYS_INTERSECTION
+      `kAllKeysUnion` as ALL_KEYS_UNION
+
     class QuestionsForKey:
       initial_questions: list<list<int>>
       refine_opts: RefineClustersOptions

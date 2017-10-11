@@ -38,3 +38,9 @@ add_pyclif_library("_tree_renderer" tree-renderer.clif
   LIBRARIES kaldi-tree
   RPATH $ORIGIN/../base:$ORIGIN/../fstext
 )
+
+add_pyclif_library("_build_tree_utils" build-tree-utils.clif
+  CLIF_DEPS _iostream _cluster_utils _event_map _clusterable_itf _build_tree
+  LIBRARIES kaldi-tree
+  RPATH $ORIGIN/../base:$ORIGIN/../itf
+)

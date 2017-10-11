@@ -1,0 +1,94 @@
+from "base/iostream-clifwrap.h" import *
+from "tree/cluster-utils-clifwrap.h" import *
+from "tree/event-map-clifwrap.h" import *
+from "itf/clusterable-itf-clifwrap.h" import *
+from "tree/build-tree-clifwrap.h" import *
+from "tree/build-tree-questions-clifwrap.h" import *
+
+from kaldi.util import _value_error_on_false
+
+from "tree/build-tree-utils.h":
+  namespace `kaldi`:
+    
+    # No need in Python?
+    # def `DeleteBuildTreeStats` as delete_build_tree_stats(self, stats: list<tuple<int, Clusterable>>)
+
+    def `WriteBuildTreeStats` as write_build_tree_stats(os: ostream, binary: bool, stats: list<tuple<list<tuple<int, int>>, Clusterable>>):
+      """Writes BuildTreeStatsType. Works even if the pointers are NULL"""
+
+    def `ReadBuildTreeStats` as read_build_tree_stats(is: istream, binary: bool, example: Clusterable) -> (stats: list<tuple<list<tuple<int, int>>, Clusterable>>):
+      """Reads BuildTreeStatsType object. The 'example' argument must be of the same type as the stats on disk, and is needed to access to the correct `read` function"""
+
+    def `PossibleValues` as possible_values(key: int, stats: list<tuple<list<tuple<int, int>>, Clusterable>>) -> (key_found: bool, ans: list<int>):
+      """Convenienve function to work out possible values of the phones from just the stats.
+
+      Returns:
+        True if key was always defined inside the stats.
+      """
+
+    def `SplitStatsByMap` as split_stats_by_map(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>, e: EventMap) -> (stats_out: list<list<tuple<list<tuple<int, int>>, Clusterable>>>):
+      """Splits stats according to the EventMap, indexing them at output by the leaf type."""
+
+    def `SplitStatsByKey` as split_stats_by_key(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>, key: int) -> (stats_out: list<list<tuple<list<tuple<int, int>>, Clusterable>>>):
+      """Splits stats up according to the value of a particular key, which must be always defined and nonnegative."""
+
+    def `ConvertStats` as convert_stats(oldN: int, oldP: int, newN: int, newP: int) -> (success: bool, stats: list<tuple<list<tuple<int, int>>, Clusterable>>):
+      """Converts stats from a given context-window (N) and central position (P) to a different N and P"""
+      return _value_error_on_false(...)
+
+    # def `FilterStatsByKey` as filter_stats_by_key(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>, key: int, values: list<int>, include_if_present: bool) -> (stats_out: list<tuple<list<tuple<int, int>>, Clusterable>>):
+    #   """Filters the stats according the value of a specified key. If include_if_present is True, only outputs the stats whose key is in 'values'; otherwise it only outputs the stats whose key is not in 'values'"""
+
+    def `SumStats` as sum_stats(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>) -> Clusterable:
+      """Sums stats"""
+
+    def `SumNormalizer` as sum_normalizer(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>) -> float:
+      """Sums the normalizer over the stats"""
+
+    def `SumObjf` as sum_objf(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>) -> float:
+      """Sums the objective function over the stats"""
+
+    def `SumStatsVec` as sum_stats_vec(stats_in: list<list<tuple<list<tuple<int, int>>, Clusterable>>>) -> (stats_out: list<Clusterable>):
+      """Sum a vector of stats"""
+
+    def `ObjfGivenMap` as objf_given_map(stats_in: list<tuple<list<tuple<int, int>>, Clusterable>>, e: EventMap) -> float:
+      """Cluster the stats given the event map return the total objf given those clusters"""
+
+    def `FindAllKeys` as find_all_keys(stats: list<tuple<list<tuple<int, int>>, Clusterable>>, keys_type: AllKeysType) -> (keys: list<int>):
+      """Returns the sorted and unique list of all key identities in the stats.
+      If type == ALL_KEYS_INSIST_IDENTICAL, it will insis that this set of keys is the same for all the stats.
+      If type == ALL_KEYS_INTERSECTION, it will return the smallest common set of keys present in the set of stats
+      if type == ALL_KEYS_UNION, it will return the union of all the keys (or undefined if a key is not present)
+      """
+
+    # def `TrivialTree` as trivial_tree(num_leaves: int) -> EventMap:
+      # """Returns a tree with just one node"""
+
+    # def `DoTableSplit` as do_table_split(orig: EventMap, key: int, stats: list<tuple<list<tuple<int, int>>, Clusterable>>, num_leaves: int):
+      # """Does a complete split on this key or HMM state-position"""
+
+    # DoTableSplitMultiple
+
+    def `ClusterEventMapGetMapping` as cluster_event_map_get_mapping(e_in: EventMap, stats: list<tuple<list<tuple<int, int>>, Clusterable>>, thresh: float) -> (num_leaves: int, mapping: list<EventMap>):
+      """Clusters the leaves of the EventMap, with 'thresh' a delta-likelihood threshold to control how many leaves we combine.
+
+      Returns:
+        num_leaves (int): number of leaves combined
+        mapping: Mapping for leaves
+      """
+
+    # def `ClusterEventMap` as cluster_event_map
+
+    # def `ClusterEventMapRestrictedByKeys`
+
+    # def ClusterEventMapRestrictedByMap
+
+    # def `RenumberEventMap` as renumber_event_map
+
+    def `MapEventMapLeaves` as map_event_map_leaves(e_in: EventMap, mapping: list<int>) -> EventMap:
+      """Remaps the event-map leaves using this mapping indexed by number of leaf"""
+
+    # def ShareEventMapLeaves
+
+    def `SplitDecisionTree` as split_decision_tree(orig: EventMap, stats: list<tuple<list<tuple<int, int>>, Clusterable>>, qcfg: Questions, thresh: float, max_leaves: int) -> (out_tree: EventMap, num_leaves: int, objf_impr_out: float, smallest_split_change_out: float):
+      """"""

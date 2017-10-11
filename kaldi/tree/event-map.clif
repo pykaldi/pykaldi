@@ -6,6 +6,10 @@ from "tree/event-map.h":
   namespace `kaldi`:
     def `MakeEventPair` as make_event_pair(k: int, v: int) -> tuple<int, int>
 
+    def `WriteEventType` as write_event_type(os: ostream, binary: bool, vec: list<tuple<int, int>>)
+
+    def `ReadEventType` as read_event_type(is: istream, binary: bool) -> (vec: list<tuple<int, int>>)
+
     class EventMap:
       @classmethod
       def `Check` as check(cls, event: list<tuple<int, int>>)
