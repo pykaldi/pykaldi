@@ -1,8 +1,28 @@
 Installation
-============
+************
 
 Via Docker
-------------
+##########
+
+Installing through Docker can be done with either of the next two options:
+
+* Downloading the binary from dockerhub
+
+* Building docker image from source files
+
+1. Downloading the binary
+=========================
+
+#. Login to dockerhub
+
+    >>> docker login
+
+#. Download the pre-built binary
+
+    >>> docker pull vrmpx/pykaldi
+
+2. Building docker from source
+==============================
 
 Take the following steps to install PyKaldi through Docker:
 
@@ -17,12 +37,10 @@ Take the following steps to install PyKaldi through Docker:
    >>> sudo docker run -it pykaldi
 
 Via Source Files
-----------------
+################
 
-#. Follow the installation instructions for `Protobuf <https://github.com/google/protobuf.git>`__ C++ and Python package.
-
-   .. warning:: Following commands may be outdated.
-
+1. Follow the installation instructions for `Protobuf <https://github.com/google/protobuf.git>`__ C++ and Python package.
+  
    >>> sudo apt-get install autoconf automake libtool curl make g++ unzip
    >>> git clone https://github.com/google/protobuf.git protobuf
    >>> cd protobuf
@@ -34,15 +52,22 @@ Via Source Files
    >>> python setup.py build
    >>> python setup.py install
 
-#. Follow the instructions to install
-   `clif <https://github.com/google/clif/>`_
+2. We use a fork of clif that supports documentation within the clif file. The source code can be found `here <https://github.com/dogancan/clif/tree/docstring>`_. Clone this repository, making sure to checkout the docstring branch. Run the following commands to install the correct version:
 
    >>> cd
-   >>> git clone https://github.com/google/clif.git clif
+   >>> git clone -b docstring https://github.com/dogancan/clif/
    >>> cd clif
    >>> ./INSTALL $(which python)
 
-#. Download and install this version of `Kaldi <https://github.com/usc-sail/kaldi-pykaldi.git>`_ which contains modifications necesary for clif.
+  Note that if there is more than one Python version installed (e.g., Python 2.7 and 3.6) cmake may not be able to find the correct python libraries. To help cmake use the correct Python, add the following options to the cmake command inside INSTALL.sh (make sure to substitute the correct path for your system):
+
+    >>> cmake ... \
+        -DPYTHON_INCLUDE_DIR="/usr/include/python3.6" \
+        -DPYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython3.6m.so" \
+        -DPYTHON_EXECUTABLE="/usr/bin/python3.6" \
+        "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
+
+3. Download and install this fork from `Kaldi <https://github.com/usc-sail/kaldi-pykaldi.git>`_ which contains modifications necessary for clif.
 
 	>>> cd
 	>>> git clone https://github.com/usc-sail/kaldi-pykaldi.git kaldi
@@ -51,7 +76,7 @@ Via Source Files
 	>>> cd ../src
 	>>> ./configure --shared && make clean -j4 && make depend -j4 && make -j4
 
-#. Set the following environmental variables, make sure to replace the correct values for your installation directories
+4. Set the following environmental variables, make sure to replace the correct values for your installation directories
 
 	>>> export KALDI_DIR=<directory where kaldi was installed>
 	>>> export CLIF_DIR=<directory where clif was installed>
@@ -60,7 +85,7 @@ Via Source Files
 	>>> export DEBUG=1
 	>>> export PYCLIF=<pyclif executable location>
 
-#. Download and install `PyKaldi <https://github.com/usc-sail/pykaldi/>`_ source code (i.e., this repository)
+5. Download and install `PyKaldi <https://github.com/usc-sail/pykaldi/>`_ source code (i.e., this repository)
 
 	>>> cd
 	>>> git clone https://github.com/usc-sail/pykaldi/ pykaldi
