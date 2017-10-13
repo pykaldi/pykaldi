@@ -22,6 +22,8 @@ kaldi\.matrix
       create_eigenvalue_double_matrix
       create_eigenvalue_matrix
       double_vec_vec
+      doublematrix_to_numpy
+      doublevector_to_numpy
       extract_row_range_with_padding
       filter_compressed_matrix_rows
       filter_general_matrix_rows
@@ -73,6 +75,8 @@ kaldi\.matrix
       DoubleMatrix
       DoubleMatrixBase
       DoubleSpMatrix
+      DoubleSubMatrix
+      DoubleSubVector
       DoubleVector
       DoubleVectorBase
       GeneralMatrix

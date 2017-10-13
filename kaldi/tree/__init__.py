@@ -1,5 +1,6 @@
 from ._build_tree import *
 from ._build_tree_questions import *
+from ._build_tree_utils import *
 from ._clusterable_classes import *
 from ._cluster_utils import *
 from ._context_dep import *
