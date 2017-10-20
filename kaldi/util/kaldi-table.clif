@@ -13,6 +13,19 @@ from kaldi.util import _value_error_on_false
 
 from "util/kaldi-table.h":
   namespace `kaldi`:
+    enum WspecifierType with:
+      `kNoWspecifier` as NO_SPECIFIER
+      `kArchiveWspecifier` as ARCHIVE_SPECIFIER
+      `kScriptWspecifier` as SCRIPT_SPECIFIER
+      `kBothWspecifier` as BOTH_SPECIFIER
+
+    class WspecifierOptions:
+      binary: bool
+      flush: bool
+      permissive: bool
+
+    def `ClassifyWspecifier` as classify_wspecifier(wspecifier: str) -> (wspecifier_type: WspecifierType, archive_wxfilename: str, script_wxfilename: str, opts: WspecifierOptions)
+
     def `ReadScriptFile` as read_script_file(rxfilename: str,
                                              print_warnings: bool)
       -> (success: bool, script_out: list<tuple<str,str>>):
@@ -20,6 +33,20 @@ from "util/kaldi-table.h":
 
     def `WriteScriptFile` as write_script_file(
       wxfilename: str, script: list<tuple<str,str>>) -> bool
+
+    class RspecifierOptions:
+      once: bool
+      sorted: bool
+      called_sorted: bool
+      permissive: bool
+      background: bool
+
+    enum RspecifierType with:
+      `kNoRspecifier` as NO_SPECIFIER
+      `kArchiveRspecifier` as ARCHIVE_SPECIFIER
+      `kScriptRspecifier` as SCRIPT_SPECIFIER
+
+    def `ClassifyRspecifier` as classify_rspecifier(rspecifier: str) -> (rspecifier_type: RspecifierType, rxfilename: str, opts: RspecifierOptions)
 
     # Sequential Readers
 

@@ -1,5 +1,7 @@
 from . import _kaldi_table
-from ._kaldi_table import read_script_file, write_script_file
+from ._kaldi_table import (read_script_file, write_script_file, 
+                           classify_wspecifier, classify_rspecifier, 
+                           WspecifierType, RspecifierType)
 
 ################################################################################
 # Sequential Readers
