@@ -36,9 +36,12 @@ from "util/kaldi-io.h":
 
       def `Close` as close(self) -> bool
 
-    class Input:
-      @add__init__
-      def `Input` as new(self, rxfilename: str)
+    class `Input` as _Input:
+
+      # FIXME (VM):
+      # Does not return contents_binary
+      # @add__init__
+      # def `Input` as new(self, rxfilename: str)
 
       def `Open` as open(self, rxfilename: str)
         -> (success: bool, contents_binary: bool):

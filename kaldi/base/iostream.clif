@@ -29,3 +29,6 @@ from "base/iostream-ext.h":
 
     def `GetStderrPtr` as get_stderr() -> ostream:
       """Get standard error stream."""
+
+    def `ReadLine` as read_line(input: istream) -> str:
+      """Reads a line from istream input delimited by newlines"""

@@ -9,7 +9,7 @@ from "feat/wave-reader.h":
       """This class represents a Wave file."""
 
       @add__init__
-      def `WaveData` as new(self, samp_freq:float, data:Matrix)
+      def `WaveData` as new(self, samp_freq:float, data:MatrixBase)
 
       def `Data` as data(self) -> Matrix:
         """Wrapper function for :kaldi:`kaldi::WaveData::Data`.
