@@ -21,7 +21,7 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                 # There must be 4 fields: segment name, segment name , recording wav file name,
                 # start time, end time; 5th field (channel info) is optional.
                 splits = line.strip().split()
-                if len(splits) != 4 && len(splits) != 5:
+                if len(splits) != 4 and len(splits) != 5:
                     print("Invalid line in segments file: {}".format(line), file=sys.stderr)
                 segment, recording, start_str, end_str = splits[:4]
 
