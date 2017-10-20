@@ -7,7 +7,7 @@ WORKDIR /root
 
 ENV PROTOBUF_GIT "https://github.com/google/protobuf.git"
 ENV NINJA_GIT "https://github.com/ninja-build/ninja.git"
-ENV CLIF_GIT "https://github.com/google/clif.git"
+ENV CLIF_GIT "-b docstring https://github.com/dogancan/clif/"
 
 # update ubuntu and install essentials
 RUN apt-get update \
@@ -17,7 +17,7 @@ RUN apt-get update \
     autoconf=2.69-9 \
     automake=1:1.15-4ubuntu1 \
     libtool=2.4.6-0.1 \
-    curl=7.47.0-1ubuntu2.2 \
+    curl \
     make=4.1-6 \
     g++=4:5.3.1-1ubuntu1 \
     unzip=6.0-20ubuntu1 \
@@ -63,18 +63,13 @@ RUN git clone $NINJA_GIT \
     && python3 configure.py --bootstrap \
     && cp ninja /usr/local/bin
 
-# Clone clif 0.3, fetch dogan's pull request, and then build it
+# This patch will make sure cmake finds the correct python
+COPY INSTALL.patch /root/INSTALL.patch
+
+# Clone clif 0.3 through dogan's fork
 RUN git clone $CLIF_GIT \
     && cd clif \
-    && git fetch origin pull/16/head:docstring \
-    && git checkout docstring
-
-# Make sure the cmake finds the correct python
-COPY INSTALL.patch /root/clif/INSTALL.patch
-
-# Apply patch to the INSTALL.sh file
-RUN cd clif \
-    && patch < INSTALL.patch \
+    && patch < /root/INSTALL.patch \
     && ./INSTALL.sh $(which python3) \
     && pip3 install .
 
