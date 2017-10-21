@@ -8,7 +8,8 @@ from _kaldi_io import *
 class Input(object):
     """:kaldi:`kaldi::Input` wrapper.
 
-    This class implements iterable and context manager.
+    This class provides a more Pythonic user facing API for reading rxfilenames.
+    It implements iterable and context manager.
     """
     def __init__(self, rspecifier = ""):
         self._input = _kaldi_io._Input()
@@ -28,10 +29,17 @@ class Input(object):
         return self._input.close()
 
     def __iter__(self):
-        s = read_line(self._input.stream())
-        while(s):
-            yield s
-            s = read_line(self._input.stream())
+        return self
+
+    def __next__(self):
+        return self.next()
+
+    def next(self):
+        """Returns the next line of the stream."""
+        if not self._input.stream()._good():
+            raise StopIteration
+        else:
+            return read_line(self._input.stream())
 
     def __enter__(self):
         return self

@@ -3,12 +3,14 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 
 from "transform/cmvn.h":
   namespace `kaldi`:
-    def `InitCmvnStats` as init_cmvn_stats(dim: int, stats: DoubleMatrix)
+    def `InitCmvnStats` as init_cmvn_stats(dim: int, stats: DoubleMatrix):
+      """Initializes the matrix to dimension 2 by (dim + 1); 
+      1st dim elements of 1st row are mean stats, 1st dim elements of 2nd row are var stats, last element of 1st row is count, last element of 2nd row is zero"""
 
     def `AccCmvnStats` as acc_cmvn_stats_single_frame(
         feat: VectorBase, weight: float, stats: DoubleMatrixBase)
 
-    def `AccCmvnStats` as acc_cmvn_stats(feat: MatrixBase,
+    def `AccCmvnStats` as _acc_cmvn_stats(feat: MatrixBase,
                                          weights: VectorBase,
                                          stats: DoubleMatrixBase)
 
