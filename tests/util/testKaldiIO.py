@@ -39,7 +39,7 @@ class TestKaldiIO(unittest.TestCase):
 
     def testIONew(self, binary = False):
         filename = "tmpf"
-        ko = Ouput.new(filename, binary)
+        ko = Output.new(filename, binary)
         outfile = ko.stream()
         ko.close()
         # ostream has no functions, use native python
