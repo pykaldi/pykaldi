@@ -106,10 +106,10 @@ if __name__ == '__main__':
                     utt = pair[0]
                     if not utt in feat_reader:
                         print("No feature data for utterance {}".format(utt))
-                        num_err++
+                        num_err += 1
                         continue
                     feats = feat_reader[utt]
                     writer.write[utt] = acc_cmvn_stats(feats, 1.0)
-                    num_done++
+                    num_done += 1
 
     print("Done accumulating CMVN stats for {} utterances; {} had errors.".format(num_done, num_err))
