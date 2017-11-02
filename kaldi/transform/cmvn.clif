@@ -10,7 +10,7 @@ from "transform/cmvn.h":
     def `AccCmvnStats` as acc_cmvn_stats_single_frame(
         feat: VectorBase, weight: float, stats: DoubleMatrixBase)
 
-    def `AccCmvnStats` as _acc_cmvn_stats(feat: MatrixBase,
+    def `AccCmvnStats` as acc_cmvn_stats(feat: MatrixBase,
                                          weights: VectorBase,
                                          stats: DoubleMatrixBase)
 
