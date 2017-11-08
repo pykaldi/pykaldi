@@ -2,19 +2,17 @@ from __future__ import division
 import unittest
 import numpy as np
 from kaldi.matrix import Vector, SubVector
+from kaldi.matrix import DoubleVector, DoubleSubVector
+from kaldi.matrix import Matrix, DoubleMatrix
+
 
 class TestVector(unittest.TestCase):
-
-    @unittest.skip("TODO")
-    def testErrors(self):
-        pass
 
     def test_copy(self):
         v = Vector(5)
         with self.assertRaises(ValueError):
             v1 = Vector().copy_(v)
 
-        v.set_zero_()
         v1 = Vector(len(v)).copy_(v)
         self.assertEqual(len(v), len(v1))
 
@@ -34,6 +32,15 @@ class TestVector(unittest.TestCase):
         self.assertEqual(v[0], v1[0])
         self.assertEqual(v[1], v1[1])
         self.assertEqual(v[2], v1[2])
+
+        for i in range(10):
+            v = Vector(i).set_randn_()
+            v1 = Vector(i).copy_(v)
+            self.assertEqual(v, v1)
+
+        v = DoubleVector(5).set_randn_()
+        v1 = Vector(5).copy_(v)
+        # self.assertEqual(v, v1) #This fails due to precision/type
 
     def test_clone(self):
 
@@ -138,6 +145,29 @@ class TestVector(unittest.TestCase):
         v[0] = -1.0
         self.assertEqual(v2, v1)
         self.assertEqual(v.range(1, 2), v2)
+
+    def add_vec_(self):
+        v = Vector(5).set_randn_()
+        v1 = Vector(5).set_zero_()
+        self.assertEqual(v, v.add_vec_(v1))
+
+        v1 = v1.set_randn_()
+        self.assertNotEqual(v, v.add_vec_(v1))
+
+        v1 = v.clone()
+        v1 = v1.scale_(-1.0)
+        self.assertEqual(Vector(5), v.add_vec_(1.0, v1))
+
+    def test_copy_row_from_mat(self):
+        
+        with self.assertRaises(IndexError):
+            M = Matrix(0, 0).set_randn_()
+            v = Vector(0).copy_row_from_mat_(M, 0)
+
+        for i in range(1, 11):
+            M = Matrix(i, i).set_randn_()
+            v = Vector(i).copy_row_from_mat_(M, 0)
+            self.assertEqual(M[0], v)
 
     def test_empty(self):
         # Test empty kaldi.Vector
