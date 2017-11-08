@@ -1799,15 +1799,15 @@ class _DoubleVectorBase(object):
             raise ValueError("The number of columns of the input matrix ({})"
                              "should match the size of the vector ({})."
                              .format(M.num_cols, self.dim))
-        if not isinstance(int, row) and not (0 <= row < M.num_rows):
+        elif not isinstance(row, int) or not (0 <= row < M.num_rows):
             raise IndexError()
-        if isinstance(M, _kaldi_matrix.DoubleMatrixBase):
+        elif isinstance(M, _kaldi_matrix.DoubleMatrixBase):
             _kaldi_vector_ext._copy_row_from_mat_double(self, M, row)
-        if isinstance(M, _kaldi_matrix.MatrixBase):
+        elif isinstance(M, _kaldi_matrix.MatrixBase):
             _kaldi_vector_ext._copy_row_from_single_mat_double(self, M, row)
-        if isinstance(M, _sp_matrix.DoubleSpMatrix):
+        elif isinstance(M, _sp_matrix.DoubleSpMatrix):
             _kaldi_vector_ext._copy_row_from_sp_double(self, M, row)
-        if isinstance(M, _sp_matrix.SpMatrix):
+        elif isinstance(M, _sp_matrix.SpMatrix):
             _kaldi_vector_ext._copy_row_from_single_sp_double(self, M, row)
         else:
             raise TypeError("input matrix type is not supported.")
@@ -1828,11 +1828,11 @@ class _DoubleVectorBase(object):
             raise ValueError("The number of rows of the input matrix ({})"
                              "should match the size of this vector ({})."
                              .format(M.num_rows, self.dim))
-        if not instance(int, col) and not (0 <= col < M.num_cols):
+        elif not instance(col, int) or not (0 <= col < M.num_cols):
             raise IndexError()
-        if isinstance(M, _kaldi_matrix.DoubleMatrixBase):
+        elif isinstance(M, _kaldi_matrix.DoubleMatrixBase):
             _kaldi_vector_ext._copy_col_from_mat_double(self, M, col)
-        if isinstance(M, _kaldi_matrix.MatrixBase):
+        elif isinstance(M, _kaldi_matrix.MatrixBase):
             _kaldi_vector_ext._copy_col_from_single_mat_double(self, M, col)
         else:
             raise TypeError("input matrix type is not supported.")
