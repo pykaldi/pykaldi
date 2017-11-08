@@ -8,6 +8,7 @@ kaldi\.hmm
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       accumulate_tree_stats
       get_pdfs_for_phones
@@ -21,6 +22,7 @@ kaldi\.hmm
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       AccumulateTreeStatsInfo
       AccumulateTreeStatsOptions
@@ -44,6 +46,7 @@ kaldi\.hmm\.posterior
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       alignment_to_posterior
       convert_posterior_to_pdfs

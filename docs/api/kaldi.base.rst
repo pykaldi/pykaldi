@@ -8,6 +8,7 @@ kaldi\.base
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       get_verbose_level
       set_abort_on_assert_failure
@@ -21,6 +22,7 @@ kaldi\.base
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       Timer
    
@@ -39,12 +41,14 @@ kaldi\.base\.io
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       get_stderr
       get_stdin
       get_stdout
       init_kaldi_input_stream
       init_kaldi_output_stream
+      read_line
    
    
 
@@ -53,6 +57,7 @@ kaldi\.base\.io
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       ifstream
       iostream
@@ -78,6 +83,7 @@ kaldi\.base\.math
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       approx_equal
       divide_rounding_down
@@ -122,6 +128,7 @@ kaldi\.base\.math
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       RandomState
    

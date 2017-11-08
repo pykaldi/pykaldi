@@ -8,6 +8,7 @@ kaldi\.tree
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       add_to_clusters
       add_to_clusters_optimized
@@ -50,6 +51,7 @@ kaldi\.tree
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       AllKeysType
       ClusterKMeansOptions

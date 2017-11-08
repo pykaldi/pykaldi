@@ -1,5 +1,5 @@
 from __future__ import division
-import os 
+import os
 import unittest
 
 from kaldi.matrix import Vector, Matrix, SubMatrix, SubVector
@@ -9,7 +9,7 @@ from mixins import *
 
 # TODO (VM):
 # This tests make use of the filesystem
-# However at the moment I am assuming a 
+# However at the moment I am assuming a
 # Unix architecture (e.g., writing to /tmp).
 # How to do a multi-platform setup?
 class _TestWriters(AuxMixin):
@@ -19,7 +19,7 @@ class _TestWriters(AuxMixin):
         self.assertIsNotNone(writer)
         self.assertFalse(writer.is_open())
 
-        with self.assertRaises(Exception): 
+        with self.assertRaises(Exception):
             writer.close()
 
         writer = self.getImpl(self.rspecifier)
@@ -27,12 +27,12 @@ class _TestWriters(AuxMixin):
         self.assertTrue(writer.is_open())
         self.assertTrue(writer.close())
 
-        with self.assertRaises(RuntimeError): 
+        with self.assertRaises(RuntimeError):
             writer.close()
-        
+
         # Check that the file exists after closing the writer
         self.assertTrue(os.path.exists(self.filename))
-        
+
     def testContextManager(self):
         obj = self.getExampleObj()
 
@@ -58,11 +58,11 @@ class _TestWriters(AuxMixin):
 
 class TestVectorWriter(_TestWriters, unittest.TestCase):
     def getExampleObj(self):
-        return Vector.new([1, 2, 3, 4, 5])
+        return Vector([1, 2, 3, 4, 5])
 
 class TestMatrixWriter(_TestWriters, unittest.TestCase):
     def getExampleObj(self):
-        return Matrix.new([[3, 5], [7, 11]])
+        return Matrix([[3, 5], [7, 11]])
 
 class TestIntWriter(_TestWriters, unittest.TestCase):
     def getExampleObj(self):

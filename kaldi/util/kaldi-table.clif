@@ -7,8 +7,8 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "lat/kaldi-lattice.h" import *
 
-from kaldi.matrix import _postprocess_vector
-from kaldi.matrix import _postprocess_matrix
+from kaldi.matrix import _vector_wrapper
+from kaldi.matrix import _matrix_wrapper
 from kaldi.util import _value_error_on_false
 
 from "util/kaldi-table.h":
@@ -64,7 +64,7 @@ from "util/kaldi-table.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> Vector:
-        return _postprocess_vector(...)
+        return _vector_wrapper(...)
 
       def `Next` as _next(self)
 
@@ -89,7 +89,7 @@ from "util/kaldi-table.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> Matrix:
-        return _postprocess_matrix(...)
+        return _matrix_wrapper(...)
 
       def `Next` as _next(self)
 
@@ -371,7 +371,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Vector:
-        return _postprocess_vector(...)
+        return _vector_wrapper(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -390,7 +390,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Matrix:
-        return _postprocess_matrix(...)
+        return _matrix_wrapper(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -609,7 +609,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Vector:
-        return _postprocess_vector(...)
+        return _vector_wrapper(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -629,7 +629,7 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> Matrix:
-        return _postprocess_matrix(...)
+        return _matrix_wrapper(...)
 
       def `IsOpen` as is_open(self) -> bool
 

@@ -28,7 +28,7 @@ class TestCuMatrix(unittest.TestCase):
         self.assertEqual(10, dim.rows)
         self.assertEqual(10, dim.cols)
 
-        A = CuMatrix.new_from_matrix(Matrix.new([[2, 3], [5, 7]]))
+        A = CuMatrix.new_from_matrix(Matrix([[2, 3], [5, 7]]))
         self.assertIsNotNone(A)
         self.assertEqual(2, A.num_rows())
         self.assertEqual(2, A.num_cols())
@@ -58,7 +58,7 @@ class TestCuMatrix(unittest.TestCase):
     def testSwap(self):
         for i in range(10):
             dim = (10 * i, 4 * i)
-            M = Matrix.new(np.random.random(dim)).clone()
+            M = Matrix(np.random.random(dim))
             A = CuMatrix.new_from_matrix(M)
             B = CuMatrix.new_from_size(A.num_rows(), A.num_cols())
             B.Swap(A)
@@ -73,7 +73,7 @@ class TestCuMatrix(unittest.TestCase):
         for i in range(10):
             rows, cols = 10*i, 5*i
             A = Matrix(rows, cols)
-            A.set_randn()
+            A.set_randn_()
             B = CuMatrix.new_from_size(*A.shape)
             B.copy_from_mat(A)
             self.assertAlmostEqual(A.sum(), B.sum(), places = 4)

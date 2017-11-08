@@ -1,6 +1,7 @@
 add_pyclif_library("_model_common" model-common.clif
   CLIF_DEPS _kaldi_vector
   LIBRARIES kaldi-gmm
+  RPATH $ORIGIN/../matrix
 )
 add_pyclif_library("_full_gmm" full-gmm.clif
   CLIF_DEPS _model_common _iostream _sp_matrix

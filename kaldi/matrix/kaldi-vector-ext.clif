@@ -7,9 +7,47 @@ from "matrix/tp-matrix-clifwrap.h" import *
 
 from "matrix/kaldi-vector-ext.h":
   namespace `kaldi`:
-    def `AddMatVec` as _add_mat_vec(self: VectorBase, alpha: float,
+
+    # Shims for single precision vectors
+
+    def `CopyFromPacked` as _copy_from_packed(self: VectorBase, M: PackedMatrix):
+        """Copy data from a Packed Matrix(triangular or symmetric)
+
+        Args:
+            M(PackedMatrix): A triangular or symmetric matrix
+        """
+
+    def `CopyFromPacked` as _copy_from_double_packed(self: VectorBase, M: DoublePackedMatrix):
+        """Copy data from a Packed Matrix(triangular or symmetric)
+
+        Args:
+            M(DoublePackedMatrix): A triangular or symmetric matrix
+        """
+
+    def `CopyFromVec` as _copy_from_double_vec(self: VectorBase, v: DoubleVectorBase):
+        """Copy data from a vector
+
+        Args:
+            v(DoubleVectorBase): A vector
+        """
+
+    def `AddVec` as _add_double_vec(self: VectorBase, alpha: `float` as float, v: DoubleVectorBase):
+        """Add a vector
+
+        Args:
+            v(DoubleVectorBase): A vector
+        """
+
+    def `AddVec2` as _add_double_vec2(self: VectorBase, alpha: `float` as float, v: DoubleVectorBase):
+        """Add a vector squared
+
+        Args:
+            v(DoubleVectorBase): A vector
+        """
+
+    def `AddMatVec` as _add_mat_vec(self: VectorBase, alpha: `float` as float,
                                     M: MatrixBase, trans: MatrixTransposeType,
-                                    v: VectorBase, beta: float):
+                                    v: VectorBase, beta: `float` as float):
         """Scale self and add a matrix*vector, e.g. self = beta*self + alpha*M*v.
 
         Args:
@@ -23,9 +61,9 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def `AddMatSvec` as _add_mat_svec(self: VectorBase, alpha: float,
+    def `AddMatSvec` as _add_mat_svec(self: VectorBase, alpha: `float` as float,
                                       M: MatrixBase, trans: MatrixTransposeType,
-                                      v: VectorBase, beta: float):
+                                      v: VectorBase, beta: `float` as float):
         """Same as AddMatVec, but optimized when v contains a lot of zeros.
 
         Args:
@@ -39,8 +77,8 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def `AddSpVec` as _add_sp_vec(self: VectorBase, alpha: float, M: SpMatrix,
-                                  v: VectorBase, beta: float):
+    def `AddSpVec` as _add_sp_vec(self: VectorBase, alpha: `float` as float, M: SpMatrix,
+                                  v: VectorBase, beta: `float` as float):
         """Same as AddMatVec, but optimized when M is symmetric positive definite.
 
         Args:
@@ -54,9 +92,9 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def `AddTpVec` as _add_tp_vec(self: VectorBase, alpha: float, M: TpMatrix,
+    def `AddTpVec` as _add_tp_vec(self: VectorBase, alpha: `float` as float, M: TpMatrix,
                                   trans: MatrixTransposeType, v: VectorBase,
-                                  beta: float):
+                                  beta: `float` as float):
         """Same as AddMatVec, but optimized when M is triangular.
 
         Args:
@@ -70,12 +108,26 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
+    def `MulElements` as _mul_double_elements(self: VectorBase, v: DoubleVectorBase):
+        """Multiply elements with elements of another vector
+
+        Args:
+            v(DoubleVectorBase): A vector
+        """
+
+    def `DivElements` as _div_double_elements(self: VectorBase, v: DoubleVectorBase):
+        """Divide elements with elements of another vector
+
+        Args:
+            v(DoubleVectorBase): A vector
+        """
+
     def `MulTp` as _mul_tp(self: VectorBase, M: TpMatrix,
-                          trans: MatrixTransposeType):
+                           trans: MatrixTransposeType):
         """ Multiplies this vector by lower-triangular matrix: self = self*M
 
         Args:
-            M(MatrixBase): A lower triangularMatrix
+            M(TpMatrix): A lower triangularMatrix
             trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
 
         Raises:
@@ -89,7 +141,7 @@ from "matrix/kaldi-vector-ext.h":
            Does not test for M being singular or near-singular.
 
         Args:
-            M(MatrixBase): A Matrix
+            M(TpMatrix): A Matrix
             trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
 
         Raises:
@@ -101,6 +153,16 @@ from "matrix/kaldi-vector-ext.h":
 
         Args:
             M(MatrixBase): The matrix whose rows will be stacked into a vector
+
+        Raises:
+            Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
+        """
+
+    def `CopyRowsFromMat` as _copy_rows_from_double_mat(self: VectorBase, M: DoubleMatrixBase):
+        """Stacks all the rows of matrix M into a vector and copies it to self
+
+        Args:
+            M(DoubleMatrixBase): The matrix whose rows will be stacked into a vector
 
         Raises:
             Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
@@ -127,11 +189,55 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch or if row>=M.rows
         """
 
+    def `CopyRowFromMat` as _copy_row_from_double_mat(self: VectorBase, M: DoubleMatrixBase, row: int):
+        """Extracts a row of the matrix M and copies it to self.
+
+        Args:
+            M(DoubleMatrixBase): The matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
+    def `CopyRowFromSp` as _copy_row_from_sp(self: VectorBase, M: SpMatrix, row: int):
+        """Extracts a row of the symmetric matrix M and copies it to self.
+
+        Args:
+            M(SpMatrix): The symmetric matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
+    def `CopyRowFromSp` as _copy_row_from_double_sp(self: VectorBase, M: DoubleSpMatrix, row: int):
+        """Extracts a row of the symmetric matrix M and copies it to self.
+
+        Args:
+            M(DoubleSpMatrix): The symmetric matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
     def `CopyColFromMat` as _copy_col_from_mat(self: VectorBase, M: MatrixBase, col: int):
         """Extracts a column of the matrix M and copies it to self.
 
         Args:
             M(MatrixBase): The matrix from which we will extract a column
+            col(int): An index to the column of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if col>=M.cols
+        """
+
+    def `CopyColFromMat` as _copy_col_from_double_mat(self: VectorBase, M: DoubleMatrixBase, col: int):
+        """Extracts a column of the matrix M and copies it to self.
+
+        Args:
+            M(DoubleMatrixBase): The matrix from which we will extract a column
             col(int): An index to the column of the matrix. Indexing starts from 0
 
         Raises:
@@ -148,18 +254,11 @@ from "matrix/kaldi-vector-ext.h":
             Error if self.dim != min(M.rows, M.cols)
         """
 
-    def `CopyFromPacked` as _copy_from_packed(self: VectorBase, M: PackedMatrix):
-        """Copy data from a Packed Matrix(triangular or symmetric)
-
-        Args:
-            M(PackedMatrix): A triangular or symmetric matrix
-        """
-
     def `CopyDiagFromPacked` as _copy_diag_from_packed(self: VectorBase, M: PackedMatrix):
         """Extracts the diagonal of the packed matrix M and copies it to self.
 
         Args:
-            M(MatrixBase): A triangular or symmetric matrix
+            M(PackedMatrix): A triangular or symmetric matrix
 
         Raises:
             Error if self.dim !=  M.cols
@@ -169,7 +268,7 @@ from "matrix/kaldi-vector-ext.h":
         """Extracts the diagonal of the symmetric matrix M and copies it to self.
 
         Args:
-            M(MatrixBase): A symmetric matrix
+            M(SpMatrix): A symmetric matrix
 
         Raises:
             Error if self.dim !=  M.cols
@@ -179,15 +278,15 @@ from "matrix/kaldi-vector-ext.h":
         """Extracts the diagonal of the symmetric matrix M and copies it to self.
 
         Args:
-            M(MatrixBase): A symmetric matrix
+            M(TpMatrix): A symmetric matrix
 
         Raises:
             Error if self.dim !=  M.cols
         """
 
-    def `AddRowSumMat` as _add_row_sum_mat(self: VectorBase, alpha: float,
+    def `AddRowSumMat` as _add_row_sum_mat(self: VectorBase, alpha: `float` as float,
                                            M: MatrixBase,
-                                           beta: float = default):
+                                           beta: `float` as float = default):
         """Performs the operation self = alpha * (sum of rows of M) + beta * self
 
         Args:
@@ -199,9 +298,9 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of self.dim != M.cols
         """
 
-    def `AddColSumMat` as _add_col_sum_mat(self: VectorBase, alpha: float,
+    def `AddColSumMat` as _add_col_sum_mat(self: VectorBase, alpha: `float` as float,
                                            M: MatrixBase,
-                                           beta: float = default):
+                                           beta: `float` as float = default):
         """Performs the operation self = alpha * (sum of cols of M) + beta * self
 
         Args:
@@ -213,10 +312,10 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of self.dim != M.rows
         """
 
-    def `AddDiagMat2` as _add_diag_mat2(self: VectorBase, alpha: float,
+    def `AddDiagMat2` as _add_diag_mat2(self: VectorBase, alpha: `float` as float,
                                         M: MatrixBase,
                                         trans: MatrixTransposeType = default,
-                                        beta: float = default):
+                                        beta: `float` as float = default):
         """Perform the operation self = alpha*diag(M*M^T) + beta*self (if trans == kNoTrans),
            or self = alpha*diag(M^T*M) + beta*self (if trans == kTrans).
 
@@ -230,12 +329,12 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def `AddDiagMatMat` as _add_diag_mat_mat(self: VectorBase, alpha: float,
+    def `AddDiagMatMat` as _add_diag_mat_mat(self: VectorBase, alpha: `float` as float,
                                             M: MatrixBase,
                                             transM: MatrixTransposeType,
                                             N: MatrixBase,
                                             transN: MatrixTransposeType,
-                                            beta: float = default):
+                                            beta: `float` as float = default):
         """Perform the operation self = alpha*diag(M*N) + beta*self.
 
         Args:
@@ -250,7 +349,7 @@ from "matrix/kaldi-vector-ext.h":
             Error in case of dimension mismatch
         """
 
-    def `VecMatVec` as vec_mat_vec(v1: VectorBase, M: MatrixBase,
+    def `VecMatVec` as _vec_mat_vec(v1: VectorBase, M: MatrixBase,
                                    v2: VectorBase) -> float:
         """Performs the operation v1'*M*v2
 
@@ -258,6 +357,363 @@ from "matrix/kaldi-vector-ext.h":
             v1(VectorBase): a vector
             M(MatrixBase): a matrix
             v2(VectorBase): a vector
+
+        Returns:
+           The outcome of v1'*M*v2
+
+        Raises:
+           Error in case of dimension mismatch
+        """
+
+
+    # Shims for double precision vectors
+
+    def `CopyFromPacked` as _copy_from_packed_double(self: DoubleVectorBase, M: DoublePackedMatrix):
+        """Copy data from a Packed Matrix(triangular or symmetric)
+
+        Args:
+            M(DoublePackedMatrix): A triangular or symmetric matrix
+        """
+
+    def `CopyFromPacked` as _copy_from_single_packed_double(self: DoubleVectorBase, M: PackedMatrix):
+        """Copy data from a Packed Matrix(triangular or symmetric)
+
+        Args:
+            M(PackedMatrix): A triangular or symmetric matrix
+        """
+
+    def `CopyFromVec` as _copy_from_single_vec_double(self: DoubleVectorBase, v: VectorBase):
+        """Copy data from a vector
+
+        Args:
+            v(VectorBase): A vector
+        """
+
+    def `AddVec` as _add_single_vec_double(self: DoubleVectorBase, alpha: float, v: VectorBase):
+        """Add a vector
+
+        Args:
+            v(VectorBase): A vector
+        """
+
+    def `AddVec2` as _add_single_vec2_double(self: DoubleVectorBase, alpha: float, v: VectorBase):
+        """Add a vector squared
+
+        Args:
+            v(VectorBase): A vector
+        """
+
+    def `AddMatVec` as _add_mat_vec_double(self: DoubleVectorBase, alpha: float,
+                                           M: DoubleMatrixBase, trans: MatrixTransposeType,
+                                           v: DoubleVectorBase, beta: float):
+        """Scale self and add a matrix*vector, e.g. self = beta*self + alpha*M*v.
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(DoubleVectorBase): A vector
+            beta(float): A scaling constant.
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `AddMatSvec` as _add_mat_svec_double(self: DoubleVectorBase, alpha: float,
+                                             M: DoubleMatrixBase, trans: MatrixTransposeType,
+                                             v: DoubleVectorBase, beta: float):
+        """Same as AddMatVec, but optimized when v contains a lot of zeros.
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(DoubleVectorBase): A vector
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `AddSpVec` as _add_sp_vec_double(self: DoubleVectorBase, alpha: float, M: DoubleSpMatrix,
+                                         v: DoubleVectorBase, beta: float):
+        """Same as AddMatVec, but optimized when M is symmetric positive definite.
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(DoubleVectorBase): A vector
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `AddTpVec` as _add_tp_vec_double(self: DoubleVectorBase, alpha: float, M: DoubleTpMatrix,
+                                         trans: MatrixTransposeType, v: DoubleVectorBase, beta: float):
+        """Same as AddMatVec, but optimized when M is triangular.
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise.
+            v(DoubleVectorBase): A vector
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `MulElements` as _mul_single_elements_double(self: DoubleVectorBase, v: VectorBase):
+        """Multiply elements with elements of another vector
+
+        Args:
+            v(VectorBase): A vector
+        """
+
+    def `DivElements` as _div_single_elements_double(self: DoubleVectorBase, v: VectorBase):
+        """Divide elements with elements of another vector
+
+        Args:
+            v(VectorBase): A vector
+        """
+
+    def `MulTp` as _mul_tp_double(self: DoubleVectorBase, M: DoubleTpMatrix,
+                                  trans: MatrixTransposeType):
+        """ Multiplies this vector by lower-triangular matrix: self = self*M
+
+        Args:
+            M(DoubleTpMatrix): A lower triangularMatrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `Solve` as _solve_double(self: DoubleVectorBase, M: DoubleTpMatrix,
+                                 trans: MatrixTransposeType):
+        """If trans == kNoTrans, solves M*x = b, where b is the value of self input
+           and x is the value of self at output. If trans == kTrans, solves M'*x = b.
+           Does not test for M being singular or near-singular.
+
+        Args:
+            M(DoubleTpMatrix): A Matrix
+            trans(MatrixTransposeType): kTrans if the matrix is to be transposed or kNoTrans otherwise
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `CopyRowsFromMat` as _copy_rows_from_mat_double(self: DoubleVectorBase, M: DoubleMatrixBase):
+        """Stacks all the rows of matrix M into a vector and copies it to self
+
+        Args:
+            M(DoubleMatrixBase): The matrix whose rows will be stacked into a vector
+
+        Raises:
+            Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
+        """
+
+    def `CopyRowsFromMat` as _copy_rows_from_single_mat_double(self: DoubleVectorBase, M: MatrixBase):
+        """Stacks all the rows of matrix M into a vector and copies it to self
+
+        Args:
+            M(MatrixBase): The matrix whose rows will be stacked into a vector
+
+        Raises:
+            Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
+        """
+
+    def `CopyColsFromMat` as _copy_cols_from_mat_double(self: DoubleVectorBase, M: DoubleMatrixBase):
+        """Stacks all the columns of matrix M into a vector and copies it to self
+
+        Args:
+            M(DoubleMatrixBase): The matrix whose columns will be stacked into a vector
+
+        Raises:
+            Error in case of dimension mismatch, e.g. self.size != M.num_rows*M_num.cols
+        """
+
+    def `CopyRowFromMat` as _copy_row_from_mat_double(self: DoubleVectorBase, M: DoubleMatrixBase, row: int):
+        """Extracts a row of the matrix M and copies it to self.
+
+        Args:
+            M(DoubleMatrixBase): The matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
+    def `CopyRowFromMat` as _copy_row_from_single_mat_double(self: DoubleVectorBase, M: MatrixBase, row: int):
+        """Extracts a row of the matrix M and copies it to self.
+
+        Args:
+            M(MatrixBase): The matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
+    def `CopyRowFromSp` as _copy_row_from_sp_double(self: DoubleVectorBase, M: DoubleSpMatrix, row: int):
+        """Extracts a row of the symmetric matrix M and copies it to self.
+
+        Args:
+            M(DoubleSpMatrix): The symmetric matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
+    def `CopyRowFromSp` as _copy_row_from_single_sp_double(self: DoubleVectorBase, M: SpMatrix, row: int):
+        """Extracts a row of the symmetric matrix M and copies it to self.
+
+        Args:
+            M(SpMatrix): The symmetric matrix from which we will extract a row
+            row(int): An index to the row of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if row>=M.rows
+        """
+
+    def `CopyColFromMat` as _copy_col_from_mat_double(self: DoubleVectorBase, M: DoubleMatrixBase, col: int):
+        """Extracts a column of the matrix M and copies it to self.
+
+        Args:
+            M(DoubleMatrixBase): The matrix from which we will extract a column
+            col(int): An index to the column of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if col>=M.cols
+        """
+
+    def `CopyColFromMat` as _copy_col_from_single_mat_double(self: DoubleVectorBase, M: MatrixBase, col: int):
+        """Extracts a column of the matrix M and copies it to self.
+
+        Args:
+            M(MatrixBase): The matrix from which we will extract a column
+            col(int): An index to the column of the matrix. Indexing starts from 0
+
+        Raises:
+            Error in case of dimension mismatch or if col>=M.cols
+        """
+
+    def `CopyDiagFromMat` as _copy_diag_from_mat_double(self: DoubleVectorBase, M: DoubleMatrixBase):
+        """Extracts the diagonal of the matrix M and copies it to self.
+
+        Args:
+            M(DoubleMatrixBase): The matrix from which we will extract its diagonal
+
+        Raises:
+            Error if self.dim != min(M.rows, M.cols)
+        """
+
+    def `CopyDiagFromPacked` as _copy_diag_from_packed_double(self: DoubleVectorBase, M: DoublePackedMatrix):
+        """Extracts the diagonal of the packed matrix M and copies it to self.
+
+        Args:
+            M(DoublePackedMatrix): A triangular or symmetric matrix
+
+        Raises:
+            Error if self.dim !=  M.cols
+        """
+
+    def `CopyDiagFromSp` as _copy_diag_from_sp_double(self: DoubleVectorBase, M: DoubleSpMatrix):
+        """Extracts the diagonal of the symmetric matrix M and copies it to self.
+
+        Args:
+            M(DoubleSpMatrix): A symmetric matrix
+
+        Raises:
+            Error if self.dim !=  M.cols
+        """
+
+    def `CopyDiagFromTp` as _copy_diag_from_tp_double(self: DoubleVectorBase, M: DoubleTpMatrix):
+        """Extracts the diagonal of the symmetric matrix M and copies it to self.
+
+        Args:
+            M(DoubleTpMatrix): A symmetric matrix
+
+        Raises:
+            Error if self.dim !=  M.cols
+        """
+
+    def `AddRowSumMat` as _add_row_sum_mat_double(self: DoubleVectorBase, alpha: float,
+                                                  M: DoubleMatrixBase,
+                                                  beta: float = default):
+        """Performs the operation self = alpha * (sum of rows of M) + beta * self
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A matrix
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of self.dim != M.cols
+        """
+
+    def `AddColSumMat` as _add_col_sum_mat_double(self: DoubleVectorBase, alpha: float,
+                                                  M: DoubleMatrixBase,
+                                                  beta: float = default):
+        """Performs the operation self = alpha * (sum of cols of M) + beta * self
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A matrix
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of self.dim != M.rows
+        """
+
+    def `AddDiagMat2` as _add_diag_mat2_double(self: DoubleVectorBase, alpha: float,
+                                               M: DoubleMatrixBase,
+                                               trans: MatrixTransposeType = default,
+                                               beta: float = default):
+        """Perform the operation self = alpha*diag(M*M^T) + beta*self (if trans == kNoTrans),
+           or self = alpha*diag(M^T*M) + beta*self (if trans == kTrans).
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A matrix
+            trans(MatrixTransposeType): kNoTrans(default) or kTrans
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `AddDiagMatMat` as _add_diag_mat_mat_double(self: DoubleVectorBase, alpha: float,
+                                                    M: DoubleMatrixBase,
+                                                    transM: MatrixTransposeType,
+                                                    N: DoubleMatrixBase,
+                                                    transN: MatrixTransposeType,
+                                                    beta: float = default):
+        """Perform the operation self = alpha*diag(M*N) + beta*self.
+
+        Args:
+            alpha(float): A scaling constant
+            M(DoubleMatrixBase): A matrix
+            N(DoubleMatrixBase): A matrix
+            transM(MatrixTransposeType): kNoTrans(default) or kTrans, denotes if we are going to use matrix M or its transpose
+            transN(MatrixTransposeType): kNoTrans(default) or kTrans, denotes if we are going to use matrix N or its transpose
+            beta(float): A scaling constant
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+    def `VecMatVec` as _vec_mat_vec_double(
+        v1: DoubleVectorBase, M: DoubleMatrixBase, v2: DoubleVectorBase) -> float:
+        """Performs the operation v1'*M*v2
+
+        Args:
+            v1(DoubleVectorBase): a vector
+            M(DoubleMatrixBase): a matrix
+            v2(DoubleVectorBase): a vector
 
         Returns:
            The outcome of v1'*M*v2

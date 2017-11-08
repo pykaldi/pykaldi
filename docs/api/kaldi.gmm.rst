@@ -8,6 +8,7 @@ kaldi\.gmm
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       augment_gmm_flags
       get_split_targets
@@ -24,6 +25,7 @@ kaldi\.gmm
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       AccumDiagGmm
       AccumFullGmm
@@ -52,6 +54,7 @@ kaldi\.gmm\.am
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       cluster_gaussians_to_ubm
       map_am_diag_gmm_update
@@ -64,6 +67,7 @@ kaldi\.gmm\.am
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       AccumAmDiagGmm
       AmDiagGmm

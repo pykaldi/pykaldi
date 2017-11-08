@@ -40,6 +40,7 @@ add_pyclif_library("_tp_matrix" tp-matrix.clif
 add_pyclif_library("_kaldi_vector_ext" kaldi-vector-ext.clif
   CLIF_DEPS _packed_matrix _tp_matrix
   LIBRARIES kaldi-matrix
+  RPATH $ORIGIN/../cudamatrix
 )
 add_pyclif_library("_kaldi_matrix_ext" kaldi-matrix-ext.clif
   CLIF_DEPS _compressed_matrix _tp_matrix
@@ -51,9 +52,5 @@ add_pyclif_library("_matrix_functions" matrix-functions.clif
 )
 add_pyclif_library("_optimization" optimization.clif
   CLIF_DEPS _kaldi_vector _sp_matrix
-  LIBRARIES kaldi-matrix
-)
-add_CC_library("_double_matrix_ext" double-matrix-ext.cc
-  CLIF_DEPS _kaldi_matrix
   LIBRARIES kaldi-matrix
 )

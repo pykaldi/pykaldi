@@ -8,6 +8,7 @@ kaldi\.sgmm2
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       compute_feature_normalizing_transform
    
@@ -18,6 +19,7 @@ kaldi\.sgmm2
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       AmSgmm2
       DecodableAmSgmm2

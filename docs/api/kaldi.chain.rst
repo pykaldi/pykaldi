@@ -8,6 +8,7 @@ kaldi\.chain
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       add_weight_to_supervision_fst
       alignment_to_proto_supervision
@@ -29,6 +30,7 @@ kaldi\.chain
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       ChainTrainingOptions
       DenominatorComputation

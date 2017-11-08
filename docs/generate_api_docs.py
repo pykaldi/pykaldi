@@ -90,3 +90,20 @@ for importer, modname, ispkg in pkgutil.walk_packages(path=kaldi.__path__,
 
         # Remove mod.rst
         check_call(['rm', '-f', mod_path])
+
+##################################################
+# Add autosummary nosignatures option
+##################################################
+
+for importer, modname, ispkg in pkgutil.walk_packages(path=kaldi.__path__,
+                                                      prefix=kaldi.__name__+'.',
+                                                      onerror=lambda x: None):
+    if modname.split(".")[-1][0] == "_" and not args.include_private:
+        continue
+    if ispkg:
+        pkg_file = "{}.rst".format(modname)
+        pkg_path = os.path.join(args.out_dir, pkg_file)
+
+        check_call(['sed', '-i',
+                    's/autosummary::/autosummary::\\n      :nosignatures:/g',
+                     pkg_path])

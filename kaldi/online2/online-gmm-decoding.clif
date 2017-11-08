@@ -14,7 +14,7 @@ from "hmm/posterior-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 
-from kaldi.matrix import _postprocess_matrix
+from kaldi.matrix import _matrix_wrapper
 
 from "online2/online-gmm-decoding.h":
   namespace `kaldi`:

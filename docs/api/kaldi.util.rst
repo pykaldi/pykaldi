@@ -24,6 +24,7 @@ kaldi\.util\.io
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       classify_rxfilename
       classify_wxfilename
@@ -31,6 +32,7 @@ kaldi\.util\.io
       printable_wxfilename
       read_kaldi_matrix
       read_kaldi_vector
+      read_line
       write_kaldi_matrix
       write_kaldi_vector
    
@@ -41,6 +43,7 @@ kaldi\.util\.io
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       Input
       InputType
@@ -66,6 +69,7 @@ kaldi\.util\.options
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       ParseOptions
       SimpleOptions
@@ -85,7 +89,10 @@ kaldi\.util\.table
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
+      classify_rspecifier
+      classify_wspecifier
       read_script_file
       write_script_file
    
@@ -96,6 +103,7 @@ kaldi\.util\.table
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       BoolWriter
       DoubleWriter
@@ -122,6 +130,7 @@ kaldi\.util\.table
       RandomAccessVectorReader
       RandomAccessVectorReaderMapped
       RandomAccessWaveReader
+      RspecifierType
       SequentialBoolReader
       SequentialDoubleReader
       SequentialFloatPairVectorReader
@@ -136,6 +145,7 @@ kaldi\.util\.table
       SequentialWaveReader
       VectorWriter
       WaveWriter
+      WspecifierType
    
    
 

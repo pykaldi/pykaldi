@@ -7,15 +7,15 @@ class TestMatrix(unittest.TestCase):
 
     def test_copy(self):
         m = Matrix()
-        m1 = Matrix().copy(m)
+        m1 = Matrix().copy_(m)
         self.assertTupleEqual((0, 0), m1.shape)
 
         m = Matrix(5, 5)
-        m1 = Matrix(5, 5).copy(m)
+        m1 = Matrix(5, 5).copy_(m)
         self.assertTupleEqual((5, 5), m1.shape)
 
-        m = Matrix.new([[1., 2.], [3., 4.]])
-        m1 = Matrix(2, 2).copy(m)
+        m = Matrix([[1., 2.], [3., 4.]])
+        m1 = Matrix(2, 2).copy_(m)
         self.assertEqual(m[0, 0], m1[0, 0])
         self.assertEqual(m[0, 1], m1[0, 1])
         self.assertEqual(m[1, 1], m1[1, 1])
@@ -25,7 +25,7 @@ class TestMatrix(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             m = Matrix(5, 5)
-            m1 = Matrix(2, 2).copy(m)
+            m1 = Matrix(2, 2).copy_(m)
 
     def test_clone(self):
         m = Matrix()
@@ -36,7 +36,7 @@ class TestMatrix(unittest.TestCase):
         m1 = m.clone()
         self.assertTupleEqual((5, 5), m1.shape)
 
-        m = Matrix.new([[1., 2.], [3., 4.]])
+        m = Matrix([[1., 2.], [3., 4.]])
         m1 = m.clone()
 
         self.assertEqual(m[0, 0], m1[0, 0])
@@ -58,9 +58,9 @@ class TestMatrix(unittest.TestCase):
         self.assertTrue(m == m.clone())
 
         m = Matrix(4, 4)
-        m.set_zero()
+        m.set_zero_()
         m1 = Matrix(4, 4)
-        m1.set_zero()
+        m1.set_zero_()
         self.assertTrue(m == m1)
 
         m = Matrix(4, 4)
@@ -76,7 +76,7 @@ class TestMatrix(unittest.TestCase):
         n = m.numpy()
         self.assertTupleEqual((5, 5), n.shape)
 
-        m = Matrix.new([[1.0, -2.0], [3.0, -4.0]])
+        m = Matrix([[1.0, -2.0], [3.0, -4.0]])
         n = m.numpy()
         self.assertTupleEqual((2, 2), n.shape)
         self.assertEqual(1.0, n[0, 0])
@@ -135,12 +135,12 @@ class TestMatrix(unittest.TestCase):
         with self.assertRaises(IndexError):
             m.range(0, 0, 0, 1)
 
-        m = Matrix.new([[1.0, 2.0], [3.0, 4.0]])
+        m = Matrix([[1.0, 2.0], [3.0, 4.0]])
         s = m.range(0, None, 0, None)
         self.assertTupleEqual((2, 2), s.shape)
 
     def test__getitem__(self):
-        m = Matrix.new([[3, 5], [7, 11]])
+        m = Matrix([[3, 5], [7, 11]])
         self.assertAlmostEqual(3.0, m[0, 0])
         self.assertAlmostEqual(5.0, m[0, 1])
         self.assertAlmostEqual(7.0, m[1, 0])
@@ -178,7 +178,7 @@ class TestMatrix(unittest.TestCase):
         with self.assertRaises(IndexError):
             m[0, 2] = 10.0
 
-        m = Matrix.new([[3, 5], [7, 11]])
+        m = Matrix([[3, 5], [7, 11]])
         m[0, 0] = 13.0
 
         self.assertAlmostEqual(65.0, m[0, :].numpy().prod())
@@ -187,7 +187,7 @@ class TestMatrix(unittest.TestCase):
         self.assertAlmostEqual(55.0, m[:, 1].numpy().prod())
 
 
-        m = Matrix.new([[3, 5], [7, 11]])
+        m = Matrix([[3, 5], [7, 11]])
         m[0, :] = 3.0
 
         self.assertAlmostEqual(9.0, m[0, :].numpy().prod())
@@ -195,7 +195,7 @@ class TestMatrix(unittest.TestCase):
         self.assertAlmostEqual(21.0, m[:, 0].numpy().prod())
         self.assertAlmostEqual(33.0, m[:, 1].numpy().prod())
 
-        m = Matrix.new([[3, 5], [7, 11]])
+        m = Matrix([[3, 5], [7, 11]])
         m[:, 0] = 3.0
 
         self.assertAlmostEqual(15.0, m[0, :].numpy().prod())
@@ -209,22 +209,22 @@ class TestMatrix(unittest.TestCase):
         self.assertTupleEqual((0, 0), m.size())
 
         with self.assertRaises(IndexError):
-            m = Matrix.new([[]])
+            m = Matrix([[]])
 
         with self.assertRaises(IndexError):
-            m = Matrix.new([[], []])
+            m = Matrix([[], []])
 
     def test_nonempty(self):
         m = Matrix(100, 100)
         self.assertIsNotNone(m)
         self.assertTupleEqual((100, 100), m.size())
 
-    def test_new(self):
-        m = Matrix.new([[3, 5], [7, 11]])
+    def test__init__(self):
+        m = Matrix([[3, 5], [7, 11]])
         self.assertIsNotNone(m)
         self.assertTupleEqual((2, 2), m.size())
 
-        m2 = Matrix.new(np.array([[3, 5], [7, 11]]))
+        m2 = Matrix(np.array([[3, 5], [7, 11]]))
         self.assertIsNotNone(m2)
         self.assertTupleEqual((2, 2), m2.size())
 
@@ -236,7 +236,7 @@ class TestMatrix(unittest.TestCase):
         with self.assertRaises(IndexError):
             del m[0]
 
-        m = Matrix.new([[3, 5], [7, 11]])
+        m = Matrix([[3, 5], [7, 11]])
 
         del m[0] #deletes row 0
 
@@ -254,7 +254,7 @@ class testSubMatrix(unittest.TestCase):
         sb = SubMatrix(m)
 
         for i in range(100):
-            m.set_randn()
+            m.set_randn_()
             self.assertAlmostEqual(m.sum(), sb.sum())
 
 

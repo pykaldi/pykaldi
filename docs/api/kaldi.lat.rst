@@ -8,6 +8,7 @@ kaldi\.lat
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       add_word_ins_pen_to_compact_lattice
       arctic_divide
@@ -70,6 +71,7 @@ kaldi\.lat
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       ArcticWeight
       DeterminizeLatticePhonePrunedOptions

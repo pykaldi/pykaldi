@@ -1,7 +1,7 @@
 add_pyclif_library("_am_sgmm2" am-sgmm2.clif
 	CLIF_DEPS _options_itf _kaldi_vector _kaldi_matrix _sp_matrix _full_gmm _diag_gmm
 	LIBRARIES kaldi-sgmm2
-	RPATH $ORIGIN/../itf:$ORIGIN/../matrix
+	RPATH $ORIGIN/../itf:$ORIGIN/../matrix:$ORIGIN/../gmm
 )
 add_pyclif_library("_decodable_am_sgmm2" decodable-am-sgmm2.clif
 	CLIF_DEPS _transition_model _am_sgmm2 _kaldi_matrix

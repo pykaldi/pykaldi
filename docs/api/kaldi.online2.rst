@@ -8,6 +8,7 @@ kaldi\.online2
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       endpoint_detected
       endpoint_detected_with_transition_model
@@ -20,6 +21,7 @@ kaldi\.online2
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       DecodableDiagGmmScaledOnline
       DoubleSubMatrix

@@ -8,6 +8,7 @@ kaldi\.fstext
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       AcousticLatticeScale
       ApproxEqual
@@ -201,6 +202,7 @@ kaldi\.fstext
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       ArcSortType
       ClosureType

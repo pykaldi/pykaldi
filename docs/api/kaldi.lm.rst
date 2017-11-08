@@ -8,6 +8,7 @@ kaldi\.lm
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       build_const_arpa_lm
    
@@ -18,6 +19,7 @@ kaldi\.lm
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       ArpaFileParser
       ArpaLmCompiler

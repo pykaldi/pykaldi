@@ -8,6 +8,7 @@ kaldi\.nnet3
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       add_nnet
       add_nnet_components
@@ -119,6 +120,7 @@ kaldi\.nnet3
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       Access
       AccessType

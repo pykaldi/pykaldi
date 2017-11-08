@@ -19,7 +19,7 @@ import numpy
 # Check variables / find programs
 ################################################################################
 
-DEBUG = os.getenv('DEBUG').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
+DEBUG = os.getenv('DEBUG', 'NO').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = os.getenv("PYCLIF")
 CLIF_DIR = os.getenv('CLIF_DIR')
 KALDI_DIR = os.getenv('KALDI_DIR')

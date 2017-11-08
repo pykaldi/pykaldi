@@ -58,7 +58,7 @@ class MatrixExampleMixin:
 
 class WaveExampleMixin:
     def writeExample(self, outpt):
-        m = Matrix.new(np.arange(9).reshape((3, 3)))
+        m = Matrix(np.arange(9).reshape((3, 3)))
         with WaveWriter('ark:/tmp/temp.ark') as writer:
             writer['one'] = WaveData.new(1.0, m)
 

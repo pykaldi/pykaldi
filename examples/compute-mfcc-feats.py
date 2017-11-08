@@ -55,10 +55,10 @@ def compute_mfcc_feats(wav_rspecifier, feats_wspecifier, opts, mfcc_opts):
 
             if opts.subtract_mean:
                 mean = Vector(feats.num_cols)
-                mean.add_row_sum_mat(1.0, feats)
-                mean.scale(1.0 / feats.num_rows)
+                mean.add_row_sum_mat_(1.0, feats)
+                mean.scale_(1.0 / feats.num_rows)
                 for i in range(feats.num_rows):
-                    feats[i].add_vec(-1.0, mean)
+                    feats[i].add_vec_(-1.0, mean)
 
             writer[key] = feats
             num_success += 1

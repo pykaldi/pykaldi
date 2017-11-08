@@ -9,7 +9,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
-from kaldi.matrix import _postprocess_matrix
+from kaldi.matrix import _matrix_wrapper
 
 from "online2/online-feature-pipeline.h":
   namespace `kaldi`:

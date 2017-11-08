@@ -8,6 +8,7 @@ kaldi\.transform
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       apply_affine_transform
       compose_transforms
@@ -19,6 +20,7 @@ kaldi\.transform
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       AffineXformStats
       CompressedAffineXformStats
@@ -39,6 +41,7 @@ kaldi\.transform\.cmvn
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       acc_cmvn_stats
       acc_cmvn_stats_single_frame
@@ -66,6 +69,7 @@ kaldi\.transform\.fmpe
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       compute_am_gmm_feature_deriv
    
@@ -76,6 +80,7 @@ kaldi\.transform\.fmpe
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       Fmpe
       FmpeOptions
@@ -101,6 +106,7 @@ kaldi\.transform\.lda
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       LdaEstimate
       LdaEstimateOptions
@@ -124,6 +130,7 @@ kaldi\.transform\.lvtln
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       LinearVtln
    
@@ -142,6 +149,7 @@ kaldi\.transform\.mllr
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       apply_feature_transform_to_stats
       apply_model_transform_to_stats
@@ -162,6 +170,7 @@ kaldi\.transform\.mllr
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       BasisFmllrAccus
       BasisFmllrEstimate
@@ -198,6 +207,7 @@ kaldi\.transform\.mllt
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       MlltAccs
    

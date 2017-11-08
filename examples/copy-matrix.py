@@ -12,7 +12,7 @@ from kaldi.matrix import Matrix
 
 def apply_softmax_per_row(mat):
     for i in range(mat.num_rows):
-        mat[i].apply_softmax()
+        mat[i].apply_softmax_()
 
 if __name__ == '__main__':
     usage = """Copy matrices, or archives of matrices (e.g. features or transforms)
@@ -21,28 +21,20 @@ if __name__ == '__main__':
 
     Usage: copy-matrix [options] <matrix-in-rspecifier> <matrix-out-wspecifier>
     or     copy-matrix [options] <matrix-in-rxfilename> <matrix-out-wxfilename>
-    
+
     e.g.
         copy-matrix --binary=false 1.mat -
         copy-matrix ark:2.trans ark,t:-
     """
 
-    binary = True
-    apply_log = False
-    apply_exp = False 
-    _apply_softmax_per_row = False
-    apply_power = 1.0
-    scale = 1.0
-
-
     po = ParseOptions(usage)
 
-    po.register_bool("binary", binary, "Write in binary mode (only relevant if output is a wxfilename)")
-    po.register_float("scale", scale, "This option can be used to scale the matrices being copied.")
-    po.register_bool("apply_log", apply_log, "This option can be used to apply log on the matrices. Must be avoided if matrix has negative quantities.")
-    po.register_bool("apply_exp", apply_exp, "This option can be used to apply exp on the matrices")
-    po.register_float("apply_power", apply_power, "This option can be used to apply a power on the matrices")
-    po.register_bool("apply_softmax-per-row", _apply_softmax_per_row, "This option can be used to apply softmax per row of the matrices")
+    po.register_bool("binary", True, "Write in binary mode (only relevant if output is a wxfilename)")
+    po.register_float("scale", 1.0, "This option can be used to scale the matrices being copied.")
+    po.register_bool("apply-log", False, "This option can be used to apply log on the matrices. Must be avoided if matrix has negative quantities.")
+    po.register_bool("apply-exp", False, "This option can be used to apply exp on the matrices")
+    po.register_float("apply-power", 1.0, "This option can be used to apply a power on the matrices")
+    po.register_bool("apply-softmax-per-row", False, "This option can be used to apply softmax per row of the matrices")
 
     opts = po.parse_args()
 
@@ -67,20 +59,20 @@ if __name__ == '__main__':
     if not in_is_rspecifier:
         mat = read_kaldi_matrix(matrix_in_fn)
         if opts.scale != 1.0:
-            mat.scale(opts.scale)
+            mat.scale_(opts.scale)
 
         if opts.apply_log:
-            mat.apply_floor(1.0e-20)
-            mat.apply_log()
+            mat.apply_floor_(1.0e-20)
+            mat.apply_log_()
 
         if opts.apply_exp:
-            mat.apply_exp()
+            mat.apply_exp_()
 
         if opts.apply_softmax_per_row:
             apply_softmax_per_row(mat)
 
         if opts.apply_power != 1.0:
-            mat.apply_power(opts.apply_power)
+            mat.apply_power_(opts.apply_power)
 
         ko = Output(matrix_out_fn, opts.binary)
         mat.write(ko.stream(), binary)
@@ -91,7 +83,7 @@ if __name__ == '__main__':
         with MatrixWriter(matrix_out_fn) as writer, \
              SequentialMatrixReader(matrix_in_fn) as reader:
             for num_done, (key, mat) in enumerate(reader):
-                
+
                 if opts.scale != 1.0 or\
                    opts.apply_log or\
                    opts.apply_exp or\
@@ -99,14 +91,14 @@ if __name__ == '__main__':
                    opts.apply_softmax_per_row:
 
                     if opts.scale != 1.0:
-                        mat.scale(opts.scale)
+                        mat.scale_(opts.scale)
 
                     if opts.apply_log:
-                        mat.apply_floor(1.0e-20)
-                        mat.apply_log()
+                        mat.apply_floor_(1.0e-20)
+                        mat.apply_log_()
 
                     if opts.apply_power != 1.0:
-                        mat.apply_power(opts.apply_power)
+                        mat.apply_power_(opts.apply_power)
 
                     writer[key] = mat
 
@@ -114,4 +106,3 @@ if __name__ == '__main__':
                     writer[key] = mat
 
         print("Copied {} matrices".format(num_done+1))
-

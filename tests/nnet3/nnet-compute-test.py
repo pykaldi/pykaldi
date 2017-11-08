@@ -5,7 +5,7 @@ import unittest
 
 from kaldi.base.io import istringstream, ostringstream
 from kaldi.cudamatrix import cuda_available, approx_equal_cu_matrix, CuMatrix
-from kaldi.matrix import Matrix, Vector, approx_equal_vector
+from kaldi.matrix import Matrix, Vector, approx_equal
 from kaldi.nnet3 import *
 
 class TestNnetCompute(unittest.TestCase):
@@ -118,14 +118,14 @@ class TestNnetCompute(unittest.TestCase):
         set_batchnorm_test_mode(True, nnet)
         set_dropout_test_mode(True, nnet)
 
-        input.set_randn()
+        input.set_randn_()
         ivector = Vector(ivector_dim)
-        ivector.set_randn()
+        ivector.set_randn_()
 
         priors = Vector(output_dim if random.choice([True, False]) else 0)
         if len(priors) != 0:
-            priors.set_randn()
-            priors.apply_exp()
+            priors.set_randn_()
+            priors.apply_exp_()
 
         output1 = Matrix(num_frames, output_dim)
         output2 = Matrix(num_frames, output_dim)
@@ -149,7 +149,7 @@ class TestNnetCompute(unittest.TestCase):
             and nnet.info().find("statistics-extraction") == -1
             and nnet.info().find("TimeHeightConvolutionComponent") == -1):
             for t in range(num_frames):
-                self.assertTrue(approx_equal_vector(output1[t], output2[t]))
+                self.assertTrue(approx_equal(output1[t], output2[t]))
 
 
 if __name__ == '__main__':

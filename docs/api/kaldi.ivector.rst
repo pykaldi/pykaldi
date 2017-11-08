@@ -8,6 +8,7 @@ kaldi\.ivector
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       compute_vad_energy
       estimate_ivectors_online
@@ -19,6 +20,7 @@ kaldi\.ivector
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       IvectorEstimationOptions
       IvectorExtractor

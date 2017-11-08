@@ -7,7 +7,7 @@ from "matrix/matrix-ext.h" import *
 from "matrix/packed-matrix.h":
   namespace `kaldi`:
     class `PackedMatrix<float>` as PackedMatrix:
-      """Base class for triangular and symmetric matrices."""
+      """Base class for single precision triangular and symmetric matrices."""
 
       num_rows: int = property(`NumRows`)
       """The number of rows."""
@@ -15,145 +15,327 @@ from "matrix/packed-matrix.h":
       """The number of columns."""
 
       @add__init__
-      def `PackedMatrix` as new_with_size(self,
-        r:int, resize_type: MatrixResizeType = default):
-        """Class initialization through size. Only the number or rows is important
-           since this is a class for square matrices (triangular or symmetric)
-           If the resize_type is kSetZero, the new data will be zero. If the resize type is kUndefined,
-           the new data will be undefined. Finally if the resize type is kCopyData,
-           the new data will be the same as the old data in any shared positions,
-           and zero elsewhere. stride_type defines how data will be read from memory,
-           we advise to let it in its default value.
+      def `PackedMatrix` as from_size(
+          self, r:int, resize_type: MatrixResizeType = default):
+        """Creates a new packed matrix of given size.
 
         Args:
-            r(int): The number of rows
-            resize_type(MatrixResizeType): Default is kSetZero.
+          r (int): The number or rows.
+          resize_type (:class:`MatrixResizeType`): Determines how the elements
+            are initialized. If SET_ZERO (or COPY_DATA), they are set to zero.
+            If UNDEFINED, they are left uninitialized. Defaults to SET_ZERO.
+
+        Note:
+          Since packed matrices are for storing square matrices, the number
+          of columns is always equal to the number of rows.
         """
 
       @add__init__
-      def `PackedMatrix` as new_with_other(self, orig: PackedMatrix):
-        """Initialize this PackedMatrix from another PackedMatrix.
+      def `PackedMatrix` as from_other(self, orig: PackedMatrix):
+        """Creates a new packed matrix from the given packed matrix.
 
         Args:
-            orig(PackedMatrix): A matrix of class PackedMatrix
+            orig (PackedMatrix): The input packed matrix.
         """
 
-      def `SetZero` as set_zero(self):
-        """Set all elements to zero."""
+      def `SetZero` as set_zero_(self) -> self:
+        """Sets the elements to zero."""
 
-      def `SetUnit` as set_unit(self):
-        """Sets all elements to zero, and fill the diagonal with ones."""
+      def `SetUnit` as set_unit_(self) -> self:
+        """Sets diagonal elements to one, off-diagonal elements to zero."""
 
-      def `SetRandn` as set_randn(self):
-        """Sets the elements to random values of a normal distribution."""
+      def `SetRandn` as set_randn_(self)-> self:
+        """Sets the elements to numbers from standard normal distribution."""
 
       def `Trace` as trace(self) -> float:
-        """Return the trace of the matrix"""
+        """Returns the trace of the matrix."""
 
-      def `Resize` as _resize(self, num_rows:int,
-                              resize_type: MatrixResizeType = default):
-        """Resizes a matrix. If the resize_type is kSetZero,
-           the new data will be zero. If the resize type is kUndefined,
-           the new data will be undefined. Finally if the resize type is kCopyData,
-           the new data will be the same as the old data in any shared positions,
-           and zero elsewhere. stride_type defines how data will be read from memory,
-           we advise to let it in its default value.
+      def `Resize` as resize_(self, num_rows:int,
+                              resize_type: MatrixResizeType = default) -> self:
+        """Resizes the matrix.
 
         Args:
-            num_rows(int): The new number of rows
-            resize_type(MatrixResizeType): Determines the initial values of the vector.
-                                           Defualt is kSetZero
+          num_rows (int): The new number of rows.
+          resize_type (:class:`MatrixResizeType`): Determines how the elements
+            are initialized. If SET_ZERO, they are set to zero. If UNDEFINED,
+            they are left uninitialized. If COPY_DATA, existing elements are
+            retained, new ones are set to zero. Defaults to SET_ZERO.
         """
 
-      def `AddToDiag` as add_to_diag(self, r: float):
-        """Add a constant r to the diagonal of the matrix.
+      def `AddToDiag` as add_to_diag(self, r: float) -> self:
+        """Adds a constant r to the diagonal of the matrix.
 
         Args:
             r(float): A constant
         """
 
-      def `ScaleDiag` as scale_diag(self, alpha: float):
-        """Scale the diagonal of the matrix by alpha.
+      def `ScaleDiag` as scale_diag(self, alpha: float) -> self:
+        """Scales the diagonal of the matrix by alpha.
 
         Args:
             alpha(float): A scaling constant
         """
 
-      def `SetDiag` as set_diag(self, alpha: float):
-        """Set all the diagonal elements to alpha.
+      def `SetDiag` as set_diag(self, alpha: float) -> self:
+        """Sets all the diagonal elements to alpha.
 
         Args:
             alpha(float): A constant
         """
 
-      def `CopyFromPacked` as copy_from_packed(self, orig: PackedMatrix):
-        """Copy data from a packed matrix.
+      def `CopyFromPacked` as copy_from_packed(self, orig: PackedMatrix) -> self:
+        """Copies the elements from a packed matrix.
 
         Args:
-            orig(PackedMatrix): The packed matrix whose data we will copy
+            orig(PackedMatrix): The packed matrix to copy from.
 
         Raises:
-            Error in case of dimension mismatch
+            RuntimeError: In case of dimension mismatch.
         """
 
-      def `CopyFromVec` as copy_from_vec(self, orig: SubVector):
-        """Interprets the vector as having the same layout as the packed matrix.
-           Must have the same dimension, i.e. orig.size==(seld.num_rows*self.num_cols+1)/2;
+      def `CopyFromVec` as copy_from_vec(self, orig: SubVector) -> self:
+        """Copies the elements from a vector.
+
+        Interprets the vector as having the same layout as the packed matrix.
+        Input vector and the packed matrix must have the same size, i.e.
+          orig.size == (self.num_rows * self.num_cols+1) / 2
 
         Args:
-            orig(SubVector): A vector of class SubVector
+            orig (SubVector): The vector to copy from.
         """
 
       def `NumRows` as __len__(self) -> int:
-        """Return the number of rows."""
+        """Returns the number of rows."""
 
       def `SizeInBytes` as size_in_bytes(self) -> int:
-        """Return the size of the matrix in memory, in bytes."""
+        """Returns the size (in bytes) of the data held by the matrix."""
 
-      def `operator()` as get(self, r: int, c: int) -> float:
-        """Indexing operator.
+      def `operator()` as getitem(self, r: int, c: int) -> float:
+        """Gets the element at the given index.
 
         Args:
-            r(int): The index for row. Indexing starts from 0
-            c(int): The index for column. Indexing starts from 0
+          r (int): The row index of the element to get.
+          c (int): The column index of the element to get.
 
         Returns:
-            The indexed element
+          The element at the given index.
 
         Raises:
-            Error if r > num_rows or c > num_cols
+          RuntimeError: If r > num_rows or c > num_cols.
         """
 
       def `Max` as max(self) -> float:
-        """Return the maximum elememnt of the matrix"""
+        """Returns the maximum value in the matrix."""
 
       def `Min` as min(self) -> float:
-        """Return the minimum  elememnt of the matrix"""
+        """Returns the minimum value in the matrix."""
 
-      def `Scale` as scale(self, c:float):
-        """Scales the elements of the matrix."""
-
-      def `Read` as read(self, is: istream, binary: bool, add: bool = default):
-        """Reads from C++ stream.
+      def `Scale` as scale(self, c:float) -> self:
+        """Scales each element with the given scalar.
 
         Args:
-            is(istream): The input straem.
-            binary(bool): If the stream is binary.
-            add(bool): True if you want to add the stream to self.
+          c (float): The scaling coefficient.
+        """
+
+      def `Read` as read_(self, is: istream, binary: bool, add: bool = default):
+        """Reads the matrix from the given C++ stream.
+
+        Args:
+          is (istream): The input C++ stream.
+          binary (bool): Whether the stream is binary.
+          add (bool): Whether to add existing contents to the read matrix.
+            Defaults to False.
         """
 
       def `Write` as write(self, os: ostream, binary: bool):
-        """Writes to C++ stream.
+        """Writes the matrix to given C++ stream.
 
         Args:
-            os(ostream): The output straem
-            binary(bool): If the stream is binary
+            os (ostream): The output C++ straem.
+            binary (bool): Whether the stream is binary.
         """
 
-      def `Swap` as swap_with_packed(self, other: PackedMatrix):
-        """Swaps the contents of self and other, where other is a
-           a Packed Matrix. Shallow swap."""
+      def `Swap` as swap_with_packed_(self, other: PackedMatrix) -> self:
+        """Swaps the contents with another packed matrix.
 
-      def `Swap` as swap_with_matrix(self, other: Matrix):
-        """Swaps the contents of self and other, where other is a
-           a Matrix. Shallow swap."""
+        Shallow swap.
+
+        Args:
+          other (PackedMatrix): The matrix to swap contents with.
+        """
+
+      def `Swap` as swap_with_matrix_(self, other: Matrix) -> self:
+        """Swaps the contents with a matrix.
+
+        Shallow swap.
+
+        Args:
+          other (Matrix): The matrix to swap contents with.
+        """
+
+    class `PackedMatrix<double>` as DoublePackedMatrix:
+      """Base class for single precision triangular and symmetric matrices."""
+
+      num_rows: int = property(`NumRows`)
+      """The number of rows."""
+      num_cols: int = property(`NumCols`)
+      """The number of columns."""
+
+      @add__init__
+      def `PackedMatrix` as from_size(
+          self, r:int, resize_type: MatrixResizeType = default):
+        """Creates a new packed matrix of given size.
+
+        Args:
+          r (int): The number or rows.
+          resize_type (:class:`MatrixResizeType`): Determines how the elements
+            are initialized. If SET_ZERO (or COPY_DATA), they are set to zero.
+            If UNDEFINED, they are left uninitialized. Defaults to SET_ZERO.
+
+        Note:
+          Since packed matrices are for storing square matrices, the number
+          of columns is always equal to the number of rows.
+        """
+
+      @add__init__
+      def `PackedMatrix` as from_other(self, orig: DoublePackedMatrix):
+        """Creates a new packed matrix from the given packed matrix.
+
+        Args:
+            orig (PackedMatrix): The input packed matrix.
+        """
+
+      def `SetZero` as set_zero_(self) -> self:
+        """Sets the elements to zero."""
+
+      def `SetUnit` as set_unit_(self) -> self:
+        """Sets diagonal elements to one, off-diagonal elements to zero."""
+
+      def `SetRandn` as set_randn_(self)-> self:
+        """Sets the elements to numbers from standard normal distribution."""
+
+      def `Trace` as trace(self) -> float:
+        """Returns the trace of the matrix."""
+
+      def `Resize` as resize_(self, num_rows:int,
+                              resize_type: MatrixResizeType = default) -> self:
+        """Resizes the matrix.
+
+        Args:
+          num_rows (int): The new number of rows.
+          resize_type (:class:`MatrixResizeType`): Determines how the elements
+            are initialized. If SET_ZERO, they are set to zero. If UNDEFINED,
+            they are left uninitialized. If COPY_DATA, existing elements are
+            retained, new ones are set to zero. Defaults to SET_ZERO.
+        """
+
+      def `AddToDiag` as add_to_diag(self, r: float) -> self:
+        """Adds a constant r to the diagonal of the matrix.
+
+        Args:
+            r(float): A constant
+        """
+
+      def `ScaleDiag` as scale_diag(self, alpha: float) -> self:
+        """Scales the diagonal of the matrix by alpha.
+
+        Args:
+            alpha(float): A scaling constant
+        """
+
+      def `SetDiag` as set_diag(self, alpha: float) -> self:
+        """Sets all the diagonal elements to alpha.
+
+        Args:
+            alpha(float): A constant
+        """
+
+      def `CopyFromPacked` as copy_from_packed(self, orig: DoublePackedMatrix) -> self:
+        """Copies the elements from a packed matrix.
+
+        Args:
+            orig(DoublePackedMatrix): The packed matrix to copy from.
+
+        Raises:
+            RuntimeError: In case of dimension mismatch.
+        """
+
+      def `CopyFromVec` as copy_from_vec(self, orig: DoubleSubVector) -> self:
+        """Copies the elements from a vector.
+
+        Interprets the vector as having the same layout as the packed matrix.
+        Input vector and the packed matrix must have the same size, i.e.
+          orig.size == (self.num_rows * self.num_cols+1) / 2
+
+        Args:
+            orig (DoubleSubVector): The vector to copy from.
+        """
+
+      def `NumRows` as __len__(self) -> int:
+        """Returns the number of rows."""
+
+      def `SizeInBytes` as size_in_bytes(self) -> int:
+        """Returns the size (in bytes) of the data held by the matrix."""
+
+      def `operator()` as getitem(self, r: int, c: int) -> float:
+        """Gets the element at the given index.
+
+        Args:
+          r (int): The row index of the element to get.
+          c (int): The column index of the element to get.
+
+        Returns:
+          The element at the given index.
+
+        Raises:
+          RuntimeError: If r > num_rows or c > num_cols.
+        """
+
+      def `Max` as max(self) -> float:
+        """Returns the maximum value in the matrix."""
+
+      def `Min` as min(self) -> float:
+        """Returns the minimum value in the matrix."""
+
+      def `Scale` as scale(self, c:float) -> self:
+        """Scales each element with the given scalar.
+
+        Args:
+          c (float): The scaling coefficient.
+        """
+
+      def `Read` as read_(self, is: istream, binary: bool, add: bool = default):
+        """Reads the matrix from the given C++ stream.
+
+        Args:
+          is (istream): The input C++ stream.
+          binary (bool): Whether the stream is binary.
+          add (bool): Whether to add existing contents to the read matrix.
+            Defaults to False.
+        """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes the matrix to given C++ stream.
+
+        Args:
+            os (ostream): The output C++ straem.
+            binary (bool): Whether the stream is binary.
+        """
+
+      def `Swap` as swap_with_packed_(self, other: DoublePackedMatrix) -> self:
+        """Swaps the contents with another packed matrix.
+
+        Shallow swap.
+
+        Args:
+          other (PackedMatrix): The matrix to swap contents with.
+        """
+
+      def `Swap` as swap_with_matrix_(self, other: DoubleMatrix) -> self:
+        """Swaps the contents with a matrix.
+
+        Shallow swap.
+
+        Args:
+          other (Matrix): The matrix to swap contents with.
+        """

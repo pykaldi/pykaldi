@@ -12,6 +12,7 @@ kaldi\.itf
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       Clusterable
       ContextDependencyInterface

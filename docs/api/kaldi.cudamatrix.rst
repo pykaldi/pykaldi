@@ -8,6 +8,7 @@ kaldi\.cudamatrix
    .. rubric:: Functions
 
    .. autosummary::
+      :nosignatures:
    
       approx_equal_cu_matrix
       approx_equal_cu_vector
@@ -24,6 +25,7 @@ kaldi\.cudamatrix
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       CuArray
       CuBlockMatrixData

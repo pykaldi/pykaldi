@@ -35,7 +35,7 @@ class TestCuVector(unittest.TestCase):
 
     def testCuVectorSwap(self):
         N = [2, 3, 5, 7, 13]
-        A = Vector.new(N).clone()
+        A = Vector(N).clone()
         C = CuVector.new_from_size(5)
         C.swap(A) #Swap *is* destructive
 
@@ -63,7 +63,7 @@ class TestCuVector(unittest.TestCase):
         for i in range(10):
             dim = 10 * i
             A = Vector(dim)
-            A.set_randn()
+            A.set_randn_()
             D = CuVector.new_from_size(dim)
             D.copy_from_vec(A)
             self.assertEqual(A.sum(), D.sum())
@@ -98,7 +98,7 @@ class TestCuVector(unittest.TestCase):
         C.invert_elements()
 
         # Geometric series r = 1/2, a = 1/2
-        A = Vector.new([2, 4, 8, 16, 32, 64])
+        A = Vector([2, 4, 8, 16, 32, 64])
         C = CuVector.new_from_size(len(A))
         C.swap(A)
         C.invert_elements()

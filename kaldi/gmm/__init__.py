@@ -111,9 +111,9 @@ class FullGmm(_full_gmm.FullGmm):
         Raises:
             ValueError if data is not consistent with this components dimension.
         """
-        if data.dim() != self.dim():
+        if data.dim != self.dim():
             raise ValueError("data dimension {} does not match gmm dimension {}"
-                             .format(data.dim(), self.dim()))
+                             .format(data.dim, self.dim()))
         posteriors = _matrix.Vector(self.num_gauss())
         loglike = self._component_posteriors(data, posteriors)
         return loglike, posteriors
@@ -128,7 +128,7 @@ class FullGmm(_full_gmm.FullGmm):
     def set_weights(self, weights):
         """Sets gmm mixture weights."""
         if not isinstance(weights, _matrix.Vector):
-            weights = _matrix.Vector.new(weights)
+            weights = _matrix.Vector(weights)
         self._set_weights(weights)
 
     def means(self):
@@ -141,7 +141,7 @@ class FullGmm(_full_gmm.FullGmm):
     def set_means(self, means):
         """Sets gmm component means."""
         if not isinstance(means, _matrix.Matrix):
-            means = _matrix.Matrix.new(means)
+            means = _matrix.Matrix(means)
         self._set_means(means)
 
     def covars(self):

@@ -134,6 +134,10 @@ html_sidebars = {
 # Keep autodoc order as in the source
 autodoc_member_order = 'alphabetical'
 
+# Both the class’ and the __init__ method’s docstring are concatenated
+# and inserted.
+autoclass_content = 'both'
+
 # List of autodoc directive flags that should be
 # automatically applied to all autodoc directives
 autodoc_default_flags = ['members', 'undoc-members', 'inherited-members']

@@ -12,6 +12,7 @@ kaldi\.decoder
    .. rubric:: Classes
 
    .. autosummary::
+      :nosignatures:
    
       FasterDecoder
       FasterDecoderOptions

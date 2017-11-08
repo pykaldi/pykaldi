@@ -13,10 +13,10 @@ class TestVector(unittest.TestCase):
     def test_copy(self):
         v = Vector(5)
         with self.assertRaises(ValueError):
-            v1 = Vector().copy(v)
+            v1 = Vector().copy_(v)
 
-        v.set_zero()
-        v1 = Vector(len(v)).copy(v)
+        v.set_zero_()
+        v1 = Vector(len(v)).copy_(v)
         self.assertEqual(len(v), len(v1))
 
         # Make sure modifying original
@@ -30,7 +30,7 @@ class TestVector(unittest.TestCase):
         self.assertNotEqual(v[2], v1[2])
 
         # Check copy works with data
-        v1 = Vector(len(v)).copy(v)
+        v1 = Vector(len(v)).copy_(v)
 
         self.assertEqual(v[0], v1[0])
         self.assertEqual(v[1], v1[1])
@@ -43,7 +43,7 @@ class TestVector(unittest.TestCase):
         v2 = v.clone()
 
         # Clone with data
-        v = Vector.new(np.array([3, 5, 7]))
+        v = Vector(np.array([3, 5, 7]))
         v2 = v.clone()
 
         self.assertEqual(v[0], v2[0])
@@ -52,7 +52,7 @@ class TestVector(unittest.TestCase):
 
         # Make sure modifying original
         # doesn't break new one
-        v.set_zero()
+        v.set_zero_()
         self.assertNotEqual(v[0], v2[0])
         self.assertNotEqual(v[1], v2[1])
         self.assertNotEqual(v[2], v2[2])
@@ -92,7 +92,7 @@ class TestVector(unittest.TestCase):
         v1 = v.numpy()
         self.assertTupleEqual((5, ), v1.shape)
 
-        v = Vector.new([1.0, -2.0, 3.0])
+        v = Vector([1.0, -2.0, 3.0])
         v1 = v.numpy()
         self.assertTrue(np.all(np.array([1.0, -2.0, 3.0]) == v1))
 
@@ -127,12 +127,12 @@ class TestVector(unittest.TestCase):
             self.assertEqual(geq0_v[i], geq0_n[i])
 
     def test_range(self):
-        v = Vector.new(np.array([3, 5, 7, 11, 13]))
+        v = Vector(np.array([3, 5, 7, 11, 13]))
         v1 = v.range(1, 2)
 
         self.assertTrue(isinstance(v1, SubVector))
-        self.assertTrue(2, v1.size())
-        v2 = Vector.new([5, 7])
+        self.assertTrue(2, len(v1))
+        v2 = Vector([5, 7])
         self.assertEqual(v2, v1)
 
         # What happens if we modify v?
@@ -144,33 +144,32 @@ class TestVector(unittest.TestCase):
         # Test empty kaldi.Vector
         v = Vector()
         self.assertIsNotNone(v)
-        self.assertEqual(0, v.size())
+        self.assertEqual(0, len(v))
 
-        v = Vector.new([])
+        v = Vector([])
 
     def test_nonempty(self):
         v = Vector(100)
         self.assertIsNotNone(v)
-        self.assertEqual(100, v.size())
+        self.assertEqual(100, len(v))
 
-    def test_new(self):
-        v = Vector.new([3, 5, 7, 11, 13])
-        self.assertEqual(5, v.size())
+    def test_init(self):
+        v = Vector([3, 5, 7, 11, 13])
+        self.assertEqual(5, len(v))
         self.assertAlmostEqual(15015.0, v.numpy().prod())
 
-        v2 = Vector.new(np.array([3, 5, 7, 11, 13]))
-        self.assertEqual(5, v2.size())
+        v2 = Vector(np.array([3, 5, 7, 11, 13]))
+        self.assertEqual(5, len(v2))
         self.assertAlmostEqual(15015.0, v2.numpy().prod())
 
-        self.assertTrue(v.equal(v2))
-        self.assertTrue(v2.equal(v))
+        self.assertEqual(v, v2)
 
     def test__getitem__(self):
         v = Vector()
         with self.assertRaises(IndexError):
             v[0]
 
-        v = Vector.new([3, 5, 7, 11, 13])
+        v = Vector([3, 5, 7, 11, 13])
         self.assertAlmostEqual(3.0, v[0])
         self.assertAlmostEqual(7.0, v[2])
         self.assertAlmostEqual(13.0, v[4])
@@ -187,7 +186,7 @@ class TestVector(unittest.TestCase):
         with self.assertRaises(IndexError):
             v[0] = 1.0
 
-        v = Vector.new([3, 5, 7, 11, 13])
+        v = Vector([3, 5, 7, 11, 13])
         v[0] = 15.0
         self.assertAlmostEqual(75075.0, v[:10].numpy().prod())
 
@@ -202,7 +201,7 @@ class TestVector(unittest.TestCase):
         with self.assertRaises(IndexError):
             del v[0]
 
-        v = Vector.new([3, 5, 7, 11, 13])
+        v = Vector([3, 5, 7, 11, 13])
         del v[0]
         self.assertAlmostEqual(5005.0, v.numpy().prod())
 

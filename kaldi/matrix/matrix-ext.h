@@ -28,6 +28,26 @@ PyObject* Clif_PyObjFrom(::kaldi::SubMatrix<float>*, py::PostConv);
 PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubMatrix<float>>, py::PostConv);
 PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubMatrix<float>>, py::PostConv);
 PyObject* Clif_PyObjFrom(const ::kaldi::SubMatrix<float>&, py::PostConv);
+// CLIF use `::kaldi::SubVector<double>` as DoubleSubVector
+bool Clif_PyObjAs(PyObject* input, ::kaldi::SubVector<double>** output);
+bool Clif_PyObjAs(PyObject* input, std::shared_ptr<::kaldi::SubVector<double>>* output);
+bool Clif_PyObjAs(PyObject* input, std::unique_ptr<::kaldi::SubVector<double>>* output);
+bool Clif_PyObjAs(PyObject* input, ::kaldi::SubVector<double>* output);
+bool Clif_PyObjAs(PyObject* input, ::gtl::optional<::kaldi::SubVector<double>>* output);
+PyObject* Clif_PyObjFrom(::kaldi::SubVector<double>*, py::PostConv);
+PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubVector<double>>, py::PostConv);
+PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubVector<double>>, py::PostConv);
+PyObject* Clif_PyObjFrom(const ::kaldi::SubVector<double>&, py::PostConv);
+// CLIF use `::kaldi::SubMatrix<double>` as DoubleSubMatrix
+bool Clif_PyObjAs(PyObject* input, ::kaldi::SubMatrix<double>** output);
+bool Clif_PyObjAs(PyObject* input, std::shared_ptr<::kaldi::SubMatrix<double>>* output);
+bool Clif_PyObjAs(PyObject* input, std::unique_ptr<::kaldi::SubMatrix<double>>* output);
+bool Clif_PyObjAs(PyObject* input, ::kaldi::SubMatrix<double>* output);
+bool Clif_PyObjAs(PyObject* input, ::gtl::optional<::kaldi::SubMatrix<double>>* output);
+PyObject* Clif_PyObjFrom(::kaldi::SubMatrix<double>*, py::PostConv);
+PyObject* Clif_PyObjFrom(std::unique_ptr<::kaldi::SubMatrix<double>>, py::PostConv);
+PyObject* Clif_PyObjFrom(std::shared_ptr<::kaldi::SubMatrix<double>>, py::PostConv);
+PyObject* Clif_PyObjFrom(const ::kaldi::SubMatrix<double>&, py::PostConv);
 
 }  // namespace kaldi
 
