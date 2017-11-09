@@ -10,25 +10,63 @@ kaldi\.matrix
    .. autosummary::
       :nosignatures:
    
-      approx_equal
-      assert_equal
-      create_eigenvalue_matrix
-      extract_row_range_with_padding
-      filter_matrix_rows
-      read_htk
       set_printoptions
-      solve_double_quadratic_matrix_problem
-      solve_quadratic_matrix_problem
-      solve_quadratic_problem
-      sort_svd
-      trace_mat
-      trace_mat_mat
-      trace_mat_mat_mat
-      trace_mat_mat_mat_mat
-      vec_mat_vec
-      vec_vec
-      write_htk
-      write_sphinx
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      DoubleMatrix
+      DoubleSubMatrix
+      DoubleSubVector
+      DoubleVector
+      Matrix
+      SubMatrix
+      SubVector
+      Vector
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.common
+---------------------
+
+.. automodule:: kaldi.matrix.common
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      MatrixResizeType
+      MatrixStrideType
+      MatrixTransposeType
+      SpCopyType
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.compressed
+-------------------------
+
+.. automodule:: kaldi.matrix.compressed
+
+   
    
    
 
@@ -41,28 +79,6 @@ kaldi\.matrix
    
       CompressedMatrix
       CompressionMethod
-      DoubleMatrix
-      DoubleSpMatrix
-      DoubleSubMatrix
-      DoubleSubVector
-      DoubleTpMatrix
-      DoubleVector
-      GeneralMatrix
-      GeneralMatrixType
-      HtkHeader
-      Matrix
-      MatrixResizeType
-      MatrixStrideType
-      MatrixTransposeType
-      SolverOptions
-      SpCopyType
-      SpMatrix
-      SparseMatrix
-      SparseVector
-      SubMatrix
-      SubVector
-      TpMatrix
-      Vector
    
    
 
@@ -82,15 +98,68 @@ kaldi\.matrix\.functions
       :nosignatures:
    
       add_outer_product_plus_minus
+      approx_equal
+      assert_equal
       assert_same_dim_matrix
       complex_fft
       compute_dct_matrix
       compute_pca
+      create_eigenvalue_matrix
+      filter_matrix_rows
       real_fft
+      solve_double_quadratic_matrix_problem
+      solve_quadratic_matrix_problem
+      solve_quadratic_problem
+      sort_svd
+      trace_mat
+      trace_mat_mat
+      trace_mat_mat_mat
+      trace_mat_mat_mat_mat
+      vec_mat_vec
+      vec_vec
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      SolverOptions
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.htk
+------------------
+
+.. automodule:: kaldi.matrix.htk
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      read_htk
+      write_htk
+      write_sphinx
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      HtkHeader
    
    
 
@@ -123,6 +192,65 @@ kaldi\.matrix\.optimization
       LbfgsOptions
       LinearCgdOptions
       OptimizeLbfgs
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.packed
+---------------------
+
+.. automodule:: kaldi.matrix.packed
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      DoubleSpMatrix
+      DoubleTpMatrix
+      SpMatrix
+      TpMatrix
+   
+   
+
+   
+   
+   
+kaldi\.matrix\.sparse
+---------------------
+
+.. automodule:: kaldi.matrix.sparse
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      extract_row_range_with_padding
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      GeneralMatrix
+      GeneralMatrixType
+      SparseMatrix
+      SparseVector
    
    
 
