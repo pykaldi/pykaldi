@@ -5,7 +5,8 @@ import unittest
 
 from kaldi.base.io import istringstream, ostringstream
 from kaldi.cudamatrix import cuda_available, approx_equal_cu_matrix, CuMatrix
-from kaldi.matrix import Matrix, Vector, approx_equal
+from kaldi.matrix import Matrix, Vector
+from kaldi.matrix.functions import approx_equal
 from kaldi.nnet3 import *
 
 class TestNnetCompute(unittest.TestCase):

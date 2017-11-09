@@ -1,5 +1,6 @@
 from kaldi.base import math as kaldi_math
-from kaldi.matrix import Vector, TpMatrix
+from kaldi.matrix import Vector
+from kaldi.matrix.packed import TpMatrix
 
 from kaldi.cudamatrix import CuDevice, CuVector, CuSubVector
 

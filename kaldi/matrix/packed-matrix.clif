@@ -62,28 +62,28 @@ from "matrix/packed-matrix.h":
             retained, new ones are set to zero. Defaults to SET_ZERO.
         """
 
-      def `AddToDiag` as add_to_diag(self, r: float) -> self:
+      def `AddToDiag` as add_to_diag_(self, r: float) -> self:
         """Adds a constant r to the diagonal of the matrix.
 
         Args:
             r(float): A constant
         """
 
-      def `ScaleDiag` as scale_diag(self, alpha: float) -> self:
+      def `ScaleDiag` as scale_diag_(self, alpha: float) -> self:
         """Scales the diagonal of the matrix by alpha.
 
         Args:
             alpha(float): A scaling constant
         """
 
-      def `SetDiag` as set_diag(self, alpha: float) -> self:
+      def `SetDiag` as set_diag_(self, alpha: float) -> self:
         """Sets all the diagonal elements to alpha.
 
         Args:
             alpha(float): A constant
         """
 
-      def `CopyFromPacked` as copy_from_packed(self, orig: PackedMatrix) -> self:
+      def `CopyFromPacked` as copy_from_packed_(self, orig: PackedMatrix) -> self:
         """Copies the elements from a packed matrix.
 
         Args:
@@ -93,7 +93,7 @@ from "matrix/packed-matrix.h":
             RuntimeError: In case of dimension mismatch.
         """
 
-      def `CopyFromVec` as copy_from_vec(self, orig: SubVector) -> self:
+      def `CopyFromVec` as copy_from_vec_(self, orig: SubVector) -> self:
         """Copies the elements from a vector.
 
         Interprets the vector as having the same layout as the packed matrix.
@@ -130,14 +130,14 @@ from "matrix/packed-matrix.h":
       def `Min` as min(self) -> float:
         """Returns the minimum value in the matrix."""
 
-      def `Scale` as scale(self, c:float) -> self:
+      def `Scale` as scale_(self, c:float) -> self:
         """Scales each element with the given scalar.
 
         Args:
           c (float): The scaling coefficient.
         """
 
-      def `Read` as read_(self, is: istream, binary: bool, add: bool = default):
+      def `Read` as read_(self, is: istream, binary: bool, add: bool = default) -> self:
         """Reads the matrix from the given C++ stream.
 
         Args:
@@ -229,28 +229,28 @@ from "matrix/packed-matrix.h":
             retained, new ones are set to zero. Defaults to SET_ZERO.
         """
 
-      def `AddToDiag` as add_to_diag(self, r: float) -> self:
+      def `AddToDiag` as add_to_diag_(self, r: float) -> self:
         """Adds a constant r to the diagonal of the matrix.
 
         Args:
             r(float): A constant
         """
 
-      def `ScaleDiag` as scale_diag(self, alpha: float) -> self:
+      def `ScaleDiag` as scale_diag_(self, alpha: float) -> self:
         """Scales the diagonal of the matrix by alpha.
 
         Args:
             alpha(float): A scaling constant
         """
 
-      def `SetDiag` as set_diag(self, alpha: float) -> self:
+      def `SetDiag` as set_diag_(self, alpha: float) -> self:
         """Sets all the diagonal elements to alpha.
 
         Args:
             alpha(float): A constant
         """
 
-      def `CopyFromPacked` as copy_from_packed(self, orig: DoublePackedMatrix) -> self:
+      def `CopyFromPacked` as copy_from_packed_(self, orig: DoublePackedMatrix) -> self:
         """Copies the elements from a packed matrix.
 
         Args:
@@ -260,7 +260,7 @@ from "matrix/packed-matrix.h":
             RuntimeError: In case of dimension mismatch.
         """
 
-      def `CopyFromVec` as copy_from_vec(self, orig: DoubleSubVector) -> self:
+      def `CopyFromVec` as copy_from_vec_(self, orig: DoubleSubVector) -> self:
         """Copies the elements from a vector.
 
         Interprets the vector as having the same layout as the packed matrix.
@@ -297,14 +297,14 @@ from "matrix/packed-matrix.h":
       def `Min` as min(self) -> float:
         """Returns the minimum value in the matrix."""
 
-      def `Scale` as scale(self, c:float) -> self:
+      def `Scale` as scale_(self, c:float) -> self:
         """Scales each element with the given scalar.
 
         Args:
           c (float): The scaling coefficient.
         """
 
-      def `Read` as read_(self, is: istream, binary: bool, add: bool = default):
+      def `Read` as read_(self, is: istream, binary: bool, add: bool = default) -> self:
         """Reads the matrix from the given C++ stream.
 
         Args:

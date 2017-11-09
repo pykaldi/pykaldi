@@ -1,7 +1,10 @@
 from __future__ import division
 import unittest
 import numpy as np
-from kaldi.matrix import Matrix, SubMatrix, SpMatrix, TpMatrix, DoubleSubVector, SubVector, DoubleMatrix, DoubleSubMatrix
+
+from kaldi.matrix import Matrix, SubMatrix, SubVector
+from kaldi.matrix import DoubleMatrix, DoubleSubMatrix, DoubleSubVector
+from kaldi.matrix.packed import SpMatrix, TpMatrix
 
 class _Tests(object):
 

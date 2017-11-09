@@ -5,8 +5,10 @@ import unittest
 import numpy as np
 
 from kaldi.base import math as kaldi_math
-from kaldi.matrix import (MatrixTransposeType, Matrix, Vector,
-                          SpMatrix, TpMatrix, vec_mat_vec)
+from kaldi.matrix import Matrix, Vector
+from kaldi.matrix.common import MatrixTransposeType
+from kaldi.matrix.functions import vec_mat_vec
+from kaldi.matrix.packed import SpMatrix, TpMatrix
 from kaldi.gmm import *
 from kaldi.gmm._model_test_common import *
 
