@@ -49,7 +49,7 @@ from "matrix/kaldi-vector.h":
         """Returns the dimension of the vector."""
 
       dim: int = property(`Dim`)
-        """Dimension (zero for empty vector)."""
+      """Dimension (zero for empty vector)."""
 
       def `SizeInBytes` as size_in_bytes(self) -> int:
         """Returns the size (in bytes) of the data held by the vector."""
@@ -639,7 +639,7 @@ from "matrix/kaldi-vector.h":
         """Returns the dimension of the vector."""
 
       dim: int = property(`Dim`)
-        """Dimension (zero for empty vector)."""
+      """Dimension (zero for empty vector)."""
 
       def `SizeInBytes` as size_in_bytes(self) -> int:
         """Returns the size (in bytes) of the data held by the vector."""

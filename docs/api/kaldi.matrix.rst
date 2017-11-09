@@ -247,6 +247,8 @@ kaldi\.matrix\.sparse
    .. autosummary::
       :nosignatures:
    
+      DoubleSparseMatrix
+      DoubleSparseVector
       GeneralMatrix
       GeneralMatrixType
       SparseMatrix

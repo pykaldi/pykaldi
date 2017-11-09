@@ -7,11 +7,17 @@ from "cudamatrix/cu-matrix-clifwrap.h" import *
 
 from "matrix/sparse-matrix.h":
   namespace `kaldi`:
+
+    # Single precision
+
     class `SparseVector<float>` as SparseVector:
       """Defines a class for sparse vectors."""
 
-      def `Dim` as dim(self) -> int:
-        """Returns the size of the sparse vector."""
+      def `Dim` as __len__(self) -> int:
+        """Returns the dimension of the vector."""
+
+      dim: int = property(`Dim`)
+      """Dimension (zero for empty vector)."""
 
       def `Sum` as sum(self) -> float:
         """Returns the summation of the elements."""
@@ -20,7 +26,7 @@ from "matrix/sparse-matrix.h":
         """Copy the elements of self to vec.
 
         Args:
-            vec(VectorBase): A vector
+            vec(Vector): A vector
 
         Raises:
             Error in case of dimension mismatch
@@ -32,10 +38,10 @@ from "matrix/sparse-matrix.h":
 
         Args:
             alpha(float): A scaling constant
-            vec(VectorBase): A vector
+            vec(Vector): A vector
         """
 
-      def `CopyFromSvec` as copy_from_svec(self, other: SparseVector):
+      def `CopyFromSvec` as copy_from_svec_(self, other: SparseVector) -> self:
         """Copy elements of other to self
 
         Args:
@@ -49,11 +55,11 @@ from "matrix/sparse-matrix.h":
       def `SparseVector` as new_from_other(self, other: SparseVector):
         """Initialization by copying the elements of other."""
 
-      def `Swap` as swap(self, other: SparseVector):
+      def `Swap` as swap_(self, other: SparseVector) -> self:
         """Swaps the contents of self and other. Shallow swap.
 
         Args:
-            other(VectorBase): The vector whose elements we want to swap with self.
+            other(Vector): The vector whose elements we want to swap with self.
         """
 
       def `Max` as max(self) -> (value: float, index: int):
@@ -69,7 +75,7 @@ from "matrix/sparse-matrix.h":
             A tuple holding the index and a float
         """
 
-      def `SetRandn` as set_randn(self, zero_prob: float):
+      def `SetRandn` as set_randn_(self, zero_prob: float) -> self:
         """Sets elements to zero with probability zero_prob, else normally distributed."""
 
       @add__init__
@@ -91,7 +97,7 @@ from "matrix/sparse-matrix.h":
                                            in the vector and its corresponding value
         """
 
-      def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
+      def `Resize` as resize_(self, dim: int, resize_type: MatrixResizeType = default) -> self:
         """Set vector size to length (length can be zero).
           The default resize type is kSetZero, in which case the new data will
           be zero. If the resize type is kUndefined, the new data will be undefined.
@@ -111,7 +117,7 @@ from "matrix/sparse-matrix.h":
             binary(bool): If the stream is binary.
         """
 
-      def `Read` as read(self, is: istream, binary: bool):
+      def `Read` as read_(self, is: istream, binary: bool) -> self:
         """Reads from C++ stream.
 
         Args:
@@ -119,7 +125,7 @@ from "matrix/sparse-matrix.h":
             binary(bool): If the stream is binary.
         """
 
-      def `Scale` as scale(self, alpha: float):
+      def `Scale` as scale_(self, alpha: float) -> self:
         """Scale the elements of the vector by alpha"""
 
     def `VecSvec` as _vec_svec(vec: VectorBase, svec: SparseVector) -> float:
@@ -128,11 +134,14 @@ from "matrix/sparse-matrix.h":
     class `SparseMatrix<float>` as SparseMatrix:
       """This class defines a Sparse Matrix."""
 
-      def `NumRows` as num_rows(self) -> int:
-        """Returns the number of rows."""
+      def `NumRows` as __len__(self) -> int:
+        """Returns the number of rows of the matrix."""
 
-      def `NumCols` as num_cols(self) -> int:
-        """Returns the number of columnds."""
+      num_rows: int = property(`NumRows`)
+      """Number of rows (zero for empty matrix)."""
+
+      num_cols: int = property(`NumCols`)
+      """Number of columns (zero for empty matrix)."""
 
       def `NumElements` as num_elements(self) -> int:
         """Returns the number of nonzero elements."""
@@ -149,14 +158,14 @@ from "matrix/sparse-matrix.h":
         """Copies the nonzero elements of the matrix to the vector other.
 
         Args:
-            other(VectorBase): A vector to store the nonzero elements of self
+            other(Vector): A vector to store the nonzero elements of self
 
         Raises:
             Error if the size of other is different than the number of nonzero
             elements of self
         """
 
-      def `CopyFromSmat` as copy_from_smat(self, other: SparseMatrix):
+      def `CopyFromSmat` as copy_from_smat_(self, other: SparseMatrix) -> self:
         """Copy data from another sparse matrix. Will resize if necessary.
 
         Args:
@@ -170,8 +179,8 @@ from "matrix/sparse-matrix.h":
 
         Args:
             alpha(float): A constant
-            other(MatrixBase): A matrix
-            t(MatrixTransposeType
+            other(Matrix): A matrix
+            t(MatrixTransposeType): transpose or not
 
         Raises:
             Error in case of dimension mismatch
@@ -185,7 +194,7 @@ from "matrix/sparse-matrix.h":
             other(SparseMatrix): A sparse matrix
         """
 
-      def `Swap` as swap(self, other: SparseMatrix):
+      def `Swap` as swap_(self, other: SparseMatrix) ->  self:
         """Swaps the contents of self and other. Shallow swap."""
 
       @add__init__
@@ -201,7 +210,7 @@ from "matrix/sparse-matrix.h":
                                                  the number of rows
        """
 
-      def `SetRandn` as set_randn(self, zero_prob: float):
+      def `SetRandn` as set_randn_(self, zero_prob: float) -> self:
         """Sets up to a pseudo-randomly initialized matrix,
            with each element zero with probability zero_prob
            and else normally distributed.
@@ -215,7 +224,7 @@ from "matrix/sparse-matrix.h":
             binary(bool): If the stream is binary.
         """
 
-      def `Read` as read(self, is: istream, binary: bool):
+      def `Read` as read_(self, is: istream, binary: bool) -> self:
         """Reads from C++ stream.
 
         Args:
@@ -226,7 +235,7 @@ from "matrix/sparse-matrix.h":
       def `Row` as row(self, r: int) -> SparseVector:
         """Returns the row indexed by r as a sparse vector"""
 
-      def `SetRow` as set_row(self, r: int, vec: SparseVector):
+      def `SetRow` as set_row_(self, r: int, vec: SparseVector) -> self:
         """Sets row r to "vec"; makes sure it has the correct dimension."""
 
       # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
@@ -240,8 +249,8 @@ from "matrix/sparse-matrix.h":
             num_cols(int): The number of columns
         """
 
-      def `Resize` as resize(self, rows: int, cols: int,
-                 resize_type: MatrixResizeType = default):
+      def `Resize` as resize_(self, rows: int, cols: int,
+                 resize_type: MatrixResizeType = default) -> self:
         """Resizes a matrix. If the resize_type is kSetZero,
            the new data will be zero. If the resize type is kUndefined,
            the new data will be undefined. Finally if the resize type is kCopyData,
@@ -255,7 +264,7 @@ from "matrix/sparse-matrix.h":
             resize_type(MatrixResizeType): Determines the initial values of the vector.
         """
 
-      def `Scale` as scale(self, alpha: float):
+      def `Scale` as scale_(self, alpha: float) -> self:
         """Scale the elements of the matrix by alpha."""
 
     def `TraceMatSmat` as _trace_mat_smat(A: MatrixBase, B: SparseMatrix,
@@ -263,7 +272,7 @@ from "matrix/sparse-matrix.h":
       """If trans==kNoTrans compute Trace(A*B). If trans==kTrans compute Trace(A^T*B)
 
       Args:
-          A(MatrixBase): A matrix
+          A(Matrix): A matrix
           B(SparseMatrix): A sparse matrix
           trans(MatrixTransposeType): Determines if we use A as is or its transpose
 
@@ -494,4 +503,308 @@ from "matrix/sparse-matrix.h":
 
       Returns:
           A general matrix.
+      """
+
+    # Double precision
+
+    class `SparseVector<double>` as DoubleSparseVector:
+      """Defines a class for sparse vectors."""
+
+      def `Dim` as __len__(self) -> int:
+        """Returns the dimension of the vector."""
+
+      dim: int = property(`Dim`)
+      """Dimension (zero for empty vector)."""
+
+      def `Sum` as sum(self) -> float:
+        """Returns the summation of the elements."""
+
+      def `CopyElementsToVec` as copy_elements_to_vec(self, vec: DoubleVectorBase):
+        """Copy the elements of self to vec.
+
+        Args:
+            vec(DoubleVector): A vector
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+      def `AddToVec` as add_to_vec(self, alpha: float, vec: DoubleVectorBase):
+        """Performs vec=vec+alpha*self
+
+        Args:
+            alpha(float): A scaling constant
+            vec(DoubleVector): A vector
+        """
+
+      def `CopyFromSvec` as copy_from_svec(self, other: DoubleSparseVector):
+        """Copy elements of other to self
+
+        Args:
+            other(DoubleSparseVector): A sparse vector whose elements we will copy
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+      @add__init__
+      def `SparseVector` as new_from_other(self, other: DoubleSparseVector):
+        """Initialization by copying the elements of other."""
+
+      def `Swap` as swap_(self, other: DoubleSparseVector) -> self:
+        """Swaps the contents of self and other. Shallow swap.
+
+        Args:
+            other(DoubleVector): The vector whose elements we want to swap with self.
+        """
+
+      def `Max` as max(self) -> (value: float, index: int):
+        """Returns a tuple holding the maximum value(float) of the vector and its index(int)."""
+
+      def `NumElements` as num_elements(self) -> int:
+        """Returns the number of nonzero elements."""
+
+      def `GetElement` as get_elements(self, i: int) -> tuple<int, float>:
+        """Get an indexed element.
+
+        Returns:
+            A tuple holding the index and a float
+        """
+
+      def `SetRandn` as set_randn_(self, zero_prob: float) -> self:
+        """Sets elements to zero with probability zero_prob, else normally distributed."""
+
+      @add__init__
+      def `SparseVector` as new_from_dim(self, dim: int):
+        """Initialization by defining the size of the vector.
+
+        Args:
+            dim(int): The size of the vector
+        """
+
+      @add__init__
+      def `SparseVector` as new_from_pairs(self, dim: int,
+                                           pairs: list<tuple<int, float>>):
+        """Initialization using a list of tuples(pairs).
+
+        Args:
+            dim(int): The size of the vector
+            pairs(list<tuple<int,float>>): A list of tuples. Each tuple holds an index
+                                           in the vector and its corresponding value
+        """
+
+      def `Resize` as resize_(self, dim: int, resize_type: MatrixResizeType = default) -> self:
+        """Set vector size to length (length can be zero).
+          The default resize type is kSetZero, in which case the new data will
+          be zero. If the resize type is kUndefined, the new data will be undefined.
+          Finally if the resize type is kCopyData, the new data will be the same as
+          the old data in any shared positions, and zero elsewhere.
+
+       Args:
+           dim(int): The new size of the vector
+           resize_type(MatrixResizeType): Determines the initial values of the vector.
+       """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
+
+      def `Read` as read_(self, is: istream, binary: bool) -> self:
+        """Reads from C++ stream.
+
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+        """
+
+      def `Scale` as scale(self, alpha: float):
+        """Scale the elements of the vector by alpha"""
+
+    def `VecSvec` as _vec_svec_double(vec: DoubleVectorBase, svec: DoubleSparseVector) -> float:
+        """Returns the inner product of vec and svec."""
+
+
+    class `SparseMatrix<double>` as DoubleSparseMatrix:
+      """This class defines a Sparse Matrix."""
+
+      def `NumRows` as __len__(self) -> int:
+        """Returns the number of rows of the matrix."""
+
+      num_rows: int = property(`NumRows`)
+      """Number of rows (zero for empty matrix)."""
+
+      num_cols: int = property(`NumCols`)
+      """Number of columns (zero for empty matrix)."""
+
+      def `NumElements` as num_elements(self) -> int:
+        """Returns the number of nonzero elements."""
+
+      def `Sum` as sum(self) -> float:
+        """Returns the sum of the elememts."""
+
+      def `FrobeniusNorm` as frobenius_norm(self) -> float:
+        """Computes and returns the Frobenius norm."""
+
+      def `CopyToMat` as copy_to_mat(self, other: DoubleMatrixBase, t: MatrixTransposeType = default)
+
+      def `CopyElementsToVec` as copy_elements_to_vec(self, other: DoubleVectorBase):
+        """Copies the nonzero elements of the matrix to the vector other.
+
+        Args:
+            other(DoubleVector): A vector to store the nonzero elements of self
+
+        Raises:
+            Error if the size of other is different than the number of nonzero
+            elements of self
+        """
+
+      def `CopyFromSmat` as copy_from_smat_(self, other: DoubleSparseMatrix) -> self:
+        """Copy data from another sparse matrix. Will resize if necessary.
+
+        Args:
+            other(DoubleSparseMatrix): The matrix to copy from.
+        """
+
+      def `AddToMat` as add_to_mat(self, alpha: float, other: DoubleMatrixBase,
+                                   t: MatrixTransposeType = default):
+        """Performs other = other+alpha*self if t==kNoTrans
+        or other^T = other^T+alpha*self if t==kTrans
+
+        Args:
+            alpha(float): A constant
+            other(DoubleMatrix): A matrix
+            t(MatrixTransposeType): transpose or not
+
+        Raises:
+            Error in case of dimension mismatch
+        """
+
+      @add__init__
+      def `SparseMatrix` as new_from_other(self, other: DoubleSparseMatrix):
+        """Initialization by copying the elements of another sparse matrix.
+
+        Args:
+            other(DoubleSparseMatrix): A sparse matrix
+        """
+
+      def `Swap` as swap_(self, other: DoubleSparseMatrix) ->  self:
+        """Swaps the contents of self and other. Shallow swap."""
+
+      @add__init__
+      def `SparseMatrix` as new_from_pairs(
+          self, dim: int, pairs: list<list<tuple<int, float>>>):
+        """Initialization by a list of list of tuples. The tuples hold
+           and index for the matrix and the corresponding value.
+
+        Args:
+            dim(int): Determines the number of columns
+            pairs(list<list<tuple<int,float>>>): Contains the element of the matrix.
+                                                 The length of the ``outer'' list determines
+                                                 the number of rows
+       """
+
+      def `SetRandn` as set_randn_(self, zero_prob: float) -> self:
+        """Sets up to a pseudo-randomly initialized matrix,
+           with each element zero with probability zero_prob
+           and else normally distributed.
+        """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
+
+      def `Read` as read_(self, is: istream, binary: bool) -> self:
+        """Reads from C++ stream.
+
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+        """
+
+      def `Row` as row(self, r: int) -> DoubleSparseVector:
+        """Returns the row indexed by r as a sparse vector"""
+
+      def `SetRow` as set_row_(self, r: int, vec: DoubleSparseVector) -> self:
+        """Sets row r to "vec"; makes sure it has the correct dimension."""
+
+      # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
+
+      @add__init__
+      def `SparseMatrix` as new_from_dims(self, num_rows: int, num_cols: int):
+        """Initialization by defining the dimensions.
+
+        Args:
+            num_rows(int): The number of rows
+            num_cols(int): The number of columns
+        """
+
+      def `Resize` as resize_(self, rows: int, cols: int,
+                 resize_type: MatrixResizeType = default) -> self:
+        """Resizes a matrix. If the resize_type is kSetZero,
+           the new data will be zero. If the resize type is kUndefined,
+           the new data will be undefined. Finally if the resize type is kCopyData,
+           the new data will be the same as the old data in any shared positions,
+           and zero elsewhere. stride_type defines how data will be read from memory,
+           we advise to let it in its default value.
+
+        Args:
+            rows(int): The new number of rows
+            cols(int): The new number of columns
+            resize_type(MatrixResizeType): Determines the initial values of the vector.
+        """
+
+      def `Scale` as scale_(self, alpha: float) -> self:
+        """Scale the elements of the matrix by alpha."""
+
+
+    def `TraceMatSmat` as _trace_double_mat_smat(A: DoubleMatrixBase, B: DoubleSparseMatrix,
+                                                 trans: MatrixTransposeType = default) -> float:
+      """If trans==kNoTrans compute Trace(A*B). If trans==kTrans compute Trace(A^T*B)
+
+      Args:
+          A(DoubleMatrix): A matrix
+          B(DoubleSparseMatrix): A sparse matrix
+          trans(MatrixTransposeType): Determines if we use A as is or its transpose
+
+      Raises:
+          Error in case of dimensionality mismatch
+      """
+
+    def `FilterSparseMatrixRows` as _filter_double_sparse_matrix_rows(in: DoubleSparseMatrix, keep_rows: list<bool>)
+        -> DoubleSparseMatrix:
+      """Outputs a sparse matrix containing only the rows r
+         of ``in'' such that keep_rows[r] == true.
+
+      Args:
+          in(DoubleSparseMatrix): The sparse matrix to be filtered
+          keep_rows(list<bool>): A list that determines which rows will be filtered
+
+      Returns:
+          The filtered sparse matrix
+
+      Raises:
+          Error if in.num_rows != list.length
+      """
+
+    def `FilterMatrixRows` as _filter_double_matrix_rows(in: DoubleMatrix, keep_rows: list<bool>) -> DoubleMatrix:
+      """Outputs a matrix containing only the rows r
+         of ``in'' such that keep_rows[r] == true.
+
+      Args:
+          in(DoubleMatrix): The matrix to be filtered
+          keep_rows(list<bool>): A list that determines which rows will be filtered
+
+      Returns:
+          The filtered matrix
+
+      Raises:
+          Error if in.num_rows != list.length
       """

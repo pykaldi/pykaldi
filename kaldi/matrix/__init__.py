@@ -1,24 +1,21 @@
 """
-PyKaldi currently defines the following CPU vector and matrix types:
+PyKaldi defines the following CPU vector/matrix types:
 
-===================== ===========================
-Data Type             Vector/Matrix Type
-===================== ===========================
-32-bit floating point :class:`Vector`
-32-bit floating point :class:`Matrix`
-32-bit floating point :class:`SpMatrix`
-32-bit floating point :class:`TpMatrix`
-32-bit floating point :class:`SparseVector`
-32-bit floating point :class:`SparseMatrix`
-64-bit floating point :class:`DoubleVector`
-64-bit floating point :class:`DoubleMatrix`
-64-bit floating point :class:`DoubleSpMatrix`
-64-bit floating point :class:`DoubleTpMatrix`
-\                     :class:`CompressedMatrix`
-\                     :class:`GeneralMatrix`
-===================== ===========================
+================= ====================== ============================ =========================
+Type              32-bit floating point  64-bit floating point        Other
+================= ====================== ============================ =========================
+Dense Matrix      :class:`.Matrix`       :class:`.DoubleMatrix`       :class:`.CompressedMatrix`
+Dense Vector      :class:`.Vector`       :class:`.DoubleVector`
+Symmetric Matrix  :class:`.SpMatrix`     :class:`.DoubleSpMatrix`
+Triangular Matrix :class:`.TpMatrix`     :class:`.DoubleTpMatrix`
+Sparse Matrix     :class:`.SparseMatrix` :class:`.DoubleSparseMatrix`
+Sparse Vector     :class:`.SparseVector` :class:`.DoubleSparseMatrix`
+================= ====================== ============================ =========================
 
-PyKaldi :class:`Vector` and :class:`Matrix` types come in two flavors.
+In addition, there is a :class:`.GeneralMatrix` type which is a wrapper around
+:class:`.Matrix`, :class:`.SparseMatrix` and :class:`.CompressedMatrix` types.
+
+The dense :class:`Vector`/:class:`Matrix` types come in two flavors.
 
 :class:`Vector`/:class:`Matrix` instances own the memory buffers backing them.
 Instantiating a new :class:`Vector`/:class:`Matrix` object allocates new memory

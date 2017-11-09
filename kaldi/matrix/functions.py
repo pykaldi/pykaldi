@@ -146,7 +146,7 @@ def filter_matrix_rows(matrix, keep_rows):
     `keep_rows[r] == True`.
 
     Args:
-        matrix (Matrix or SparseMatrix or CompressedMatrix or GeneralMatrix):
+        matrix (Matrix or SparseMatrix or CompressedMatrix or GeneralMatrix or DoubleMatrix or DoubleSparseMatrix):
             The input matrix.
         keep_rows (List[bool]): The list that determines which rows to keep.
 
@@ -159,12 +159,16 @@ def filter_matrix_rows(matrix, keep_rows):
     """
     if isinstance(matrix, _kaldi_matrix.Matrix):
         return _sparse_matrix._filter_matrix_rows(matrix, keep_rows)
-    if isinstance(matrix, _compressed_matrix.CompressedMatrix):
-        return _sparse_matrix._filter_compressed_matrix_rows(matrix, keep_rows)
     if isinstance(matrix, _sparse_matrix.SparseMatrix):
         return _sparse_matrix._filter_sparse_matrix_rows(matrix, keep_rows)
+    if isinstance(matrix, _compressed_matrix.CompressedMatrix):
+        return _sparse_matrix._filter_compressed_matrix_rows(matrix, keep_rows)
     if isinstance(matrix, _sparse_matrix.GeneralMatrix):
         return _sparse_matrix._filter_general_matrix_rows(matrix, keep_rows)
+    if isinstance(matrix, _kaldi_matrix.DoubleMatrix):
+        return _sparse_matrix._filter_matrix_rows_double(matrix, keep_rows)
+    if isinstance(matrix, _sparse_matrix.DoubleSparseMatrix):
+        return _sparse_matrix._filter_sparse_matrix_rows_double(matrix, keep_rows)
 
     raise TypeError("input matrix type is not supported.")
 
@@ -174,7 +178,8 @@ def vec_vec(v1, v2):
 
     Args:
         v1 (Vector or DoubleVector): The first vector.
-        v2 (Vector or DoubleVector or SparseVector): The second vector.
+        v2 (Vector or DoubleVector or SparseVector or DoubleSparseVector):
+            The second vector.
 
     Returns:
         The dot product of v1 and v2.
@@ -191,6 +196,8 @@ def vec_vec(v1, v2):
     elif isinstance(v1, _kaldi_vector.DoubleVectorBase):
         if isinstance(v2, _kaldi_vector.DoubleVectorBase):
             return _kaldi_vector._vec_vec_double(v1, v2)
+        elif isinstance(v2, _sparse_matrix.DoubleSparseVector):
+            return _sparse_matrix._vec_svec_double(v1, v2)
 
     raise TypeError("v1 and v2 should be vectors with the same data type.")
 
@@ -199,6 +206,8 @@ def vec_mat_vec(v1, M, v2):
     """Computes a vector-matrix-vector product.
 
     Performs the operation :math:`v_1\\ M\\ v_2`.
+
+    Precision of input matrices should match.
 
     Args:
         v1 (Vector or DoubleVector): The first input vector.
@@ -212,17 +221,17 @@ def vec_mat_vec(v1, M, v2):
        RuntimeError: In case of size mismatch.
     """
     if (isinstance(v1, _kaldi_vector.VectorBase) and
-        isinstance(M, _kaldi_matrix.MatrixBase) and
         isinstance(v2, _kaldi_vector.VectorBase)):
-        return _kaldi_vector_ext._vec_mat_vec(v1, M, v2)
-    if (isinstance(v1, _kaldi_vector.VectorBase) and
-        isinstance(M, _sp_matrix.SpMatrix) and
-        isinstance(v2, _kaldi_vector.VectorBase)):
-        return _sp_matrix._vec_sp_vec(v1, M, v2)
-    if (isinstance(v1, _kaldi_vector.DoubleVectorBase) and
-        isinstance(M, _kaldi_matrix.DoubleMatrixBase) and
-        isinstance(v2, _kaldi_vector.DoubleVectorBase)):
-        return _kaldi_vector_ext._vec_mat_vec_double(v1, M, v2)
+        if isinstance(M, _kaldi_matrix.MatrixBase):
+            return _kaldi_vector_ext._vec_mat_vec(v1, M, v2)
+        if isinstance(M, _sp_matrix.SpMatrix):
+            return _sp_matrix._vec_sp_vec(v1, M, v2)
+    elif (isinstance(v1, _kaldi_vector.DoubleVectorBase) and
+          isinstance(v2, _kaldi_vector.DoubleVectorBase)):
+        if isinstance(M, _kaldi_matrix.DoubleMatrixBase):
+            return _kaldi_vector_ext._vec_mat_vec_double(v1, M, v2)
+        if isinstance(M, _sp_matrix.DoubleSpMatrix):
+            return _sp_matrix._vec_sp_vec_double(v1, M, v2)
 
     raise TypeError("given combination of input types is not supported")
 
@@ -242,10 +251,12 @@ def trace_mat(A):
 def trace_mat_mat(A, B, transA=_matrix_common.MatrixTransposeType.NO_TRANS):
     """Returns the trace of :math:`A\\ B`.
 
+    Precision of input matrices should match.
+
     Args:
-        A (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix):
+        A (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix or SparseMatrix or DoubleSparseMatrix):
             The first input matrix.
-        B (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix):
+        B (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix or SparseMatrix or DoubleSparseMatrix):
             The second input matrix.
         transA (_matrix_common.MatrixTransposeType):
             Whether to use **A** or its transpose.
@@ -270,10 +281,14 @@ def trace_mat_mat(A, B, transA=_matrix_common.MatrixTransposeType.NO_TRANS):
     elif isinstance(A, _kaldi_matrix.DoubleMatrixBase):
         if isinstance(B, _kaldi_matrix.DoubleMatrixBase):
             return _kaldi_matrix._trace_double_mat_mat(A, B, transA)
-        # TODO: Add sparse B optimization
+        elif isinstance(B, _sparse_matrix.DoubleSparseMatrix):
+            return _sparse_matrix._trace_double_mat_smat(A, B, transA)
     elif isinstance(A, _sp_matrix.DoubleSpMatrix):
         if isinstance(B, _sp_matrix.DoubleSpMatrix):
-            return _sp_matrix._trace_double_sp_sp(A, B)
+            if lower:
+                return _sp_matrix._trace_double_sp_sp_lower(A, B)
+            else:
+                return _sp_matrix._trace_double_sp_sp(A, B)
 
     raise TypeError("given combination of matrix types is not supported")
 
@@ -284,9 +299,12 @@ def trace_mat_mat_mat(A, B, C,
                       transC=_matrix_common.MatrixTransposeType.NO_TRANS):
     """Returns the trace of :math:`A\\ B\\ C`.
 
+    Precision of input matrices should match.
+
     Args:
         A (Matrix or DoubleMatrix): The first input matrix.
-        B (Matrix or DoubleMatrix or SpMatrix): The second input matrix.
+        B (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix):
+            The second input matrix.
         C (Matrix or DoubleMatrix): The third input matrix.
         transA (_matrix_common.MatrixTransposeType):
             Whether to use **A** or its transpose.
@@ -311,6 +329,9 @@ def trace_mat_mat_mat(A, B, C,
             isinstance(C, _kaldi_matrix.DoubleMatrixBase)):
             return _kaldi_matrix._trace_double_mat_mat_mat(A, transA, B, transB,
                                                            C, transC)
+        elif (isinstance(B, _sp_matrix.DoubleSpMatrix) and
+              isinstance(C, _kaldi_matrix.DoubleMatrixBase)):
+            return _sp_matrix._trace_double_mat_sp_mat(A, transA, B, C, transC)
 
     raise TypeError("given combination of matrix types is not supported")
 
@@ -322,11 +343,15 @@ def trace_mat_mat_mat_mat(A, B, C, D,
                           transD=_matrix_common.MatrixTransposeType.NO_TRANS):
     """Returns the trace of :math:`A\\ B\\ C\\ D`.
 
+    Precision of input matrices should match.
+
     Args:
         A (Matrix or DoubleMatrix): The first input matrix.
-        B (Matrix or DoubleMatrix or SpMatrix): The second input matrix.
+        B (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix):
+            The second input matrix.
         C (Matrix or DoubleMatrix): The third input matrix.
-        D (Matrix or DoubleMatrix or SpMatrix): The fourth input matrix.
+        D (Matrix or DoubleMatrix or SpMatrix or DoubleSpMatrix):
+            The fourth input matrix.
         transA (_matrix_common.MatrixTransposeType):
             Whether to use **A** or its transpose.
             Defaults to ``MatrixTransposeType.NO_TRANS``.
@@ -356,6 +381,11 @@ def trace_mat_mat_mat_mat(A, B, C, D,
             isinstance(D, _kaldi_matrix.DoubleMatrixBase)):
             return _kaldi_matrix._trace_double_mat_mat_mat_mat(
                 A, transA, B, transB, C, transC, D, transD)
+        elif (isinstance(B, _sp_matrix.DoubleSpMatrix) and
+              isinstance(C, _kaldi_matrix.DoubleMatrixBase) and
+              isinstance(D, _sp_matrix.DoubleSpMatrix)):
+            return _sp_matrix._trace_double_mat_sp_mat_sp(A, transA, B,
+                                                          C, transC, D)
 
     raise TypeError("given combination of matrix types is not supported")
 

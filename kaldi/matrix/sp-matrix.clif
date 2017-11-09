@@ -813,6 +813,9 @@ from "matrix/sp-matrix.h":
     def `TraceSpSpLower` as _trace_sp_sp_lower(A:SpMatrix, B:SpMatrix) -> float:
       """Computes the trace of (A*B)"""
 
+    def `TraceSpSpLower` as _trace_double_sp_sp_lower(A:DoubleSpMatrix, B:DoubleSpMatrix) -> float:
+      """Computes the trace of (A*B)"""
+
     def `TraceSpMat` as _trace_sp_mat(A:SpMatrix, B:MatrixBase) -> float:
       """Returns Trace(A*B)
 
@@ -822,6 +825,27 @@ from "matrix/sp-matrix.h":
 
     def `TraceMatSpMat` as _trace_mat_sp_mat(A:MatrixBase, transA:MatrixTransposeType, B:SpMatrix,
                       C:MatrixBase, transC: MatrixTransposeType) -> float:
+      """Returns tr(A*B*C)
+
+      Args:
+          A(MatrixBase): A matrix
+          transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                       if kTrans transpose A before operation
+          B(SpMatrix): A symmetric matrix
+          C(MatrixBase): A matrix
+          transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                       if kTrans transpose C before operation
+
+      Returns:
+          The trace of A*B or A*B^T depending on the value of trans
+
+      Raises:
+          Error in case of dimension mismatch
+      """
+
+    def `TraceMatSpMat` as _trace_double_mat_sp_mat(
+        A:DoubleMatrixBase, transA:MatrixTransposeType, B:DoubleSpMatrix,
+        C:DoubleMatrixBase, transC: MatrixTransposeType) -> float:
       """Returns tr(A*B*C)
 
       Args:
@@ -862,7 +886,41 @@ from "matrix/sp-matrix.h":
           Error in case of dimension mismatch
       """
 
+    def `TraceMatSpMatSp` as _trace_double_mat_sp_mat_sp(
+        A:DoubleMatrixBase, transA:MatrixTransposeType, B:DoubleSpMatrix,
+        C:DoubleMatrixBase, transC:MatrixTransposeType, D:DoubleSpMatrix) -> float:
+      """Returns tr(A*B*C*D)
+
+      Args:
+          A(MatrixBase): A matrix
+          transA(MatrixTransposeType): if kNoTrans(default) treat A as is,
+                                       if kTrans transpose A before operation
+          B(SpMatrix): A symmetric matrix
+          C(MatrixBase): A matrix
+          transC(MatrixTransposeType): if kNoTrans(default) treat C as is,
+                                       if kTrans transpose C before operation
+          D(SpMatrix): A symmetric matrix
+
+      Returns:
+          The trace of A*B or A*B^T depending on the value of trans
+
+      Raises:
+          Error in case of dimension mismatch
+      """
+
     def `VecSpVec` as _vec_sp_vec(v1:VectorBase, M:SpMatrix, v2:VectorBase) -> float:
+      """Performs v1^T*M*v2.
+
+      Args:
+          v1(VectorBase): A vector
+          M(SpMatrix): A symmetric matrix
+          v2(VectorBase): A vector
+
+      Raises:
+          Error in case of dimension mismatch
+      """
+
+    def `VecSpVec` as _vec_sp_vec_double(v1:DoubleVectorBase, M:DoubleSpMatrix, v2:DoubleVectorBase) -> float:
       """Performs v1^T*M*v2.
 
       Args:
