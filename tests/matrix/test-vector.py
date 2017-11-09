@@ -158,7 +158,7 @@ class _Tests(object):
         self.assertEqual(Vector(5), v.add_vec_(1.0, v1))
 
     def test_copy_row_from_mat(self):
-
+        
         with self.assertRaises(IndexError):
             M = Matrix(0, 0).set_randn_()
             v = self.vector_class(0).copy_row_from_mat_(M, 0)
@@ -166,7 +166,8 @@ class _Tests(object):
         for i in range(1, 11):
             M = Matrix(i, i).set_randn_()
             v = self.vector_class(i).copy_row_from_mat_(M, 0)
-            self.assertEqual(M[0], v)
+            for m, e in zip(M[0], v):
+                self.assertEqual(m, e)
 
     def test_init(self):
 
