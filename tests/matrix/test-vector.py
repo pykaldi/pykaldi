@@ -5,10 +5,7 @@ from kaldi.matrix import Vector, SubVector
 from kaldi.matrix import DoubleVector, DoubleSubVector
 from kaldi.matrix import Matrix, DoubleMatrix
 
-class Tests(object):
-
-    def setUp(self):
-        super(Tests, self).setUp()
+class _Tests(object):
 
     def test_copy(self):
         v = self.vector_class(5)
@@ -252,10 +249,10 @@ class Tests(object):
         self.assertAlmostEqual(5005.0, v.numpy().prod())
 
 
-class SingleVectorTest(unittest.TestCase, Tests):
+class SingleVectorTest(unittest.TestCase, _Tests):
     vector_class = Vector
 
-class DoubleVectorTest(unittest.TestCase, Tests):
+class DoubleVectorTest(unittest.TestCase, _Tests):
     vector_class = DoubleVector
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from kaldi.matrix import Matrix, SubMatrix, SpMatrix, TpMatrix, DoubleSubVector, SubVector, DoubleMatrix, DoubleSubMatrix
 
-class Tests(object):
+class _Tests(object):
 
     def test_copy(self):
         m = self.matrix_class()
@@ -279,10 +279,10 @@ class testSubMatrix(unittest.TestCase):
         m = DoubleMatrix()
         sb = SubMatrix(m)
 
-class testSingleMatrix(unittest.TestCase, Tests):
+class testSingleMatrix(unittest.TestCase, _Tests):
     matrix_class = Matrix
 
-class testDoubleMatrix(unittest.TestCase, Tests):
+class testDoubleMatrix(unittest.TestCase, _Tests):
     matrix_class = DoubleMatrix
 
 if __name__ == '__main__':
