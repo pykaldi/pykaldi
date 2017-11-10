@@ -1,6 +1,6 @@
 from . import _kaldi_table
-from ._kaldi_table import (read_script_file, write_script_file, 
-                           classify_wspecifier, classify_rspecifier, 
+from ._kaldi_table import (read_script_file, write_script_file,
+                           classify_wspecifier, classify_rspecifier,
                            WspecifierType, RspecifierType)
 
 ################################################################################
@@ -57,69 +57,110 @@ class _SequentialReaderBase(object):
 
 class SequentialVectorReader(_SequentialReaderBase,
                              _kaldi_table.SequentialVectorReader):
-    """:kaldi:`kaldi::SequentialBaseFloatVectorReader` wrapper.
+    """Sequential table reader for single precision vectors.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :class:`~kaldi.matrix.Vector`) pair from the table in sequential
-    order.
+    This class is used for reading single precision vectors sequentially from an
+    archive or script file. It implements the iterator protocol similar to how
+    Python implements iteration over dictionaries. Each iteration returns a
+    (key: :obj:`str`, value: :class:`~kaldi.matrix.Vector`) pair from the table
+    in sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class SequentialMatrixReader(_SequentialReaderBase,
                              _kaldi_table.SequentialMatrixReader):
-    """:kaldi:`kaldi::SequentialBaseFloatMatrixReader` wrapper.
+    """Sequential table reader for single precision matrices.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :class:`~kaldi.matrix.Matrix`) pair from the table in sequential
-    order.
+    This class is used for reading single precision matrices sequentially from
+    an archive or script file. It implements the iterator protocol similar to
+    how Python implements iteration over dictionaries. Each iteration returns a
+    (key: :obj:`str`, value: :class:`~kaldi.matrix.Matrix`) pair from the table
+    in sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class SequentialWaveReader(_SequentialReaderBase,
                           _kaldi_table.SequentialWaveReader):
-    """:kaldi:`kaldi::SequentialTableReader` <:kaldi:`kaldi::WaveHolder`>
-    wrapper.
+    """Sequential table reader for wave files.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :class:`~kaldi.feat.WaveData`) pair from the table in sequential
-    order.
+    This class is used for reading wave files sequentially from an archive or
+    script file. It implements the iterator protocol similar to how Python
+    implements iteration over dictionaries. Each iteration returns a (key:
+    :obj:`str`, value: :class:`~kaldi.feat.wave.WaveData`) pair from the table
+    in sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class SequentialNnetExampleReader(_SequentialReaderBase,
                                   _kaldi_table.SequentialNnetExampleReader):
-    """:kaldi:`kaldi::nnet3::SequentialNnetExampleReader` wrapper.
+    """Sequential table reader for nnet examples.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :class:`~kaldi.nnet3.NnetExample`) pair from the table in sequential
+    This class is used for reading nnet examples sequentially from an archive or
+    script file. It implements the iterator protocol similar to how Python
+    implements iteration over dictionaries. Each iteration returns a (key:
+    :obj:`str`, value: :class:`~kaldi.nnet3.NnetExample`) pair from the table in
+    sequential order.
+
+    Args:
+        rspecifier(str): Kaldi rspecifier for reading the table. If provided,
+            the table is opened for reading.
+
+    Raises:
+        IOError: If opening the table for reading fails.
+    """
+    pass
+
+
+class SequentialIntReader(_SequentialReaderBase,
+                          _kaldi_table.SequentialIntReader):
+    """Sequential table reader for integers.
+
+    This class is used for reading integers sequentially from an archive or
+    script file. It implements the iterator protocol similar to how Python
+    implements iteration over dictionaries. Each iteration returns a (key:
+    :obj:`str`, value: :obj:`int`) pair from the table in sequential order.
+
+    Args:
+        rspecifier(str): Kaldi rspecifier for reading the table. If provided,
+            the table is opened for reading.
+
+    Raises:
+        IOError: If opening the table for reading fails.
+    """
+    pass
+
+class SequentialFloatReader(_SequentialReaderBase,
+                            _kaldi_table.SequentialFloatReader):
+    """Sequential table reader for single precision floats.
+
+    This class is used for reading single precision floats sequentially from an
+    archive or script file. It implements the iterator protocol similar to how
+    Python implements iteration over dictionaries. Each iteration returns a
+    (key: :obj:`str`, value: :obj:`float`) pair from the table in sequential
     order.
 
     Args:
@@ -127,97 +168,66 @@ class SequentialNnetExampleReader(_SequentialReaderBase,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
-    """
-    pass
-
-
-class SequentialIntReader(_SequentialReaderBase,
-                          _kaldi_table.SequentialIntReader):
-    """:kaldi:`kaldi::SequentialInt32Reader` wrapper.
-
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`int`) pair from the table in sequential order.
-
-    Args:
-        rspecifier(str): Kaldi rspecifier for reading the table. If provided,
-            the table is opened for reading.
-
-    Raises:
-        IOError if opening the table for reading fails.
-    """
-    pass
-
-
-class SequentialFloatReader(_SequentialReaderBase,
-                            _kaldi_table.SequentialFloatReader):
-    """:kaldi:`kaldi::SequentialBaseFloatReader` wrapper.
-
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`float`) pair from the table in sequential order.
-
-    Args:
-        rspecifier(str): Kaldi rspecifier for reading the table. If provided,
-            the table is opened for reading.
-
-    Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class SequentialDoubleReader(_SequentialReaderBase,
                              _kaldi_table.SequentialDoubleReader):
-    """:kaldi:`kaldi::SequentialDoubleReader` wrapper.
+    """Sequential table reader for double precision floats.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`float`) pair from the table in sequential order.
+    This class is used for reading double precision floats sequentially from an
+    archive or script file. It implements the iterator protocol similar to how
+    Python implements iteration over dictionaries. Each iteration returns a
+    (key: :obj:`str`, value: :obj:`float`) pair from the table in sequential
+    order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class SequentialBoolReader(_SequentialReaderBase,
                           _kaldi_table.SequentialBoolReader):
-    """:kaldi:`kaldi::SequentialBoolReader` wrapper.
+    """Sequential table reader for Booleans.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`bool`) pair from the table in sequential order.
+    This class is used for reading Booleans sequentially from an archive or
+    script file. It implements the iterator protocol similar to how Python
+    implements iteration over dictionaries. Each iteration returns a (key:
+    :obj:`str`, value: :obj:`bool`) pair from the table in sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class SequentialIntVectorReader(_SequentialReaderBase,
                                 _kaldi_table.SequentialIntVectorReader):
-    """:kaldi:`kaldi::SequentialInt32VectorReader` wrapper.
+    """Sequential table reader for integer sequences.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`list<int>`) pair from the table in sequential order.
+    This class is used for reading integer sequences sequentially from an
+    archive or script file. It implements the iterator protocol similar to how
+    Python implements iteration over dictionaries. Each iteration returns a
+    (key: :obj:`str`, value: :obj:`List[int]`) pair from the table in sequential
+    order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -225,18 +235,20 @@ class SequentialIntVectorReader(_SequentialReaderBase,
 class SequentialIntVectorVectorReader(
         _SequentialReaderBase,
         _kaldi_table.SequentialIntVectorVectorReader):
-    """:kaldi:`kaldi::SequentialInt32VectorVectorReader` wrapper.
+    """Sequential table reader for sequences of integer sequences.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`list<list<int>>`) pair from the table in sequential order.
+    This class is used for reading sequences of integer sequences sequentially
+    from an archive or script file. It implements the iterator protocol similar
+    to how Python implements iteration over dictionaries. Each iteration returns
+    a (key: :obj:`str`, value: :obj:`List[List[int]]`) pair from the table in
+    sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -244,18 +256,20 @@ class SequentialIntVectorVectorReader(
 class SequentialIntPairVectorReader(
         _SequentialReaderBase,
         _kaldi_table.SequentialIntPairVectorReader):
-    """:kaldi:`kaldi::SequentialInt32PairVectorReader` wrapper.
+    """Sequential table reader for sequences of integer pairs.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`list<(int,int)>`) pair from the table in sequential order.
+    This class is used for reading sequences of integer pairs sequentially from
+    an archive or script file. It implements the iterator protocol similar to
+    how Python implements iteration over dictionaries. Each iteration returns a
+    (key: :obj:`str`, value: :obj:`List[Tuple[int,int]]`) pair from the table in
+    sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -263,19 +277,20 @@ class SequentialIntPairVectorReader(
 class SequentialFloatPairVectorReader(
         _SequentialReaderBase,
         _kaldi_table.SequentialFloatPairVectorReader):
-    """:kaldi:`kaldi::SequentialBaseFloatPairVectorReader` wrapper.
+    """Sequential table reader for sequences of single precision float pairs.
 
-    This class implements the iterator protocol similar to how Python implements
-    iteration over dictionaries. Each iteration returns a (key: :obj:`str`,
-    value: :obj:`list<(float,float)>`) pair from the table in sequential
-    order.
+    This class is used for reading sequences of single precision float pairs
+    sequentially from an archive or script file. It implements the iterator
+    protocol similar to how Python implements iteration over dictionaries. Each
+    iteration returns a (key: :obj:`str`, value:
+    :obj:`List[Tuple[float,float]]`) pair from the table in sequential order.
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -316,158 +331,178 @@ class _RandomAccessReaderBase(object):
 
 class RandomAccessVectorReader(_RandomAccessReaderBase,
                                _kaldi_table.RandomAccessVectorReader):
-    """:kaldi:`kaldi::RandomAccessBaseFloatVectorReader` wrapper.
+    """Random access table reader for single precision vectors.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing single precision vectors in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    e.g. `reader[key]` returns the item (a :class:`~kaldi.matrix.Vector`)
+    associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessMatrixReader(_RandomAccessReaderBase,
                                _kaldi_table.RandomAccessMatrixReader):
-    """:kaldi:`kaldi::RandomAccessBaseFloatMatrixReader` wrapper.
+    """Random access table reader for single precision matrices.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing single precision matrices in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    e.g. `reader[key]` returns the item (a :class:`~kaldi.matrix.Matrix`)
+    associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessWaveReader(_RandomAccessReaderBase,
                              _kaldi_table.RandomAccessWaveReader):
-    """:kaldi:`kaldi::RandomAccessTableReader` <:kaldi:`kaldi::WaveHolder`>
-    wrapper.
+    """Random access table reader for wave files.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing wave files in an archive or script
+    file. It implements `__contains__` and `__getitem__` methods to provide a
+    dictionary-like interface for accessing table entries. e.g. `reader[key]`
+    returns the item (a :class:`~kaldi.feat.wave.WaveData`) associated with the
+    key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessNnetExampleReader(_RandomAccessReaderBase,
                                     _kaldi_table.RandomAccessNnetExampleReader):
-    """:kaldi:`kaldi::nnet3::RandomAccessNnetExampleReader` wrapper.
+    """Random access table reader for nnet examples.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing nnet examples in an archive or
+    script file. It implements `__contains__` and `__getitem__` methods to
+    provide a dictionary-like interface for accessing table entries. e.g.
+    `reader[key]` returns the item (a :class:`~kaldi.nnet3.NnetExample`)
+    associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessIntReader(_RandomAccessReaderBase,
                             _kaldi_table.RandomAccessIntReader):
-    """:kaldi:`kaldi::RandomAccessInt32Reader` wrapper.
+    """Random access table reader for integers.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing integers in an archive or script
+    file. It implements `__contains__` and `__getitem__` methods to provide a
+    dictionary-like interface for accessing table entries. e.g. `reader[key]`
+    returns the item (an :obj:`int`) associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessFloatReader(_RandomAccessReaderBase,
                               _kaldi_table.RandomAccessFloatReader):
-    """:kaldi:`kaldi::RandomAccessBaseFloatReader` wrapper.
+    """Random access table reader for single precision floats.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
-
+    This class is used for randomly accessing single precision floats in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    e.g. `reader[key]` returns the item (a :obj:`float`) associated with the key
+    (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessDoubleReader(_RandomAccessReaderBase,
                                _kaldi_table.RandomAccessDoubleReader):
-    """:kaldi:`kaldi::RandomAccessDoubleReader` wrapper.
+    """Random access table reader for double precision floats.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
-
+    This class is used for randomly accessing double precision floats in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    e.g. `reader[key]` returns the item (a :obj:`float`) associated with the key
+    (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessBoolReader(_RandomAccessReaderBase,
                              _kaldi_table.RandomAccessBoolReader):
-    """:kaldi:`kaldi::RandomAccessBoolReader` wrapper.
+    """Random access table reader for Booleans.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
-
+    This class is used for randomly accessing Booleans in an archive or script
+    file. It implements `__contains__` and `__getitem__` methods to provide a
+    dictionary-like interface for accessing table entries. e.g. `reader[key]`
+    returns the item (an :obj:`bool`) associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
 
 class RandomAccessIntVectorReader(_RandomAccessReaderBase,
                                   _kaldi_table.RandomAccessIntVectorReader):
-    """:kaldi:`kaldi::RandomAccessInt32VectorReader` wrapper.
+    """Random access table reader for integer sequences.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
-
+    This class is used for randomly accessing integer sequences in an archive or
+    script file. It implements `__contains__` and `__getitem__` methods to
+    provide a dictionary-like interface for accessing table entries. e.g.
+    `reader[key]` returns the item (an :obj:`List[int]`) associated with the key
+    (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -475,18 +510,20 @@ class RandomAccessIntVectorReader(_RandomAccessReaderBase,
 class RandomAccessIntVectorVectorReader(
         _RandomAccessReaderBase,
         _kaldi_table.RandomAccessIntVectorVectorReader):
-    """:kaldi:`kaldi::RandomAccessInt32VectorVectorReader` wrapper.
+    """Random access table reader for sequences of integer sequences.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
-
+    This class is used for randomly accessing sequences of integer sequences in
+    an archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    e.g. `reader[key]` returns the item (an :obj:`List[List[int]]`) associated
+    with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -494,17 +531,20 @@ class RandomAccessIntVectorVectorReader(
 class RandomAccessIntPairVectorReader(
         _RandomAccessReaderBase,
         _kaldi_table.RandomAccessIntPairVectorReader):
-    """:kaldi:`kaldi::RandomAccessInt32PairVectorReader` wrapper.
+    """Random access table reader for sequences of integer pairs.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing sequences of integer pairs in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    e.g. `reader[key]` returns the item (an :obj:`List[Tuple[int, int]]`)
+    associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -512,18 +552,20 @@ class RandomAccessIntPairVectorReader(
 class RandomAccessFloatPairVectorReader(
         _RandomAccessReaderBase,
         _kaldi_table.RandomAccessFloatPairVectorReader):
-    """:kaldi:`kaldi::RandomAccessBaseFloatPairVectorReader` wrapper.
+    """Random access table reader for sequences of single precision float pairs.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
-
+    This class is used for randomly accessing sequences of single precision
+    float pairs in an archive or script file. It implements `__contains__` and
+    `__getitem__` methods to provide a dictionary-like interface for accessing
+    table entries. e.g. `reader[key]` returns the item (an
+    :obj:`List[Tuple[float, float]]`) associated with the key (a :obj:`str`).
 
     Args:
         rspecifier(str): Kaldi rspecifier for reading the table. If provided,
             the table is opened for reading.
 
     Raises:
-        IOError if opening the table for reading fails.
+        IOError: If opening the table for reading fails.
     """
     pass
 
@@ -568,10 +610,15 @@ class _RandomAccessReaderMappedBase(object):
 class RandomAccessVectorReaderMapped(
         _RandomAccessReaderMappedBase,
         _kaldi_table.RandomAccessVectorReaderMapped):
-    """:kaldi:`kaldi::RandomAccessBaseFloatVectorReaderMapped` wrapper.
+    """Mapped random access table reader for single precision vectors.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing single precision vectors in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    If a **map_rspecifier** is provided, the map is used for converting the keys
+    to the actual keys used to query the table, e.g. `reader[key]` returns the
+    item (a :class:`~kaldi.matrix.Vector`) associated with the key `map[key]`
+    (a :obj:`str`). Otherwise, it works like :class:`RandomAccessVectorReader`.
 
     Args:
         table_rspecifier(str): Kaldi rspecifier for reading the table.
@@ -580,7 +627,7 @@ class RandomAccessVectorReaderMapped(
             If provided, the map is opened for reading.
 
     Raises:
-        IOError if opening the table or map for reading fails.
+        IOError: If opening the table or map for reading fails.
     """
     pass
 
@@ -588,10 +635,15 @@ class RandomAccessVectorReaderMapped(
 class RandomAccessMatrixReaderMapped(
         _RandomAccessReaderMappedBase,
         _kaldi_table.RandomAccessMatrixReaderMapped):
-    """:kaldi:`kaldi::RandomAccessBaseFloatMatrixReaderMapped` wrapper.
+    """Mapped random access table reader for single precision matrices.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing single precision matrices in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    If a **map_rspecifier** is provided, the map is used for converting the keys
+    to the actual keys used to query the table, e.g. `reader[key]` returns the
+    item (a :class:`~kaldi.matrix.Matrix`) associated with the key `map[key]`
+    (a :obj:`str`). Otherwise, it works like :class:`RandomAccessMatrixReader`.
 
     Args:
         table_rspecifier(str): Kaldi rspecifier for reading the table.
@@ -600,7 +652,7 @@ class RandomAccessMatrixReaderMapped(
             If provided, the map is opened for reading.
 
     Raises:
-        IOError if opening the table or map for reading fails.
+        IOError: If opening the table or map for reading fails.
     """
     pass
 
@@ -608,10 +660,15 @@ class RandomAccessMatrixReaderMapped(
 class RandomAccessFloatReaderMapped(
         _RandomAccessReaderMappedBase,
         _kaldi_table.RandomAccessFloatReaderMapped):
-    """:kaldi:`kaldi::RandomAccessBaseFloatReaderMapped` wrapper.
+    """Mapped random access table reader for single precision floats.
 
-    This class implements the __contains__ and __getitem__ methods to provide a
-    dictionary-like API for accessing table entries.
+    This class is used for randomly accessing single precision floats in an
+    archive or script file. It implements `__contains__` and `__getitem__`
+    methods to provide a dictionary-like interface for accessing table entries.
+    If a **map_rspecifier** is provided, the map is used for converting the keys
+    to the actual keys used to query the table, e.g. `reader[key]` returns the
+    item (a :obj:`float`) associated with the key `map[key]` (a :obj:`str`).
+    Otherwise, it works like :class:`RandomAccessFloatReader`.
 
     Args:
         table_rspecifier(str): Kaldi rspecifier for reading the table.
@@ -620,7 +677,7 @@ class RandomAccessFloatReaderMapped(
             If provided, the map is opened for reading.
 
     Raises:
-        IOError if opening the table or map for reading fails.
+        IOError: If opening the table or map for reading fails.
     """
     pass
 
@@ -656,193 +713,225 @@ class _WriterBase(object):
 
 
 class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
-    """:kaldi:`kaldi::BaseFloatVectorWriter` wrapper.
+    """Table writer for single precision vectors.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing single precision vectors to an archive or
+    script file. It implements the `__setitem__` method to provide a
+    dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value:
+    :class:`~kaldi.matrix.Vector`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
-    """:kaldi:`kaldi::BaseFloatMatrixWriter` wrapper.
+    """Table writer for single precision matrices.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing single precision matrices to an archive or
+    script file. It implements the `__setitem__` method to provide a
+    dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value:
+    :class:`~kaldi.matrix.Matrix`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class WaveWriter(_WriterBase, _kaldi_table.WaveWriter):
-    """:kaldi:`kaldi::TableWriter` <:kaldi:`kaldi::WaveHolder`> wrapper.
+    """Table writer for wave files.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing wave files to an archive or script file. It
+    implements the `__setitem__` method to provide a dictionary-like interface
+    for writing table entries, e.g. `writer[key] = value` writes the pair (key:
+    :obj:`str`, value: :class:`~kaldi.feat.wave.WaveData`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class NnetExampleWriter(_WriterBase, _kaldi_table.NnetExampleWriter):
-    """:kaldi:`kaldi::nnet3::NnetExampleWriter` wrapper.
+    """Table writer for nnet examples.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing nnet examples to an archive or script file.
+    It implements the `__setitem__` method to provide a dictionary-like
+    interface for writing table entries, e.g. `writer[key] = value` writes the
+    pair (key: :obj:`str`, value: :class:`~kaldi.nnet3.NnetExample`) pair to the
+    table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class IntWriter(_WriterBase, _kaldi_table.IntWriter):
-    """:kaldi:`kaldi::Int32Writer` wrapper.
+    """Table writer for integers.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing integers to an archive or script file. It
+    implements the `__setitem__` method to provide a dictionary-like interface
+    for writing table entries, e.g. `writer[key] = value` writes the pair (key:
+    :obj:`str`, value: :obj:`int`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class FloatWriter(_WriterBase, _kaldi_table.FloatWriter):
-    """:kaldi:`kaldi::BaseFloatWriter` wrapper.
+    """Table writer for single precision floats.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing single precision floats to an archive or
+    script file. It implements the `__setitem__` method to provide a
+    dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value: :obj:`float`) pair to the
+    table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class DoubleWriter(_WriterBase, _kaldi_table.DoubleWriter):
-    """:kaldi:`kaldi::DoubleWriter` wrapper.
+    """Table writer for double precision floats.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing double precision floats to an archive or
+    script file. It implements the `__setitem__` method to provide a
+    dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value: :obj:`float`) pair to the
+    table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class BoolWriter(_WriterBase, _kaldi_table.BoolWriter):
-    """:kaldi:`kaldi::BoolWriter` wrapper.
+    """Table writer for Booleans.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing Booleans to an archive or script file. It
+    implements the `__setitem__` method to provide a dictionary-like interface
+    for writing table entries, e.g. `writer[key] = value` writes the pair (key:
+    :obj:`str`, value: :obj:`bool`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class IntVectorWriter(_WriterBase, _kaldi_table.IntVectorWriter):
-    """:kaldi:`kaldi::Int32VectorWriter` wrapper.
+    """Table writer for integer sequences.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing integer sequences to an archive or script
+    file. It implements the `__setitem__` method to provide a dictionary-like
+    interface for writing table entries, e.g. `writer[key] = value` writes the
+    pair (key: :obj:`str`, value: :obj:`List[int]`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class IntVectorVectorWriter(_WriterBase, _kaldi_table.IntVectorVectorWriter):
-    """:kaldi:`kaldi::Int32VectorVectorWriter` wrapper.
+    """Table writer for sequences of integer sequences.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing sequences of integer sequences to an archive
+    or script file. It implements the `__setitem__` method to provide a
+    dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value: :obj:`List[List[int]]`) pair
+    to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class IntPairVectorWriter(_WriterBase, _kaldi_table.IntPairVectorWriter):
-    """:kaldi:`kaldi::Int32PairVectorWriter` wrapper.
+    """Table writer for sequences of integer pairs.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing sequences of integer pairs to an archive or
+    script file. It implements the `__setitem__` method to provide a
+    dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value: :obj:`List[Tuple[int,int]]`)
+    pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 
 
 class FloatPairVectorWriter(_WriterBase, _kaldi_table.FloatPairVectorWriter):
-    """:kaldi:`kaldi::BaseFloatPairVectorWriter` wrapper.
+    """Table writer for sequences of single precision float pairs.
 
-    This class implements the __setitem__ method to provide a dictionary-like
-    API for setting table entries.
+    This class is used for writing sequences of single precision float pairs to
+    an archive or script file. It implements the `__setitem__` method to provide
+    a dictionary-like interface for writing table entries, e.g. `writer[key] =
+    value` writes the pair (key: :obj:`str`, value:
+    :obj:`List[Tuple[float,float]]`) pair to the table.
 
     Args:
         wspecifier (str): Kaldi wspecifier for writing the table. If provided,
             the table is opened for writing.
 
     Raises:
-        IOError if opening the table for writing fails.
+        IOError: If opening the table for writing fails.
     """
     pass
 

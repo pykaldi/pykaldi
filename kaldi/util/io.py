@@ -3,13 +3,13 @@ from kaldi.base.io import read_line
 
 from _kaldi_io import *
 ################################################################################
-# 
+#
 ################################################################################
 class Input(object):
-    """:kaldi:`kaldi::Input` wrapper.
+    """Input stream for reading from extended filenames.
 
     This class provides a more Pythonic user facing API for reading rxfilenames.
-    It implements iterable and context manager.
+    It implements iterator and context manager protocols.
     """
     def __init__(self, rspecifier = ""):
         self._input = _kaldi_io._Input()

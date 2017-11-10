@@ -40,8 +40,8 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinx.ext.mathjax',
-    # 'sphinx.ext.githubpages'
-    'sphinxcontrib.doxylink'
+    'sphinx.ext.githubpages'
+    # 'sphinxcontrib.doxylink'
     ]
 
 napoleon_use_ivar = True
@@ -156,8 +156,8 @@ intersphinx_mapping = {
 }
 
 # Doxylink configuration for linking to kaldi documentation.
-doxylink = { 'kaldi': ('/home/dogan/tools/kaldi/src/kaldi.tag',
-                       'http://kaldi-asr.org/doc/') }
+# doxylink = { 'kaldi': ('/home/dogan/tools/kaldi/src/kaldi.tag',
+#                        'http://kaldi-asr.org/doc/') }
 
 # -- A patch that prevents Sphinx from cross-referencing ivar tags -------
 # See http://stackoverflow.com/a/41184353/3343043

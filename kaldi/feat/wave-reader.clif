@@ -12,11 +12,10 @@ from "feat/wave-reader.h":
       def `WaveData` as new(self, samp_freq:float, data:MatrixBase)
 
       def `Data` as data(self) -> Matrix:
-        """Wrapper function for :kaldi:`kaldi::WaveData::Data`.
+        """Returns the wave data.
 
-        This method returns the wave data. Data is a matrix because there may
-        be multiple channels. In the normal case there is just one channel so
-        the returned matrix will have just one row.
+        Data is a matrix because there may be multiple channels.
+        If the wave data is mono, the returned matrix will have just one row.
 
         Returns:
           :class:`kaldi.matrix.Matrix` with the wave data.

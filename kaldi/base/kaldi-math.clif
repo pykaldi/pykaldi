@@ -1,6 +1,4 @@
-"""
-Wrapper for functions and definitions in :kaldi:`kaldi::kaldi-math`
-"""
+
 from "base/kaldi-math.h":
   namespace `kaldi`:
 
@@ -46,7 +44,7 @@ from "base/kaldi-math.h":
         """Returns the greatest common divisor of two integers."""
 
     def `Lcm` as _lcm(m:int, n:int) -> int:
-        """Returns the least common multiple of two integers. 
+        """Returns the least common multiple of two integers.
         This function should not be called directly, instead call it from math.py"""
 
     def `Factorize` as _factorize(m:int) -> (factors:list<int>):

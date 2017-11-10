@@ -5,7 +5,7 @@ from . import _options_ext
 from ._options_ext import SimpleOptions
 
 class ParseOptions(_options_ext.ParseOptions):
-    """:kaldi:`kaldi::ParseOptions` wrapper."""
+    """Command line option parser."""
 
     def parse_args(self, args=None):
         """Parse arguments and assign them as attributes of a Namespace object.

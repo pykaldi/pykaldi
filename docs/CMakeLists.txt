@@ -15,7 +15,7 @@
 #set(BINARY_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_build")
 
 # HTML output directory
-set(SPHINX_HTML_DIR "${CMAKE_BINARY_DIR}/sphinx/html")
+set(SPHINX_HTML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/html")
 
 
 
