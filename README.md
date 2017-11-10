@@ -126,8 +126,8 @@ python setup.py install
 #### CLIF
 
 We use a fork of clif that supports documentation within a clif file. The source
-code can be found [here](https://github.com/dogancan/clif/tree/docstring). Clone
-this repository, making sure to checkout the docstring branch. Run the following
+code can be found [here](https://github.com/dogancan/clif/tree/pykaldi). Clone
+this repository, making sure to checkout the pykaldi branch. Run the following
 commands to install the correct version:
 
 ```bash
@@ -191,8 +191,8 @@ python setup.py install
 
 Some places to help you get started:
 
-* [Walkthrough Example](https://usc-sail.github.io/pykaldi/examples/walkthrough.html)
-* [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/examples)
+* [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.html)
+* [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/tree/master/examples)
 
 
 ## Contributing
