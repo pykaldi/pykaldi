@@ -65,8 +65,8 @@ Getting Started
 
 Some places to help you get started:
 
-* `Walkthrough Example <https://github.com/usc-sail/pykaldi/examples/walkthrough.md>`_
-* `Some Kaldi binaries re-implemented using PyKaldi <https://github.com/usc-sail/pykaldi/examples>`_
+* `Walkthrough Example <https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md>`_
+* `Some Kaldi binaries re-implemented using PyKaldi <https://github.com/usc-sail/pykaldi/tree/master/examples>`_
 
 
 .. toctree::
