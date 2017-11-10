@@ -33,10 +33,10 @@ Major goals of PyKaldi include:
 
 - [About PyKaldi](#about-pykaldi)
   - [Coverage Status](#coverage-status)
+- [Getting Started](#getting-started)
 - [Installation](#installation)
   - [Docker Image](#docker-image)
   - [From Source](#from-source)
-- [Getting Started](#getting-started)
 - [Contributing](#contributing)
 
 
@@ -73,6 +73,13 @@ For more information, please refer to the developer's guide.
 | on | the | package |
 | --- | --- | --- |
 | status | for | pykaldi |
+
+## Getting Started
+
+Some places to help you get started:
+
+* [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md)
+* [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/tree/master/examples)
 
 
 ## Installation
@@ -185,14 +192,6 @@ git clone https://github.com/usc-sail/pykaldi/ pykaldi
 cd pykaldi
 python setup.py install
 ```
-
-
-## Getting Started
-
-Some places to help you get started:
-
-* [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md)
-* [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/tree/master/examples)
 
 
 ## Contributing
