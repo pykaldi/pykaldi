@@ -12,11 +12,13 @@ manipulated, and displayed inside interactive Python interpreters such as
 IPython. PyKaldi vector and matrix types can be seamlessly converted to NumPy
 arrays and vice versa by sharing the underlying memory buffers.
 
-Major goals of PyKaldi include:
+Major features and goals of PyKaldi include:
 
-* Near-complete coverage of Kaldi.
+* Near-complete coverage of Kaldi
 
-* Extensible design.
+* First class support for Kaldi and OpenFst types in Python
+
+* Extensible design
 
 * Open license
 
