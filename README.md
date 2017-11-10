@@ -191,7 +191,7 @@ python setup.py install
 
 Some places to help you get started:
 
-* [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.html)
+* [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md)
 * [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/tree/master/examples)
 
 
