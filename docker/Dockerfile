@@ -1,5 +1,5 @@
 # Install pykaldi in a Docker container
-# With code from 
+# With code from
 # https://github.com/RaRe-Technologies/gensim/blob/develop/docker/Dockerfile
 FROM ubuntu:16.04
 
@@ -7,7 +7,7 @@ WORKDIR /root
 
 ENV PROTOBUF_GIT "https://github.com/google/protobuf.git"
 ENV NINJA_GIT "https://github.com/ninja-build/ninja.git"
-ENV CLIF_GIT "-b docstring https://github.com/dogancan/clif/"
+ENV CLIF_GIT "-b pykaldi https://github.com/dogancan/clif/"
 
 # update ubuntu and install essentials
 RUN apt-get update \
@@ -113,9 +113,9 @@ ENV KALDI_GIT ""
 ENV PYKALDI ""
 
 # # Add run permission to startup script
-RUN chmod +x pykaldi/docker/start_jupyter_notebook.sh 
-RUN chmod +x pykaldi/docker/update_kaldi.sh 
-RUN chmod +x pykaldi/docker/update_pykaldi.sh 
+RUN chmod +x pykaldi/docker/start_jupyter_notebook.sh
+RUN chmod +x pykaldi/docker/update_kaldi.sh
+RUN chmod +x pykaldi/docker/update_pykaldi.sh
 
 # # Define the starting command for this container and expose its running port
 CMD sh -c '/root/pykaldi/docker/start_jupyter_notebook.sh 9000'

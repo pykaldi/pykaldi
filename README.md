@@ -66,8 +66,6 @@ written for the associated Kaldi library. The wrapper code consists of:
 * Python modules grouping together related extension modules generated with CLIF
   and extending the raw CLIF wrappers to provide a more "Pythonic" API.
 
-For more information, please refer to the developer's guide.
-
 ### Coverage Status
 
 | here | goes | a | table |
@@ -80,6 +78,7 @@ For more information, please refer to the developer's guide.
 
 Some places to help you get started:
 
+* [PyKaldi Documentation](https://pykaldi.github.io)
 * [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md)
 * [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/tree/master/examples)
 
