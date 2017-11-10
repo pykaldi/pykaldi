@@ -131,8 +131,8 @@ html_sidebars = {
 }
 
 
-# Keep autodoc order as in the source
-autodoc_member_order = 'alphabetical'
+# Order or members in documentation
+# autodoc_member_order = 'alphabetical'
 
 # Both the class’ and the __init__ method’s docstring are concatenated
 # and inserted.

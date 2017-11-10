@@ -1,5 +1,5 @@
 from . import _kaldi_matrix
-import _matrix_common # FIXME: Relative/absolute import is buggy in Python 2.
+import _matrix_common # FIXME: Relative/absolute import is buggy in Python 3.
 from . import _packed_matrix
 from . import _sp_matrix
 from . import _tp_matrix

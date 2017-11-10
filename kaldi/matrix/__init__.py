@@ -46,7 +46,7 @@ from . import _kaldi_matrix_ext
 from . import _kaldi_vector
 from . import _kaldi_vector_ext
 from . import _matrix_ext
-import _matrix_common  # FIXME: Relative/absolute import is buggy in Python 2.
+import _matrix_common  # FIXME: Relative/absolute import is buggy in Python 3.
 from . import _packed_matrix
 from . import _sp_matrix
 from . import _tp_matrix
