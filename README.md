@@ -68,6 +68,14 @@ written for the associated Kaldi library. The wrapper code consists of:
 
 ### Coverage Status
 
+The following table shows the status of each Kaldi package along the following:
+
+* __Has Clif Wrapper?__: If there are enough .clif files to make the package usable in PyKaldi. This is the only requirement for exposing a package in PyKaldi.
+* __Pythonic?__: If there are .py files that provide a more pythonic look-and-feel to the package. This is optional.
+* __Additional Documentation?__: If there is added documentation beyond what is provided by CLIF and Kaldi.
+
+Packages marked with an asterisk are outdated, and therefore omitted from this repo.
+
 | Package       | Has Clif Wrapper?  | Pythonic?           | Additional Documentation? |
 | ------------- | :----------------: | :-----------------: | :-----------------------: |
 | Base          | YES                |      YES            |         NO                |
@@ -84,10 +92,10 @@ written for the associated Kaldi library. The wrapper code consists of:
 | Lattice       | YES                |      NO             |         NO                |
 | LM            | YES                |      NO             |         NO                |
 | Matrix        | YES                |      YES            |         YES               |
-| NNet          | NO                 |      NO             |         NO                |
-| NNet2         | NO                 |      NO             |         NO                |
+| NNet\*        | NO                 |      NO             |         NO                |
+| NNet2\*       | NO                 |      NO             |         NO                |
 | NNet3         | YES                |      NO             |         NO                |
-| Online        | NO                 |      NO             |         NO                |
+| Online\*      | NO                 |      NO             |         NO                |
 | Online2       | YES                |      NO             |         YES               |
 | Probe         | NO                 |      NO             |         NO                |
 | SGMM2         | YES                |      NO             |         YES               |
