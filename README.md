@@ -76,30 +76,30 @@ The following table shows the status of each Kaldi package along the following:
 
 | Package       | Has Clif Wrapper?  | Pythonic?           | Additional Documentation? | Tested? |
 | ------------- | :----------------: | :-----------------: | :-----------------------: | :-----: |
-| base          | YES                |      YES            |         ✅✅              |  YES    |
-| chain         | YES                |      NO             |         ✅                |  NO     |
-| cudamatrix    | YES                |      NO             |         ✅                |  YES    |
-| decoder       | YES                |      NO             |         ✅✅✅               |  NO     |
-| feat          | YES                |      YES            |         ✅✅                |  NO     |
-| fstext        | YES                |      NO             |         ✅✅✅               |  NO     |
-| gmm           | YES                |      YES            |         ✅✅                |  YES    |
-| hmm           | YES                |      YES            |         ✅✅                |  YES    |
-| itf           | YES                |      NO             |         ✅                |  NO     |
-| ivector       | YES                |      NO             |         ✅✅                |  NO     |
-| kws           | NO                 |      NO             |         ❌                |  NO     |
-| lat           | YES                |      NO             |         ✅✅                |  NO     |
-| lm            | YES                |      NO             |         ✅                |  NO     |
-| matrix        | YES                |      YES            |         ✅✅✅               |  YES    |
-| nnet          | NO                 |      NO             |         ❌                |  NO     |
-| nnet2         | NO                 |      NO             |         ❌                |  NO     |
-| nnet3         | YES                |      NO             |         ✅                |  YES    |
-| online        | NO                 |      NO             |         ❌                |  NO     |
-| online2       | YES                |      NO             |         ✅✅✅               |  NO     |
-| sgmm2         | YES                |      NO             |         ✅✅✅               |  NO     |
-| tfrnnlm       | NO                 |      NO             |         ❌                |  NO     |
-| transform     | YES                |      YES            |         ✅✅                |  NO     |
-| tree          | YES                |      NO             |         ✅✅✅               |  NO     |
-| util          | YES                |      YES            |         ✅✅✅               |  YES    |
+| base          | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark:               |  YES    |
+| chain         | YES                |      NO             |         :heavy_check_mark:                 |  NO     |
+| cudamatrix    | YES                |      NO             |         :heavy_check_mark:                 |  YES    |
+| decoder       | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  NO     |
+| feat          | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark:                 |  NO     |
+| fstext        | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  NO     |
+| gmm           | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark:                 |  YES    |
+| hmm           | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark:                 |  YES    |
+| itf           | YES                |      NO             |         :heavy_check_mark:                 |  NO     |
+| ivector       | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark:                 |  NO     |
+| kws           | NO                 |      NO             |                         |  NO     |
+| lat           | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark:                 |  NO     |
+| lm            | YES                |      NO             |         :heavy_check_mark:                 |  NO     |
+| matrix        | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  YES    |
+| nnet          | NO                 |      NO             |                         |  NO     |
+| nnet2         | NO                 |      NO             |                         |  NO     |
+| nnet3         | YES                |      NO             |         :heavy_check_mark:                 |  YES    |
+| online        | NO                 |      NO             |                         |  NO     |
+| online2       | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  NO     |
+| sgmm2         | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  NO     |
+| tfrnnlm       | NO                 |      NO             |                         |  NO     |
+| transform     | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark:                 |  NO     |
+| tree          | YES                |      NO             |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  NO     |
+| util          | YES                |      YES            |         :heavy_check_mark: :heavy_check_mark: :heavy_check_mark:                |  YES    |
 
 ## Getting Started
 
