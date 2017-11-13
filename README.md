@@ -74,32 +74,32 @@ The following table shows the status of each Kaldi package along the following:
 * __Pythonic?__: If there are .py files that provide a more pythonic look-and-feel to the package. This is optional.
 * __Additional Documentation?__: If there is added documentation beyond what is provided by CLIF and Kaldi.
 
-| Package       | Has Clif Wrapper?  | Pythonic?           | Additional Documentation? |
-| ------------- | :----------------: | :-----------------: | :-----------------------: |
-| base          | YES                |      YES            |         NO                |
-| chain         | YES                |      NO             |         NO                |
-| cudamatrix    | YES                |      NO             |         NO                |
-| decoder       | YES                |      NO             |         YES               |
-| feat          | YES                |      YES            |         NO                |
-| fstext        | YES                |      NO             |         YES                |
-| gmm           | YES                |      YES            |         NO                |
-| hmm           | YES                |      YES            |         NO                |
-| itf           | YES                |      NO             |         NO                |
-| ivector       | YES                |      NO             |         NO                |
-| kws           | NO                 |      NO             |         NO                |
-| lat           | YES                |      NO             |         NO                |
-| lm            | YES                |      NO             |         NO                |
-| matrix        | YES                |      YES            |         YES               |
-| nnet          | NO                 |      NO             |         NO                |
-| nnet2         | NO                 |      NO             |         NO                |
-| nnet3         | YES                |      NO             |         NO                |
-| online        | NO                 |      NO             |         NO                |
-| online2       | YES                |      NO             |         YES               |
-| sgmm2         | YES                |      NO             |         YES               |
-| tfrnnlm       | NO                 |      NO             |         NO                |
-| transform     | YES                |      YES            |         NO                |
-| tree          | YES                |      NO             |         YES               |
-| util          | YES                |      YES            |         NO                |
+| Package       | Has Clif Wrapper?  | Pythonic?           | Additional Documentation? | Tested? |
+| ------------- | :----------------: | :-----------------: | :-----------------------: | :-----: |
+| base          | YES                |      YES            |        ✅                 |  YES    |
+| chain         | YES                |      NO             |         ✅                |  NO     |
+| cudamatrix    | YES                |      NO             |         ✅                |  YES    |
+| decoder       | YES                |      NO             |         ✅✅✅               |  NO     |
+| feat          | YES                |      YES            |         ✅                |  NO     |
+| fstext        | YES                |      NO             |         ✅✅               |  NO     |
+| gmm           | YES                |      YES            |         ✅                |  YES    |
+| hmm           | YES                |      YES            |         ✅                |  YES    |
+| itf           | YES                |      NO             |         ✅                |  NO     |
+| ivector       | YES                |      NO             |         ✅✅                |  NO     |
+| kws           | NO                 |      NO             |         NO                |  NO     |
+| lat           | YES                |      NO             |         NO                |  NO     |
+| lm            | YES                |      NO             |         NO                |  NO     |
+| matrix        | YES                |      YES            |         YES               |  YES    |
+| nnet          | NO                 |      NO             |         NO                |  NO     |
+| nnet2         | NO                 |      NO             |         NO                |  NO     |
+| nnet3         | YES                |      NO             |         NO                |  YES    |
+| online        | NO                 |      NO             |         NO                |  NO     |
+| online2       | YES                |      NO             |         YES               |  NO     |
+| sgmm2         | YES                |      NO             |         YES               |  NO     |
+| tfrnnlm       | NO                 |      NO             |         NO                |  NO     |
+| transform     | YES                |      YES            |         NO                |  NO     |
+| tree          | YES                |      NO             |         YES               |  NO     |
+| util          | YES                |      YES            |         YES               |  YES    |
 
 ## Getting Started
 
