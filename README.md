@@ -68,11 +68,33 @@ written for the associated Kaldi library. The wrapper code consists of:
 
 ### Coverage Status
 
-| here | goes | a | table |
-| --- | --- | --- |
-| on | the | package |
-| --- | --- | --- |
-| status | for | pykaldi |
+| Package       | Has Clif Wrapper?  | Pythonic?           | Additional Documentation? |
+| ------------- | :----------------: | :-----------------: | :-----------------------: |
+| Base          | YES                |      YES            |         NO                |
+| Chain         | YES                |      NO             |         NO                |
+| CUDA Matrix   | YES                |      NO             |         NO                |
+| Decoder       | YES                |      NO             |         YES               |
+| Feat          | YES                |      YES            |         NO                |
+| FST           | YES                |      NO             |         NO                |
+| GMM           | YES                |      YES            |         NO                |
+| HMM           | YES                |      YES            |         NO                |
+| ITF           | YES                |      NO             |         NO                |
+| I-vector      | YES                |      NO             |         NO                |
+| Kws           | NO                 |      NO             |         NO                |
+| Lattice       | YES                |      NO             |         NO                |
+| LM            | YES                |      NO             |         NO                |
+| Matrix        | YES                |      YES            |         YES               |
+| NNet          | NO                 |      NO             |         NO                |
+| NNet2         | NO                 |      NO             |         NO                |
+| NNet3         | YES                |      NO             |         NO                |
+| Online        | NO                 |      NO             |         NO                |
+| Online2       | YES                |      NO             |         YES               |
+| Probe         | NO                 |      NO             |         NO                |
+| SGMM2         | YES                |      NO             |         YES               |
+| tfrnnlm       | NO                 |      NO             |         NO                |
+| Transform     | YES                |      YES            |         NO                |
+| Tree          | YES                |      NO             |         YES               |
+| Util          | YES                |      YES            |         NO                |
 
 ## Getting Started
 
