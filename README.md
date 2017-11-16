@@ -65,7 +65,7 @@ to provide a more "Pythonic" API. Below figure illustrates where PyKaldi fits in
 the Kaldi software architecture.
 
 <div style="text-align:center">
-<img src="docs/pykaldi.png" alt="Kaldi Software Architecture" width="400"/>
+<img src="docs/pykaldi.png" width="400"/>
 </div>
 
 PyKaldi has a modular design which makes it easy to maintain and extend. Source
