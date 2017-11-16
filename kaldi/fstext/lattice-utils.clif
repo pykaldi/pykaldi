@@ -1,7 +1,7 @@
 
 from "fstext/lattice-utils.h":
   namespace `fst`:
-    def DefaultLatticeScale() -> list<list<float>>
-    def AcousticLatticeScale(acwt: float) -> list<list<float>>
-    def GraphLatticeScale(lmwt: float) -> list<list<float>>
-    def LatticeScale(lmwt: float, acwt: float) -> list<list<float>>
+    def `DefaultLatticeScale` as default_lattice_scale() -> list<list<float>>
+    def `AcousticLatticeScale` as acoustic_lattice_scale(acwt: float) -> list<list<float>>
+    def `GraphLatticeScale` as graph_lattice_scale(lmwt: float) -> list<list<float>>
+    def `LatticeScale` as lattice_scale(lmwt: float, acwt: float) -> list<list<float>>

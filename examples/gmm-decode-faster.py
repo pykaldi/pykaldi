@@ -6,10 +6,10 @@ import time
 
 from kaldi.base.io import init_kaldi_input_stream
 from kaldi.decoder import FasterDecoderOptions, FasterDecoder
-from kaldi.fstext import (StdFst, LatticeVectorFst, CompactLatticeVectorFst,
-                          SymbolTable, GetLinearSymbolSequenceFromLatticeFst,
-                          AcousticLatticeScale, ScaleLattice,
-                          ConvertLatticeToCompactLattice)
+from kaldi.fstext import (StdFst, LatticeFst, CompactLatticeFst, SymbolTable,
+                          get_linear_symbol_sequence_from_lattice_fst,
+                          acoustic_lattice_scale, scale_lattice,
+                          convert_lattice_to_compact_lattice)
 from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
 from kaldi.hmm import TransitionModel
 from kaldi.util.io import Input
@@ -34,14 +34,14 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
 
     word_syms = None
     if opts.word_symbol_table != "":
-        word_syms = SymbolTable.ReadText(opts.word_symbol_table)
+        word_syms = SymbolTable.read_text(opts.word_symbol_table)
         if not word_syms:
             raise RuntimeError("Could not read symbol table from file {}"
                                .format(opts.word_symbol_table))
 
     feature_reader = SequentialMatrixReader(feature_rspecifier)
 
-    decode_fst = StdFst.Read(fst_rxfilename)
+    decode_fst = StdFst.read(fst_rxfilename)
 
     tot_like = 0.0
     frame_count = 0
@@ -57,7 +57,7 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
         gmm_decodable = DecodableAmDiagGmmScaled(am_gmm, trans_model, features,
                                                  opts.acoustic_scale)
         decoder.decode(gmm_decodable)
-        decoded = LatticeVectorFst()
+        decoded = LatticeFst()
 
         if ((opts.allow_partial or decoder.reached_final())
             and decoder.get_best_path(decoded)):
@@ -68,7 +68,7 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
             num_success += 1
             frame_count += features.num_rows
 
-            ret = GetLinearSymbolSequenceFromLatticeFst(decoded)
+            ret = get_linear_symbol_sequence_from_lattice_fst(decoded)
             success, alignment, words, weight = ret
 
             words_writer[key] = words
@@ -77,22 +77,22 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
 
             if lattice_wspecifier != "":
                 if opts.acoustic_scale != 0.0:
-                    scale = AcousticLatticeScale(1.0 / opts.acoustic_scale)
-                    ScaleLattice(scale, decoded)
-                clat = CompactLatticeVectorFst()
-                ConvertLatticeToCompactLattice(decoded, clat, true)
+                    scale = acoustic_lattice_scale(1.0 / opts.acoustic_scale)
+                    scale_lattice(scale, decoded)
+                clat = CompactLatticeFst()
+                convert_lattice_to_compact_lattice(decoded, clat, true)
                 clat_writer[key] = clat
 
             if word_syms:
                 print(key, end=' ', file=sys.stderr)
                 for idx in words:
-                    sym = word_syms.FindSymbol(idx)
+                    sym = word_syms.find_symbol(idx)
                     if sym == "":
                         raise RuntimeError("Word-id {} not in symbol table."
                                            .format(idx))
                     print(sym, end=' ', file=sys.stderr)
                 print(file=sys.stderr)
-            like = - (weight.Value1() + weight.Value2());
+            like = - (weight.value1 + weight.value2);
             tot_like += like
             print("Log-like per frame for utterance {} is {} over {} frames."
                   .format(key, like / features.num_rows, features.num_rows),

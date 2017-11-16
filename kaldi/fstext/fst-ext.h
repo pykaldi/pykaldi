@@ -11,6 +11,18 @@
 
 namespace fst {
 
+// Assignment
+
+template<typename Arc>
+void AssignVectorFst(const VectorFst<Arc> &ifst, VectorFst<Arc> *ofst) {
+  *ofst = ifst;  // This assignment shares implementation with COW semantics.
+}
+
+template<typename Arc>
+void AssignFst(const Fst<Arc> &ifst, VectorFst<Arc> *ofst) {
+  *ofst = ifst;  // This assignment makes a copy.
+}
+
 // Printing
 
 template<typename Arc>

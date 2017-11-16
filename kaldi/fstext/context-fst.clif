@@ -9,20 +9,46 @@ from kaldi.util import _value_error_on_false
 from "fstext/context-fst.h":
   namespace `fst`:
     class `ContextFst<StdArc>` as StdContextFst(StdFst):
+      """Context FST over the tropical semiring.
+
+      Context FST \"C\" transduces from symbols representing phone context
+      windows (e.g. \"a, b, c\") to individual phone, e.g. \"a\".  The context
+      FST is an on-demand FST.  It has its own matcher type that makes it
+      particularly efficient to compose with.
+
+      Args:
+        subsequential_symbol (int): Integer index of the subsequential symbol.
+        phones (List[int]): Integer indices for the phones.
+        disambig_syms (List[int]): Integer indices for disambiguation symbols.
+        N (int): Size of context window.
+        P (int): Position of central phone in context window, from 0..N-1.
+      """
       def __init__(self, subsequential_symbol: int, phones: list<int>,
                    disambig_syms: list<int>, N: int, P: int)
 
       @add__init__
       def `ContextFst` as from_other(self, fst: StdContextFst,
-                                     safe: bool = default)
+                                     safe: bool = default):
+        """Creates a new context FST from another."""
 
-      def `Copy` as copy(self, safe: bool = default) -> StdContextFst
+      def `Copy` as copy(self, safe: bool = default) -> StdContextFst:
+        """Creates a copy of the context FST."""
 
       def `CreateArc` as create_arc(self, s: int, olabel: int)
         -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          olabel (int): Output label of the arc.
+
+        Returns:
+          The created arc.
+        """
         return _value_error_on_false(...)
 
-      def `ILabelInfo` as ilabel_info(self) -> list<list<int>>
+      def `ILabelInfo` as ilabel_info(self) -> list<list<int>>:
+        """Returns input label info."""
 
     # FIXME:
     # Definitions are in context-fst-inl.h.
@@ -37,35 +63,83 @@ from "fstext/context-fst.h":
     #     separator: str, disambig_prefix: str) -> SymbolTable
 
     class `StateIterator<ContextFst<StdArc>>` as StdContextFstStateIterator:
+      """State iterator for context FST over the tropical semiring.
 
+      Args:
+          fst: The context FST.
+      """
       def __init__(self, fst: StdContextFst)
 
-      def Done(self) -> bool
+      def `Done` as done(self) -> bool:
+        """Indicates whether the iterator is exhausted or not.
 
-      def Value(self) -> int
+        Returns:
+          True if the iterator is exhausted, False otherwise.
+        """
 
-      def Next(self)
+      def `Value` as value(self) -> int:
+        """Returns the current state index."""
 
-      def Reset(self)
+      def `Next` as next(self):
+        """Advances the iterator."""
+
+      def `Reset` as reset(self):
+        """Resets the iterator to the initial position."""
+
 
     class `ArcIterator<ContextFst<StdArc>>` as StdContextFstArcIterator:
+      """Arc iterator for context FST over the tropical semiring.
 
+      Args:
+          fst: The context FST.
+          state: The state index.
+      """
       def __init__(self, fst: StdContextFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as done(self) -> bool:
+        """Indicates whether the iterator is exhausted or not.
 
-      def Value(self) -> StdArc
+        Returns:
+          True if the iterator is exhausted, False otherwise.
+        """
 
-      def Next(self)
+      def `Value` as value(self) -> StdArc:
+        """Returns the current arc."""
 
-      def Reset(self)
+      def `Next` as next(self):
+        """Advances the iterator."""
 
-      def Seek(self, a: int)
+      def `Reset` as reset(self):
+        """Resets the iterator to the initial position."""
 
-      def Position(self) -> int
+      def `Seek` as seek(self, a: int):
+        """Advance the iterator to a new position.
 
-      def Flags(self) -> int
+        Args:
+          a (int): The position to seek to.
+        """
 
-      def SetFlags(self, flags: int, mask: int)
+      def `Position` as position(self) -> int:
+        """Returns the position of the iterator.
+
+        Returns:
+          The iterator's position, expressed as an integer.
+        """
+
+      def `Flags` as flags(self) -> int:
+        """Returns the current iterator behavioral flags.
+
+        Returns:
+          The current iterator behavioral flags as an integer.
+        """
+
+      def `SetFlags` as set_flags(self, flags: int, mask: int):
+        """Sets the current iterator behavioral flags.
+
+        Args:
+          flags (int): The properties to be set.
+          mask (int): A mask to be applied to the `flags` argument before
+            setting them.
+        """
 
     # ComposeContextFst is wrapped in fst-operations.clif.

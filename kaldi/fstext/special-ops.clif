@@ -1,0 +1,74 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/context-fst-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "fstext/determinize-lattice-clifwrap.h" import *
+
+from "fstext/special-ops.h":
+  namespace `fst`:
+
+## Kaldi FST Ops
+
+    def `ComposeContextFstExt` as _compose_context_fst(
+        ifst1: StdContextFst, ifst2: StdFst, ofst: StdMutableFst,
+        connect: bool = default, compose_filter: ComposeFilter = default)
+
+    def `ComposeContextExt` as _compose_context(
+        disambig_syms: list<int>, N: int, P: int,
+        ifst: StdVectorFst, ofst: StdVectorFst) -> list<list<int>>
+
+    def `AddSubsequentialLoopExt` as add_subsequential_loop(
+        subseq_symbol: int, fst: StdMutableFst):
+      """Adds a subsequential symbol loop to the input FST.
+
+      Modifies the FST so that it transuces the same paths, but the input side
+      of the paths can all have the subsequential symbol '$' appended to them
+      any number of times.
+
+      Args:
+        subseq_symbol (int): Integer index for the subsequential symbol.
+        fst (StdFst): Input FST.
+      """
+
+    def `ComposeDeterministicOnDemandExt` as _compose_deterministic_on_demand(
+      fst1: StdFst, fst2: StdDeterministicOnDemandFst, ofst: StdMutableFst)
+
+    def `ComposeDeterministicOnDemandInverseExt` as _compose_deterministic_on_demand_inverse(
+      fst1: StdFst, fst2: StdDeterministicOnDemandFst, ofst: StdMutableFst)
+
+    def `DeterminizeLatticeExt` as _determinize_lattice(
+      ifst: LatticeFst, ofst: LatticeMutableFst,
+      opts: DeterminizeLatticeOptions = default) -> bool
+
+    def `DeterminizeLatticeExt` as _determinize_lattice_to_compact(
+      ifst: LatticeFst, ofst: CompactLatticeMutableFst,
+      opts: DeterminizeLatticeOptions = default) -> bool
+
+    def `DeterminizeStarExt` as _determinize_star(
+      ifst: StdFst, ofst: StdMutableFst, delta: float = default,
+      max_states: int = default, allow_partial: bool = default) -> bool
+
+    def `RemoveEpsLocalExt` as _remove_eps_local(fst: StdMutableFst)
+
+    def `RemoveEpsLocalSpecialExt` as _remove_eps_local_special(fst: StdMutableFst)
+
+    def `PushInLogExt` as _push_in_log(fst: StdVectorFst, ptype: int,
+                                       delta: float = default, to_final: bool = default)
+
+    def `DeterminizeStarInLogExt` as determinize_star_in_log(
+      fst: StdVectorFst, delta: float = default, max_states: int = default):
+      """Performs determinize_star in place in log semiring.
+
+      Args:
+          ifst (StdFst): Input fst over the tropical semiring.
+          delta (float): Comparison/quantization delta.
+          max_states (int): If positive, determinization will fail when max states
+              is reached.
+      Raises:
+          RuntimeError: If determization fails.
+
+      See Also: `determinize_star`
+      """

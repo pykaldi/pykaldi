@@ -7,6 +7,11 @@ from kaldi.fstext._mutable_fst import LogMutableFst
 from kaldi.fstext._mutable_fst import LatticeMutableFst
 from kaldi.fstext._mutable_fst import CompactLatticeMutableFst
 
+from kaldi.fstext import StdFst
+from kaldi.fstext import LogFst
+from kaldi.fstext import LatticeFst
+from kaldi.fstext import CompactLatticeFst
+
 from "fst/vector-fst.h":
   namespace `fst`:
 
@@ -14,286 +19,302 @@ from "fst/vector-fst.h":
 
     class `VectorFst<StdArc>` as StdVectorFst(StdMutableFst):
 
-      @add__init__
-      def `VectorFst` as from_fst(self, fst: StdFst)
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `VectorFst` as from_fst(self, fst: StdFst)
+      #
+      # @add__init__
+      # def `VectorFst` as from_other(self, fst: StdVectorFst,
+      #                               safe: bool = default)
 
-      @add__init__
-      def `VectorFst` as from_other(self, fst: StdVectorFst,
-                                    safe: bool = default)
-
-      def Copy(self, safe: bool = default) -> StdVectorFst
+      def `Copy` as _copy(self, safe: bool = default) -> StdVectorFst:
+        return StdFst(...)
 
       @classmethod
-      def Read(cls, filename: str) -> StdVectorFst
+      def `Read` as _read(cls, filename: str) -> StdVectorFst:
+        return StdFst(...)
 
-      def Write(self, filename: str) -> bool
+      def `Write` as _write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<StdArc>>` as StdVectorFstStateIterator:
 
       def __init__(self, fst: StdVectorFst)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> int
+      def `Value` as _value(self) -> int
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
     class `ArcIterator<VectorFst<StdArc>>` as StdVectorFstArcIterator:
 
       def __init__(self, fst: StdVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> StdArc
+      def `Value` as _value(self) -> StdArc
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     class `MutableArcIterator<VectorFst<StdArc>>` as StdVectorFstMutableArcIterator:
 
       def __init__(self, fst: StdVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> StdArc
+      def `Value` as _value(self) -> StdArc
 
-      def SetValue(self, arc: StdArc)
+      def `SetValue` as _set_value(self, arc: StdArc)
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     # LogArc
 
     class `VectorFst<LogArc>` as LogVectorFst(LogMutableFst):
 
-      @add__init__
-      def `VectorFst` as from_fst(self, fst: LogFst)
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `VectorFst` as from_fst(self, fst: LogFst)
+      #
+      # @add__init__
+      # def `VectorFst` as from_other(self, fst: LogVectorFst,
+      #                               safe: bool = default)
 
-      @add__init__
-      def `VectorFst` as from_other(self, fst: LogVectorFst,
-                                    safe: bool = default)
-
-      def Copy(self, safe: bool = default) -> LogVectorFst
+      def `Copy` as _copy(self, safe: bool = default) -> LogVectorFst:
+        return LogFst(...)
 
       @classmethod
-      def Read(cls, filename: str) -> LogVectorFst
+      def `Read` as _read(cls, filename: str) -> LogVectorFst:
+        return LogFst(...)
 
-      def Write(self, filename: str) -> bool
+      def `Write` as _write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<LogArc>>` as LogVectorFstStateIterator:
 
       def __init__(self, fst: LogVectorFst)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> int
+      def `Value` as _value(self) -> int
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
     class `ArcIterator<VectorFst<LogArc>>` as LogVectorFstArcIterator:
 
       def __init__(self, fst: LogVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> LogArc
+      def `Value` as _value(self) -> LogArc
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     class `MutableArcIterator<VectorFst<LogArc>>` as LogVectorFstMutableArcIterator:
 
       def __init__(self, fst: LogVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> LogArc
+      def `Value` as _value(self) -> LogArc
 
-      def SetValue(self, arc: LogArc)
+      def `SetValue` as _set_value(self, arc: LogArc)
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     # LatticeArc
 
     class `VectorFst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeVectorFst(LatticeMutableFst):
 
-      @add__init__
-      def `VectorFst` as from_fst(self, fst: LatticeFst)
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `VectorFst` as from_fst(self, fst: LatticeFst)
+      #
+      # @add__init__
+      # def `VectorFst` as from_other(self, fst: LatticeVectorFst,
+      #                               safe: bool = default)
 
-      @add__init__
-      def `VectorFst` as from_other(self, fst: LatticeVectorFst,
-                                    safe: bool = default)
-
-      def Copy(self, safe: bool = default) -> LatticeVectorFst
+      def `Copy` as _copy(self, safe: bool = default) -> LatticeVectorFst:
+        return LatticeFst(...)
 
       @classmethod
-      def Read(cls, filename: str) -> LatticeVectorFst
+      def `Read` as _read(cls, filename: str) -> LatticeVectorFst:
+        return LatticeFst(...)
 
-      def Write(self, filename: str) -> bool
+      def `Write` as _write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeVectorFstStateIterator:
 
       def __init__(self, fst: LatticeVectorFst)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> int
+      def `Value` as _value(self) -> int
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
     class `ArcIterator<VectorFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeVectorFstArcIterator:
 
       def __init__(self, fst: LatticeVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> LatticeArc
+      def `Value` as _value(self) -> LatticeArc
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     class `MutableArcIterator<VectorFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeVectorFstMutableArcIterator:
 
       def __init__(self, fst: LatticeVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> LatticeArc
+      def `Value` as _value(self) -> LatticeArc
 
-      def SetValue(self, arc: LatticeArc)
+      def `SetValue` as _set_value(self, arc: LatticeArc)
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     # CompactLatticeArc
 
     class `VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeVectorFst(CompactLatticeMutableFst):
 
-      @add__init__
-      def `VectorFst` as from_fst(self, fst: CompactLatticeFst)
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `VectorFst` as from_fst(self, fst: CompactLatticeFst)
+      #
+      # @add__init__
+      # def `VectorFst` as from_other(self, fst: CompactLatticeVectorFst,
+      #                               safe: bool = default)
 
-      @add__init__
-      def `VectorFst` as from_other(self, fst: CompactLatticeVectorFst,
-                                    safe: bool = default)
-
-      def Copy(self, safe: bool = default) -> CompactLatticeVectorFst
+      def `Copy` as _copy(self, safe: bool = default) -> CompactLatticeVectorFst:
+        return CompactLatticeFst(...)
 
       @classmethod
-      def Read(cls, filename: str) -> CompactLatticeVectorFst
+      def `Read` as _read(cls, filename: str) -> CompactLatticeVectorFst:
+        return CompactLatticeFst(...)
 
-      def Write(self, filename: str) -> bool
+      def `Write` as _write(self, filename: str) -> bool
 
     class `StateIterator<VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeVectorFstStateIterator:
 
       def __init__(self, fst: CompactLatticeVectorFst)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> int
+      def `Value` as _value(self) -> int
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
     class `ArcIterator<VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeVectorFstArcIterator:
 
       def __init__(self, fst: CompactLatticeVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> CompactLatticeArc
+      def `Value` as _value(self) -> CompactLatticeArc
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
 
     class `MutableArcIterator<VectorFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeVectorFstMutableArcIterator:
 
       def __init__(self, fst: CompactLatticeVectorFst, s: int)
 
-      def Done(self) -> bool
+      def `Done` as _done(self) -> bool
 
-      def Value(self) -> CompactLatticeArc
+      def `Value` as _value(self) -> CompactLatticeArc
 
-      def SetValue(self, arc: CompactLatticeArc)
+      def `SetValue` as _set_value(self, arc: CompactLatticeArc)
 
-      def Next(self)
+      def `Next` as _next(self)
 
-      def Reset(self)
+      def `Reset` as _reset(self)
 
-      def Seek(self, a: int)
+      def `Seek` as _seek(self, a: int)
 
-      def Position(self) -> int
+      def `Position` as _position(self) -> int
 
-      def Flags(self) -> int
+      def `Flags` as _flags(self) -> int
 
-      def SetFlags(self, flags: int, mask: int)
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)

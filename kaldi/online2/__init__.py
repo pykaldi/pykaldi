@@ -10,12 +10,12 @@ from ._online_ivector_feature import _OnlineIvectorExtractionInfo
 from ._online_nnet2_feature_pipeline import *
 from ._online_nnet3_decoding import *
 
-from kaldi.matrix import SubMatrix, DoubleSubMatrix
+from .. import matrix as _matrix
 
 class OnlineIvectorExtractionInfo(_OnlineIvectorExtractionInfo):
     @property
     def lda_mat(self):
-        return SubMatrix(self._lda_mat)
+        return _matrix.SubMatrix(self._lda_mat)
 
     @lda_mat.setter
     def lda_mat(self, value):
@@ -23,7 +23,7 @@ class OnlineIvectorExtractionInfo(_OnlineIvectorExtractionInfo):
 
     @property
     def global_cmvn_stats(self):
-        return DoubleSubMatrix(self._get_global_cmvn_stats())
+        return _matrix.DoubleSubMatrix(self._global_cmvn_stats)
 
     @global_cmvn_stats.setter
     def global_cmvn_stats(self, value):
@@ -31,7 +31,7 @@ class OnlineIvectorExtractionInfo(_OnlineIvectorExtractionInfo):
 
 class OnlineFeaturePipeline(_OnlineFeaturePipeline):
     def get_as_matrix(self):
-        return SubMatrix(self._get_as_matrix())
+        return _matrix.SubMatrix(self._get_as_matrix())
 
     def new(self):
         return OnlineFeaturePipeline(self._new())

@@ -1,0 +1,159 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/encode-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from "fstext/fst-ops.h":
+  namespace `fst`:
+
+## Lattice Semiring
+
+# Constant Ops
+
+    def `VerifyExt` as verify(fst: LatticeFst) -> bool
+
+    def `CountStatesExt` as count_states(fst: LatticeFst) -> int
+
+    def `CountArcsExt` as count_arcs(fst: LatticeFst) -> int
+
+# In-place Mutation Ops
+
+    def `ArcSortExt` as arcsort(fst: LatticeMutableFst, sort_type: ArcSortType)
+
+    def `ClosureExt` as closure(fst: LatticeMutableFst, closure_type: ClosureType)
+
+    def `ConnectExt` as connect(fst: LatticeMutableFst)
+
+    def `DecodeExt` as decode(fst: LatticeMutableFst, mapper: LatticeEncodeMapper)
+
+    def `EncodeExt` as encode(fst: LatticeMutableFst, mapper: LatticeEncodeMapper)
+
+    def `InvertExt` as invert(fst: LatticeMutableFst)
+
+    def `MinimizeExt` as minimize(
+        fst: LatticeMutableFst, sfst: LatticeMutableFst = default,
+        delta: float = default, allow_nondet: bool = default)
+
+    def `ProjectExt` as project(fst: LatticeMutableFst, project_type: ProjectType)
+
+    def `PruneExt` as prune(
+        fst: LatticeMutableFst, weight_threshold: LatticeWeight,
+        state_threshold: int = default, delta: float = default)
+
+    def `PushExt` as push(fst: LatticeMutableFst, type: ReweightType,
+                          delta: float = default,
+                          remove_total_weight: bool = default)
+
+    def `RelabelExt` as relabel(fst: LatticeMutableFst,
+                                ipairs: list<tuple<int, int>>,
+                                opairs: list<tuple<int, int>>)
+
+    def `RelabelTables` as relabel_tables(
+        fst: LatticeMutableFst,
+        old_isymbols: SymbolTable, new_isymbols: SymbolTable,
+        unknown_isymbol: str, attach_new_isymbols: bool,
+        old_osymbols: SymbolTable, new_osymbols: SymbolTable,
+        unknown_osymbol: str, attach_new_osymbols: bool)
+
+    def `ReweightExt` as reweight(fst: LatticeMutableFst,
+                                  potential: list<LatticeWeight>,
+                                  type: ReweightType)
+
+    def `RmEpsilonExt` as rmepsilon(
+        fst: LatticeMutableFst, connect: bool = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default, delta: float = default)
+
+    def `TopSortExt` as topsort(fst: LatticeMutableFst) -> bool
+
+    def `UnionExt` as union(fst1: LatticeMutableFst, fst2: LatticeFst)
+
+# Constructive Ops
+
+    def `MapExt` as map(ifst: LatticeFst, ofst: LatticeMutableFst, map_type: MapType,
+                     delta: float, weight: LatticeWeight)
+
+    def `ComposeExt` as compose(ifst1: LatticeFst, ifst2: LatticeFst, ofst: LatticeMutableFst,
+                             connect: bool, compose_filter: ComposeFilter)
+
+    def `DeterminizeExt` as determinize(
+        ifst: LatticeFst, ofst: LatticeMutableFst, delta: float = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default, subsequential_label: int = default,
+        type: DeterminizeType = default,
+        increment_subsequential_label: bool = default)
+
+    def `DifferenceExt` as difference(ifst1: LatticeFst, ifst2: LatticeFst,
+                                   ofst: LatticeMutableFst, connect: bool,
+                                   compose_filter: ComposeFilter)
+
+    def `DisambiguateExt` as disambiguate(
+        ifst: LatticeFst, ofst: LatticeMutableFst, delta: float = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default, subsequential_label: int = default)
+
+    def `EpsNormalizeExt` as epsnormalize(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                          type: EpsNormalizeType = default)
+
+    def `EqualExt` as equal(ifst1: LatticeFst, ifst2: LatticeFst,
+                            delta: float = default) -> bool
+
+    def `EquivalentExt` as equivalent(ifst1: LatticeFst, ifst2: LatticeFst, delta: float)
+        -> (result: bool, error: bool)
+
+    def `IntersectExt` as intersect(ifst1: LatticeFst, ifst2: LatticeFst,
+                                 ofst: LatticeMutableFst, connect: bool,
+                                 compose_filter: ComposeFilter)
+
+    def `IsomorphicExt` as isomorphic(ifst1: LatticeFst, ifst2: LatticeFst,
+                                      delta: float = default) -> bool
+
+    def `PruneExt` as prune_cons(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                 weight_threshold: LatticeWeight,
+                                 state_threshold: int = default,
+                                 delta: float = default)
+
+    def `PushExt` as push_cons(ifst: LatticeFst, ofst: LatticeMutableFst,
+                               flags: int, type: ReweightType, delta: float)
+
+    def `RandEquivalentExt` as randequivalent(
+        ifst1: LatticeFst, ifst2: LatticeFst, num_paths: int, delta: float,
+        seed: int, selector_type: RandArcSelection, max_length: int)
+        -> (result: bool, error: bool)
+
+    def `RandGenExt` as randgen(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                seed: int, selector_type: RandArcSelection,
+                                max_length: int, num_paths: int,
+                                weighted: bool, remove_total_weight: bool)
+
+    def `LatticeReplace` as replace(
+        pairs: list<tuple<int, LatticeFst>>, ofst: LatticeMutableFst,
+        root_label: int, call_label_type: ReplaceLabelType,
+        return_label_type: ReplaceLabelType, return_label: int)
+
+    def `ReverseExt` as reverse(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                require_superinitial: bool = default)
+
+    def `RmEpsilonExt` as rmepsiloncons(
+        ifst: LatticeFst, ofst: LatticeMutableFst, connect: bool = default,
+        reverse: bool = default, queue_type: QueueType = default,
+        delta: float = default, weight_threshold: LatticeWeight = default,
+        state_threshold: int = default)
+
+    def `ShortestDistanceExt` as shortestdistance(
+        fst: LatticeFst, reverse: bool = default, source: int = default,
+        queue_type: QueueType = default, delta: float = default)
+        -> list<LatticeWeight>
+
+    def `ShortestPathExt` as shortestpath(
+        ifst: LatticeFst, ofst: LatticeMutableFst,
+        nshortest: int = default, unique: bool = default,
+        queue_type: QueueType = default, delta: float = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default)
+
+    def `SynchronizeExt` as synchronize(ifst: LatticeFst, ofst: LatticeMutableFst)

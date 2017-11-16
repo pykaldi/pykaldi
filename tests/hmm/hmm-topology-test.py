@@ -32,10 +32,10 @@ def get_default_topology(phones):
     </Topology>
     """
 
-    topo_string = ostringstream.new_from_str(topo_string)
+    topo_string = ostringstream.from_str(topo_string)
 
     topo = HmmTopology()
-    iss = istringstream.new_from_str(topo_string.to_str())
+    iss = istringstream.from_str(topo_string.to_str())
     topo.read(iss, False)
     return topo
 
@@ -92,7 +92,7 @@ class TestHMMTopology(unittest.TestCase):
             with self.subTest(binary = binary):
                 topo = HmmTopology()
 
-                iss = istringstream.new_from_str(input_str)
+                iss = istringstream.from_str(input_str)
                 topo.read(iss, False)
                 self.assertEqual(3, topo.min_length(3))
                 self.assertEqual(2, topo.min_length(11))
@@ -101,7 +101,7 @@ class TestHMMTopology(unittest.TestCase):
                 topo.write(oss, binary)
 
                 topo2 = HmmTopology()
-                iss2 = istringstream.new_from_str(oss.to_bytes())
+                iss2 = istringstream.from_str(oss.to_bytes())
                 topo2.read(iss2, binary)
 
                 # Test equality
@@ -113,7 +113,7 @@ class TestHMMTopology(unittest.TestCase):
 
                 # Test chain topology
                 chain_topo = HmmTopology()
-                chain_iss = istringstream.new_from_str(chain_input_str)
+                chain_iss = istringstream.from_str(chain_input_str)
                 chain_topo.read(chain_iss, False)
                 self.assertEqual(1, chain_topo.min_length(3))
 

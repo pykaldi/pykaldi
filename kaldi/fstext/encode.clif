@@ -2,7 +2,6 @@ from "fstext/getters-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
-from "fstext/mutable-fst-clifwrap.h" import *
 
 from "fst/encode.h":
   namespace `fst`:
@@ -10,42 +9,414 @@ from "fst/encode.h":
     const `kEncodeWeights` as ENCODE_WEIGHTS: int
     const `kEncodeFlags` as ENCODE_FLAGS: int
 
+    # Tropical Semiring
+
     class `EncodeMapper<StdArc>` as StdEncodeMapper:
-      def __init__(self, flags: int, type: EncodeType)
+      """Arc encoder for an FST over the tropical semiring."""
+
+      def __init__(self, flags: int, type: EncodeType):
+        """
+        This class provides an object which can be used to encode or decode FST
+        arcs. This is most useful to convert an FST to an unweighted acceptor,
+        on which some FST operations are more efficient, and then decoding the
+        FST afterwards.
+
+        To use an instance of this class to encode or decode a mutable FST,
+        pass it as the first argument to the FST instance methods `encode` and
+        `decode`.  Alternatively, an instance of this class can be used as a
+        callable to encode/decode arcs.
+
+        Args:
+            flags (int): Encoder flags.
+            type (EncodeType): Encoder type.
+        """
 
       @add__init__
-      def `EncodeMapper` as from_other(self, mapper: StdEncodeMapper)
+      def `EncodeMapper` as from_other(self, mapper: StdEncodeMapper):
+        """Creates a new encoder with the contents of another."""
 
       @add__init__
       def `EncodeMapper` as from_other_with_type(self, mapper: StdEncodeMapper,
-                                                 type: EncodeType)
+                                                 type: EncodeType):
+        """Creates a new encoder with the contents of another and given type."""
 
-      def __call__(self, arc: StdArc) -> StdArc
+      def __call__(self, arc: StdArc) -> StdArc:
+        """
+        Uses the encoder to encode/decode an arc.
+
+        Args:
+            arc: input arc to be encoded/decoded
+
+        Raises:
+          RuntimeError: Incompatible or invalid weight.
+        """
 
       # def FinalAction(self) -> MapFinalAction
       # def InputSymbolsAction(self) -> MapSymbolsAction
       # def OutputSymbolsAction(self) -> MapSymbolsAction
 
-      def Properties(self, inprops: int) -> int
+      def `Properties` as properties(self, inprops: int) -> int:
+        """Provides property bits.
 
-      def Flags(self) -> int
+        This method provides user access to the properties attributes for the
+        encoder. The resulting value is a long integer, but when it is cast to a
+        boolean, it represents whether or not the FST has the `mask` property.
 
-      def Type(self) -> EncodeType
+        Args:
+          mask: The property mask to be compared to the encoder's properties.
 
-      def Write(self, filename: str) -> bool
+        Returns:
+          A 64-bit bitmask representing the requested properties.
+        """
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoder flags."""
+
+      def `Type` as type(self) -> EncodeType:
+        """Returns encoder type."""
+
+      def `Write` as write(self, filename: str) -> bool:
+        """Writes encoder to file.
+
+        Returns:
+            True if write was successful, False otherwise.
+        """
 
       @classmethod
-      def Read(cls, filename: str, type: EncodeType = default)
-          -> StdEncodeMapper
+      def `Read` as read(cls, filename: str, type: EncodeType = default) -> StdEncodeMapper:
+        """Reads encoder from file."""
 
-      def InputSymbols(self) -> SymbolTable
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbol table."""
 
-      def OutputSymbols(self) -> SymbolTable
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbol table."""
 
-      def SetInputSymbols(self, syms: SymbolTable)
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets the input symbol table.
 
-      def SetOutputSymbols(self, syms: SymbolTable)
+        Args:
+          syms: A SymbolTable.
 
-    def `Encode` as StdEncode(fst: StdMutableFst, mapper: StdEncodeMapper)
+        See also: `set_output_symbols`.
+        """
 
-    def `Decode` as StdDecode(fst: StdMutableFst, mapper: StdEncodeMapper)
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets the output symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_input_symbols`.
+        """
+
+    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+
+    # Log Semiring
+
+    class `EncodeMapper<LogArc>` as LogEncodeMapper:
+      """Arc encoder for an FST over the log semiring."""
+
+      def __init__(self, flags: int, type: EncodeType):
+        """
+        This class provides an object which can be used to encode or decode FST
+        arcs. This is most useful to convert an FST to an unweighted acceptor,
+        on which some FST operations are more efficient, and then decoding the
+        FST afterwards.
+
+        To use an instance of this class to encode or decode a mutable FST,
+        pass it as the first argument to the FST instance methods `encode` and
+        `decode`.  Alternatively, an instance of this class can be used as a
+        callable to encode/decode arcs.
+
+        Args:
+            flags (int): Encoder flags.
+            type (EncodeType): Encoder type.
+        """
+
+      @add__init__
+      def `EncodeMapper` as from_other(self, mapper: LogEncodeMapper):
+        """Creates a new encoder with the contents of another."""
+
+      @add__init__
+      def `EncodeMapper` as from_other_with_type(self, mapper: LogEncodeMapper,
+                                                 type: EncodeType):
+        """Creates a new encoder with the contents of another and given type."""
+
+      def __call__(self, arc: LogArc) -> LogArc:
+        """
+        Uses the encoder to encode/decode an arc.
+
+        Args:
+            arc: input arc to be encoded/decoded
+
+        Raises:
+          RuntimeError: Incompatible or invalid weight.
+        """
+
+      # def FinalAction(self) -> MapFinalAction
+      # def InputSymbolsAction(self) -> MapSymbolsAction
+      # def OutputSymbolsAction(self) -> MapSymbolsAction
+
+      def `Properties` as properties(self, inprops: int) -> int:
+        """Provides property bits.
+
+        This method provides user access to the properties attributes for the
+        encoder. The resulting value is a long integer, but when it is cast to a
+        boolean, it represents whether or not the FST has the `mask` property.
+
+        Args:
+          mask: The property mask to be compared to the encoder's properties.
+
+        Returns:
+          A 64-bit bitmask representing the requested properties.
+        """
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoder flags."""
+
+      def `Type` as type(self) -> EncodeType:
+        """Returns encoder type."""
+
+      def `Write` as write(self, filename: str) -> bool:
+        """Writes encoder to file.
+
+        Returns:
+            True if write was successful, False otherwise.
+        """
+
+      @classmethod
+      def `Read` as read(cls, filename: str, type: EncodeType = default) -> LogEncodeMapper:
+        """Reads encoder from file."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbol table."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbol table."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets the input symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_output_symbols`.
+        """
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets the output symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_input_symbols`.
+        """
+
+    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+
+    # Lattice Semiring
+
+    class `EncodeMapper<ArcTpl<LatticeWeightTpl<float>>>` as LatticeEncodeMapper:
+      """Arc encoder for an FST over the lattice semiring."""
+
+      def __init__(self, flags: int, type: EncodeType):
+        """
+        This class provides an object which can be used to encode or decode FST
+        arcs. This is most useful to convert an FST to an unweighted acceptor,
+        on which some FST operations are more efficient, and then decoding the
+        FST afterwards.
+
+        To use an instance of this class to encode or decode a mutable FST,
+        pass it as the first argument to the FST instance methods `encode` and
+        `decode`.  Alternatively, an instance of this class can be used as a
+        callable to encode/decode arcs.
+
+        Args:
+            flags (int): Encoder flags.
+            type (EncodeType): Encoder type.
+        """
+
+      @add__init__
+      def `EncodeMapper` as from_other(self, mapper: LatticeEncodeMapper):
+        """Creates a new encoder with the contents of another."""
+
+      @add__init__
+      def `EncodeMapper` as from_other_with_type(self, mapper: LatticeEncodeMapper,
+                                                 type: EncodeType):
+        """Creates a new encoder with the contents of another and given type."""
+
+      def __call__(self, arc: LatticeArc) -> LatticeArc:
+        """
+        Uses the encoder to encode/decode an arc.
+
+        Args:
+            arc: input arc to be encoded/decoded
+
+        Raises:
+          RuntimeError: Incompatible or invalid weight.
+        """
+
+      # def FinalAction(self) -> MapFinalAction
+      # def InputSymbolsAction(self) -> MapSymbolsAction
+      # def OutputSymbolsAction(self) -> MapSymbolsAction
+
+      def `Properties` as properties(self, inprops: int) -> int:
+        """Provides property bits.
+
+        This method provides user access to the properties attributes for the
+        encoder. The resulting value is a long integer, but when it is cast to a
+        boolean, it represents whether or not the FST has the `mask` property.
+
+        Args:
+          mask: The property mask to be compared to the encoder's properties.
+
+        Returns:
+          A 64-bit bitmask representing the requested properties.
+        """
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoder flags."""
+
+      def `Type` as type(self) -> EncodeType:
+        """Returns encoder type."""
+
+      def `Write` as write(self, filename: str) -> bool:
+        """Writes encoder to file.
+
+        Returns:
+            True if write was successful, False otherwise.
+        """
+
+      @classmethod
+      def `Read` as read(cls, filename: str, type: EncodeType = default) -> LatticeEncodeMapper:
+        """Reads encoder from file."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbol table."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbol table."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets the input symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_output_symbols`.
+        """
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets the output symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_input_symbols`.
+        """
+
+    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+
+    # CompactLattice Semiring
+
+    class `EncodeMapper<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeEncodeMapper:
+    """Arc encoder for an FST over the compact lattice semiring."""
+
+      def __init__(self, flags: int, type: EncodeType):
+        """
+        This class provides an object which can be used to encode or decode FST
+        arcs. This is most useful to convert an FST to an unweighted acceptor,
+        on which some FST operations are more efficient, and then decoding the
+        FST afterwards.
+
+        To use an instance of this class to encode or decode a mutable FST,
+        pass it as the first argument to the FST instance methods `encode` and
+        `decode`.  Alternatively, an instance of this class can be used as a
+        callable to encode/decode arcs.
+
+        Args:
+            flags (int): Encoder flags.
+            type (EncodeType): Encoder type.
+        """
+
+      @add__init__
+      def `EncodeMapper` as from_other(self, mapper: CompactLatticeEncodeMapper):
+        """Creates a new encoder with the contents of another."""
+
+      @add__init__
+      def `EncodeMapper` as from_other_with_type(self, mapper: CompactLatticeEncodeMapper,
+                                                 type: EncodeType):
+        """Creates a new encoder with the contents of another and given type."""
+
+      def __call__(self, arc: CompactLatticeArc) -> CompactLatticeArc:
+        """
+        Uses the encoder to encode/decode an arc.
+
+        Args:
+            arc: input arc to be encoded/decoded
+
+        Raises:
+          RuntimeError: Incompatible or invalid weight.
+        """
+
+      # def FinalAction(self) -> MapFinalAction
+      # def InputSymbolsAction(self) -> MapSymbolsAction
+      # def OutputSymbolsAction(self) -> MapSymbolsAction
+
+      def `Properties` as properties(self, inprops: int) -> int:
+        """Provides property bits.
+
+        This method provides user access to the properties attributes for the
+        encoder. The resulting value is a long integer, but when it is cast to a
+        boolean, it represents whether or not the FST has the `mask` property.
+
+        Args:
+          mask: The property mask to be compared to the encoder's properties.
+
+        Returns:
+          A 64-bit bitmask representing the requested properties.
+        """
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoder flags."""
+
+      def `Type` as type(self) -> EncodeType:
+        """Returns encoder type."""
+
+      def `Write` as write(self, filename: str) -> bool:
+        """Writes encoder to file.
+
+        Returns:
+            True if write was successful, False otherwise.
+        """
+
+      @classmethod
+      def `Read` as read(cls, filename: str, type: EncodeType = default) -> CompactLatticeEncodeMapper:
+        """Reads encoder from file."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbol table."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbol table."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets the input symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_output_symbols`.
+        """
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets the output symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_input_symbols`.
+        """
+
+    # Encode, Decode functions are wrapped via shims in fst-ops.h.

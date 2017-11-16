@@ -10,29 +10,41 @@ from "tree/build-tree.h":
         phone2num_pdf_classes: list<int>,
         share_roots: list<bool>, do_split: list<bool>,
         stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
-        thresh: float, max_leaves: int, cluster_thresh: float,
-        P: int) -> EventMap:
-        """BuildTree is the normal way to build a set of decision trees.
-        The sets 'phone_sets' dictacte how we set up the roots of the decision trees.
-        Each set of phones phone_sets[i] has shared decision-tree roots, and if the
-        corresponding variable share_roots[i] is true, the root will be shared for the
-        different HMM-positions in the phone.
+        thresh: float, max_leaves: int, cluster_thresh: float, P: int)
+      -> EventMap:
+      """Builds a set of decision trees.
 
-        Args:
-            qopts (:class:`Questions`): Questions options class, contains questions for each key
-            phone_sets (list): Each element of phone_sets is a set of phones whose roots are shared together
-            phone2num_pdf_classes (list): A map from phones to the number of pdf_classes in the phone
-            share_roots (list): A vector the same size as phone_sets; says for each phone set whether the root should be shared among all the pdf-classes or not
-            do_split (list): A vector the same size as phone_sets; says for each phone set whether decision-tree splitting should be done
-            stats (list): The statistics used in tree-building
-            thresh (float): Threshold used in decision-tree splitting or you may use 0 in which case max_leaves becomes the constraint
-            max_leaves (int): Maximum number of leaves it will create; set this to a large number if you want to specify just thresh
-            cluster_thresh (float): Threshold for clustering leaves after decision-tree splitting; leaves will be combined if log-likelihood change is less than this.
-            P (int): The central position of the phone context window
+      This is the normal way to build a set of decision trees. The sets
+      'phone_sets' dictacte how we set up the roots of the decision trees.
+      Each set of phones phone_sets[i] has shared decision-tree roots, and if
+      the corresponding variable share_roots[i] is true, the root will be
+      shared for the different HMM-positions in the phone.
 
-        Returns:
-            EventMap object that is the tree.
-        """
+      Args:
+          qopts (:class:`Questions`): Questions options class, contains
+            questions for each key
+          phone_sets (list): Each element of phone_sets is a set of phones
+            whose roots are shared together
+          phone2num_pdf_classes (list): A map from phones to the number of
+            pdf_classes in the phone
+          share_roots (list): A vector the same size as phone_sets; says for
+            each phone set whether the root should be shared among all the
+            pdf-classes or not
+          do_split (list): A vector the same size as phone_sets; says for
+            each phone set whether decision-tree splitting should be done
+          stats (list): The statistics used in tree-building
+          thresh (float): Threshold used in decision-tree splitting or you
+            may use 0 in which case max_leaves becomes the constraint
+          max_leaves (int): Maximum number of leaves it will create; set
+            this to a large number if you want to specify just thresh
+          cluster_thresh (float): Threshold for clustering leaves after
+            decision-tree splitting; leaves will be combined if
+            log-likelihood change is less than this.
+          P (int): The central position of the phone context window
+
+      Returns:
+          EventMap object that is the tree.
+      """
 
     def `BuildTreeTwoLevel` as build_tree_two_level(
         qopts: Questions, phone_sets: list<list<int>>,
@@ -41,53 +53,78 @@ from "tree/build-tree.h":
         stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
         max_leaves_first: int, max_leaves_second: int, cluster_leaves: bool,
         P: int) -> (tree: EventMap, leaf_map: list<int>):
-        """BuildTreeTwoLevel builds a two-level tree, useful for example in building tried mixture systems with multiple codebooks.
+      """Builds a two-level decision tree.
 
-        Args:
-            qopts (:class:`Questions`): Questions options class, contains questions for each key
-            phone_sets (list): Each element of phone_sets is a set of phones whose roots are shared together
-            phone2num_pdf_classes (list): A map from phones to the number of pdf_classes in the phone
-            share_roots (list): A vector the same size as phone_sets; says for each phone set whether the root should be shared among all the pdf-classes or not
-            do_split (list): A vector the same size as phone_sets; says for each phone set whether decision-tree splitting should be done
-            stats (list): The statistics used in tree-building
-            max_leaves_first (int): Maximum number of leaves it will create in first level
-            max_leaves_second (int): Maximum number of leaves it will create in second level
-            cluster_leaves (bool): If true, post-cluster the leaves produced in the second level.
-            P (int): The central position of the phone context window
+      This is useful for example in building tied mixture systems with
+      multiple codebooks.
 
-        Returns:
-            tree: EventMap object that is the tree
-            leaf_map: Mapping from the leaves of the big tree to the leaves of the little tree
-        """
+      Args:
+          qopts (:class:`Questions`): Questions options class, contains
+            questions for each key
+          phone_sets (list): Each element of phone_sets is a set of phones
+            whose roots are shared together
+          phone2num_pdf_classes (list): A map from phones to the number of
+            pdf_classes in the phone
+          share_roots (list): A vector the same size as phone_sets; says for
+            each phone set whether the root should be shared among all the
+            pdf-classes or not
+          do_split (list): A vector the same size as phone_sets; says for
+            each phone set whether decision-tree splitting should be done
+          stats (list): The statistics used in tree-building
+          max_leaves_first (int): Maximum number of leaves it will create
+            in first level
+          max_leaves_second (int): Maximum number of leaves it will create
+            in second level
+          cluster_leaves (bool): If true, post-cluster the leaves produced
+            in the second level.
+          P (int): The central position of the phone context window
 
-    def `GenRandStats` as gen_rand_stats(dim: int, num_stats: int, N: int, P: int, phone_ids: list<int>, hmm_lengths: list<int>, is_ctx_dep: list<bool>, ensure_all_phones_covered: bool) -> (stats_out: list<tuple<list<tuple<int, int>>, Clusterable>>):
-        """Generates random statistics of the form used by BuildTree.
-        It tries to do so in such a way that they mimic "real" stats. The event keys and their corresponding values are:
-          key               | value
-          -----------------------------
-          -1 == PDF_CLASS   | pdf-class
-           0                | phone-id of left-most context phone
-           1                | phone-id of one-from-left-most context phone
-           P - 1            | phone-id of central phone
-           N - 1            | phone-id of right-most context phone.
+      Returns:
+          tree: EventMap object that is the tree
+          leaf_map: Mapping from the leaves of the big tree to the leaves
+            of the little tree
+      """
 
-        Args:
-            dim (int): dimension of features
-            num_stats (int): approximate number of separate phones-in-context wanted
-            N (int): context-size
-            P (int): central-phone position
-            phone_ids (list): ids of phones
-            hmm_lengths (list): lenghts of hmm for phone
-            is_ctx_dep (list): boolean array whether each phone is context-dependant
-            ensure_all_phones_covered (bool): If true, ensures that every phone is seen at least once in the central position
+    def `GenRandStats` as gen_rand_stats(
+        dim: int, num_stats: int, N: int, P: int, phone_ids: list<int>,
+        hmm_lengths: list<int>, is_ctx_dep: list<bool>,
+        ensure_all_phones_covered: bool)
+      -> (stats_out: list<tuple<list<tuple<int, int>>, Clusterable>>):
+      """Generates random statistics of the form used by build_tree.
 
-        Returns:
-            Statistics of the form used by BuildTree
-        """
+      It tries to do so in such a way that they mimic "real" stats.
+      The event keys and their corresponding values are:
+
+      ===============  ============================================
+      key              value
+      ===============  ============================================
+      -1 == PDF_CLASS  pdf-class
+      0                phone-id of left-most context phone
+      1                phone-id of one-from-left-most context phone
+      P - 1            phone-id of central phone
+      N - 1            phone-id of right-most context phone.
+      ===============  ============================================
+
+      Args:
+          dim (int): dimension of features
+          num_stats (int): approximate number of separate phones-in-context
+            wanted
+          N (int): context-size
+          P (int): central-phone position
+          phone_ids (list): ids of phones
+          hmm_lengths (list): lenghts of hmm for phone
+          is_ctx_dep (list): boolean array whether each phone is
+            context-dependant
+          ensure_all_phones_covered (bool): If true, ensures that every
+            phone is seen at least once in the central position
+
+      Returns:
+          Statistics of the form used by BuildTree
+      """
 
     def `ReadSymbolTableAsIntegers` as read_symbol_table_as_integers(
         filename: str, include_eps: bool) -> list<int>:
-        """Reads an OpenFst symbl table, discards the symbols and outputs the integers"""
+      """Reads a symbol table, discards the symbols and returns the indexes."""
 
     # def `AutomaticallyObtainQuestions` as automatically_obtain_questions(
     #     stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
@@ -100,5 +137,6 @@ from "tree/build-tree.h":
     #     P: int, num_classes: int) -> list<list<int>>
 
     def `ReadRootsFile` as read_roots_file(is: istream)
-        -> (phone_sets: list<list<int>>, is_shared_root: list<bool>,
-            is_split_root: list<bool>)
+      -> (phone_sets: list<list<int>>, is_shared_root: list<bool>,
+          is_split_root: list<bool>):
+      """Reads roots from file."""

@@ -1,4 +1,4 @@
-add_pyclif_library("_properties" properties.clif)
+add_pyclif_library("properties" properties.clif)
 
 add_pyclif_library("_symbol_table" symbol-table.clif
   LIBRARIES fst
@@ -46,6 +46,12 @@ add_pyclif_library("_vector_fst" vector-fst.clif
 add_pyclif_library("_context_fst" context-fst.clif
   NAMESPACES fst fst::internal
   CLIF_DEPS _fst
+)
+
+add_pyclif_library("_context_fst_inl" context-fst-inl.clif
+  CLIF_DEPS _symbol_table _iostream
+  LIBRARIES kaldi-base
+  RPATH $ORIGIN/../base
 )
 
 add_pyclif_library("_deterministic_fst" deterministic-fst.clif
@@ -109,10 +115,30 @@ add_pyclif_library("_getters" getters.clif
 )
 
 add_pyclif_library("_encode" encode.clif
-  CLIF_DEPS _mutable_fst _getters
+  CLIF_DEPS _getters _symbol_table _arc
 )
 
-add_pyclif_library("_fst_operations" fst-operations.clif
-  CLIF_DEPS _vector_fst _context_fst _deterministic_fst _determinize_lattice _getters
+add_pyclif_library("_std_ops" std-ops.clif
+  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_log_ops" log-ops.clif
+  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_lat_ops" lat-ops.clif
+  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_clat_ops" clat-ops.clif
+  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_special_ops" special-ops.clif
+  CLIF_DEPS _getters _mutable_fst _vector_fst _context_fst _deterministic_fst _determinize_lattice
   NAMESPACES fst
 )

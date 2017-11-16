@@ -9,70 +9,95 @@ from "base/iostream-clifwrap.h" import *
 
 from kaldi.util import _value_error_on_false
 
+from kaldi.fstext import StdFst
+from kaldi.fstext import LogFst
+from kaldi.fstext import LatticeFst
+from kaldi.fstext import CompactLatticeFst
+
 from "fstext/fst-ext.h":
   namespace `fst`:
-    def `FstToString` as StdFstToString(fst: StdFst,
-                                        isyms: SymbolTable = default,
-                                        osyms: SymbolTable = default,
-                                        ssyms: SymbolTable = default) -> str
-    def `FstToString` as LogFstToString(fst: LogFst,
-                                        isyms: SymbolTable = default,
-                                        osyms: SymbolTable = default,
-                                        ssyms: SymbolTable = default) -> str
-    def `FstToString` as LatticeFstToString(
-        fst: LatticeFst,
-        isyms: SymbolTable = default,
-        osyms: SymbolTable = default,
-        ssyms: SymbolTable = default) -> str
+    def `AssignVectorFst` as _assign_std_vector_fst(ifst: StdVectorFst,
+                                                    ofst: StdVectorFst)
+    def `AssignVectorFst` as _assign_log_vector_fst(ifst: LogVectorFst,
+                                                    ofst: LogVectorFst)
+    def `AssignVectorFst` as _assign_lattice_vector_fst(ifst: LatticeVectorFst,
+                                                        ofst: LatticeVectorFst)
+    def `AssignVectorFst` as _assign_compact_lattice_vector_fst(ifst: CompactLatticeVectorFst,
+                                                                ofst: CompactLatticeVectorFst)
 
-    def `FstToString` as CompactLatticeFstToString(
-        fst: CompactLatticeFst,
-        isyms: SymbolTable = default,
-        osyms: SymbolTable = default,
-        ssyms: SymbolTable = default) -> str
+    def `AssignFst` as _assign_std_fst(ifst: StdFst, ofst: StdVectorFst)
+    def `AssignFst` as _assign_log_fst(ifst: LogFst, ofst: LogVectorFst)
+    def `AssignFst` as _assign_lattice_fst(ifst: LatticeFst, ofst: LatticeVectorFst)
+    def `AssignFst` as _assign_compact_lattice_fst(ifst: CompactLatticeFst, ofst: CompactLatticeVectorFst)
 
-    def WriteString(s: str, strm: iostream)
 
-    def `FstToBytes` as StdFstToBytes(fst: StdFst) -> bytes
-    def `FstToBytes` as LogFstToBytes(fst: LogFst) -> bytes
-    def `FstToBytes` as LatticeFstToBytes(fst: LatticeFst) -> bytes
-    def `FstToBytes` as CompactLatticeFstToBytes(fst: CompactLatticeFst
-                                                ) -> bytes
+    def `FstToString` as std_fst_to_string(fst: StdFst,
+                                           isyms: SymbolTable = default,
+                                           osyms: SymbolTable = default,
+                                           ssyms: SymbolTable = default) -> str
+    def `FstToString` as log_fst_to_string(fst: LogFst,
+                                           isyms: SymbolTable = default,
+                                           osyms: SymbolTable = default,
+                                           ssyms: SymbolTable = default) -> str
+    def `FstToString` as lattice_fst_to_string(fst: LatticeFst,
+                                               isyms: SymbolTable = default,
+                                               osyms: SymbolTable = default,
+                                               ssyms: SymbolTable = default) -> str
+    def `FstToString` as compactlattice_fst_to_string(fst: CompactLatticeFst,
+                                                      isyms: SymbolTable = default,
+                                                      osyms: SymbolTable = default,
+                                                      ssyms: SymbolTable = default) -> str
 
-    def BytesToStdFst(s: bytes) -> StdFst
-    def BytesToLogFst(s: bytes) -> LogFst
-    def BytesToLatticeFst(s: bytes) -> LatticeFst
-    def BytesToCompactLatticeFst(s: bytes) -> CompactLatticeFst
+    def `WriteString` as _write_string(s: str, strm: iostream)
 
-    def BytesToStdVectorFst(s: bytes) -> StdVectorFst
-    def BytesToLogVectorFst(s: bytes) -> LogVectorFst
-    def BytesToLatticeVectorFst(s: bytes) -> LatticeVectorFst
-    def BytesToCompactLatticeVectorFst(s: bytes) -> CompactLatticeVectorFst
+    def `FstToBytes` as std_fst_to_bytes(fst: StdFst) -> bytes
+    def `FstToBytes` as log_fst_to_bytes(fst: LogFst) -> bytes
+    def `FstToBytes` as lattice_fst_to_bytes(fst: LatticeFst) -> bytes
+    def `FstToBytes` as compactlattice_fst_to_bytes(fst: CompactLatticeFst) -> bytes
 
-    def CastStdToLog(ifst: StdVectorFst) -> LogVectorFst
-    def CastLogToStd(ifst: LogVectorFst) -> StdVectorFst
+    def `BytesToStdFst` as bytes_to_std_fst(s: bytes) -> StdFst:
+      return StdFst(...)
+    def `BytesToLogFst` as bytes_to_log_fst(s: bytes) -> LogFst:
+      return LogFst(...)
+    def `BytesToLatticeFst` as bytes_to_lattice_fst(s: bytes) -> LatticeFst:
+      return LatticeFst(...)
+    def `BytesToCompactLatticeFst` as bytes_to_compact_lattice_fst(s: bytes) -> CompactLatticeFst:
+      return CompactLatticeFst(...)
 
-    def `ReadFstKaldiExt` as ReadFstKaldi(rxfilename: str) -> StdVectorFst
+    def `BytesToStdVectorFst` as bytes_to_std_vector_fst(s: bytes) -> StdVectorFst:
+      return StdFst(...)
+    def `BytesToLogVectorFst` as bytes_to_log_vector_fst(s: bytes) -> LogVectorFst:
+      return LogFst(...)
+    def `BytesToLatticeVectorFst` as bytes_to_lattice_vector_fst(s: bytes) -> LatticeVectorFst:
+      return LatticeFst(...)
+    def `BytesToCompactLatticeVectorFst` as bytes_to_compact_lattice_vector_fst(s: bytes) -> CompactLatticeVectorFst:
+      return CompactLatticeFst(...)
 
-    def ConvertLatticeToCompactLattice(ifst: LatticeExpandedFst,
-                                       ofst: CompactLatticeMutableFst,
-                                       invert: bool = default)
-    def ConvertCompactLatticeToLattice(ifst: CompactLatticeExpandedFst,
-                                       ofst: LatticeMutableFst,
-                                       invert: bool = default)
-    def ConvertLatticeToStd(ifst: LatticeExpandedFst, ofst: StdMutableFst)
-    def ConvertStdToLattice(ifst: StdExpandedFst, ofst: LatticeMutableFst)
+    def `CastStdToLog` as cast_std_to_log(ifst: StdVectorFst) -> LogVectorFst:
+      return LogFst(...)
+    def `CastLogToStd` as cast_log_to_std(ifst: LogVectorFst) -> StdVectorFst:
+      return StdFst(...)
 
-    def `ScaleKaldiLattice` as ScaleLattice(scale: list<list<float>>,
+    def `ReadFstKaldiExt` as read_fst_kaldi(rxfilename: str) -> StdVectorFst:
+      return StdFst(...)
+
+    def `ConvertLatticeToCompactLattice` as convert_lattice_to_compact_lattice(
+        ifst: LatticeExpandedFst,ofst: CompactLatticeMutableFst, invert: bool = default)
+    def `ConvertCompactLatticeToLattice` as convert_compact_lattice_to_lattice(
+        ifst: CompactLatticeExpandedFst, ofst: LatticeMutableFst, invert: bool = default)
+    def `ConvertLatticeToStd` as convert_lattice_to_std(ifst: LatticeExpandedFst, ofst: StdMutableFst)
+    def `ConvertStdToLattice` as convert_std_to_lattice(ifst: StdExpandedFst, ofst: LatticeMutableFst)
+
+    def `ScaleKaldiLattice` as scale_lattice(scale: list<list<float>>,
                                             fst: LatticeMutableFst)
-    def ScaleCompactLattice(scale: list<list<float>>,
-                            fst: CompactLatticeMutableFst)
+    def `ScaleCompactLattice` as scale_compact_lattice(scale: list<list<float>>,
+                                                       fst: CompactLatticeMutableFst)
     def `RemoveAlignmentsFromCompactLatticeExt`
-        as RemoveAlignmentsFromCompactLattice(fst: CompactLatticeMutableFst)
+        as remove_alignments_from_compact_lattice(fst: CompactLatticeMutableFst)
     def `CompactLatticeHasAlignmentExt`
-        as CompactLatticeHasAlignment(fst: CompactLatticeExpandedFst) -> bool
+        as compact_lattice_has_alignment(fst: CompactLatticeExpandedFst) -> bool
 
-    def GetLinearSymbolSequenceFromLatticeFst(fst: LatticeFst)
-      -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>,
-          tot_weight_out: LatticeWeight):
+    def `GetLinearSymbolSequenceFromLatticeFst`
+        as get_linear_symbol_sequence_from_lattice_fst(fst: LatticeFst)
+        -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>, tot_weight_out: LatticeWeight):
       return _value_error_on_false(...)

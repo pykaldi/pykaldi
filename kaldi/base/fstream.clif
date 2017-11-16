@@ -5,8 +5,8 @@ from "fstream":
   namespace `::std`:
     class ifstream(istream):
       @add__init__
-      def `ifstream` as new_from_file(self, filename: str)
+      def `ifstream` as from_file(self, filename: str)
 
     class ofstream(ostream):
       @add__init__
-      def `ofstream` as new_from_file(self, filename: str)
+      def `ofstream` as from_file(self, filename: str)

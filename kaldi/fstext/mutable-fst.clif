@@ -15,246 +15,262 @@ from "fst/mutable-fst.h":
 
     class `MutableFst<StdArc>` as StdMutableFst(StdExpandedFst):
 
-      def SetStart(self, state: int)
+      def `SetStart` as _set_start(self, state: int)
 
-      def SetFinal(self, state: int, weight: TropicalWeight)
+      def `SetFinal` as _set_final(self, state: int, weight: TropicalWeight)
 
-      def SetProperties(self, props: int, mask: int)
+      def `SetProperties` as _set_properties(self, props: int, mask: int)
 
-      def AddState(self) -> int
+      def `AddState` as _add_state(self) -> int
 
-      def AddArc(self, state: int, arc: StdArc)
+      def `AddArc` as _add_arc(self, state: int, arc: StdArc)
 
-      def DeleteStates(self, dstates: list<int>)
+      def `DeleteStates` as _delete_states(self, dstates: list<int>)
 
-      def `DeleteStates` as DeleteAllStates(self)
+      def `DeleteStates` as _delete_all_states(self)
 
-      def DeleteArcs(self, state: int, n: int)
+      def `DeleteArcs` as _delete_arcs(self, state: int, n: int)
 
-      def `DeleteArcs` as DeleteAllArcs(self, state: int)
+      def `DeleteArcs` as _delete_all_arcs(self, state: int)
 
-      def ReserveStates(self, n: int)
+      def `ReserveStates` as _reserve_states(self, n: int)
 
-      def ReserveArcs(self, state: int, n: int)
+      def `ReserveArcs` as _reserve_arcs(self, state: int, n: int)
 
-      def MutableInputSymbols(self) -> SymbolTable
+      def `MutableInputSymbols` as _mutable_input_symbols(self) -> SymbolTable
 
-      def MutableOutputSymbols(self) -> SymbolTable
+      def `MutableOutputSymbols` as _mutable_output_symbols(self) -> SymbolTable
 
-      def SetInputSymbols(self, isyms: SymbolTable)
+      def `SetInputSymbols` as _set_input_symbols(self, isyms: SymbolTable)
 
-      def SetOutputSymbols(self, osyms: SymbolTable)
+      def `SetOutputSymbols` as _set_output_symbols(self, osyms: SymbolTable)
 
-      def Copy(self, safe: bool = default) -> StdMutableFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> StdMutableFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str, convert: bool = default,
+      #          convert_type: str = default) -> StdMutableFst
 
-      @classmethod
-      def Read(cls, filename: str, convert: bool = default,
-               convert_type: str = default) -> StdMutableFst
-
-    class `MutableArcIterator<MutableFst<StdArc>>` as StdFstMutableArcIterator:
-
-      def __init__(self, fst: StdMutableFst, s: int)
-
-      def Done(self) -> bool
-
-      def Value(self) -> StdArc
-
-      def SetValue(self, arc: StdArc)
-
-      def Next(self)
-
-      def Position(self) -> int
-
-      def Reset(self)
-
-      def Seek(self, a: int)
-
-      def Flags(self) -> int
-
-      def SetFlags(self, flags: int, mask: int)
+    # NOTE: We do not need this in Python.
+    #
+    # class `MutableArcIterator<MutableFst<StdArc>>` as StdFstMutableArcIterator:
+    #
+    #   def __init__(self, fst: StdMutableFst, s: int)
+    #
+    #   def Done(self) -> bool
+    #
+    #   def Value(self) -> StdArc
+    #
+    #   def SetValue(self, arc: StdArc)
+    #
+    #   def Next(self)
+    #
+    #   def Position(self) -> int
+    #
+    #   def Reset(self)
+    #
+    #   def Seek(self, a: int)
+    #
+    #   def Flags(self) -> int
+    #
+    #   def SetFlags(self, flags: int, mask: int)
 
     # LogArc
 
     class `MutableFst<LogArc>` as LogMutableFst(LogExpandedFst):
 
-      def SetStart(self, state: int)
+      def `SetStart` as _set_start(self, state: int)
 
-      def SetFinal(self, state: int, weight: LogWeight)
+      def `SetFinal` as _set_final(self, state: int, weight: LogWeight)
 
-      def SetProperties(self, props: int, mask: int)
+      def `SetProperties` as _set_properties(self, props: int, mask: int)
 
-      def AddState(self) -> int
+      def `AddState` as _add_state(self) -> int
 
-      def AddArc(self, state: int, arc: LogArc)
+      def `AddArc` as _add_arc(self, state: int, arc: LogArc)
 
-      def DeleteStates(self, dstates: list<int>)
+      def `DeleteStates` as _delete_states(self, dstates: list<int>)
 
-      def `DeleteStates` as DeleteAllStates(self)
+      def `DeleteStates` as _delete_all_states(self)
 
-      def DeleteArcs(self, state: int, n: int)
+      def `DeleteArcs` as _delete_arcs(self, state: int, n: int)
 
-      def `DeleteArcs` as DeleteAllArcs(self, state: int)
+      def `DeleteArcs` as _delete_all_arcs(self, state: int)
 
-      def ReserveStates(self, n: int)
+      def `ReserveStates` as _reserve_states(self, n: int)
 
-      def ReserveArcs(self, state: int, n: int)
+      def `ReserveArcs` as _reserve_arcs(self, state: int, n: int)
 
-      def MutableInputSymbols(self) -> SymbolTable
+      def `MutableInputSymbols` as _mutable_input_symbols(self) -> SymbolTable
 
-      def MutableOutputSymbols(self) -> SymbolTable
+      def `MutableOutputSymbols` as _mutable_output_symbols(self) -> SymbolTable
 
-      def SetInputSymbols(self, isyms: SymbolTable)
+      def `SetInputSymbols` as _set_input_symbols(self, isyms: SymbolTable)
 
-      def SetOutputSymbols(self, osyms: SymbolTable)
+      def `SetOutputSymbols` as _set_output_symbols(self, osyms: SymbolTable)
 
-      def Copy(self, safe: bool = default) -> LogMutableFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> LogMutableFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str, convert: bool = default,
+      #          convert_type: str = default) -> LogMutableFst
 
-      @classmethod
-      def Read(cls, filename: str, convert: bool = default,
-               convert_type: str = default) -> LogMutableFst
-
-    class `MutableArcIterator<MutableFst<LogArc>>` as LogFstMutableArcIterator:
-
-      def __init__(self, fst: LogMutableFst, s: int)
-
-      def Done(self) -> bool
-
-      def Value(self) -> LogArc
-
-      def SetValue(self, arc: LogArc)
-
-      def Next(self)
-
-      def Position(self) -> int
-
-      def Reset(self)
-
-      def Seek(self, a: int)
-
-      def Flags(self) -> int
-
-      def SetFlags(self, flags: int, mask: int)
+    # NOTE: We do not need this in Python.
+    #
+    # class `MutableArcIterator<MutableFst<LogArc>>` as LogFstMutableArcIterator:
+    #
+    #   def __init__(self, fst: LogMutableFst, s: int)
+    #
+    #   def Done(self) -> bool
+    #
+    #   def Value(self) -> LogArc
+    #
+    #   def SetValue(self, arc: LogArc)
+    #
+    #   def Next(self)
+    #
+    #   def Position(self) -> int
+    #
+    #   def Reset(self)
+    #
+    #   def Seek(self, a: int)
+    #
+    #   def Flags(self) -> int
+    #
+    #   def SetFlags(self, flags: int, mask: int)
 
     # LatticeArc
 
     class `MutableFst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeMutableFst(LatticeExpandedFst):
 
-      def SetStart(self, state: int)
+      def `SetStart` as _set_start(self, state: int)
 
-      def SetFinal(self, state: int, weight: LatticeWeight)
+      def `SetFinal` as _set_final(self, state: int, weight: LatticeWeight)
 
-      def SetProperties(self, props: int, mask: int)
+      def `SetProperties` as _set_properties(self, props: int, mask: int)
 
-      def AddState(self) -> int
+      def `AddState` as _add_state(self) -> int
 
-      def AddArc(self, state: int, arc: LatticeArc)
+      def `AddArc` as _add_arc(self, state: int, arc: LatticeArc)
 
-      def DeleteStates(self, dstates: list<int>)
+      def `DeleteStates` as _delete_states(self, dstates: list<int>)
 
-      def `DeleteStates` as DeleteAllStates(self)
+      def `DeleteStates` as _delete_all_states(self)
 
-      def DeleteArcs(self, state: int, n: int)
+      def `DeleteArcs` as _delete_arcs(self, state: int, n: int)
 
-      def `DeleteArcs` as DeleteAllArcs(self, state: int)
+      def `DeleteArcs` as _delete_all_arcs(self, state: int)
 
-      def ReserveStates(self, n: int)
+      def `ReserveStates` as _reserve_states(self, n: int)
 
-      def ReserveArcs(self, state: int, n: int)
+      def `ReserveArcs` as _reserve_arcs(self, state: int, n: int)
 
-      def MutableInputSymbols(self) -> SymbolTable
+      def `MutableInputSymbols` as _mutable_input_symbols(self) -> SymbolTable
 
-      def MutableOutputSymbols(self) -> SymbolTable
+      def `MutableOutputSymbols` as _mutable_output_symbols(self) -> SymbolTable
 
-      def SetInputSymbols(self, isyms: SymbolTable)
+      def `SetInputSymbols` as _set_input_symbols(self, isyms: SymbolTable)
 
-      def SetOutputSymbols(self, osyms: SymbolTable)
+      def `SetOutputSymbols` as _set_output_symbols(self, osyms: SymbolTable)
 
-      def Copy(self, safe: bool = default) -> LatticeMutableFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> LatticeMutableFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str, convert: bool = default,
+      #          convert_type: str = default) -> LatticeMutableFst
 
-      @classmethod
-      def Read(cls, filename: str, convert: bool = default,
-               convert_type: str = default) -> LatticeMutableFst
-
-    class `MutableArcIterator<MutableFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstMutableArcIterator:
-
-      def __init__(self, fst: LatticeMutableFst, s: int)
-
-      def Done(self) -> bool
-
-      def Value(self) -> LatticeArc
-
-      def SetValue(self, arc: LatticeArc)
-
-      def Next(self)
-
-      def Position(self) -> int
-
-      def Reset(self)
-
-      def Seek(self, a: int)
-
-      def Flags(self) -> int
-
-      def SetFlags(self, flags: int, mask: int)
+    # NOTE: We do not need this in Python.
+    #
+    # class `MutableArcIterator<MutableFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstMutableArcIterator:
+    #
+    #   def __init__(self, fst: LatticeMutableFst, s: int)
+    #
+    #   def Done(self) -> bool
+    #
+    #   def Value(self) -> LatticeArc
+    #
+    #   def SetValue(self, arc: LatticeArc)
+    #
+    #   def Next(self)
+    #
+    #   def Position(self) -> int
+    #
+    #   def Reset(self)
+    #
+    #   def Seek(self, a: int)
+    #
+    #   def Flags(self) -> int
+    #
+    #   def SetFlags(self, flags: int, mask: int)
 
     # CompactLatticeArc
 
     class `MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeMutableFst(CompactLatticeExpandedFst):
 
-      def SetStart(self, state: int)
+      def `SetStart` as _set_start(self, state: int)
 
-      def SetFinal(self, state: int, weight: CompactLatticeWeight)
+      def `SetFinal` as _set_final(self, state: int, weight: CompactLatticeWeight)
 
-      def SetProperties(self, props: int, mask: int)
+      def `SetProperties` as _set_properties(self, props: int, mask: int)
 
-      def AddState(self) -> int
+      def `AddState` as _add_state(self) -> int
 
-      def AddArc(self, state: int, arc: CompactLatticeArc)
+      def `AddArc` as _add_arc(self, state: int, arc: CompactLatticeArc)
 
-      def DeleteStates(self, dstates: list<int>)
+      def `DeleteStates` as _delete_states(self, dstates: list<int>)
 
-      def `DeleteStates` as DeleteAllStates(self)
+      def `DeleteStates` as _delete_all_states(self)
 
-      def DeleteArcs(self, state: int, n: int)
+      def `DeleteArcs` as _delete_arcs(self, state: int, n: int)
 
-      def `DeleteArcs` as DeleteAllArcs(self, state: int)
+      def `DeleteArcs` as _delete_all_arcs(self, state: int)
 
-      def ReserveStates(self, n: int)
+      def `ReserveStates` as _reserve_states(self, n: int)
 
-      def ReserveArcs(self, state: int, n: int)
+      def `ReserveArcs` as _reserve_arcs(self, state: int, n: int)
 
-      def MutableInputSymbols(self) -> SymbolTable
+      def `MutableInputSymbols` as _mutable_input_symbols(self) -> SymbolTable
 
-      def MutableOutputSymbols(self) -> SymbolTable
+      def `MutableOutputSymbols` as _mutable_output_symbols(self) -> SymbolTable
 
-      def SetInputSymbols(self, isyms: SymbolTable)
+      def `SetInputSymbols` as _set_input_symbols(self, isyms: SymbolTable)
 
-      def SetOutputSymbols(self, osyms: SymbolTable)
+      def `SetOutputSymbols` as _set_output_symbols(self, osyms: SymbolTable)
 
-      def Copy(self, safe: bool = default) -> CompactLatticeMutableFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> CompactLatticeMutableFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str, convert: bool = default,
+      #          convert_type: str = default) -> CompactLatticeMutableFst
 
-      @classmethod
-      def Read(cls, filename: str, convert: bool = default,
-               convert_type: str = default) -> CompactLatticeMutableFst
-
-    class `MutableArcIterator<MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstMutableArcIterator:
-
-      def __init__(self, fst: CompactLatticeMutableFst, s: int)
-
-      def Done(self) -> bool
-
-      def Value(self) -> CompactLatticeArc
-
-      def SetValue(self, arc: CompactLatticeArc)
-
-      def Next(self)
-
-      def Position(self) -> int
-
-      def Reset(self)
-
-      def Seek(self, a: int)
-
-      def Flags(self) -> int
-
-      def SetFlags(self, flags: int, mask: int)
+    # NOTE: We do not need this in Python.
+    #
+    # class `MutableArcIterator<MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstMutableArcIterator:
+    #
+    #   def __init__(self, fst: CompactLatticeMutableFst, s: int)
+    #
+    #   def Done(self) -> bool
+    #
+    #   def Value(self) -> CompactLatticeArc
+    #
+    #   def SetValue(self, arc: CompactLatticeArc)
+    #
+    #   def Next(self)
+    #
+    #   def Position(self) -> int
+    #
+    #   def Reset(self)
+    #
+    #   def Seek(self, a: int)
+    #
+    #   def Flags(self) -> int
+    #
+    #   def SetFlags(self, flags: int, mask: int)

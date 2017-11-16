@@ -1,0 +1,16 @@
+from "base/iostream-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/context-fst.h" import *
+
+
+from "fstext/context-fst-inl.h":
+  namespace `fst`:
+    def `WriteILabelInfo` as write_ilabel_info(os: ostream, binary: bool,
+                                               info: list<list<int>>)
+
+    def `ReadILabelInfo` as read_ilabel_info(is: istream, binary: bool)
+        -> list<list<int>>
+
+    def `CreateILabelInfoSymbolTable` as create_ilabel_info_symbol_table(
+        info: list<list<int>>, phones_symtab: SymbolTable,
+        separator: str, disambig_prefix: str) -> SymbolTable

@@ -10,142 +10,205 @@ kaldi\.fstext
    .. autosummary::
       :nosignatures:
    
-      AcousticLatticeScale
-      ApproxEqual
-      BytesToCompactLatticeFst
-      BytesToCompactLatticeVectorFst
-      BytesToLatticeFst
-      BytesToLatticeVectorFst
-      BytesToLogFst
-      BytesToLogVectorFst
-      BytesToStdFst
-      BytesToStdVectorFst
-      CastLogToStd
-      CastStdToLog
-      CompactLatticeApproxEqual
-      CompactLatticeCompare
-      CompactLatticeDivide
-      CompactLatticeFstToBytes
-      CompactLatticeFstToString
-      CompactLatticeHasAlignment
-      CompactLatticePlus
-      CompactLatticeTimes
-      CompactLatticeWeightToCost
-      CompatSymbols
-      ConvertCompactLatticeToLattice
-      ConvertLatticeToCompactLattice
-      ConvertLatticeToStd
-      ConvertLatticeToTropical
-      ConvertStdToLattice
-      CountStdFstStates
-      DefaultLatticeScale
-      DeserializeSymbolTable
-      GetArcSortType
-      GetClosureType
-      GetComposeFilter
-      GetDeterminizeType
-      GetEncodeFlags
-      GetEpsNormalizeType
-      GetLinearSymbolSequenceFromLatticeFst
-      GetLogToTropicalConverter
-      GetMapType
-      GetProjectType
-      GetPushFlags
-      GetQueueType
-      GetRandArcSelection
-      GetReplaceLabelType
-      GetReweightType
-      GetTropicalToLogConverter
-      GraphLatticeScale
-      LatticeApproxEqual
-      LatticeCompare
-      LatticeDivide
-      LatticeFstToBytes
-      LatticeFstToString
-      LatticePlus
-      LatticeScale
-      LatticeTimes
-      LatticeWeightToCost
-      LogDivide
-      LogFstToBytes
-      LogFstToString
-      LogPlus
-      LogPower
-      LogTimes
-      ReadFstKaldi
-      RelabelSymbolTable
-      RemoveAlignmentsFromCompactLattice
-      ScaleCompactLattice
-      ScaleCompactLatticeWeight
-      ScaleLattice
-      ScaleLatticeWeight
-      SerializeSymbolTable
-      StdArcSort
-      StdClosure
-      StdCompose
-      StdConnect
-      StdDecode
-      StdDeterminize
-      StdDifference
-      StdDisambiguate
-      StdEncode
-      StdEpsNormalize
-      StdEqual
-      StdEquivalent
-      StdFstToBytes
-      StdFstToString
-      StdIntersect
-      StdInvert
-      StdIsomorphic
-      StdMap
-      StdMinimize
-      StdMinimizeEncoded
-      StdProject
-      StdPrune
-      StdPruneCons
-      StdPush
-      StdPushCons
-      StdRandEquivalent
-      StdRandGen
-      StdRelabel
-      StdRelabelTables
-      StdReplace
-      StdReverse
-      StdReweight
-      StdRmEpsilon
-      StdRmEpsilonCons
-      StdShortestDistance
-      StdShortestPath
-      StdSynchronize
-      StdTopSort
-      StdUnion
-      StdVerify
-      TropicalDivide
-      TropicalPlus
-      TropicalPower
-      TropicalTimes
-      TropicalWeightToCost
-      WriteString
-      cast_or_convert_to_vector_fst
+      arcmap
+      compat_symbols
+      compose
+      deserialize_symbol_table
+      determinize
+      difference
+      disambiguate
+      epsnormalize
+      equal
+      equivalent
+      intersect
+      isomorphic
+      prune
+      push
+      randequivalent
+      randgen
+      relabel_symbol_table
+      replace
+      reverse
+      rmepsilon
+      serialize_symbol_table
+      shortestdistance
+      shortestpath
+      statemap
+      synchronize
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      CompactLatticeArc
+      CompactLatticeEncodeMapper
+      CompactLatticeFst
+      CompactLatticeFstArcIterator
+      CompactLatticeFstCompiler
+      CompactLatticeFstMutableArcIterator
+      CompactLatticeFstStateIterator
+      CompactLatticeWeight
+      EncodeType
+      LatticeArc
+      LatticeEncodeMapper
+      LatticeFst
+      LatticeFstArcIterator
+      LatticeFstCompiler
+      LatticeFstMutableArcIterator
+      LatticeFstStateIterator
+      LatticeWeight
+      LogArc
+      LogEncodeMapper
+      LogFst
+      LogFstArcIterator
+      LogFstCompiler
+      LogFstMutableArcIterator
+      LogFstStateIterator
+      LogWeight
+      StdArc
+      StdEncodeMapper
+      StdFst
+      StdFstArcIterator
+      StdFstCompiler
+      StdFstMutableArcIterator
+      StdFstStateIterator
+      SymbolTable
+      SymbolTableIterator
+      SymbolTableTextOptions
+      TropicalWeight
+   
+   
+
+   
+   
+   
+kaldi\.fstext\.properties
+-------------------------
+
+.. automodule:: kaldi.fstext.properties
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+kaldi\.fstext\.special
+----------------------
+
+.. automodule:: kaldi.fstext.special
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      add_subsequential_loop
+      compose_context
+      compose_context_fst
+      compose_deterministic_on_demand_fst
+      create_ilabel_info_symbol_table
       determinize_lattice
-      determinize_lattice_to_compact
+      determinize_star
       determinize_star_in_log
-      get_symbols
       push_in_log
       push_special
+      read_ilabel_info
+      remove_eps_local
+      std_table_compose
+      std_table_compose_cache
+      write_ilabel_info
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      StdBackoffDeterministicOnDemandFst
+      StdCacheDeterministicOnDemandFst
+      StdComposeDeterministicOnDemandFst
+      StdContextFst
+      StdContextFstArcIterator
+      StdContextFstStateIterator
+      StdDeterministicOnDemandFst
+      StdTableComposeCache
+      StdUnweightedNgramFst
+      TableComposeOptions
+      TableMatcherOptions
+   
+   
+
+   
+   
+   
+kaldi\.fstext\.utils
+--------------------
+
+.. automodule:: kaldi.fstext.utils
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      acoustic_lattice_scale
+      bytes_to_compact_lattice_fst
+      bytes_to_compact_lattice_vector_fst
+      bytes_to_lattice_fst
+      bytes_to_lattice_vector_fst
+      bytes_to_log_fst
+      bytes_to_log_vector_fst
+      bytes_to_std_fst
+      bytes_to_std_vector_fst
+      cast_log_to_std
+      cast_or_convert_to_vector_fst
+      cast_std_to_log
+      compact_lattice_has_alignment
+      compactlattice_fst_to_bytes
+      compactlattice_fst_to_string
+      convert_compact_lattice_to_lattice
+      convert_lattice_to_compact_lattice
+      convert_lattice_to_std
+      convert_std_to_lattice
+      default_lattice_scale
+      get_linear_symbol_sequence_from_lattice_fst
+      get_symbols
+      graph_lattice_scale
+      lattice_fst_to_bytes
+      lattice_fst_to_string
+      lattice_scale
+      log_fst_to_bytes
+      log_fst_to_string
+      read_fst_kaldi
       read_fst_kaldi_generic
-      remove_eps_local_special
-      std_add_subsequential_loop
+      remove_alignments_from_compact_lattice
+      scale_compact_lattice
+      scale_lattice
       std_apply_probability_scale
       std_clear_symbols
-      std_compose_context
-      std_compose_context_fst
-      std_compose_deterministic_on_demand
-      std_compose_deterministic_on_demand_inverse
       std_convert_nbest_to_vector
-      std_determinize_star
       std_equal_align
       std_following_input_symbols_are_same
+      std_fst_to_bytes
+      std_fst_to_string
       std_get_input_symbols
       std_get_linear_symbol_sequence
       std_get_output_symbols
@@ -158,11 +221,11 @@ kaldi\.fstext
       std_make_linear_acceptor_with_alternatives
       std_make_preceding_input_symbols_same
       std_map_input_symbols
+      std_minimize_encoded
       std_nbest_as_fsts
       std_phi_compose
       std_preceding_input_symbols_are_same
       std_propagate_final
-      std_remove_eps_local
       std_remove_some_input_symbols
       std_remove_useless_arcs
       std_remove_weights
@@ -170,30 +233,56 @@ kaldi\.fstext
       std_safe_determinize_minimize_wrapper
       std_safe_determinize_minimize_wrapper_in_log
       std_safe_determinize_wrapper
-      std_table_compose
-      std_table_compose_cache
-      stdarcmap
-      stdcompose
-      stddeterminize
-      stddifference
-      stddisambiguate
-      stdepsnormalize
-      stdequal
-      stdequivalent
-      stdintersect
-      stdisomorphic
-      stdprune
-      stdpush
-      stdrandequivalent
-      stdrandgen
-      stdreplace
-      stdreverse
-      stdrmepsilon
-      stdshortestdistance
-      stdshortestpath
-      stdstatemap
-      stdsynchronize
       write_fst_kaldi
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+kaldi\.fstext\.weight
+---------------------
+
+.. automodule:: kaldi.fstext.weight
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      approx_equal_compact_lattice_weight
+      approx_equal_float_weight
+      approx_equal_lattice_weight
+      compact_lattice_weight_to_cost
+      compare_compact_lattice_weight
+      compare_lattice_weight
+      divide_compact_lattice_weight
+      divide_lattice_weight
+      divide_log_weight
+      divide_tropical_weight
+      get_log_to_tropical_converter
+      get_tropical_to_log_converter
+      lattice_weight_to_cost
+      lattice_weight_to_tropical
+      plus_compact_lattice_weight
+      plus_lattice_weight
+      plus_log_weight
+      plus_tropical_weight
+      power_log_weight
+      power_tropical_weight
+      scale_compact_lattice_weight
+      scale_lattice_weight
+      times_compact_lattice_weight
+      times_lattice_weight
+      times_log_weight
+      times_tropical_weight
+      tropical_weight_to_cost
    
    
 
@@ -204,70 +293,15 @@ kaldi\.fstext
    .. autosummary::
       :nosignatures:
    
-      ArcSortType
-      ClosureType
-      CompactLatticeArc
-      CompactLatticeFstCompiler
-      CompactLatticeFstDrawer
-      CompactLatticeFstPrinter
       CompactLatticeNaturalLess
-      CompactLatticeVectorFst
       CompactLatticeWeight
-      ComposeFilter
-      DeterminizeLatticeOptions
-      DeterminizeType
       DivideType
-      EncodeType
-      EpsNormalizeType
       FloatLimits
       FloatWeight
-      LatticeArc
-      LatticeFstCompiler
-      LatticeFstDrawer
-      LatticeFstPrinter
       LatticeNaturalLess
-      LatticeVectorFst
       LatticeWeight
-      LogArc
-      LogFstCompiler
-      LogFstDrawer
-      LogFstPrinter
       LogWeight
-      MapType
-      MatchType
-      ProjectType
-      QueueType
-      RandArcSelection
-      ReplaceLabelType
-      ReweightType
-      StdArc
-      StdBackoffDeterministicOnDemandFst
-      StdCacheDeterministicOnDemandFst
-      StdComposeDeterministicOnDemandFst
-      StdContextFst
-      StdContextFstArcIterator
-      StdContextFstStateIterator
-      StdDeterministicOnDemandFst
-      StdEncodeMapper
-      StdExpandedFst
-      StdFst
-      StdFstCompiler
-      StdFstDrawer
-      StdFstPrinter
-      StdMutableFst
-      StdTableComposeCache
-      StdUnweightedNgramFst
-      StdVectorFst
-      StdVectorFstCompiler
-      SymbolTable
-      SymbolTableIterator
-      SymbolTableTextOptions
-      TableComposeOptions
-      TableMatcherOptions
       TropicalWeight
-      ofstream
-      ostringstream
-      stringstream
    
    
 

@@ -4,54 +4,139 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fst/arc.h":
   namespace `fst`:
     class `ArcTpl<TropicalWeight>` as StdArc:
+      """FST Arc with tropical weight.
+
+      Attributes of the arc can be accessed and mutated.
+
+      StdArc():
+        Creates an uninitialized StdArc.
+      """
+
       ilabel: int
+      """int: The input label."""
       olabel: int
+      """int: The output label."""
       weight: TropicalWeight
+      """TropicalWeight: The arc weight."""
       nextstate: int
+      """int: The destination state for the arc."""
 
       @add__init__
-      def `ArcTpl` as new(self, ilabel: int, olabel:int,
-                          weight: TropicalWeight, nextstate: int)
+      def `ArcTpl` as from_attrs(self, ilabel: int, olabel:int,
+                                 weight: TropicalWeight, nextstate: int):
+        """Creates a new arc with the given attributes.
+
+        Args:
+            ilabel (int): The input label.
+            olabel (int): The output label.
+            weight (TropicalWeight): The arc weight.
+            nextstate (int): The destination state for the arc.
+        """
 
       @classmethod
-      def Type(cls) -> str
+      def `Type` as type(cls) -> str:
+        """Returns arc type."""
 
     class `ArcTpl<LogWeight>` as LogArc:
+      """FST Arc with log weight.
+
+      Attributes of the arc can be accessed and mutated.
+
+      LogArc():
+        Creates an uninitialized LogArc.
+      """
+
       ilabel: int
+      """int: The input label."""
       olabel: int
+      """int: The output label."""
       weight: LogWeight
+      """LogWeight: The arc weight."""
       nextstate: int
+      """int: The destination state for the arc."""
 
       @add__init__
-      def `ArcTpl` as new(self, ilabel: int, olabel:int,
-                          weight: LogWeight, nextstate: int)
+      def `ArcTpl` as from_attrs(self, ilabel: int, olabel:int,
+                                 weight: LogWeight, nextstate: int):
+        """Creates a new arc with the given attributes.
+
+        Args:
+            ilabel (int): The input label.
+            olabel (int): The output label.
+            weight (LogWeight): The arc weight.
+            nextstate (int): The destination state for the arc.
+        """
 
       @classmethod
-      def Type(cls) -> str
+      def `Type` as type(cls) -> str:
+        """Returns arc type."""
 
     class `ArcTpl<LatticeWeightTpl<float>>` as LatticeArc:
+      """FST Arc with lattice weight.
+
+      Attributes of the arc can be accessed and mutated.
+
+      LatticeArc():
+        Creates an uninitialized LatticeArc.
+      """
+
       ilabel: int
+      """int: The input label."""
       olabel: int
+      """int: The output label."""
       weight: LatticeWeight
+      """LatticeWeight: The arc weight."""
       nextstate: int
+      """int: The destination state for the arc."""
+
 
       @add__init__
-      def `ArcTpl` as new(self, ilabel: int, olabel:int,
-                          weight: LatticeWeight, nextstate: int)
+      def `ArcTpl` as from_attrs(self, ilabel: int, olabel:int,
+                                 weight: LatticeWeight, nextstate: int):
+        """Creates a new arc with the given attributes.
+
+        Args:
+            ilabel (int): The input label.
+            olabel (int): The output label.
+            weight (LatticeWeight): The arc weight.
+            nextstate (int): The destination state for the arc.
+        """
 
       @classmethod
-      def Type(cls) -> str
+      def `Type` as type(cls) -> str:
+        """Returns arc type."""
 
     class `ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>`
         as CompactLatticeArc:
+      """FST Arc with compact lattice weight.
+
+      Attributes of the arc can be accessed and mutated.
+
+      CompactLatticeArc():
+        Creates an uninitialized CompactLatticeArc.
+      """
+
       ilabel: int
+      """int: The input label."""
       olabel: int
+      """int: The output label."""
       weight: CompactLatticeWeight
+      """CompactLatticeWeight: The arc weight."""
       nextstate: int
+      """int: The destination state for the arc."""
 
       @add__init__
-      def `ArcTpl` as new(self, ilabel: int, olabel:int,
-                          weight: CompactLatticeWeight, nextstate: int)
+      def `ArcTpl` as from_attrs(self, ilabel: int, olabel:int,
+                                 weight: CompactLatticeWeight, nextstate: int):
+        """Creates a new arc with the given attributes.
+
+        Args:
+            ilabel (int): The input label.
+            olabel (int): The output label.
+            weight (CompactLatticeWeight): The arc weight.
+            nextstate (int): The destination state for the arc.
+        """
 
       @classmethod
-      def Type(cls) -> str
+      def `Type` as type(cls) -> str:
+        """Returns arc type."""

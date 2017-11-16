@@ -4,5 +4,5 @@ from "fstext/vector-fst-clifwrap.h" import *
 
 from "fstext/fstext-utils.h":
   namespace `fst`:
-    def `MinimizeEncoded` as StdMinimizeEncoded(fst: StdVectorFst,
-                                                delta: float = default)
+    def `MinimizeEncoded` as std_minimize_encoded(fst: StdVectorFst,
+                                                  delta: float = default)

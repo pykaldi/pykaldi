@@ -1,18 +1,37 @@
-#ifndef PYKALDI_FSTEXT_FST_OPERATIONS_H_
-#define PYKALDI_FSTEXT_FST_OPERATIONS_H_ 1
+#ifndef PYKALDI_FSTEXT_FST_OPS_H_
+#define PYKALDI_FSTEXT_FST_OPS_H_ 1
 
 #include "fst/fstlib.h"
-#include "fstext/context-fst.h"
-#include "fstext/deterministic-fst.h"
-#include "fstext/determinize-lattice.h"
-#include "fstext/determinize-star.h"
-#include "fstext/remove-eps-local.h"
-#include "fstext/fstext-utils.h"
+#include "fstext/lattice-weight.h"
 
 namespace fst {
 
+typedef Fst<LogArc> LogFst;
+typedef MutableFst<LogArc> LogMutableFst;
+typedef ArcTpl<LatticeWeightTpl<float>> LatticeArc;
+typedef Fst<LatticeArc> LatticeFst;
+typedef MutableFst<LatticeArc> LatticeMutableFst;
+typedef ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>> CompactLatticeArc;
+typedef Fst<CompactLatticeArc> CompactLatticeFst;
+typedef MutableFst<CompactLatticeArc> CompactLatticeMutableFst;
+
 template <class Arc>
-void ArcSort(MutableFst<Arc> *fst, script::ArcSortType sort_type) {
+bool VerifyExt(const Fst<Arc> &fst) {
+  return Verify(fst);
+}
+
+template <class Arc>
+typename Arc::StateId CountStatesExt(const Fst<Arc> &fst) {
+  return CountStates(fst);
+}
+
+template <class Arc>
+typename Arc::StateId CountArcsExt(const Fst<Arc> &fst) {
+  return CountArcs(fst);
+}
+
+template <class Arc>
+void ArcSortExt(MutableFst<Arc> *fst, script::ArcSortType sort_type) {
   if (sort_type == script::ILABEL_SORT) {
     ILabelCompare<Arc> icomp;
     ArcSort(fst, icomp);
@@ -30,6 +49,16 @@ void ClosureExt(MutableFst<Arc> *fst, ClosureType closure_type) {
 template <class Arc>
 void ConnectExt(MutableFst<Arc> *fst) {
   Connect(fst);
+}
+
+template <class Arc>
+void DecodeExt(MutableFst<Arc> *fst, const EncodeMapper<Arc> &mapper) {
+  Decode(fst, mapper);
+}
+
+template <class Arc>
+void EncodeExt(MutableFst<Arc> *fst, EncodeMapper<Arc> *mapper) {
+  Encode(fst, mapper);
 }
 
 template <class Arc>
@@ -107,14 +136,10 @@ void UnionExt(MutableFst<Arc> *fst1, const Fst<Arc> &fst2) {
   Union(fst1, fst2);
 }
 
-template <class Arc>
-bool VerifyExt(const Fst<Arc> &fst) {
-  return Verify(fst);
-}
 
 template <class Arc>
-void Map(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, script::MapType map_type,
-         float delta, const typename Arc::Weight &weight) {
+void MapExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, script::MapType map_type,
+            float delta, const typename Arc::Weight &weight) {
   if (map_type == script::ARC_SUM_MAPPER) {
     return StateMap(ifst, ofst, ArcSumMapper<Arc>(ifst));
   } else if (map_type == script::ARC_UNIQUE_MAPPER) {
@@ -144,9 +169,9 @@ void Map(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, script::MapType map_type,
 }
 
 template <class Arc>
-void Compose(const Fst<Arc> &ifst1, const Fst<Arc> &ifst2,
-             MutableFst<Arc> *ofst, bool connect,
-             ComposeFilter compose_filter) {
+void ComposeExt(const Fst<Arc> &ifst1, const Fst<Arc> &ifst2,
+                MutableFst<Arc> *ofst, bool connect,
+                ComposeFilter compose_filter) {
   Compose(ifst1, ifst2, ofst, ComposeOptions(connect, compose_filter));
 }
 
@@ -165,9 +190,9 @@ void DeterminizeExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst,
 }
 
 template <class Arc>
-void Difference(const Fst<Arc> &ifst1, const Fst<Arc> &ifst2,
-                MutableFst<Arc> *ofst, bool connect,
-                ComposeFilter compose_filter) {
+void DifferenceExt(const Fst<Arc> &ifst1, const Fst<Arc> &ifst2,
+                   MutableFst<Arc> *ofst, bool connect,
+                   ComposeFilter compose_filter) {
   Difference(ifst1, ifst2, ofst, ComposeOptions(connect, compose_filter));
 }
 
@@ -202,9 +227,9 @@ bool EquivalentExt(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
 
 
 template <class Arc>
-void Intersect(const Fst<Arc> &ifst1, const Fst<Arc> &ifst2,
-               MutableFst<Arc> *ofst, bool connect,
-               ComposeFilter compose_filter) {
+void IntersectExt(const Fst<Arc> &ifst1, const Fst<Arc> &ifst2,
+                  MutableFst<Arc> *ofst, bool connect,
+                  ComposeFilter compose_filter) {
   Intersect(ifst1, ifst2, ofst, ComposeOptions(connect, compose_filter));
 }
 
@@ -234,10 +259,10 @@ void PushExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, uint32 flags,
 }
 
 template <class Arc>
-bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
-                    time_t seed, int32 num_paths, float delta,
-                    script::RandArcSelection selector_type,
-                    int32 max_length, bool *error) {
+bool RandEquivalentExt(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
+                       int32 num_paths, float delta, time_t seed,
+                       script::RandArcSelection selector_type,
+                       int32 max_length, bool *error) {
   if (selector_type == script::UNIFORM_ARC_SELECTOR) {
     const UniformArcSelector<Arc> selector(seed);
     const RandGenOptions<UniformArcSelector<Arc>> ropts(selector, max_length);
@@ -255,9 +280,9 @@ bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
 }
 
 template <class Arc>
-void RandGen(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, time_t seed,
-             script::RandArcSelection selector_type, int32 max_length,
-             int32 num_paths, bool weighted, bool remove_total_weight) {
+void RandGenExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, time_t seed,
+                script::RandArcSelection selector_type, int32 max_length,
+                int32 num_paths, bool weighted, bool remove_total_weight) {
   if (selector_type == script::UNIFORM_ARC_SELECTOR) {
     const UniformArcSelector<Arc> selector(seed);
     const RandGenOptions<UniformArcSelector<Arc>> ropts(
@@ -289,6 +314,72 @@ void StdReplace(
   // FIXME: This cast is needed because CLIF gets confused if the FST type
   // in the first argument is const.
   ReplaceFst<StdArc> rfst(reinterpret_cast<LabelFstPairVector&>(pairs), opts);
+  // Checks for cyclic dependencies before attempting expansion.
+  if (rfst.CyclicDependencies()) {
+    FSTERROR() << "Replace: Cyclic dependencies detected; cannot expand";
+    ofst->SetProperties(kError, kError);
+    return;
+  }
+  opts.gc = true;     // Caching options to speed up batch copy.
+  opts.gc_limit = 0;
+  *ofst = rfst;
+}
+
+void LogReplace(
+    const std::vector<std::pair<typename LogArc::Label, LogFst *>> &pairs,
+    LogMutableFst *ofst, int64 root_label, ReplaceLabelType call_label_type,
+    ReplaceLabelType return_label_type, int64 return_label) {
+  ReplaceFstOptions<LogArc> opts(root_label, call_label_type,
+                                 return_label_type, return_label);
+  using LabelFstPair = std::pair<typename LogArc::Label, const LogFst *>;
+  using LabelFstPairVector = const std::vector<LabelFstPair>;
+  // FIXME: This cast is needed because CLIF gets confused if the FST type
+  // in the first argument is const.
+  ReplaceFst<LogArc> rfst(reinterpret_cast<LabelFstPairVector&>(pairs), opts);
+  // Checks for cyclic dependencies before attempting expansion.
+  if (rfst.CyclicDependencies()) {
+    FSTERROR() << "Replace: Cyclic dependencies detected; cannot expand";
+    ofst->SetProperties(kError, kError);
+    return;
+  }
+  opts.gc = true;     // Caching options to speed up batch copy.
+  opts.gc_limit = 0;
+  *ofst = rfst;
+}
+
+void LatticeReplace(
+    const std::vector<std::pair<typename LatticeArc::Label, LatticeFst *>> &pairs,
+    LatticeMutableFst *ofst, int64 root_label, ReplaceLabelType call_label_type,
+    ReplaceLabelType return_label_type, int64 return_label) {
+  ReplaceFstOptions<LatticeArc> opts(root_label, call_label_type,
+                                     return_label_type, return_label);
+  using LabelFstPair = std::pair<typename LatticeArc::Label, const LatticeFst *>;
+  using LabelFstPairVector = const std::vector<LabelFstPair>;
+  // FIXME: This cast is needed because CLIF gets confused if the FST type
+  // in the first argument is const.
+  ReplaceFst<LatticeArc> rfst(reinterpret_cast<LabelFstPairVector&>(pairs), opts);
+  // Checks for cyclic dependencies before attempting expansion.
+  if (rfst.CyclicDependencies()) {
+    FSTERROR() << "Replace: Cyclic dependencies detected; cannot expand";
+    ofst->SetProperties(kError, kError);
+    return;
+  }
+  opts.gc = true;     // Caching options to speed up batch copy.
+  opts.gc_limit = 0;
+  *ofst = rfst;
+}
+
+void CompactLatticeReplace(
+    const std::vector<std::pair<typename CompactLatticeArc::Label, CompactLatticeFst *>> &pairs,
+    CompactLatticeMutableFst *ofst, int64 root_label, ReplaceLabelType call_label_type,
+    ReplaceLabelType return_label_type, int64 return_label) {
+  ReplaceFstOptions<CompactLatticeArc> opts(root_label, call_label_type,
+                                            return_label_type, return_label);
+  using LabelFstPair = std::pair<typename CompactLatticeArc::Label, const CompactLatticeFst *>;
+  using LabelFstPairVector = const std::vector<LabelFstPair>;
+  // FIXME: This cast is needed because CLIF gets confused if the FST type
+  // in the first argument is const.
+  ReplaceFst<CompactLatticeArc> rfst(reinterpret_cast<LabelFstPairVector&>(pairs), opts);
   // Checks for cyclic dependencies before attempting expansion.
   if (rfst.CyclicDependencies()) {
     FSTERROR() << "Replace: Cyclic dependencies detected; cannot expand";
@@ -365,8 +456,8 @@ void RmEpsilonHelper(MutableFst<Arc> *fst,
 
 template <class Arc>
 void RmEpsilonExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst,
-                  bool reverse = false, QueueType queue_type = AUTO_QUEUE,
-                  float delta = kDelta, bool connect = true,
+                  bool connect = true,bool reverse = false,
+                  QueueType queue_type = AUTO_QUEUE, float delta = kDelta,
                   typename Arc::Weight weight_threshold = Arc::Weight::Zero(),
                   typename Arc::StateId state_threshold = kNoStateId) {
   std::vector<typename Arc::Weight> distance;
@@ -388,9 +479,9 @@ void RmEpsilonExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst,
 
 template <class Arc>
 std::vector<typename Arc::Weight> *ShortestDistanceExt(
-    const Fst<Arc> &fst, QueueType queue_type = AUTO_QUEUE,
-    typename Arc::StateId source = kNoStateId, float delta = kDelta,
-    bool reverse = false) {
+    const Fst<Arc> &fst, bool reverse = false,
+    typename Arc::StateId source = kNoStateId,
+    QueueType queue_type = AUTO_QUEUE, float delta = kDelta) {
   using StateId = typename Arc::StateId;
   using Weight = typename Arc::Weight;
   using ArcFilter = AnyArcFilter<Arc>;
@@ -459,8 +550,8 @@ std::vector<typename Arc::Weight> *ShortestDistanceExt(
 template <class Arc>
 void ShortestPathExt(
     const Fst<Arc> &ifst, MutableFst<Arc> *ofst,
-    QueueType queue_type = AUTO_QUEUE, const int32 nshortest = 1,
-    const bool unique = false, float delta = kDelta,
+    const int32 nshortest = 1, const bool unique = false,
+    QueueType queue_type = AUTO_QUEUE, float delta = kDelta,
     typename Arc::Weight weight_threshold = Arc::Weight::Zero(),
     typename Arc::StateId state_threshold = kNoStateId) {
   using StateId = typename Arc::StateId;
@@ -533,89 +624,6 @@ void SynchronizeExt(const Fst<Arc> &ifst, MutableFst<Arc> *ofst) {
   Synchronize(ifst, ofst);
 }
 
-// Kaldi FST operations
-
-template <class Arc>
-void ComposeContextFstExt(const ContextFst<Arc> &ifst1, const Fst<Arc> &ifst2,
-                          MutableFst<Arc> *ofst, bool connect =  true,
-                          ComposeFilter filter_type = AUTO_FILTER) {
-  ComposeContextFst(ifst1, ifst2, ofst, ComposeOptions(connect, filter_type));
-}
-
-void ComposeContextExt(const std::vector<int32> &disambig_syms,
-                       int N, int P,
-                       VectorFst<StdArc> *ifst,
-                       VectorFst<StdArc> *ofst,
-                       std::vector<std::vector<int32> > *ilabels_out) {
-  ComposeContext(disambig_syms, N, P, ifst, ofst, ilabels_out);
-}
-
-template<class Arc>
-void AddSubsequentialLoopExt(typename Arc::Label subseq_symbol,
-                             MutableFst<Arc> *fst){
-  AddSubsequentialLoop(subseq_symbol, fst);
-}
-
-template<class Arc>
-void ComposeDeterministicOnDemandExt(const Fst<Arc> &fst1,
-                                     DeterministicOnDemandFst<Arc> *fst2,
-                                     MutableFst<Arc> *fst_composed) {
-  ComposeDeterministicOnDemand(fst1, fst2, fst_composed);
-}
-
-template<class Arc>
-void ComposeDeterministicOnDemandInverseExt(const Fst<Arc> &fst1,
-                                            DeterministicOnDemandFst<Arc> *fst2,
-                                            MutableFst<Arc> *fst_composed) {
-  ComposeDeterministicOnDemandInverse(fst1, fst2, fst_composed);
-}
-
-template<class Weight>
-bool DeterminizeLatticeExt(
-    const Fst<ArcTpl<Weight> > &ifst,
-    MutableFst<ArcTpl<Weight> > *ofst,
-    DeterminizeLatticeOptions opts = DeterminizeLatticeOptions()) {
-  return DeterminizeLattice<Weight, int32>(ifst, ofst, opts);
-}
-
-template<class Weight, class IntType>
-bool DeterminizeLatticeExt(
-    const Fst<ArcTpl<Weight> >&ifst,
-    MutableFst<ArcTpl<CompactLatticeWeightTpl<Weight, IntType> > > *ofst,
-    DeterminizeLatticeOptions opts = DeterminizeLatticeOptions()) {
-  return DeterminizeLattice(ifst, ofst, opts);
-}
-
-template<class F>
-bool DeterminizeStarExt(F &ifst, MutableFst<typename F::Arc> *ofst,
-                        float delta = kDelta,
-                        int max_states = -1,
-                        bool allow_partial = false) {
-  return DeterminizeStar(ifst, ofst, delta, NULL, max_states, allow_partial);
-}
-
-template<class Arc>
-void RemoveEpsLocalExt(MutableFst<Arc> *fst) {
-  RemoveEpsLocal(fst);
-}
-
-void RemoveEpsLocalSpecialExt(MutableFst<StdArc> *fst) {
-  RemoveEpsLocalSpecial(fst);
-}
-
-void PushInLogExt(VectorFst<StdArc> *fst, uint32 ptype,
-                  float delta = kDelta, bool to_final = false) {
-  if (to_final)
-    PushInLog<REWEIGHT_TO_FINAL>(fst, ptype, delta);
-  else
-    PushInLog<REWEIGHT_TO_INITIAL>(fst, ptype, delta);
-}
-
-void DeterminizeStarInLogExt(VectorFst<StdArc> *fst, float delta = kDelta,
-                             int max_states = -1) {
-  DeterminizeStarInLog(fst, delta, NULL, max_states);
-}
-
 }  // namespace fst
 
-#endif  // PYKALDI_FSTEXT_FST_OPERATIONS_H_
+#endif  // PYKALDI_FSTEXT_FST_OPS_H_

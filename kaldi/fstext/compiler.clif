@@ -3,6 +3,11 @@ from "fstext/symbol-table-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 
+from kaldi.fstext import StdFst
+from kaldi.fstext import LogFst
+from kaldi.fstext import LatticeFst
+from kaldi.fstext import CompactLatticeFst
+
 from "fst/script/compile-impl.h":
   namespace `fst`:
 
@@ -20,12 +25,13 @@ from "fst/script/compile-impl.h":
                                         allow_negative_labels: bool,
                                         add_symbols: bool)
 
-      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
-               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
-               ikeep: bool, okeep: bool, nkeep: bool,
-               allow_negative_labels: bool, add_symbols: bool)
+      def `Init` as init(self, istrm: istream, source: str, isyms: SymbolTable,
+                         osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                         ikeep: bool, okeep: bool, nkeep: bool,
+                         allow_negative_labels: bool, add_symbols: bool)
 
-      def Fst(self) -> StdVectorFst
+      def `Fst` as fst(self) -> StdVectorFst:
+        return StdFst(...)
 
     class `FstCompiler<LogArc>` as LogFstCompiler:
       def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
@@ -41,12 +47,13 @@ from "fst/script/compile-impl.h":
                                         allow_negative_labels: bool,
                                         add_symbols: bool)
 
-      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
-               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
-               ikeep: bool, okeep: bool, nkeep: bool,
-               allow_negative_labels: bool, add_symbols: bool)
+      def `Init` as init(self, istrm: istream, source: str, isyms: SymbolTable,
+                         osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                         ikeep: bool, okeep: bool, nkeep: bool,
+                         allow_negative_labels: bool, add_symbols: bool)
 
-      def Fst(self) -> LogVectorFst
+      def `Fst` as fst(self) -> LogVectorFst:
+        return LogFst(...)
 
     class `FstCompiler<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstCompiler:
       def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
@@ -62,12 +69,13 @@ from "fst/script/compile-impl.h":
                                         allow_negative_labels: bool,
                                         add_symbols: bool)
 
-      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
-               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
-               ikeep: bool, okeep: bool, nkeep: bool,
-               allow_negative_labels: bool, add_symbols: bool)
+      def `Init` as init(self, istrm: istream, source: str, isyms: SymbolTable,
+                         osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                         ikeep: bool, okeep: bool, nkeep: bool,
+                         allow_negative_labels: bool, add_symbols: bool)
 
-      def Fst(self) -> LatticeVectorFst
+      def `Fst` as fst(self) -> LatticeVectorFst:
+        return LatticeFst(...)
 
     class `FstCompiler<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
         as CompactLatticeFstCompiler:
@@ -84,9 +92,10 @@ from "fst/script/compile-impl.h":
                                         allow_negative_labels: bool,
                                         add_symbols: bool)
 
-      def Init(self, istrm: istream, source: str, isyms: SymbolTable,
-               osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
-               ikeep: bool, okeep: bool, nkeep: bool,
-               allow_negative_labels: bool, add_symbols: bool)
+      def `Init` as init(self, istrm: istream, source: str, isyms: SymbolTable,
+                         osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                         ikeep: bool, okeep: bool, nkeep: bool,
+                         allow_negative_labels: bool, add_symbols: bool)
 
-      def Fst(self) -> CompactLatticeVectorFst
+      def `Fst` as fst(self) -> CompactLatticeVectorFst:
+        return CompactLatticeFst(...)

@@ -1,126 +1,177 @@
+
 from "fstext/weight-clifwrap.h" import *
 from "fstext/float-weight-clifwrap.h" import *
 
 from "fstext/lattice-weight.h":
   namespace `fst`:
     class `LatticeWeightTpl<float>` as LatticeWeight:
-      @add__init__
-      def `LatticeWeightTpl` as new(self, a: float, b: float)
-      @add__init__
-      def `LatticeWeightTpl` as from_other(self, other: LatticeWeight)
+      """Lattice weight."""
 
-      def Hash(self) -> int
-      def Value1(self) -> `float` as float
-      def Value2(self) -> `float` as float
-      def SetValue1(self, f: float)
-      def SetValue2(self, f: float)
+      @add__init__
+      def `LatticeWeightTpl` as from_pair(self, a: float, b: float):
+        """Create a new lattice weight from a pair of floats."""
+
+      @add__init__
+      def `LatticeWeightTpl` as from_other(self, other: LatticeWeight):
+        """Create a new lattice weight from another."""
+
+      def `Hash` as hash(self) -> int:
+        """Returns the hash for the weight."""
+
+      value1: `float` as float = property(`Value1`, `SetValue1`)
+      """Float value of the first weight."""
+
+      value2: `float` as float = property(`Value2`, `SetValue2`)
+      """Float value of the second weight."""
 
       def __eq__(self, other: LatticeWeight) -> bool
       def __ne__(self, other: LatticeWeight) -> bool
 
       @classmethod
-      def `Zero` as zero(cls) -> LatticeWeight
-      @classmethod
-      def `One` as one(cls) -> LatticeWeight
-      @classmethod
-      def `NoWeight` as noweight(cls) -> LatticeWeight
-      @classmethod
-      def `Type` as type(cls) -> str
-      @classmethod
-      def Properties(cls) -> int
+      def `Zero` as zero(cls) -> LatticeWeight:
+        """Zero in lattice semiring, i.e. (+infinity, +infinity)."""
 
-      def Member(self) -> bool
-      def Quantize(self, delta: float = default) -> LatticeWeight
-      def Reverse(self) -> LatticeWeight
+      @classmethod
+      def `One` as one(cls) -> LatticeWeight:
+        """One in lattice semiring, i.e. (0.0, 0.0)."""
 
-    def `ScaleTupleWeight` as ScaleLatticeWeight(w: LatticeWeight,
-                                                 scale: list<list<float>>
-                                                ) -> LatticeWeight
+      @classmethod
+      def `NoWeight` as no_weight(cls) -> LatticeWeight:
+        """No weight in lattice semiring."""
 
-    def `Compare` as LatticeCompare(w1: LatticeWeight,
-                                    w2: LatticeWeight) -> int
+      @classmethod
+      def `Type` as type(cls) -> str:
+        """Returns weight type."""
+
+      @classmethod
+      def `Properties` as properties(cls) -> int:
+        """Returns weight properties."""
+
+      def `Member` as member(self) -> bool:
+        """Checks if weight is a member of the lattice semiring."""
+
+      def `Quantize` as quantize(self, delta: float = default) -> LatticeWeight:
+        """Quantizes the weight."""
+
+      def `Reverse` as reverse(self) -> LatticeWeight:
+        """Reverses the weight."""
+
+    def `ScaleTupleWeight` as scale_lattice_weight(
+        w: LatticeWeight, scale: list<list<float>>) -> LatticeWeight:
+        """Scales lattice weight."""
+
+    def `Compare` as compare_lattice_weight(w1: LatticeWeight,
+                                            w2: LatticeWeight) -> int:
+      """Compares input lattice weights."""
 
     class `NaturalLess<LatticeWeightTpl<float>>` as LatticeNaturalLess:
+      """Comparison object in lattice semiring."""
       def __call__(self, w1: LatticeWeight, w2: LatticeWeight) -> bool
 
-    def `Plus` as LatticePlus(w1: LatticeWeight,
-                              w2: LatticeWeight) -> LatticeWeight
-    def `Times` as LatticeTimes(w1: LatticeWeight,
-                                w2: LatticeWeight) -> LatticeWeight
-    def `Divide` as LatticeDivide(w1: LatticeWeight, w2: LatticeWeight,
-                                  typ: DivideType = default) -> LatticeWeight
+    def `Plus` as plus_lattice_weight(w1: LatticeWeight, w2: LatticeWeight) -> LatticeWeight:
+      """:math:`\\oplus` operation in the lattice semiring."""
 
-    def `ApproxEqual` as LatticeApproxEqual(w1: LatticeWeight,
-                                            w2: LatticeWeight,
-                                            delta: float = default) -> bool
+    def `Times` as times_lattice_weight(w1: LatticeWeight, w2: LatticeWeight) -> LatticeWeight:
+      """:math:`\\otimes` operation in the lattice semiring."""
 
-    class `CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>`
-        as CompactLatticeWeight:
+    def `Divide` as divide_lattice_weight(w1: LatticeWeight, w2: LatticeWeight, typ: DivideType = default) -> LatticeWeight:
+      """:math:`\\oslash` operation in the lattice semiring."""
+
+    def `ApproxEqual` as approx_equal_lattice_weight(w1: LatticeWeight, w2: LatticeWeight, delta: float = default) -> bool:
+      """Checks if given lattice weights are approximately equal."""
+
+    class `CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>` as CompactLatticeWeight:
+      """Compact lattice weight."""
+
       @add__init__
-      def `CompactLatticeWeightTpl` as new(self, w: LatticeWeight,
-                                           s: list<int>)
-      @add__init__
-      def `CompactLatticeWeightTpl` as from_other(self,
-                                                  other: CompactLatticeWeight)
+      def `CompactLatticeWeightTpl` as from_pair(self, w: LatticeWeight, s: list<int>):
+        """Create a new compact lattice weight from a weight string pair."""
 
-      def Hash(self) -> int
-      def Weight(self) -> LatticeWeight
-      def String(self) -> list<int>
-      def SetWeight(self, w: LatticeWeight)
-      def SetString(self, s: list<int>)
+      @add__init__
+      def `CompactLatticeWeightTpl` as from_other(self, other: CompactLatticeWeight):
+        """Create a new compact lattice weight from another."""
+
+      def `Hash` as hash(self) -> int:
+        """Returns the hash for the weight."""
+
+      weight: LatticeWeight = property(`Weight`, `SetWeight`)
+      """The weight."""
+
+      string: list<int> = property(`String`, `SetString`)
+      """The string as a list of integers."""
 
       def __eq__(self, other: CompactLatticeWeight) -> bool
       def __ne__(self, other: CompactLatticeWeight) -> bool
 
       @classmethod
-      def `Zero` as zero(cls) -> CompactLatticeWeight
+      def `Zero` as zero(cls) -> CompactLatticeWeight:
+        """Zero in compact lattice semiring."""
+
       @classmethod
-      def `One` as one(cls) -> CompactLatticeWeight
+      def `One` as one(cls) -> CompactLatticeWeight:
+        """One in compact lattice semiring."""
+
       @classmethod
-      def `NoWeight` as noweight(cls) -> CompactLatticeWeight
+      def `NoWeight` as no_weight(cls) -> CompactLatticeWeight:
+        """No weight in compact lattice semiring."""
+
       @classmethod
-      def `Type` as type(cls) -> str
+      def `Type` as type(cls) -> str:
+        """Returns weight type."""
+
       @classmethod
-      def Properties(cls) -> int
+      def `Properties` as properties(cls) -> int:
+        """Returns weight properties."""
+
       @classmethod
-      def GetIntSizeString(cls) -> str
+      def `GetIntSizeString` as get_int_size_string(cls) -> str:
+        """Returns int size string."""
 
-      def Member(self) -> bool
-      def Quantize(self, delta: float = default) -> CompactLatticeWeight
-      def Reverse(self) -> CompactLatticeWeight
+      def `Member` as member(self) -> bool:
+        """Checks if weight is a member of the compact lattice semiring."""
 
-    def `ScaleTupleWeight` as ScaleCompactLatticeWeight(
-        w: CompactLatticeWeight,
-        scale: list<list<float>>) -> CompactLatticeWeight
+      def `Quantize` as quantize(self, delta: float = default) -> CompactLatticeWeight:
+        """Quantizes the weight."""
 
-    def `Compare` as CompactLatticeCompare(w1: CompactLatticeWeight,
-                                           w2: CompactLatticeWeight) -> int
+      def `Reverse` as reverse(self) -> CompactLatticeWeight:
+        """Reverses the weight."""
 
-    class `NaturalLess<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>`
-        as CompactLatticeNaturalLess:
-      def __call__(self, w1: CompactLatticeWeight,
-                   w2: CompactLatticeWeight) -> bool
+    def `ScaleTupleWeight` as scale_compact_lattice_weight(
+        w: CompactLatticeWeight, scale: list<list<float>>) -> CompactLatticeWeight:
+        """Scales compact lattice weight."""
 
-    def `Plus` as CompactLatticePlus(w1: CompactLatticeWeight,
-                                     w2: CompactLatticeWeight
-                                    ) -> CompactLatticeWeight
-    def `Times` as CompactLatticeTimes(w1: CompactLatticeWeight,
-                                       w2: CompactLatticeWeight
-                                      ) -> CompactLatticeWeight
-    def `Divide` as CompactLatticeDivide(w1: CompactLatticeWeight,
-                                         w2: CompactLatticeWeight,
-                                         typ: DivideType = default
-                                        ) -> CompactLatticeWeight
+    def `Compare` as compare_compact_lattice_weight(w1: CompactLatticeWeight,
+                                                    w2: CompactLatticeWeight) -> int:
+      """Compares input compact lattice weights."""
 
-    def `ApproxEqual` as CompactLatticeApproxEqual(w1: CompactLatticeWeight,
-                                                   w2: CompactLatticeWeight,
-                                                   delta: float = default
-                                                  ) -> bool
+    class `NaturalLess<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>` as CompactLatticeNaturalLess:
+      """Comparison object in compact lattice semiring."""
+      def __call__(self, w1: CompactLatticeWeight, w2: CompactLatticeWeight) -> bool
 
-    def `ConvertLatticeWeight` as ConvertLatticeToTropical(w_in: LatticeWeight
-                                                          ) -> TropicalWeight
+    def `Plus` as plus_compact_lattice_weight(
+        w1: CompactLatticeWeight, w2: CompactLatticeWeight) -> CompactLatticeWeight:
+      """:math:`\\oplus` operation in the compact lattice semiring."""
 
-    def `ConvertToCost` as LatticeWeightToCost(w: LatticeWeight) -> float
-    def `ConvertToCost` as CompactLatticeWeightToCost(w: CompactLatticeWeight
-                                                     ) -> float
-    def `ConvertToCost` as TropicalWeightToCost(w: TropicalWeight) -> float
+    def `Times` as times_compact_lattice_weight(
+        w1: CompactLatticeWeight,w2: CompactLatticeWeight) -> CompactLatticeWeight:
+      """:math:`\\otimes` operation in the compact lattice semiring."""
+
+    def `Divide` as divide_compact_lattice_weight(
+        w1: CompactLatticeWeight, w2: CompactLatticeWeight, typ: DivideType = default) -> CompactLatticeWeight:
+      """:math:`\\oslash` operation in the compact lattice semiring."""
+
+    def `ApproxEqual` as approx_equal_compact_lattice_weight(
+        w1: CompactLatticeWeight, w2: CompactLatticeWeight, delta: float = default) -> bool:
+      """Checks if given compact lattice weights are approximately equal."""
+
+    def `ConvertLatticeWeight` as lattice_weight_to_tropical(w_in: LatticeWeight) -> TropicalWeight:
+      """Converts lattice weight to tropical weight."""
+
+    def `ConvertToCost` as lattice_weight_to_cost(w: LatticeWeight) -> float:
+      """Converts lattice weight to cost."""
+
+    def `ConvertToCost` as compact_lattice_weight_to_cost(w: CompactLatticeWeight) -> float:
+      """Converts compact lattice weight to cost."""
+
+    def `ConvertToCost` as tropical_weight_to_cost(w: TropicalWeight) -> float:
+      """Converts tropical weight to cost."""

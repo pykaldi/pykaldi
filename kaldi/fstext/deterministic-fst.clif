@@ -9,28 +9,77 @@ from kaldi.util import _value_error_on_false
 from "fstext/deterministic-fst.h":
   namespace `fst`:
     class `DeterministicOnDemandFst<StdArc>` as StdDeterministicOnDemandFst:
-      def `Start` as start(self) -> int
+      """Base class for deterministic on demand FSTs over the tropical semiring."""
 
-      def `Final` as final(self, state: int) -> TropicalWeight
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
 
       def `GetArc` as get_arc(self, s: int, i: int)
         -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          olabel (int): Output label of the arc.
+
+        Returns:
+          The created arc.
+        """
         return _value_error_on_false(...)
 
     class `BackoffDeterministicOnDemandFst<StdArc>`
         as StdBackoffDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      """Deterministic on demand backoff language model.
+
+      This class wraps a conventional Fst, representing a language model, with
+      a \"DeterministicOnDemandFst\" interface. Backoff arcs in the language
+      model should have the epsilon label (label 0) on the arcs, and that there
+      should be no other epsilons in the language model. The backoff (i.e.
+      epsilon) arcs are followed if a particular arc (or a final-prob) is not
+      found at the current state.
+
+      Args:
+        fst (StdFst): Input language model FST.
+      """
       def __init__(self, fst_: StdFst)
 
     class `UnweightedNgramFst<StdArc>`
         as StdUnweightedNgramFst(StdDeterministicOnDemandFst):
+      """A DeterministicOnDemandFst in which states encode an n-gram history.
+
+      Conceptually, for n-gram order n and k labels, the FST is an unweighted
+      acceptor with about k^(n-1) states (ignoring end effects). However, the
+      FST is created on demand and doesn't need the label vocabulary; get_arc
+      matches on any input label. This class is primarily used by
+      `compose_deterministic_on_demand_fst` to expand the n-gram history of
+      lattices.
+
+      Args:
+        n (int): N-gram order.
+      """
       def __init__(self, n: int)
 
     class `ComposeDeterministicOnDemandFst<StdArc>`
         as StdComposeDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      """A DeterministicOnDemandFst implementing the composition of others.
+
+      Args:
+        fst1 (StdFst): The first deterministic on demand FST.
+        fst2 (StdFst): The second deterministic on demand FST.
+      """
       def __init__(self, fst1: StdDeterministicOnDemandFst,
                    fst2: StdDeterministicOnDemandFst)
 
     class `CacheDeterministicOnDemandFst<StdArc>`
         as StdCacheDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      """A DeterministicOnDemandFst caching the arcs of another.
+
+      Args:
+        fst (StdFst): The input deterministic on demand FST.
+        num_cached_arcs (int): Number of arcs to keep in the cache.
+      """
       def __init__(self, fst: StdDeterministicOnDemandFst,
                    num_cached_arcs: int = default)

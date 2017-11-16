@@ -1,3 +1,66 @@
+"""
+FST Properties.
+
+.. autoconstant:: EXPANDED
+.. autoconstant:: MUTABLE
+.. autoconstant:: ERROR
+.. autoconstant:: ACCEPTOR
+.. autoconstant:: NOT_ACCEPTOR
+.. autoconstant:: I_DETERMINISTIC
+.. autoconstant:: NON_I_DETERMINISTIC
+.. autoconstant:: O_DETERMINISTIC
+.. autoconstant:: NON_O_DETERMINISTIC
+.. autoconstant:: EPSILONS
+.. autoconstant:: NO_EPSILONS
+.. autoconstant:: I_EPSILONS
+.. autoconstant:: NO_I_EPSILONS
+.. autoconstant:: O_EPSILONS
+.. autoconstant:: NO_O_EPSILONS
+.. autoconstant:: I_LABEL_SORTED
+.. autoconstant:: NOT_I_LABEL_SORTED
+.. autoconstant:: O_LABEL_SORTED
+.. autoconstant:: NOT_O_LABEL_SORTED
+.. autoconstant:: WEIGHTED
+.. autoconstant:: UNWEIGHTED
+.. autoconstant:: CYCLIC
+.. autoconstant:: ACYCLIC
+.. autoconstant:: INITIAL_CYCLIC
+.. autoconstant:: INITIAL_ACYCLIC
+.. autoconstant:: TOP_SORTED
+.. autoconstant:: NOT_TOP_SORTED
+.. autoconstant:: ACCESSIBLE
+.. autoconstant:: NOT_ACCESSIBLE
+.. autoconstant:: COACCESSIBLE
+.. autoconstant:: NOT_COACCESSIBLE
+.. autoconstant:: STRING
+.. autoconstant:: NOT_STRING
+.. autoconstant:: WEIGHTED_CYCLES
+.. autoconstant:: UNWEIGHTED_CYCLES
+.. autoconstant:: NULL_PROPERTIES
+.. autoconstant:: COPY_PROPERTIES
+.. autoconstant:: INTRINSIC_PROPERTIES
+.. autoconstant:: EXTRINSIC_PROPERTIES
+.. autoconstant:: SET_START_PROPERTIES
+.. autoconstant:: SET_FINAL_PROPERTIES
+.. autoconstant:: ADD_STATE_PROPERTIES
+.. autoconstant:: ADD_ARC_PROPERTIES
+.. autoconstant:: SET_ARC_PROPERTIES
+.. autoconstant:: DELETE_STATE_PROPERTIES
+.. autoconstant:: DELETE_ARC_PROPERTIES
+.. autoconstant:: STATE_SORT_PROPERTIES
+.. autoconstant:: ARC_SORT_PROPERTIES
+.. autoconstant:: I_LABEL_INVARIANT_PROPERTIES
+.. autoconstant:: O_LABEL_INVARIANT_PROPERTIES
+.. autoconstant:: WEIGHT_INVARIANT_PROPERTIES
+.. autoconstant:: ADD_SUPERFINAL_PROPERTIES
+.. autoconstant:: RM_SUPERFINAL_PROPERTIES
+.. autoconstant:: BINARY_PROPERTIES
+.. autoconstant:: TRINARY_PROPERTIES
+.. autoconstant:: POS_TRINARY_PROPERTIES
+.. autoconstant:: NEG_TRINARY_PROPERTIES
+.. autoconstant:: FST_PROPERTIES
+"""
+
 from "fst/properties.h":
   namespace `fst`:
     const `kExpanded` as EXPANDED: int

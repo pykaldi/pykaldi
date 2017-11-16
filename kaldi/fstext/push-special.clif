@@ -3,5 +3,16 @@ from "fstext/vector-fst-clifwrap.h" import *
 
 from "fstext/push-special.h":
   namespace `fst`:
-    def `PushSpecial` as push_special(fst: StdVectorFst,
-                                      delta: float = default)
+    def `PushSpecial` as push_special(fst: StdVectorFst, delta: float = default):
+      """Pushes weights in log semiring in a special way.
+
+      Destructively pushes weights in the log semiring such that any leftover
+      weight after pushing gets distributed evenly along the FST, and doesn't
+      end up either at the start or at the end.  Basically it pushes the
+      weights such that the total weight of each state (i.e. the sum of the arc
+      probabilities plus the final-prob) is the same for all states.
+
+      Args:
+          fst (StdFst): Input fst over the tropical semiring.
+          delta: Comparison/quantization delta (default: 0.0009765625).
+      """

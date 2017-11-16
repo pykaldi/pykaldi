@@ -20,7 +20,7 @@ class TestNnetCompute(unittest.TestCase):
         for j, config in enumerate(configs):
             print("Input config[{}]:".format(j))
             print(config)
-            istrm = istringstream.new_from_str(config)
+            istrm = istringstream.from_str(config)
             nnet.read_config(istrm)
 
         request = ComputationRequest()
@@ -107,7 +107,7 @@ class TestNnetCompute(unittest.TestCase):
         for j, config in enumerate(configs):
             print("Input config[{}]:".format(j))
             print(config)
-            istrm = istringstream.new_from_str(config)
+            istrm = istringstream.from_str(config)
             nnet.read_config(istrm)
 
         num_frames = 5 + random.randint(1, 100)

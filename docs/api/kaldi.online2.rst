@@ -24,7 +24,6 @@ kaldi\.online2
       :nosignatures:
    
       DecodableDiagGmmScaledOnline
-      DoubleSubMatrix
       OnlineEndpointConfig
       OnlineEndpointRule
       OnlineFeaturePipeline
@@ -47,7 +46,6 @@ kaldi\.online2
       OnlineTimingStats
       SingleUtteranceGmmDecoder
       SingleUtteranceNnet3Decoder
-      SubMatrix
    
    
 

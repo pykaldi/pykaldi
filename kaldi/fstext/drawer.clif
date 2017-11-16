@@ -13,7 +13,7 @@ from "fst/script/draw-impl.h":
                    ranksep: float, nodesep: float, fontsize: int,
                    precision: int, float_format: str, show_weight_one: bool)
 
-      def Draw(self, strm: ostream, dest: str)
+      def `Draw` as draw(self, strm: ostream, dest: str)
 
     class `FstDrawer<LogArc>` as LogFstDrawer:
       def __init__(self, fst: LogFst, isyms: SymbolTable, osyms: SymbolTable,
@@ -22,7 +22,7 @@ from "fst/script/draw-impl.h":
                    ranksep: float, nodesep: float, fontsize: int,
                    precision: int, float_format: str, show_weight_one: bool)
 
-      def Draw(self, strm: ostream, dest: str)
+      def `Draw` as draw(self, strm: ostream, dest: str)
 
     class `FstDrawer<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstDrawer:
       def __init__(self, fst: LatticeFst, isyms: SymbolTable,
@@ -32,7 +32,7 @@ from "fst/script/draw-impl.h":
                    ranksep: float, nodesep: float, fontsize: int,
                    precision: int, float_format: str, show_weight_one: bool)
 
-      def Draw(self, strm: ostream, dest: str)
+      def `Draw` as draw(self, strm: ostream, dest: str)
 
     class `FstDrawer<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
         as CompactLatticeFstDrawer:
@@ -43,4 +43,4 @@ from "fst/script/draw-impl.h":
                    ranksep: float, nodesep: float, fontsize: int,
                    precision: int, float_format: str, show_weight_one: bool)
 
-      def Draw(self, strm: ostream, dest: str)
+      def `Draw` as draw(self, strm: ostream, dest: str)

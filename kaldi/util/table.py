@@ -35,9 +35,6 @@ class _SequentialReaderBase(object):
     def __iter__(self):
         return self
 
-    def __next__(self):
-        return self.next()
-
     def next(self):
         """Returns the next (key, value) pair in the table.
 
@@ -54,6 +51,7 @@ class _SequentialReaderBase(object):
             self._next()
             return key, value
 
+    __next__ = next
 
 class SequentialVectorReader(_SequentialReaderBase,
                              _kaldi_table.SequentialVectorReader):

@@ -19,7 +19,7 @@ from "lat/word-align-lattice.h":
       def __init__(self, opts: WordBoundaryInfoNewOpts)
 
       @add__init__
-      def `WordBoundaryInfo` as new_from_file(
+      def `WordBoundaryInfo` as from_file(
         self, opts: WordBoundaryInfoNewOpts, word_boundary_file: str)
 
       def `Init` as init(self, is: istream)

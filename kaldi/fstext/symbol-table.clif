@@ -2,55 +2,302 @@
 from "fst/symbol-table.h":
   namespace `fst`:
     class SymbolTableTextOptions:
+      """Options for reading symbol table from text file.
+
+      SymbolTableTextOptions(allow_negative_labels=False):
+        Creates options for reading symbol table from text file.
+
+      Args:
+        allow_negative_labels (bool): Allow negative labels?
+      """
+
       allow_negative_labels: bool
+      """Allow negative labels? (Not recommended; may cause conflicts)."""
+
       fst_field_separator: str
+      """Set of characters used as a separator between printed fields."""
 
       def __init__(self, allow_negative_labels: bool = default)
 
     class SymbolTable:
+      """Symbol table.
+
+      SymbolTable():
+        Creates a new symbol table.
+
+      This class can be used to programmatically construct a SymbolTable in
+      memory, e.g. ::
+
+        import string
+
+        table = SymbolTable()
+        table.set_name(\"alphabet\")
+        table.add_symbol(\"<eps>\")
+        for symbol in string.ascii_lowercase:
+            table.add_symbol(symbol)
+        table.write_text(\"alphabet.syms\")
+
+      .. autoconstant:: NO_SYMBOL
+      """
+
       const `kNoSymbol` as NO_SYMBOL: int
 
       @add__init__
-      def `SymbolTable` as with_name(self, name: str)
+      def `SymbolTable` as from_name(self, name: str):
+        """Creates a new SymbolTable with the given name."""
 
       @classmethod
-      def ReadText(cls, filename: str,
-                   opts: SymbolTableTextOptions = default) -> SymbolTable
-      @classmethod
-      def Read(cls, filename: str) -> SymbolTable
-      def Copy(self) -> SymbolTable
+      def `ReadText` as read_text(cls, filename: str,
+                                  opts: SymbolTableTextOptions = default) -> SymbolTable:
+        """Reads symbol table from text file.
 
-      def `AddSymbol` as AddSymbolKey(self, symbol: str, key: int) -> int
-      def AddSymbol(self, symbol: str) -> int
-      def AddTable(self, table: SymbolTable)
-      def RemoveSymbol(self, key: int)
-      def Name(self) -> str
-      def SetName(self, new_name: str)
-      def CheckSum(self) -> str
-      def LabeledCheckSum(self) -> str
-      def Write(self, filename: str) -> bool
-      def WriteText(self, filename: str) -> bool
-      def `Find` as FindSymbol(self, key: int) -> str
-      def `Find` as FindIndex(self, symbol: str) -> int
-      def `Member` as MemberIndex(self, key: int) -> bool
-      def `Member` as MemberSymbol(self, symbol: str) -> bool
-      def AvailableKey(self) -> int
-      def NumSymbols(self) -> int
-      def GetNthKey(self, pos: int) -> int
+        This class method creates a new SymbolTable.
+
+        Args:
+          filename: The string location of the input text file.
+          opts (SymbolTableTextOptions): The symbol table reading options.
+
+        Returns:
+          A new SymbolTable instance.
+
+        See also: `SymbolTable.read`.
+        """
+
+      @classmethod
+      def `Read` as read(cls, filename: str) -> SymbolTable:
+        """Reads symbol table from binary file.
+
+        This class method creates a new SymbolTable.
+
+        Args:
+          filename: The string location of the input binary file.
+
+        Returns:
+          A new SymbolTable instance.
+
+        See also: `SymbolTable.read_text`.
+        """
+
+      def `Copy` as copy(self) -> SymbolTable:
+        """Returns a copy of the symbol table."""
+
+      def `AddSymbol` as add_pair(self, symbol: str, key: int) -> int:
+        """Adds a symbol with given key to the table and returns the index.
+
+        This method adds a (symbol, key) pair to the table. If symbol is
+        already in the table with a different key, then the return value
+        will be the already existing key. Otherwise, return value will be
+        the given key.
+
+        Args:
+          symbol: A symbol string.
+          key: A non-negative index for the symbol
+            (-1 is reserved for "no symbol requested").
+
+        Returns:
+          The integer index of the new symbol.
+        """
+
+      def `AddSymbol` as add_symbol(self, symbol: str) -> int:
+        """Adds a symbol to the table and returns the index.
+
+        This method adds a symbol to the table. The associated value key is
+        automatically assigned by the symbol table.
+
+        Args:
+          symbol: A symbol string.
+
+        Returns:
+          The integer index of the new symbol.
+        """
+
+      def `AddTable` as add_table(self, table: SymbolTable):
+        """Adds another SymbolTable to this table.
+
+        This method merges another symbol table into the current table. All key
+        values will be offset by the current available key.
+
+        Args:
+          syms: A SymbolTable to be merged with the current table.
+        """
+
+      def `RemoveSymbol` as remove_symbol(self, key: int):
+        """Removes the symbol with the given key."""
+
+      def `Name` as name(self) -> str:
+        """Returns the name of the table."""
+
+      def `SetName` as set_name(self, new_name: str):
+        """Sets the name of the table."""
+
+      def `CheckSum` as checksum(self) -> str:
+        """Returns the label-agnostic MD5 checksum for the table."""
+
+      def `LabeledCheckSum` as labeled_checksum(self) -> str:
+        """Returns the label-dependent MD5 checksum of the table."""
+
+      def `Write` as write(self, filename: str) -> bool:
+        """Serializes symbol table to a file.
+
+        This method writes the SymbolTable to a file in binary format.
+
+        Args:
+          filename: The string location of the output file.
+
+        Return:
+          True if write was successful, False otherwise.
+        """
+
+      def `WriteText` as write_text(self, filename: str) -> bool:
+        """Writes symbol table to text file.
+
+        This method writes the SymbolTable to a file in human-readable format.
+
+        Args:
+          filename: The string location of the output file.
+
+        Return:
+          True if write was successful, False otherwise.
+        """
+
+      def `Find` as find_symbol(self, key: int) -> str:
+        """Given an index, finds the associated symbol.
+
+        Args:
+          key: An index.
+
+        Returns:
+          The symbol associated with the index key. -1 if index is not found.
+        """
+
+      def `Find` as find_index(self, symbol: str) -> int:
+        """Given a symbol, finds the associated index.
+
+        Args:
+          key: A symbol string.
+
+        Returns:
+          The index associated with the symbol key. -1 if symbol is not found.
+        """
+
+      def `Member` as member_index(self, key: int) -> bool:
+        """Given an index, returns whether it is found in the table.
+
+        This method returns a boolean indicating whether the given index is
+        present in the table. If one intends to perform subsequent lookup, it
+        is much better to simply call the `find_index` method and check the
+        return value.
+
+        Args:
+          key: An index.
+
+        Returns:
+          Whether or not the key is present in the table.
+        """
+
+      def `Member` as member_symbol(self, symbol: str) -> bool:
+        """Given a symbol, returns whether it is found in the table.
+
+        This method returns a boolean indicating whether the given symbol is
+        present in the table. If one intends to perform subsequent lookup, it
+        is much better to simply call the `find_symbol` method and check the
+        return value.
+
+        Args:
+          key: A symbol.
+
+        Returns:
+          Whether or not the key is present in the table.
+        """
+
+      def `AvailableKey` as available_key(self) -> int:
+        """Returns the current available key (i.e. highest key + 1)."""
+
+      def `NumSymbols` as num_symbols(self) -> int:
+        """Returns the number of sysmbols in the table."""
+
+      def `GetNthKey` as get_nth_key(self, pos: int) -> int:
+        """Retrieves the integer index of the n-th key in the table.
+
+        Args:
+          pos: The n-th key to retrieve.
+
+        Returns:
+          The integer index of the n-th key or -1 if index is not found.
+        """
+
 
     class SymbolTableIterator:
       def __init__(self, table: SymbolTable)
-      def Done(self) -> bool
-      def Value(self) -> int
-      def Symbol(self) -> str
-      def Next(self)
-      def Reset(self)
 
-    def RelabelSymbolTable(table: SymbolTable,
-                           pairs: list<tuple<int, int>>) -> SymbolTable
-    def CompatSymbols(syms1: SymbolTable, syms2: SymbolTable,
-                      warning: bool = default) -> bool
-    def `SymbolTableToString` as SerializeSymbolTable(table: SymbolTable)
-        -> bytes
-    def `StringToSymbolTable` as DeserializeSymbolTable(str: bytes)
-        -> SymbolTable
+      def `Done` as done(self) -> bool:
+        """Indicates whether the iterator is exhausted or not.
+
+        This method is provided for compatibility with the C++ API only;
+        most users should use the Pythonic API.
+
+        Returns:
+          True if the iterator is exhausted, False otherwise.
+        """
+
+      def `Value` as value(self) -> int:
+        """Returns the current integer index.
+
+        This method is provided for compatibility with the C++ API only;
+        most users should use the Pythonic API.
+
+        Returns:
+          An integer index.
+        """
+
+      def `Symbol` as symbol(self) -> str:
+        """Returns the current symbol string.
+
+        This method is provided for compatibility with the C++ API only;
+        most users should use the Pythonic API.
+
+        Returns:
+          A symbol string.
+        """
+
+      def `Next` as next(self):
+        """Advances the iterator.
+
+        This method is provided for compatibility with the C++ API only;
+        most users should use the Pythonic API.
+        """
+
+      def `Reset` as reset(self):
+        """Resets the iterator to the initial position.
+
+        This method is provided for compatibility with the C++ API only;
+        most users should use the Pythonic API.
+        """
+
+    def `RelabelSymbolTable` as relabel_symbol_table(
+        table: SymbolTable, pairs: list<tuple<int, int>>) -> SymbolTable:
+      """Relabels a symbol table as specified by the input list of pairs.
+
+      The new symbol table only retains symbols for which a relabeling is
+      explicitly specified.
+
+      Args:
+        table: A symbol table.
+        pairs: A list of (old label, new label) pairs.
+
+      Returns:
+        A new symbol table.
+      """
+
+    def `CompatSymbols` as compat_symbols(
+        syms1: SymbolTable, syms2: SymbolTable, warning: bool = default) -> bool:
+      """Returns true if the two symbol tables have equal checksums.
+
+      Passing in ``None`` for either table always returns true.
+      """
+
+    def `SymbolTableToString` as serialize_symbol_table(table: SymbolTable) -> bytes:
+      """Serializes a symbol table."""
+
+    def `StringToSymbolTable` as deserialize_symbol_table(str: bytes) -> SymbolTable:
+      """Deserializes a symbol table."""

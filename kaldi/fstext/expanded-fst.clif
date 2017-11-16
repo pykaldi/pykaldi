@@ -13,58 +13,58 @@ from "fst/expanded-fst.h":
 
     class `ExpandedFst<StdArc>` as StdExpandedFst(StdFst):
 
-      def NumStates(self) -> int
+      def `NumStates` as _num_states(self) -> int
 
-      def Copy(self, safe: bool = default) -> StdExpandedFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> StdExpandedFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str) -> StdExpandedFst
 
-      @classmethod
-      def Read(cls, filename: str) -> StdExpandedFst
-
-    def `CountStates` as CountStdFstStates(fst: StdFst) -> int
-
-    def `CountArcs` as CountStdFstArcs(fst: StdFst) -> int
+    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
 
     # LogArc
 
     class `ExpandedFst<LogArc>` as LogExpandedFst(LogFst):
 
-      def NumStates(self) -> int
+      def `NumStates` as _num_states(self) -> int
 
-      def Copy(self, safe: bool = default) -> LogExpandedFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> LogExpandedFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str) -> LogExpandedFst
 
-      @classmethod
-      def Read(cls, filename: str) -> LogExpandedFst
-
-    def `CountStates` as CountLogFstStates(fst: LogFst) -> int
-
-    def `CountArcs` as CountLogFstArcs(fst: LogFst) -> int
+    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
 
     # LatticeArc
 
     class `ExpandedFst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeExpandedFst(LatticeFst):
 
-      def NumStates(self) -> int
+      def `NumStates` as _num_states(self) -> int
 
-      def Copy(self, safe: bool = default) -> LatticeExpandedFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> LatticeExpandedFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str) -> LatticeExpandedFst
 
-      @classmethod
-      def Read(cls, filename: str) -> LatticeExpandedFst
-
-    def `CountStates` as CountLatticeFstStates(fst: LatticeFst) -> int
-
-    def `CountArcs` as CountLatticeFstArcs(fst: LatticeFst) -> int
+    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
 
     # CompactLatticeArc
 
     class `ExpandedFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeExpandedFst(CompactLatticeFst):
 
-      def NumStates(self) -> int
+      def `NumStates` as _num_states(self) -> int
 
-      def Copy(self, safe: bool = default) -> CompactLatticeExpandedFst
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> CompactLatticeExpandedFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str) -> CompactLatticeExpandedFst
 
-      @classmethod
-      def Read(cls, filename: str) -> CompactLatticeExpandedFst
-
-    def `CountStates` as CountCompactLatticeFstStates(fst: CompactLatticeFst) -> int
-
-    def `CountArcs` as CountCompactLatticeFstArcs(fst: CompactLatticeFst) -> int
+    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
