@@ -52,7 +52,7 @@ the Kaldi software architecture.
 .. image:: pykaldi.png
    :alt: Kaldi Software Architecture
    :align: center
-   :scale: 30 %
+   :scale: 60 %
 
 PyKaldi has a modular design which makes it easy to maintain and extend. Source
 files are organized in a directory tree that is a replica of the Kaldi source

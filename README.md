@@ -67,6 +67,7 @@ the Kaldi software architecture.
 <p align="center">
 <img src="docs/pykaldi.png" alt="Kaldi Software Architecture" width="400">
 </p>
+
 PyKaldi has a modular design which makes it easy to maintain and extend. Source
 files are organized in a directory tree that is a replica of the Kaldi source
 tree. Each directory defines a subpackage and contains only the wrapper code
