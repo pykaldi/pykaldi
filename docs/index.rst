@@ -20,7 +20,7 @@ exposed by OpenFst's official Python wrapper.
 
 Major features and goals of PyKaldi include:
 
-* Near-complete coverage of Kaldi
+* Near-complete coverage of Kaldi C++ API
 
 * First class support for Kaldi and OpenFst types in Python
 
@@ -67,8 +67,6 @@ written for the associated Kaldi library. The wrapper code consists of:
 
 * Python modules grouping together related extension modules generated with CLIF
   and extending the raw CLIF wrappers to provide a more "Pythonic" API.
-
-For more information, please refer to the developer guide.
 
 
 Getting Started
