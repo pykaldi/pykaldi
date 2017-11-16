@@ -64,7 +64,7 @@ concern, PyKaldi extends the raw CLIF wrappers in Python (and sometimes in C++)
 to provide a more "Pythonic" API. Below figure illustrates where PyKaldi fits in
 the Kaldi software architecture.
 
-![Kaldi Software Architecture](docs/pykaldi.png)
+<img src="docs/pykaldi.png" width="400">
 
 PyKaldi has a modular design which makes it easy to maintain and extend. Source
 files are organized in a directory tree that is a replica of the Kaldi source
