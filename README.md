@@ -1,4 +1,3 @@
-# PyKaldi
 
 ---
 **NOTE**
@@ -6,6 +5,8 @@
 PyKaldi is still at alpha stage. Some features might not work yet.
 
 ---
+
+# PyKaldi
 
 PyKaldi is a Python package that aims to provide a bridge between Kaldi and all
 the nice things Python has to offer. With PyKaldi, you can extract MFCC feature
