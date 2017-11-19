@@ -10,6 +10,8 @@ from "lat/kaldi-lattice.h" import *
 from kaldi.matrix import _vector_wrapper
 from kaldi.matrix import _matrix_wrapper
 from kaldi.util import _value_error_on_false
+from kaldi.fstext import LatticeFst
+from kaldi.fstext import CompactLatticeFst
 
 from "util/kaldi-table.h":
   namespace `kaldi`:
@@ -24,7 +26,9 @@ from "util/kaldi-table.h":
       flush: bool
       permissive: bool
 
-    def `ClassifyWspecifier` as classify_wspecifier(wspecifier: str) -> (wspecifier_type: WspecifierType, archive_wxfilename: str, script_wxfilename: str, opts: WspecifierOptions)
+    def `ClassifyWspecifier` as classify_wspecifier(wspecifier: str)
+      -> (wspecifier_type: WspecifierType, archive_wxfilename: str,
+          script_wxfilename: str, opts: WspecifierOptions)
 
     def `ReadScriptFile` as read_script_file(rxfilename: str,
                                              print_warnings: bool)
@@ -46,14 +50,13 @@ from "util/kaldi-table.h":
       `kArchiveRspecifier` as ARCHIVE_SPECIFIER
       `kScriptRspecifier` as SCRIPT_SPECIFIER
 
-    def `ClassifyRspecifier` as classify_rspecifier(rspecifier: str) -> (rspecifier_type: RspecifierType, rxfilename: str, opts: RspecifierOptions)
+    def `ClassifyRspecifier` as classify_rspecifier(rspecifier: str)
+      -> (rspecifier_type: RspecifierType, rxfilename: str, opts: RspecifierOptions)
 
     # Sequential Readers
 
     class `SequentialTableReader<KaldiObjectHolder<Vector<float>>>`
         as SequentialVectorReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -66,7 +69,7 @@ from "util/kaldi-table.h":
       def `Value` as value(self) -> Vector:
         return _vector_wrapper(...)
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -75,10 +78,33 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `SequentialTableReader<KaldiObjectHolder<Vector<double>>>`
+        as SequentialDoubleVectorReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> DoubleVector:
+        return _vector_wrapper(...)
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `SequentialTableReader<KaldiObjectHolder<Matrix<float>>>`
         as SequentialMatrixReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -91,7 +117,7 @@ from "util/kaldi-table.h":
       def `Value` as value(self) -> Matrix:
         return _matrix_wrapper(...)
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -100,9 +126,32 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `SequentialTableReader<KaldiObjectHolder<Matrix<double>>>`
+        as SequentialDoubleMatrixReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> DoubleMatrix:
+        return _matrix_wrapper(...)
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `SequentialTableReader<WaveHolder>` as SequentialWaveReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -114,7 +163,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> WaveData
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -123,9 +172,8 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
     class `SequentialTableReader<LatticeHolder>` as SequentialLatticeReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -135,9 +183,10 @@ from "util/kaldi-table.h":
 
       def `FreeCurrent` as free_current(self)
 
-      def `Value` as value(self) -> LatticeVectorFst
+      def `Value` as value(self) -> LatticeVectorFst:
+        return LatticeFst(...)
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -148,8 +197,6 @@ from "util/kaldi-table.h":
 
     class `SequentialTableReader<CompactLatticeHolder>`
         as SequentialCompactLatticeReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -159,9 +206,10 @@ from "util/kaldi-table.h":
 
       def `FreeCurrent` as free_current(self)
 
-      def `Value` as value(self) -> CompactLatticeVectorFst
+      def `Value` as value(self) -> CompactLatticeVectorFst:
+        return CompactLatticeFst(...)
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -171,8 +219,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `SequentialTableReader<BasicHolder<int32>>` as SequentialIntReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -184,7 +230,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> int
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -194,8 +240,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `SequentialTableReader<BasicHolder<float>>` as SequentialFloatReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -207,7 +251,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> float
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -218,8 +262,6 @@ from "util/kaldi-table.h":
 
     class `SequentialTableReader<BasicHolder<double>>`
         as SequentialDoubleReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -231,7 +273,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> float
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -241,8 +283,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `SequentialTableReader<BasicHolder<bool>>` as SequentialBoolReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -254,7 +294,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> bool
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -265,8 +305,6 @@ from "util/kaldi-table.h":
 
     class `SequentialTableReader<BasicVectorHolder<int32>>`
         as SequentialIntVectorReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -278,7 +316,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> list<int>
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -289,8 +327,6 @@ from "util/kaldi-table.h":
 
     class `SequentialTableReader<BasicVectorVectorHolder<int32>>`
         as SequentialIntVectorVectorReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -302,7 +338,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> list<list<int>>
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -313,8 +349,6 @@ from "util/kaldi-table.h":
 
     class `SequentialTableReader<BasicPairVectorHolder<int32>>`
         as SequentialIntPairVectorReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -326,7 +360,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> list<tuple<int, int>>
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -337,8 +371,6 @@ from "util/kaldi-table.h":
 
     class `SequentialTableReader<BasicPairVectorHolder<float>>`
         as SequentialFloatPairVectorReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -350,7 +382,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> list<tuple<float, float>>
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -363,8 +395,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<KaldiObjectHolder<Vector<float>>>`
         as RandomAccessVectorReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -380,10 +410,27 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `RandomAccessTableReader<KaldiObjectHolder<Vector<double>>>`
+        as RandomAccessDoubleVectorReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> DoubleVector:
+        return _vector_wrapper(...)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `RandomAccessTableReader<KaldiObjectHolder<Matrix<float>>>`
         as RandomAccessMatrixReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -399,9 +446,26 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `RandomAccessTableReader<KaldiObjectHolder<Matrix<double>>>`
+        as RandomAccessDoubleMatrixReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> DoubleMatrix:
+        return _matrix_wrapper(...)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `RandomAccessTableReader<WaveHolder>` as RandomAccessWaveReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -418,14 +482,13 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<LatticeHolder>`
         as RandomAccessLatticeReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
       def `HasKey` as has_key(self, key: str) -> bool
 
-      def `Value` as value(self, key: str) -> LatticeVectorFst
+      def `Value` as value(self, key: str) -> LatticeVectorFst:
+        return LatticeFst(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -436,14 +499,13 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<CompactLatticeHolder>`
         as RandomAccessCompactLatticeReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
       def `HasKey` as has_key(self, key: str) -> bool
 
-      def `Value` as value(self, key: str) -> CompactLatticeVectorFst
+      def `Value` as value(self, key: str) -> CompactLatticeVectorFst:
+        return CompactLatticeFst(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -454,8 +516,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicHolder<int32>>`
         as RandomAccessIntReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -472,8 +532,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicHolder<float>>`
         as RandomAccessFloatReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -490,8 +548,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicHolder<double>>`
         as RandomAccessDoubleReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -508,8 +564,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicHolder<bool>>`
         as RandomAccessBoolReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -526,8 +580,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicVectorHolder<int32>>`
         as RandomAccessIntVectorReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -544,8 +596,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicVectorVectorHolder<int32>>`
         as RandomAccessIntVectorVectorReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -562,8 +612,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicPairVectorHolder<int32>>`
         as RandomAccessIntPairVectorReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -580,8 +628,6 @@ from "util/kaldi-table.h":
 
     class `RandomAccessTableReader<BasicPairVectorHolder<float>>`
         as RandomAccessFloatPairVectorReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -596,13 +642,10 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
-    # Random Access Mapped Readers
+    # Mapped Random Access Readers
 
     class `RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<float>>>`
         as RandomAccessVectorReaderMapped:
-      @add__init__
-      def `RandomAccessTableReaderMapped` as new(self, table_rspecifier: str,
-                                                 map_rspecifier: str)
 
       def `Open` as open(self, table_rspecifier: str, map_rspecifier: str) -> bool
 
@@ -618,11 +661,27 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `RandomAccessTableReaderMapped<KaldiObjectHolder<Vector<double>>>`
+        as RandomAccessDoubleVectorReaderMapped:
+
+      def `Open` as open(self, table_rspecifier: str, map_rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> DoubleVector:
+        return _vector_wrapper(...)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<float>>>`
         as RandomAccessMatrixReaderMapped:
-      @add__init__
-      def `RandomAccessTableReaderMapped` as new(self, table_rspecifier: str,
-                                                 map_rspecifier: str)
 
       def `Open` as open(self, table_rspecifier: str, map_rspecifier: str) -> bool
 
@@ -638,11 +697,27 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `RandomAccessTableReaderMapped<KaldiObjectHolder<Matrix<double>>>`
+        as RandomAccessDoubleMatrixReaderMapped:
+
+      def `Open` as open(self, table_rspecifier: str, map_rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> DoubleMatrix:
+        return _matrix_wrapper(...)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `RandomAccessTableReaderMapped<BasicHolder<float>>`
         as RandomAccessFloatReaderMapped:
-      @add__init__
-      def `RandomAccessTableReaderMapped` as new(self, table_rspecifier: str,
-                                                 map_rspecifier: str)
 
       def `Open` as open(self, table_rspecifier: str, map_rspecifier: str) -> bool
 
@@ -660,8 +735,6 @@ from "util/kaldi-table.h":
     # Writers
 
     class `TableWriter<KaldiObjectHolder<Vector<float>>>` as VectorWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -676,9 +749,24 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `TableWriter<KaldiObjectHolder<Vector<double>>>` as DoubleVectorWriter:
+
+      def `Open` as open(self, wspecifier: str) -> bool
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Write` as write(self, key: str, value: DoubleVector)
+
+      def `Flush` as flush(self)
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `TableWriter<KaldiObjectHolder<Matrix<float>>>` as MatrixWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -693,10 +781,25 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `TableWriter<KaldiObjectHolder<Matrix<double>>>` as DoubleMatrixWriter:
+
+      def `Open` as open(self, wspecifier: str) -> bool
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Write` as write(self, key: str, value: DoubleMatrix)
+
+      def `Flush` as flush(self)
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `TableWriter<KaldiObjectHolder<CompressedMatrix>>`
         as CompressedMatrixWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -712,8 +815,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<WaveHolder>` as WaveWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -729,8 +830,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<LatticeHolder>` as LatticeWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -746,8 +845,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<CompactLatticeHolder>` as CompactLatticeWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -763,8 +860,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicHolder<int32>>` as IntWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -780,8 +875,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicHolder<float>>` as FloatWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -797,8 +890,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicHolder<double>>` as DoubleWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -814,8 +905,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicHolder<bool>>` as BoolWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -831,8 +920,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicVectorHolder<int32>>` as IntVectorWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -849,8 +936,6 @@ from "util/kaldi-table.h":
 
     class `TableWriter<BasicVectorVectorHolder<int32>>`
         as IntVectorVectorWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -866,8 +951,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicPairVectorHolder<int32>>` as IntPairVectorWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -883,8 +966,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class `TableWriter<BasicPairVectorHolder<float>>` as FloatPairVectorWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 
@@ -901,8 +982,6 @@ from "util/kaldi-table.h":
 
   namespace `kaldi::nnet3`:
     class SequentialNnetExampleReader:
-      @add__init__
-      def `SequentialTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -914,7 +993,7 @@ from "util/kaldi-table.h":
 
       def `Value` as value(self) -> NnetExample
 
-      def `Next` as _next(self)
+      def `Next` as next(self)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -924,8 +1003,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class RandomAccessNnetExampleReader:
-      @add__init__
-      def `RandomAccessTableReader` as new(self, rspecifier: str)
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -941,8 +1018,6 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
     class NnetExampleWriter:
-      @add__init__
-      def `TableWriter` as new(self, wspecifier: str)
 
       def `Open` as open(self, wspecifier: str) -> bool
 

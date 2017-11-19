@@ -1,9 +1,10 @@
-import os
-from kaldi.base.math import *
-from kaldi.util.io import *
-from kaldi.base.io import read_line
+from __future__ import print_function
 
+import os
 import unittest
+
+from kaldi.util.io import *
+
 
 class TestKaldiIO(unittest.TestCase):
 
@@ -37,32 +38,40 @@ class TestKaldiIO(unittest.TestCase):
         self.assertEqual(OutputType.FILE_OUTPUT, classify_wxfilename("a b c:"))
         self.assertEqual(OutputType.FILE_OUTPUT, classify_wxfilename("a b c/3"))
 
-    def testIONew(self, binary = False):
+    def test_text_io(self):
         filename = "tmpf"
-        ko = Output.new(filename, binary)
-        outfile = ko.stream()
-        ko.close()
-        # ostream has no functions, use native python
-        with open(filename, "w") as outpt:
-            outpt.write("\t{}\t{}\n{}\t{}".format(500,
-                                              600,
-                                              700,
-                                              "d")) #randomly selected char
-        ki = Input()
-        binary_contents = ki.open(filename)
-        self.assertEqual(binary, binary_contents)
-
-        # Read lines back
-        self.assertEqual("\t500\t600", read_line(ki._input.stream()))
-
-        for line in ki:
-            self.assertEqual("700\td", line)
-
-
+        lines = ["400\t500\t600", "700\td"]
+        with Output(filename, False) as ko:
+            for line in lines:
+                print(line, file=ko)
+        with Input(filename, False) as ki:
+            for i, line in enumerate(ki):
+                self.assertEqual(line.strip(), lines[i])
         os.remove(filename)
 
-    
-        
+    def test_binary_io(self):
+        filename = "tmpf"
+        lines = [b"\t500\t600\n", b"700\td\n"]
+        with Output(filename) as ko:
+            for line in lines:
+                ko.write(line)
+        with Input(filename) as ki:
+            self.assertTrue(ki.binary)
+            for i, line in enumerate(ki):
+                self.assertEqual(line, lines[i])
+        os.remove(filename)
+
+    def test_xopen(self):
+        filename = "tmpf"
+        lines = [b"\t500\t600\n", b"700\td\n"]
+        with xopen(filename, "w") as ko:
+            ko.writelines(lines)
+        with xopen(filename) as ki:
+            self.assertTrue(ki.binary)
+            for i, line in enumerate(ki):
+                self.assertEqual(line, lines[i])
+        os.remove(filename)
+
 
 if __name__ == '__main__':
     unittest.main()

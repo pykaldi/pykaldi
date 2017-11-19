@@ -4,48 +4,102 @@ from __future__ import division, print_function
 import sys
 from collections import defaultdict
 
-
+from kaldi.matrix import DoubleMatrix
+from kaldi.transform.cmvn import acc_cmvn_stats, acc_cmvn_stats_single_frame
+from kaldi.util.io import xopen, printable_rxfilename
 from kaldi.util.options import ParseOptions
-from kaldi.util.io import Input
-from kaldi.transform.cmvn import acc_cmvn_stats
+from kaldi.util.table import RandomAccessMatrixReader, DoubleMatrixWriter
 
-def getUtterancePairs(reco2file_and_channel_rxfilename):
+def get_utterance_pairs(reco2file_and_channel_rxfilename):
     utt_pairs = []
     call_to_uttlist = defaultdict(list)
-    with Input(reco2file_and_channel_rxfilename) as ki:
-        for line in ki:
-            split = line.strip().split()
-            if len(split) != 3:
-                print("Expecting 3 fields per line of reco2file_and_channel file {} got: {}".format(reco2file_and_channel_rxfilename, line), file=sys.stderr)
-            utt, call = split[0:2]
-            call_to_uttlist[call].append(utt)
-        
-        for key, uttlist in call_to_uttlist.items():
-            if len(uttlist) == 2:
-                utt_pairs.append(uttlist)
-            else:
-                print("Call {} has {} utterances, expected two; treating them singly.".format(key, len(uttlist)), file=sys.stderr)
-                singleton_list = [y for x in uttlist for y in x]
-                utt_pairs.append(singleton_list)
-
-def AccCmvnStatsForPair(utt1, utt2, feats1, feats2, quieter_channel_weight):
-    if feats1.num_rows != feats2.num_rows:
-        print("Number of frames differ between {} () and {} (), treating them separately".format(utt1, utt2, feats1.num_rows, feats2.num_rows))
-        cmvn_stats1 = acc_cmvn_stats(feats1, 1.0)
-        cmvn_stats2 = acc_cmvn_stats(feats2, 1.0)
-        return cmvn_stats1, cmvn_stats2
-
-    for i in feats1.num_rows:
-        if feats1[i, 0] > feats2[i, 0]:
-            cmvn_stats1 = acc_cmvn_stats(feats1[i], 1.0)
-            cmvn_stats2 = acc_cmvn_stats(feats2[i], quieter_channel_weight)
+    for line in xopen(reco2file_and_channel_rxfilename, "rt"):
+        try:
+            utt, call, _ = line.split()  # lines like: sw02001-A sw02001 A
+        except:
+            filename = printable_rxfilename(reco2file_and_channel_rxfilename)
+            raise ValueError("Expecting 3 fields per line of "
+                             "reco2file_and_channel file {}, got: {}"
+                             .format(filename, len(line.split())))
+        call_to_uttlist[call].append(utt)
+    for key, uttlist in call_to_uttlist.items():
+        if len(uttlist) == 2:
+            utt_pairs.append(uttlist)
         else:
-            cmvn_stats1 = acc_cmvn_stats(feats1[i], quieter_channel_weight)
-            cmvn_stats2 = acc_cmvn_stats(feats2[i], 1.0)
-    return cmvn_stats1, cmvn_stats2
+            print("Call {} has {} utterances, expected two; treating them "
+                  "singly.".format(key, len(uttlist)), file=sys.stderr)
+            utt_pairs.extend([x] for x in uttlist)
+
+
+def acc_cmvn_stats_for_pair(utt1, utt2, feats1, feats2, quieter_channel_weight,
+                            cmvn_stats1, cmvn_stats2):
+    assert(feats1.num_cols == feats2.num_cols)
+    if feats1.num_rows != feats2.num_rows:
+        print("Number of frames differ between {} and {}: {} vs. {}, treating "
+              "them separately.".format(utt1, utt2,
+                                        feats1.num_rows, feats2.num_rows))
+        acc_cmvn_stats(feats1, None, cmvn_stats1)
+        acc_cmvn_stats(feats2, None, cmvn_stats2)
+        return
+    for v1, v2 in zip(feats1, feats2):
+        if v1[0] > v2[0]:
+            w1, w2 = 1.0, quieter_channel_weight
+        else:
+            w1, w2 = quieter_channel_weight, 1.0
+        acc_cmvn_stats_single_frame(v1, w1, cmvn_stats1)
+        acc_cmvn_stats_single_frame(v2, w2, cmvn_stats2)
+
+def compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
+                                   feats_rspecifier, stats_wspecifier, opts):
+    utt_pairs = get_utterance_pairs(reco2file_and_channel_rxfilename)
+
+    numdone, num_err = 0, 0
+    with RandomAccessMatrixReader(feats_rspecifier) as feat_reader, \
+         DoubleMatrixWriter(stats_wspecifier) as writer:
+            for pair in utt_pairs:
+                if len(pair) == 2:
+                    utt1, utt2 = pair
+                    if utt1 not in feat_reader:
+                        print("No feature data for utterance {}".format(utt1),
+                              file=sys.stderr)
+                        num_err += 1
+                        pair = utt2, utt1
+                        # and fall through to the singleton code below.
+                    elif utt2 not in feat_reader:
+                        print("No feature data for utterance {}".format(utt2),
+                              file=sys.stderr)
+                        num_err += 1
+                        # and fall through to the singleton code below.
+                    else:
+                        feats1 = feat_reader[utt1]
+                        feats2 = feat_reader[utt2]
+                        cmvn_stats1 = DoubleMatrix(2, feats1.num_cols + 1)
+                        cmvn_stats2 = DoubleMatrix(2, feats1.num_cols + 1)
+                        acc_cmvn_stats_for_pair(utt1, utt2, feats1, feats2,
+                                                opts.quieter_channel_weight,
+                                                cmvn_stats1, cmvn_stats2)
+                        writer[utt1] = cmvn_stats1
+                        writer[utt2] = cmvn_stats2
+                        num_done += 2
+                        continue
+                # process singletons
+                utt = pair[0]
+                if utt not in feat_reader:
+                    print("No feature data for utterance {}".format(utt))
+                    num_err += 1
+                    continue
+                feats = feat_reader[utt]
+                cmvn_stats = DoubleMatrix(2, feats.num_cols + 1)
+                acc_cmvn_stats(feats, None, cmvn_stats)
+                writer.write[utt] = cmvn_stats
+                num_done += 1
+    print("Done accumulating CMVN stats for {} utterances; {} had errors."
+          .format(num_done, num_err))
+    return True if num_done != 0 else False
 
 if __name__ == '__main__':
-    usage = """Compute cepstral mean and variance normalization statistics
+    usage = """Compute cepstral mean and variance normalization statistics.
+
     Specialized for two-sided telephone data where we only accumulate
     the louder of the two channels at each frame (and add it to that
     side's stats).  Reads a 'reco2file_and_channel' file, normally like
@@ -59,14 +113,15 @@ if __name__ == '__main__':
     Note: loudness is judged by the first feature component, either energy or c0
     only applicable to MFCCs or PLPs (this code could be modified to handle filterbanks).
 
-
-    Usage:
-        compute-cmvn-stats-two-channel  [options] <reco2file-and-channel> <feats-rspecifier> <stats-wspecifier>
+    Usage: compute-cmvn-stats-two-channel [options] <reco2file-and-channel> <feats-rspecifier> <stats-wspecifier>
+    e.g.: compute-cmvn-stats-two-channel data/train_unseg/reco2file_and_channel scp:data/train_unseg/feats.scp ark,t:-
     """
 
     po = ParseOptions(usage)
 
-    po.register_float("quieter_channel_weight", 0.01, "For the quieter channel, apply this weight to the stats, so that we still get stats if one channel always dominates.")
+    po.register_float("quieter_channel_weight", 0.01, "For the quieter channel,"
+                      " apply this weight to the stats, so that we still get "
+                      "stats if one channel always dominates.")
 
     opts = po.parse_args()
 
@@ -78,38 +133,5 @@ if __name__ == '__main__':
     feats_rspecifier = po.get_arg(2)
     stats_wspecifier = po.get_arg(3)
 
-    utt_pairs = getUtterancePairs(reco2file_and_channel_rxfilename)
-
-    num_err = 0
-    with RandomAccessMatrixReader(feats_rspecifier) as feat_reader,\
-         MatrixWriter(stats_wspecifier) as writer:
-            for num_done, pair in enumerate(utt_pairs):
-                if len(pair) == 2:
-                    utt1, utt2 = pair
-                    if not utt1 in feat_reader:
-                        print("No feature data for utterance {}".format(utt1), file=sys.stderr)
-                        num_err += 1
-                        utt1 = utt2
-                    elif not utt2 in feat_reader:
-                        print("No feature data for utterance {}".format(utt2), file=sys.stderr)
-                        num_err += 1
-                    else:
-                        feats1 = feat_reader[utt1]
-                        feats2 = feat_reader[utt2]
-                        dim = feats1.num_cols
-                        cmvn_stats1, cmvn_stats2 = AccCmvnStatsForPair(utt1, utt2, feats1, feats2, opts.quieter_channel_weight)
-                        writer[utt1] = cmvn_stats1
-                        writer[utt2] = cmvn_stats2
-                        num_done += 2
-                        continue
-                    # process singletons
-                    utt = pair[0]
-                    if not utt in feat_reader:
-                        print("No feature data for utterance {}".format(utt))
-                        num_err += 1
-                        continue
-                    feats = feat_reader[utt]
-                    writer.write[utt] = acc_cmvn_stats(feats, 1.0)
-                    num_done += 1
-
-    print("Done accumulating CMVN stats for {} utterances; {} had errors.".format(num_done, num_err))
+    compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
+                                   feats_rspecifier, stats_wspecifier, opts)

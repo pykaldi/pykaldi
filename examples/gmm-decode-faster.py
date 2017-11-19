@@ -4,15 +4,14 @@ from __future__ import print_function, division
 import sys
 import time
 
-from kaldi.base.io import init_kaldi_input_stream
 from kaldi.decoder import FasterDecoderOptions, FasterDecoder
-from kaldi.fstext import (StdFst, LatticeFst, CompactLatticeFst, SymbolTable,
-                          get_linear_symbol_sequence_from_lattice_fst,
-                          acoustic_lattice_scale, scale_lattice,
-                          convert_lattice_to_compact_lattice)
+from kaldi.fstext import StdFst, LatticeFst, CompactLatticeFst, SymbolTable
+from kaldi.fstext.utils import (get_linear_symbol_sequence_from_lattice_fst,
+                                acoustic_lattice_scale, scale_lattice,
+                                convert_lattice_to_compact_lattice)
 from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
 from kaldi.hmm import TransitionModel
-from kaldi.util.io import Input
+from kaldi.util.io import xopen
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import (IntVectorWriter, SequentialMatrixReader,
                               CompactLatticeWriter)
@@ -23,10 +22,9 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
                       alignment_wspecifier, lattice_wspecifier):
     trans_model = TransitionModel()
     am_gmm = AmDiagGmm()
-    ki = Input.new(model_rxfilename)
-    binary = init_kaldi_input_stream(ki.stream())
-    trans_model.read(ki.stream(), binary)
-    am_gmm.read(ki.stream(), binary)
+    with xopen(model_rxfilename) as ki:
+        trans_model.read(ki.stream(), ki.binary)
+        am_gmm.read(ki.stream(), ki.binary)
 
     words_writer = IntVectorWriter(words_wspecifier)
     alignment_writer = IntVectorWriter(alignment_wspecifier)
@@ -69,7 +67,7 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
             frame_count += features.num_rows
 
             ret = get_linear_symbol_sequence_from_lattice_fst(decoded)
-            success, alignment, words, weight = ret
+            alignment, words, weight = ret
 
             words_writer[key] = words
             if alignment_writer.is_open():
@@ -140,11 +138,9 @@ if __name__ == '__main__':
                     "Symbol table for words [for debug output]");
     opts = po.parse_args()
 
-    if (po.num_args() < 4 or po.num_args() > 6):
-      po.print_usage()
-      sys.exit()
-
-    # po.PrintConfig()
+    if po.num_args() < 4 or po.num_args() > 6:
+        po.print_usage()
+        sys.exit()
 
     model_rxfilename = po.get_arg(1)
     fst_rxfilename = po.get_arg(2)

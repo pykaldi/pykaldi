@@ -5,18 +5,15 @@ from kaldi.matrix import SubMatrix
 from kaldi.feat.wave import WaveData
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import RandomAccessWaveReader, WaveWriter
-from kaldi.util.io import Input
+from kaldi.util.io import xopen
 
 import sys
 
 def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
     with RandomAccessWaveReader(wav_rspecifier) as reader, \
          WaveWriter(wav_wspecifier) as writer:
-            ki = Input()
-            ki.open(segments_rxfilename)
-
             num_success = 0
-            for num_lines, line in enumerate(ki):
+            for num_lines, line in enumerate(xopen(segments_rxfilename, "rt")):
                 # Split line by tab or space
                 # There must be 4 fields: segment name, segment name , recording wav file name,
                 # start time, end time; 5th field (channel info) is optional.
@@ -51,7 +48,7 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                         print("Invalid line in segments file [bad channel]: {}".format(line), file=sys.stderr)
                         continue
 
-                # check whether a segment start time and end time exists in recording 
+                # check whether a segment start time and end time exists in recording
                 if not recording in reader:
                     print("Could not find recording {}, skipping segment {}".format(recording, segment), file=sys.stderr)
                     continue
@@ -98,7 +95,7 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                         print("Invalid channel {} >= {}, skipping segment {}".format(channel, num_chan, segment), file=sys.stderr)
                         continue
 
-                # This function return a portion of a wav data from the orignial wav data matrix 
+                # This function return a portion of a wav data from the orignial wav data matrix
                 segment_matrix = SubMatrix(wave_data, channel, 1, start_samp, end_samp - start_samp)
                 segment_wave = WaveData.new(samp_freq, segment_matrix)
                 writer[segment] = segment_wave #write segment in wave format
@@ -125,6 +122,3 @@ if __name__ == '__main__':
     wav_wspecifier = po.get_arg(3)
 
     extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts)
-
-
-

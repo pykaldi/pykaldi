@@ -6,7 +6,7 @@ from kaldi.util.options import ParseOptions
 from kaldi.util.table import classify_rspecifier, RspecifierType,\
                              classify_wspecifier, WspecifierType,\
                              MatrixWriter, SequentialMatrixReader
-from kaldi.util.io import read_kaldi_matrix, Output
+from kaldi.util.io import read_matrix, Output
 from kaldi.matrix import Matrix
 
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if not in_is_rspecifier:
-        mat = read_kaldi_matrix(matrix_in_fn)
+        mat = read_matrix(matrix_in_fn)
         if opts.scale != 1.0:
             mat.scale_(opts.scale)
 
@@ -74,8 +74,8 @@ if __name__ == '__main__':
         if opts.apply_power != 1.0:
             mat.apply_power_(opts.apply_power)
 
-        ko = Output(matrix_out_fn, opts.binary)
-        mat.write(ko.stream(), binary)
+        with Output(matrix_out_fn, opts.binary) as ko:
+            mat.write(ko.stream(), opts.binary)
 
         print("Copied matrix to {}".format(matrix_out_fn))
 

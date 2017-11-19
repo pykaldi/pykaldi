@@ -2,7 +2,8 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 
-from kaldi.util import _value_error_on_false
+from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix import _vector_wrapper
 
 from "util/kaldi-io.h":
   namespace `kaldi`:
@@ -12,7 +13,8 @@ from "util/kaldi-io.h":
       `kStandardOutput` as STANDARD_OUTPUT
       `kPipeOutput` as PIPE_OUTPUT
 
-    def `ClassifyWxfilename` as classify_wxfilename(wxfilename: str) -> OutputType
+    def `ClassifyWxfilename` as classify_wxfilename(wxfilename: str) -> OutputType:
+      """Classifies extended filename into an `OutputType`."""
 
     enum InputType with:
       `kNoInput` as NO_INPUT
@@ -21,54 +23,101 @@ from "util/kaldi-io.h":
       `kOffsetFileInput` as OFFSET_FILE_INPUT
       `kPipeInput` as PIPE_INPUT
 
-    def `ClassifyRxfilename` as classify_rxfilename(rxfilename: str) -> InputType
+    def `ClassifyRxfilename` as classify_rxfilename(rxfilename: str) -> InputType:
+      """Classifies extended filename into an `InputType`."""
 
     class Output:
-      @add__init__
-      def `Output` as new(self, wxfilename: str, binary: bool,
-                          write_header: bool = default)
+
+      # NOTE:
+      # This constructor is implemented in Python.
+      #
+      # @add__init__
+      # def `Output` as from_file(self, wxfilename: str, binary: bool, write_header: bool = default)
 
       def `Open` as open(self, wxfilename: str, binary: bool, write_header: bool) -> bool
 
-      def `IsOpen` as is_open(self) -> bool
+      def `IsOpen` as is_open(self) -> bool:
+        """Checks if the stream is open."""
 
-      def `StreamPtr` as stream(self) -> ostream
+      def `StreamPtr` as stream(self) -> ostream:
+        """Returns a handle for the underlying C++ stream."""
 
-      def `Close` as close(self) -> bool
+      def `Close` as close(self) -> bool:
+        """Closes the stream.
 
-    class `Input` as _Input:
+        Returns:
+          True if the stream was closed successfully. False otherwise.
+        """
 
-      # FIXME (VM):
-      # Does not return contents_binary
+    class `Input` as Input:
+
+      # NOTE:
+      # This constructor is implemented in Python.
+      #
       # @add__init__
-      # def `Input` as new(self, rxfilename: str)
+      # def `Input` as from_file(self, rxfilename: str)
 
-      def `Open` as open(self, rxfilename: str)
-        -> (success: bool, contents_binary: bool):
-        return _value_error_on_false(...)
+      def `Open` as open(self, rxfilename: str) -> (success: bool, contents_binary: bool)
 
-      def `OpenTextMode` as open_text_mode(self, rxfilename: str) -> bool
+      def `OpenTextMode` as _open_text_mode(self, rxfilename: str) -> bool
 
-      def `IsOpen` as is_open(self) -> bool
+      def `IsOpen` as is_open(self) -> bool:
+        """Checks if the stream is open."""
 
-      def `Close` as close(self) -> int
+      def `Close` as close(self) -> int:
+        """Closes the stream.
 
-      def `StreamPtr` as stream(self) -> istream
+        Returns:
+          The exit code as an integer if the stream was a pipe, 0 otherwise.
+        """
+
+      def `StreamPtr` as stream(self) -> istream:
+        """Returns a handle for the underlying C++ stream."""
 
     # Read/Write matrices #
 
-    def `ReadKaldiObject` as read_kaldi_matrix(filename: str, m: Matrix)
+    def `ReadKaldiObject` as read_matrix(filename: str) -> Matrix:
+      """Reads a single precision matrix from an extended filename."""
+      return _matrix_wrapper(...)
 
-    def `WriteKaldiObject` as write_kaldi_matrix(c: Matrix, filename: str,
-                                               binary: bool)
+    def `WriteKaldiObject` as write_matrix(c: Matrix, filename: str, binary: bool):
+      """Writes a single precision matrix to an extended filename."""
+
+    def `ReadKaldiObject` as read_double_matrix(filename: str) -> DoubleMatrix:
+      """Reads a double precision matrix from an extended filename."""
+      return _matrix_wrapper(...)
+
+    def `WriteKaldiObject` as write_double_matrix(c: DoubleMatrix, filename: str, binary: bool):
+      """Writes a double precision matrix to an extended filename."""
 
     # Read/Write vectors #
 
-    def `ReadKaldiObject` as read_kaldi_vector(filename: str, c: Vector)
+    def `ReadKaldiObject` as read_vector(filename: str) -> Vector:
+      """Reads a single precision vector from an extended filename."""
+      return _vector_wrapper(...)
 
-    def `WriteKaldiObject` as write_kaldi_vector(c: Vector, filename: str,
-                                               binary: bool)
+    def `WriteKaldiObject` as write_vector(c: Vector, filename: str, binary: bool):
+      """Writes a single precision vector to an extended filename."""
 
-    def `PrintableRxfilename` as printable_rxfilename(rxfilename: str) -> str
+    def `ReadKaldiObject` as read_double_vector(filename: str) ->DoubleVector:
+      """Reads a double precision vector from an extended filename."""
+      return _vector_wrapper(...)
 
-    def `PrintableWxfilename` as printable_wxfilename(rxfilename: str) -> str
+    def `WriteKaldiObject` as write_double_vector(c: DoubleVector, filename: str, binary: bool):
+      """Writes a double precision vector to an extended filename."""
+
+    # Printable extended filenames #
+
+    def `PrintableRxfilename` as printable_rxfilename(rxfilename: str) -> str:
+      """Turns the rxfilename into a more human-readable form.
+
+      This is useful for error reporting, i.e. it does quoting and escaping and
+      replaces '' or '-' with 'standard input'.
+      """
+
+    def `PrintableWxfilename` as printable_wxfilename(wxfilename: str) -> str:
+      """Turns the wxfilename into a more human-readable form.
+
+      This is useful for error reporting, i.e. it does quoting and escaping and
+      replaces '' or '-' with 'standard input'.
+      """

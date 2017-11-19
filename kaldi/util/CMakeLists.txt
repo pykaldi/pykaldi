@@ -21,3 +21,10 @@ add_pyclif_library("_kaldi_table" kaldi-table.clif
   LIBRARIES kaldi-util
   RPATH $ORIGIN/../matrix:$ORIGIN/../feat:$ORIGIN/../nnet3:$ORIGIN/../fstext
 )
+
+add_pyclif_library("_kaldi_table_ext" kaldi-table-ext.clif
+  NAMESPACES kaldi
+  CLIF_DEPS _vector_fst
+  LIBRARIES kaldi-util
+  RPATH $ORIGIN/../fstext
+)

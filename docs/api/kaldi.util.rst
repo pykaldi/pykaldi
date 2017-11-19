@@ -30,11 +30,15 @@ kaldi\.util\.io
       classify_wxfilename
       printable_rxfilename
       printable_wxfilename
-      read_kaldi_matrix
-      read_kaldi_vector
-      read_line
-      write_kaldi_matrix
-      write_kaldi_vector
+      read_double_matrix
+      read_double_vector
+      read_matrix
+      read_vector
+      write_double_matrix
+      write_double_vector
+      write_matrix
+      write_vector
+      xopen
    
    
 
@@ -106,24 +110,38 @@ kaldi\.util\.table
       :nosignatures:
    
       BoolWriter
+      CompactLatticeWriter
+      DoubleMatrixWriter
+      DoubleVectorWriter
       DoubleWriter
       FloatPairVectorWriter
       FloatWriter
+      FstWriter
       IntPairVectorWriter
       IntVectorVectorWriter
       IntVectorWriter
       IntWriter
+      LatticeWriter
+      LogFstWriter
       MatrixWriter
       NnetExampleWriter
       RandomAccessBoolReader
+      RandomAccessCompactLatticeReader
+      RandomAccessDoubleMatrixReader
+      RandomAccessDoubleMatrixReaderMapped
       RandomAccessDoubleReader
+      RandomAccessDoubleVectorReader
+      RandomAccessDoubleVectorReaderMapped
       RandomAccessFloatPairVectorReader
       RandomAccessFloatReader
       RandomAccessFloatReaderMapped
+      RandomAccessFstReader
       RandomAccessIntPairVectorReader
       RandomAccessIntReader
       RandomAccessIntVectorReader
       RandomAccessIntVectorVectorReader
+      RandomAccessLatticeReader
+      RandomAccessLogFstReader
       RandomAccessMatrixReader
       RandomAccessMatrixReaderMapped
       RandomAccessNnetExampleReader
@@ -132,13 +150,19 @@ kaldi\.util\.table
       RandomAccessWaveReader
       RspecifierType
       SequentialBoolReader
+      SequentialCompactLatticeReader
+      SequentialDoubleMatrixReader
       SequentialDoubleReader
+      SequentialDoubleVectorReader
       SequentialFloatPairVectorReader
       SequentialFloatReader
+      SequentialFstReader
       SequentialIntPairVectorReader
       SequentialIntReader
       SequentialIntVectorReader
       SequentialIntVectorVectorReader
+      SequentialLatticeReader
+      SequentialLogFstReader
       SequentialMatrixReader
       SequentialNnetExampleReader
       SequentialVectorReader

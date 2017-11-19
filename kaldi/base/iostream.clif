@@ -22,13 +22,37 @@ from "base/iostream-ext.h":
       pass
 
     def `GetStdinPtr` as get_stdin() -> istream:
-      """Get standard input stream."""
+      """Returns standard input stream."""
 
     def `GetStdoutPtr` as get_stdout() -> ostream:
-      """Get standard output stream."""
+      """Returns standard output stream."""
 
     def `GetStderrPtr` as get_stderr() -> ostream:
-      """Get standard error stream."""
+      """Returns standard error stream."""
 
-    def `ReadLine` as read_line(input: istream) -> str:
-      """Reads a line from istream input delimited by newlines"""
+    def `Flush` as flush(os: ostream):
+      """Flushes output stream."""
+
+    def `Read` as read_text(is: istream) -> str:
+      """Reads and returns the contents of the stream as a unicode string."""
+
+    def `Read` as read(is: istream) -> bytes:
+      """Reads and returns the contents of the stream as a bytes object."""
+
+    def `ReadLine` as readline_text(is: istream) -> str:
+      """Reads and returns a line from the input stream.
+
+      If the stream is already at EOF, an empty unicode string is returned.
+      """
+
+    def `ReadLine` as readline(is: istream) -> bytes:
+      """Reads and returns a line from the input stream.
+
+      If the stream is already at EOF, an empty bytes object is returned.
+      """
+
+    def `Write` as write_text(os: ostream, s: str):
+      """Writes unicode string to output stream."""
+
+    def `Write` as write(os: ostream, b: bytes):
+      """Writes bytes object to output stream."""

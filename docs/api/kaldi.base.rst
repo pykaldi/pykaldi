@@ -43,12 +43,18 @@ kaldi\.base\.io
    .. autosummary::
       :nosignatures:
    
+      flush
       get_stderr
       get_stdin
       get_stdout
       init_kaldi_input_stream
       init_kaldi_output_stream
-      read_line
+      read
+      read_text
+      readline
+      readline_text
+      write
+      write_text
    
    
 
