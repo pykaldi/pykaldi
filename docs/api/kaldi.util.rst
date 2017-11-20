@@ -76,7 +76,6 @@ kaldi\.util\.options
       :nosignatures:
    
       ParseOptions
-      SimpleOptions
    
    
 
@@ -148,6 +147,7 @@ kaldi\.util\.table
       RandomAccessVectorReader
       RandomAccessVectorReaderMapped
       RandomAccessWaveReader
+      RspecifierOptions
       RspecifierType
       SequentialBoolReader
       SequentialCompactLatticeReader
@@ -169,6 +169,7 @@ kaldi\.util\.table
       SequentialWaveReader
       VectorWriter
       WaveWriter
+      WspecifierOptions
       WspecifierType
    
    

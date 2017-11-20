@@ -23,7 +23,7 @@ lattices, are first class citizens in Python. The API for the user facing FST
 types and operations is almost entirely defined in Python mimicking the API
 exposed by OpenFst's official Python wrapper.
 
-Major features and goals of PyKaldi include:
+## Features
 
 * Near-complete coverage of Kaldi's C++ API
 
@@ -100,29 +100,29 @@ dimensions:
 | base       | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
 | chain      | &#10004; |           | &#10004;                   |          |
 | cudamatrix | &#10004; |           | &#10004;                   | &#10004; |
-| decoder    | &#10004; |           | &#10004; &#10004; &#10004; |          |
-| feat       | &#10004; | &#10004;  | &#10004; &#10004;          |          |
+| decoder    | &#10004; |           | &#10004; &#10004;          |          |
+| feat       | &#10004; | &#10004;  | &#10004;                   |          |
 | fstext     | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | gmm        | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
-| hmm        | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
+| hmm        | &#10004; | &#10004;  | &#10004;                   | &#10004; |
 | itf        | &#10004; |           | &#10004;                   |          |
-| ivector    | &#10004; |           | &#10004; &#10004;          |          |
+| ivector    | &#10004; |           | &#10004;                   |          |
 | kws        |          |           |                            |          |
-| lat        | &#10004; |           | &#10004; &#10004;          |          |
+| lat        | &#10004; |           | &#10004;                   |          |
 | lm         | &#10004; |           | &#10004;                   |          |
 | matrix     | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
 | nnet       |          |           |                            |          |
 | nnet2      |          |           |                            |          |
 | nnet3      | &#10004; |           | &#10004;                   | &#10004; |
 | online     |          |           |                            |          |
-| online2    | &#10004; |           | &#10004; &#10004; &#10004; |          |
-| sgmm2      | &#10004; |           | &#10004; &#10004; &#10004; |          |
+| online2    | &#10004; |           | &#10004;                   |          |
+| sgmm2      | &#10004; |           | &#10004;                   |          |
 | tfrnnlm    |          |           |                            |          |
-| transform  | &#10004; | &#10004;  | &#10004; &#10004;          |          |
-| tree       | &#10004; |           | &#10004; &#10004; &#10004; |          |
+| transform  | &#10004; | &#10004;  | &#10004;                   |          |
+| tree       | &#10004; |           | &#10004;                   |          |
 | util       | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
 
-## GettingStarted
+## Getting Started
 
 Some places to help you get started:
 

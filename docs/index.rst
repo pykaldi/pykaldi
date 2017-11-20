@@ -18,7 +18,8 @@ lattices, are first class citizens in Python. The API for the user facing FST
 types and operations is almost entirely defined in Python mimicking the API
 exposed by OpenFst's official Python wrapper.
 
-Major features and goals of PyKaldi include:
+Features
+--------
 
 * Near-complete coverage of Kaldi C++ API
 

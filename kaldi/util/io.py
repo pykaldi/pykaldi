@@ -1,3 +1,14 @@
+"""
+For detailed documentation of Kaldi input/output streams and extended filenames,
+see `Kaldi I/O mechanisms`_ and `Kaldi I/O from a command-line perspective`_.
+
+.. _Kaldi I/O mechanisms:
+   http://kaldi-asr.org/doc/io.html
+.. _Kaldi I/O from a command-line perspective:
+   http://kaldi-asr.org/doc/io_tut.html
+"""
+
+
 from ..base import io as _base_io
 from . import _kaldi_io
 from ._kaldi_io import *

@@ -1,7 +1,19 @@
+"""
+For detailed documentation of Kaldi tables, table readers/writers, table
+read/write specifiers, see `Kaldi I/O mechanisms`_ and
+`Kaldi I/O from a command-line perspective`_.
+
+.. _Kaldi I/O mechanisms:
+   http://kaldi-asr.org/doc/io.html
+.. _Kaldi I/O from a command-line perspective:
+   http://kaldi-asr.org/doc/io_tut.html
+"""
+
 from . import _kaldi_table
 from ._kaldi_table import (read_script_file, write_script_file,
                            classify_wspecifier, classify_rspecifier,
-                           WspecifierType, RspecifierType)
+                           WspecifierType, RspecifierType,
+                           WspecifierOptions, RspecifierOptions)
 from . import _kaldi_table_ext
 
 ################################################################################

@@ -1,77 +1,206 @@
 from "itf/options-itf-clifwrap.h" import *
 
 from kaldi.itf._options_itf import OptionsItf
-from kaldi.util import _value_error_on_false
+# from kaldi.util import _value_error_on_false
 
 from "util/options-ext.h":
   namespace `kaldi`:
 
-    class `SimpleOptionsExt` as SimpleOptions(OptionsItf):
-      def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
-      def `Register` as register_int(self, name: str, ptr: `int32` as int, doc: str)
-      def `Register` as register_uint(self, name: str, ptr: `uint32` as int, doc: str)
-      def `Register` as register_float(self, name: str, ptr: `float` as float, doc: str)
-      def `Register` as register_double(self, name: str, ptr: `double` as float, doc: str)
-      def `Register` as register_str(self, name: str, ptr: str, doc: str)
-
-      def `SetOption` as set_option_bool(self, key: str, value: bool) -> bool
-      def `SetOptionInt` as set_option_int(self, key: str, value: int) -> bool
-      def `SetOptionUInt` as set_option_uint(self, key: str, value: int) -> bool
-      def `SetOptionFloat` as set_option_float(self, key: str, value: float) -> bool
-      def `SetOptionDouble` as set_option_double(self, key: str, value: float) -> bool
-      def `SetOption` as set_option_str(self, key: str, value: str) -> bool
-
-      def `GetOption` as get_option_bool(self, key: str, value: bool) -> bool
-      def `GetOption` as get_option_int(self, key: str, value: int) -> bool
-      def `GetOption` as get_option_uint(self, key: str, value: int) -> bool
-      def `GetOption` as get_option_float(self, key: str, value: float) -> bool
-      def `GetOption` as get_option_double(self, key: str, value: float) -> bool
-      def `GetOption` as get_option_str(self, key: str, value: str) -> bool
-
-      enum OptionType with:
-        `kBool` as BOOL
-        `kInt32` as INT
-        `kUint32` as UINT
-        `kFloat` as FLOAT
-        `kDouble` as DOUBLE
-        `kString` as STRING
-
-      class OptionInfo:
-        doc: str
-        type: OptionType
-        def __init__(self, doc: str, type: OptionType)
-
-      def `GetOptionInfoList` as get_option_info_list(self) -> list<tuple<str, OptionInfo>>
-
-      def `GetOptionType` as get_option_type(self, key: str)
-        -> (success: bool, type: OptionType):
-        return _value_error_on_false(...)
+    # NOTE(Dogan):
+    # To wrap this class, we need a C++ wrapper that will hold the values.
+    # It doesn't seem like this class will be useful in Python.
+    # Commenting out for the moment.
+    #
+    # class `SimpleOptionsExt` as SimpleOptions(OptionsItf):
+    #   """A simple implementation of OptionsItf for setting/getting options."""
+    #
+    #   def `Register` as register_bool(self, name: str, ptr: bool, doc: str)
+    #
+    #   def `Register` as register_int(self, name: str, ptr: `int32` as int, doc: str)
+    #   def `Register` as register_uint(self, name: str, ptr: `uint32` as int, doc: str)
+    #   def `Register` as register_float(self, name: str, ptr: `float` as float, doc: str)
+    #   def `Register` as register_double(self, name: str, ptr: `double` as float, doc: str)
+    #   def `Register` as register_str(self, name: str, ptr: str, doc: str)
+    #
+    #   def `SetOption` as set_option_bool(self, key: str, value: bool) -> bool
+    #   def `SetOptionInt` as set_option_int(self, key: str, value: int) -> bool
+    #   def `SetOptionUInt` as set_option_uint(self, key: str, value: int) -> bool
+    #   def `SetOptionFloat` as set_option_float(self, key: str, value: float) -> bool
+    #   def `SetOptionDouble` as set_option_double(self, key: str, value: float) -> bool
+    #   def `SetOption` as set_option_str(self, key: str, value: str) -> bool
+    #
+    #   def `GetOption` as get_option_bool(self, key: str) -> (ret: bool, value: bool):
+    #     return _value_error_on_false(...)
+    #   def `GetOption` as get_option_int(self, key: str) -> (ret: bool, value: int):
+    #     return _value_error_on_false(...)
+    #   def `GetOption` as get_option_uint(self, key: str) -> (ret: bool, value: int):
+    #     return _value_error_on_false(...)
+    #   def `GetOption` as get_option_float(self, key: str) -> (ret: bool, value: float):
+    #     return _value_error_on_false(...)
+    #   def `GetOption` as get_option_double(self, key: str) -> (ret: bool, value: float):
+    #     return _value_error_on_false(...)
+    #   def `GetOption` as get_option_str(self, key: str) -> (ret: bool, value: str):
+    #     return _value_error_on_false(...)
+    #
+    #   enum OptionType with:
+    #     `kBool` as BOOL
+    #     `kInt32` as INT
+    #     `kUint32` as UINT
+    #     `kFloat` as FLOAT
+    #     `kDouble` as DOUBLE
+    #     `kString` as STRING
+    #
+    #   class OptionInfo:
+    #     doc: str
+    #     type: OptionType
+    #     def __init__(self, doc: str, type: OptionType)
+    #
+    #   def `GetOptionInfoList` as get_option_info_list(self) -> list<tuple<str, OptionInfo>>
+    #
+    #   def `GetOptionType` as get_option_type(self, key: str)
+    #     -> (success: bool, type: OptionType):
+    #     return _value_error_on_false(...)
 
     class `ParseOptionsExt` as ParseOptions(OptionsItf):
       def __init__(self, usage: str)
 
       @add__init__
-      def `ParseOptionsExt` as from_other(self, prefix: str, other: OptionsItf)
+      def `ParseOptionsExt` as with_prefix(self, prefix: str, other: OptionsItf):
+        """Creates a new child parser with the given prefix.
 
-      def `RegisterBool` as register_bool(self, name: str, value: bool, doc: str)
-      def `RegisterInt` as register_int(self, name: str, value: `int32` as int, doc: str)
-      def `RegisterUInt` as register_uint(self, name: str, value: `uint32` as int, doc: str)
-      def `RegisterFloat` as register_float(self, name: str, value: `float` as float, doc: str)
-      def `RegisterDouble` as register_double(self, name: str, value: `double` as float, doc: str)
-      def `RegisterString` as register_str(self, name: str, value: str, doc: str)
+        This is a constructor for the special case where some options are
+        registered with a prefix to avoid conflicts. The object thus created
+        will only be used temporarily to register an options class with the
+        parent options parser (which is passed as `other`) using the given
+        prefix. It should not be used for any other purpose, and the prefix
+        must not be the empty string.
 
-      def `DisableOption` as disable_option(self, name: str)
-      def `Read` as read(self, argv: list<str>) -> int
-      def `PrintUsage` as print_usage(self, print_command_line: bool = default)
+        Args:
+          prefix (str): Prefix for the child parser.
+          other (str): Parent parser.
 
-      def `PrintConfig` as print_config(self)
-      def `ReadConfigFile` as read_config_file(self, filename: str)
+        Example:
+          To register and parse MFCC options with the prefix `mfcc`, e.g.,
+          `--mfcc.frame-shift=10.0` instead of just `--frame-shift=10.0`::
 
-      def `NumArgs` as num_args(self) -> int
-      def `GetArg` as get_arg(self, param: int) -> str
-      def `GetOptArg` as get_opt_arg(self, param: int) -> str
+            po = ParseOptions()
+            po_mfcc = ParseOptions.with_prefix("mfcc", po)
+            mfcc_opts = MfccOptions()
+            mfcc_opts.register(po_mfcc)
+            opts = po.parse_args()
+        """
 
-      class Options:
+      def `RegisterBool` as register_bool(self, name: str, value: bool, doc: str):
+        """Registers a Boolean option.
+
+        Args:
+          name (str): Option name.
+          value (bool): Default value.
+          doc (str): Option description.
+        """
+
+      def `RegisterInt` as register_int(self, name: str, value: `int32` as int, doc: str):
+        """Registers an integer option.
+
+        Args:
+          name (str): Option name.
+          value (int): Default value.
+          doc (str): Option description.
+        """
+
+      def `RegisterUInt` as register_uint(self, name: str, value: `uint32` as int, doc: str):
+        """Registers an unsigned integer option.
+
+        Args:
+          name (str): Option name.
+          value (int): Default value.
+          doc (str): Option description.
+        """
+
+      def `RegisterFloat` as register_float(self, name: str, value: `float` as float, doc: str):
+        """Registers a single precision float option.
+
+        Args:
+          name (str): Option name.
+          value (float): Default value.
+          doc (str): Option description.
+        """
+
+      def `RegisterDouble` as register_double(self, name: str, value: `double` as float, doc: str):
+        """Registers a double precision float option.
+
+        Args:
+          name (str): Option name.
+          value (float): Default value.
+          doc (str): Option description.
+        """
+
+      def `RegisterString` as register_str(self, name: str, value: str, doc: str):
+        """Registers a string option.
+
+        Args:
+          name (str): Option name.
+          value (str): Default value.
+          doc (str): Option description.
+        """
+
+      def `DisableOption` as disable_option(self, name: str):
+        """Disables an option.
+
+        If called after registering an option and before calling `parse_args`,
+        disables that option from being used.
+
+        Args:
+          name (str): Option name.
+
+        Raises:
+          RuntimeError: If given option had not been registered.
+        """
+
+      def `Read` as _read(self, argv: list<str>) -> int
+
+      def `PrintUsage` as print_usage(self, print_command_line: bool = default):
+        """Prints the usage string.
+
+        Args:
+          print_command_line (bool): Prints the command line.
+        """
+
+      def `PrintConfig` as print_config(self):
+        """Prints the actual configuration of all registered options."""
+
+      def `ReadConfigFile` as read_config_file(self, filename: str):
+        """Reads configuration from file.
+
+        Args:
+          filename (str) : Config file location.
+        """
+
+      def `NumArgs` as num_args(self) -> int:
+        """Returns the actual number of positional arguments."""
+
+      def `GetArg` as get_arg(self, param: int) -> str:
+        """Returns a required positional argument.
+
+        Args:
+          param (int): 1-based index position for the argument.
+
+        Raises:
+          RuntimeError: If `param < 1` or `param > self.numargs()`.
+        """
+
+      def `GetOptArg` as get_opt_arg(self, param: int) -> str:
+        """Returns an optional positional argument.
+
+        Args:
+          param (int): 1-based index position for the argument.
+
+        Returns:
+          The argument at the given position if `param <= self.num_args()`,
+          empty string otherwise.
+        """
+
+      class `Options` as _Options:
         bool_map: `std::map` as dict<str, bool>
         int_map: `std::map` as dict<str, int>
         uint_map: `std::map` as dict<str, int>
@@ -79,7 +208,8 @@ from "util/options-ext.h":
         double_map: `std::map` as dict<str, float>
         str_map: `std::map` as dict<str, str>
 
-      def `GetOptions` as get_options(self) -> Options
+      def `GetOptions` as _get_options(self) -> _Options
 
       @classmethod
-      def `Escape` as escape(cls, str: str) -> str
+      def `Escape` as escape(cls, str: str) -> str:
+        """Returns a quoted and escaped version of given string."""

@@ -2,23 +2,32 @@ import argparse
 import sys
 
 from . import _options_ext
-from ._options_ext import SimpleOptions
 
 class ParseOptions(_options_ext.ParseOptions):
-    """Command line option parser."""
+    """Command line option parser.
+
+    Args:
+        usage (str): Usage string.
+    """
 
     def parse_args(self, args=None):
-        """Parse arguments and assign them as attributes of a Namespace object.
+        """Parses arguments.
+
+        This method is used for parsing command line options. It fills the
+        options objects registered with the parser. Parsed values for options
+        that are directly registered with the parser, i.e. not via an options
+        object, are returned as attributes of a `Namespace` object.
 
         Args:
             args (list): List of argument strings. If not provided, the argument
-                strings are taken from sys.argv.
+                strings are taken from `sys.argv`.
 
         Returns:
-            A new Namespace object populated with the parsed arguments.
+            A new `Namespace` object populated with the parsed values for
+            options that are directly registered with the parser.
         """
-        self.read(args if args else sys.argv)
-        opts = self.get_options()
+        self._read(args if args else sys.argv)
+        opts = self._get_options()
         arg_dict = {}
         arg_dict.update(opts.bool_map)
         arg_dict.update(opts.int_map)

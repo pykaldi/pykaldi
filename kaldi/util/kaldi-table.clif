@@ -22,28 +22,73 @@ from "util/kaldi-table.h":
       `kBothWspecifier` as BOTH_SPECIFIER
 
     class WspecifierOptions:
+      """Write specifier options."""
       binary: bool
+      """Write table in binary format."""
       flush: bool
+      """Flush the stream after writing each entry."""
       permissive: bool
+      """Ignore absent script file entries."""
 
     def `ClassifyWspecifier` as classify_wspecifier(wspecifier: str)
       -> (wspecifier_type: WspecifierType, archive_wxfilename: str,
-          script_wxfilename: str, opts: WspecifierOptions)
+          script_wxfilename: str, opts: WspecifierOptions):
+      """Decomposes the wspecifier string into its components.
+
+      Returns:
+        A tuple containing `(wspecifier type, archive filename, script
+        filename, wspecifier options)`.
+      """
 
     def `ReadScriptFile` as read_script_file(rxfilename: str,
                                              print_warnings: bool)
       -> (success: bool, script_out: list<tuple<str,str>>):
+      """Reads a script file into a list of string pairs.
+
+      The script (.scp) file format is::
+
+        key1 xfilename1
+        key2 xfilename2
+        ...
+
+      where xfilenames are either rxfilenames or wxfilenames.
+
+      Args:
+        rxfilename (str): Extended filename for reading the script file.
+        print_warnings (bool): Whether to print out warning messages that
+          explain the script file errors.
+
+      Returns:
+        A list of `(key, xfilename)` pairs.
+
+      Raises:
+        ValueError: If the script file format is not valid.
+      """
       return _value_error_on_false(...)
 
     def `WriteScriptFile` as write_script_file(
-      wxfilename: str, script: list<tuple<str,str>>) -> bool
+      wxfilename: str, script: list<tuple<str,str>>) -> bool:
+      """Writes a list of string pairs as a script file.
+
+      Args:
+        wxfilename (str): Extended filename for writing the script file.
+
+      Returns:
+        True on success, False otherwise.
+      """
 
     class RspecifierOptions:
+      """Read specifier options."""
       once: bool
+      """Each key in the table will be queried only once."""
       sorted: bool
+      """Table keys are in sorted order."""
       called_sorted: bool
+      """Table keys/values will be accessed in sorted order. Implies `once`."""
       permissive: bool
+      """If a table cannot be read, act as if its keys were never there."""
       background: bool
+      """Read ahead to the next object in a background thread."""
 
     enum RspecifierType with:
       `kNoRspecifier` as NO_SPECIFIER
@@ -51,7 +96,13 @@ from "util/kaldi-table.h":
       `kScriptRspecifier` as SCRIPT_SPECIFIER
 
     def `ClassifyRspecifier` as classify_rspecifier(rspecifier: str)
-      -> (rspecifier_type: RspecifierType, rxfilename: str, opts: RspecifierOptions)
+      -> (rspecifier_type: RspecifierType, rxfilename: str, opts: RspecifierOptions):
+      """Decomposes the rspecifier string into its components.
+
+      Returns:
+        A tuple containing `(rspecifier type, extended filename, rspecifier
+        options)`.
+      """
 
     # Sequential Readers
 

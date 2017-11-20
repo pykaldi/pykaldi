@@ -6,24 +6,27 @@
 
 namespace kaldi {
 
-class SimpleOptionsExt : public SimpleOptions {
- public:
-   bool SetOptionInt(const std::string &key, const int32 &value) {
-     return SimpleOptions::SetOption(key, value);
-   }
-
-   bool SetOptionUInt(const std::string &key, const uint32 &value) {
-     return SimpleOptions::SetOption(key, value);
-   }
-
-   bool SetOptionFloat(const std::string &key, const float &value) {
-     return SimpleOptions::SetOption(key, value);
-   }
-
-   bool SetOptionDouble(const std::string &key, const double &value) {
-     return SimpleOptions::SetOption(key, value);
-   }
-};
+// NOTE(Dogan):
+// We probably do not need to wrap this class. Commented out for the moment.
+//
+// class SimpleOptionsExt : public SimpleOptions {
+//  public:
+//    bool SetOptionInt(const std::string &key, const int32 &value) {
+//      return SimpleOptions::SetOption(key, value);
+//    }
+//
+//    bool SetOptionUInt(const std::string &key, const uint32 &value) {
+//      return SimpleOptions::SetOption(key, value);
+//    }
+//
+//    bool SetOptionFloat(const std::string &key, const float &value) {
+//      return SimpleOptions::SetOption(key, value);
+//    }
+//
+//    bool SetOptionDouble(const std::string &key, const double &value) {
+//      return SimpleOptions::SetOption(key, value);
+//    }
+// };
 
 class ParseOptionsExt : public ParseOptions {
  public:
