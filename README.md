@@ -8,20 +8,22 @@ PyKaldi is still at alpha stage. Some features might not work yet.
 
 # PyKaldi
 
-PyKaldi is a Python wrapper for Kaldi exposing nearly all of Kaldi's C++ API to
-Python code. It aims to bridge the gap between Kaldi and all the nice things
-Python has to offer including its mature ecosystem of high quality software for
-scientific computing, machine learning, interactive exploration, data
-visualization and more.
+PyKaldi is a Python wrapper for [Kaldi](http://kaldi-asr.org) exposing nearly
+all of Kaldi's C++ API to Python code. It aims to bridge the gap between Kaldi
+and all the nice things Python has to offer including its mature ecosystem of
+high quality software for scientific computing, machine learning, interactive
+data exploration and visualization.
 
 PyKaldi is more than a collection of bindings into Kaldi libraries. It is a
-scripting layer providing first class support for essential Kaldi and OpenFst
-types in Python. PyKaldi vector and matrix types are tightly integrated with
-NumPy. They can be seamlessly converted to NumPy arrays and vice versa without
-copying the underlying memory buffers. PyKaldi FST types, including Kaldi style
-lattices, are first class citizens in Python. The API for the user facing FST
-types and operations is almost entirely defined in Python mimicking the API
-exposed by OpenFst's official Python wrapper.
+scripting layer providing first class support for essential Kaldi and
+[OpenFst](http://www.openfst.org) types in Python. PyKaldi vector and matrix
+types are tightly integrated with [NumPy](http://www.numpy.org). They can be
+seamlessly converted to NumPy arrays and vice versa without copying the
+underlying memory buffers. PyKaldi FST types, including Kaldi style lattices,
+are first class citizens in Python. The API for the user facing FST types and
+operations is almost entirely defined in Python mimicking the API exposed by
+[pywrapfst](http://www.openfst.org/twiki/bin/view/FST/PythonExtension), the
+official Python wrapper for OpenFst.
 
 ## Features
 
