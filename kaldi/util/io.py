@@ -90,7 +90,7 @@ class Input(_kaldi_io.Input):
         """
         if not self.is_open():
             raise ValueError("I/O operation on closed stream.")
-        self._read(self.stream())
+        return self._read(self.stream())
 
     def readline(self):
         """Reads and returns a line from the stream.
@@ -101,7 +101,7 @@ class Input(_kaldi_io.Input):
         """
         if not self.is_open():
             raise ValueError("I/O operation on closed stream.")
-        self._readline(self.stream())
+        return self._readline(self.stream())
 
     def readlines(self):
         """Reads and returns the contents of the stream as a list of lines.
