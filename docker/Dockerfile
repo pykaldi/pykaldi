@@ -7,8 +7,8 @@ WORKDIR /root
 
 ENV PROTOBUF_GIT "https://github.com/google/protobuf.git"
 ENV NINJA_GIT "https://github.com/ninja-build/ninja.git"
-ENV CLIF_GIT "-b pykaldi https://github.com/dogancan/clif/"
-ENV KALDI_GIT "https://github.com/usc-sail/kaldi-pykaldi.git"
+ENV CLIF_GIT "-b pykaldi https://github.com/pykaldi/clif.git"
+ENV KALDI_GIT "-b pykaldi https://github.com/pykaldi/kaldi.git"
 ENV PYKALDI "https://github.com/usc-sail/pykaldi.git"
 
 # update ubuntu and install essentials
