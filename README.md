@@ -192,7 +192,8 @@ sudo python setup.py install
 To streamline PyKaldi development, we made some changes to CLIF codebase. We
 are hoping to upstream these changes over time. In the meantime we provide a
 [PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif/tree/pykaldi).
-Run the following for a compatible CLIF installation:
+Run the following for a compatible CLIF installation. Don't forget to check out
+the pykaldi branch.
 
 ```bash
 git clone -b pykaldi https://github.com/pykaldi/clif.git
@@ -217,8 +218,9 @@ cmake ... \
 
 To comply with CLIF requirements we had to make some changes to Kaldi codebase.
 We are hoping to upstream these changes over time. In the meantime we provide a
-[PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi). Run the
-following commands for a compatible Kaldi installation:
+[PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi/tree/pykaldi).
+Run the following commands for a compatible Kaldi installation. Don't forget to
+check out the pykaldi branch.
 
 ```bash
 git clone -b pykaldi https://github.com/pykaldi/kaldi.git
