@@ -17,7 +17,7 @@ seamlessly converted to NumPy arrays and vice versa without copying the
 underlying memory buffers. PyKaldi FST types, including Kaldi style lattices,
 are first class citizens in Python. The API for the user facing FST types and
 operations is almost entirely defined in Python mimicking the API exposed by
-`pywrapfst <http://www.openfst.org/twiki/bin/view/FST/PythonExtension`_, the
+`pywrapfst <http://www.openfst.org/twiki/bin/view/FST/PythonExtension>`_, the
 official Python wrapper for OpenFst.
 
 
@@ -78,8 +78,8 @@ Getting Started
 
 Some places to help you get started:
 
-* `Walkthrough Example <https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md>`_
-* `Some Kaldi binaries re-implemented using PyKaldi <https://github.com/usc-sail/pykaldi/tree/master/examples>`_
+* `Walkthrough Example <https://github.com/pykaldi/pykaldi/tree/master/examples/walkthrough.md>`_
+* `Some Kaldi binaries re-implemented using PyKaldi <https://github.com/pykaldi/pykaldi/tree/master/examples>`_
 
 
 .. toctree::
