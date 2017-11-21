@@ -2,10 +2,9 @@
 set -e -x
 
 # Location for temp files
-tmp_loc=/tmp
-feats=$tmp_loc/matrix.ark
-scpfile=$tmp_loc/tmp.scp
-reco2file=$tmp_loc/reco2file_and_channel
+feats=$(mktemp /tmp/temporary-file.XXXXXXXX)
+scpfile=$(mktemp /tmp/temporary-file.XXXXXXXX.scp)
+reco2file=$(mktemp /tmp/temporary-file.XXXXXXXX)
 PYTHON=python
 
 # Check that KALDI env variable is set

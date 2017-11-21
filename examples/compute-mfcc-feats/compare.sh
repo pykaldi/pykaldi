@@ -2,8 +2,7 @@
 set -e -x
 
 # Location for temp files
-tmp_loc=/tmp
-testfile="$tmp_loc/test.scp"
+testfile=$(mktemp /tmp/temporary-file.XXXXXXXX.scp)
 PYTHON=python
 
 # Check that KALDI env variable is set

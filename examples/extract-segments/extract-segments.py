@@ -96,7 +96,7 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                         continue
 
                 # This function return a portion of a wav data from the orignial wav data matrix
-                segment_matrix = SubMatrix(wave_data, channel, 1, start_samp, end_samp - start_samp)
+                segment_matrix = SubMatrix(wave_data, channel, 1, int(start_samp), int(end_samp - start_samp))
                 segment_wave = WaveData.new(samp_freq, segment_matrix)
                 writer[segment] = segment_wave #write segment in wave format
                 num_success += 1

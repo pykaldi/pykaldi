@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Location for temp files
-TMP_LOC=/tmp
-MAT_FILE=$TMP_LOC/matrix.ark
+MAT_FILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
 PYTHON=python
 
 # Check that KALDI env variable is set
