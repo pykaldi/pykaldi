@@ -8,7 +8,7 @@ from kaldi.util.table import classify_rspecifier, RspecifierType,\
                              MatrixWriter, SequentialMatrixReader
 from kaldi.util.io import read_matrix, Output
 from kaldi.matrix import Matrix
-
+import logging
 
 def apply_softmax_per_row(mat):
     for i in range(mat.num_rows):
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         with Output(matrix_out_fn, opts.binary) as ko:
             mat.write(ko.stream(), opts.binary)
 
-        print("Copied matrix to {}".format(matrix_out_fn))
+        logging.info("Copied matrix to {}".format(matrix_out_fn))
 
     else:
         with MatrixWriter(matrix_out_fn) as writer, \
@@ -105,4 +105,4 @@ if __name__ == '__main__':
                 else:
                     writer[key] = mat
 
-        print("Copied {} matrices".format(num_done+1))
+        logging.info("Copied {} matrices".format(num_done+1))

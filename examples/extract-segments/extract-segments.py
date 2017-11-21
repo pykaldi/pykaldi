@@ -12,7 +12,7 @@ import sys
 def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
     with RandomAccessWaveReader(wav_rspecifier) as reader, \
          WaveWriter(wav_wspecifier) as writer:
-            num_success = 0
+            num_success, num_lines = 0, 0
             for num_lines, line in enumerate(xopen(segments_rxfilename, "rt")):
                 # Split line by tab or space
                 # There must be 4 fields: segment name, segment name , recording wav file name,
@@ -78,7 +78,7 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                     end_samp = num_samp #for small differences, just truncate.
 
                 # Skip if segment size is less than minimum segment length (default 0.1s)
-                if end_samp <= start_samp + int(opts.min_segment_length * samp_freq)
+                if end_samp <= start_samp + int(opts.min_segment_length * samp_freq):
                     print("Segment {} too short, skipping it!".format(segment), file=sys.stderr)
                     continue
 

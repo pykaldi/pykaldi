@@ -2,14 +2,14 @@ Kaldi binaries re-implemented using PyKaldi
 -------------------------------------------
 This folder contains some example Python scripts using PyKaldi. These scripts
 take the same inputs, arguments and produce the same outputs as their Kaldi
-counterparts.
+counterparts (You can check it by using compare.sh located in each folder).
 
-* copy-matrix.py: Copy matrices, or archives of matrices (e.g. features or transforms)
+* copy-matrix: Copy matrices, or archives of matrices (e.g. features or transforms)
 
-* compute-mfcc-feats.py: Create MFCC feature files.
+* compute-mfcc-feats: Create MFCC feature files.
 
-* compute-cmvn-stats-two-channel.py: Compute cepstral mean and variance normalization statistics.
+* compute-cmvn-stats-two-channel: Compute cepstral mean and variance normalization statistics.
 
-* extract-segments.py: Extract segments from a large audio file in WAV format.
+* extract-segments: Extract segments from a large audio file in WAV format.
 
-* gmm-decode-faster.py: Decode features using GMM-based model.
+* gmm-decode-faster: Decode features using GMM-based model.
