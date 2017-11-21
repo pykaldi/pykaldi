@@ -11,14 +11,14 @@ from "fst/script/print-impl.h":
                    ssyms: SymbolTable, accep: bool, show_weight_one: bool,
                    field_separator: str, missing_symbol: str = default)
 
-      def `Print` as print(self, strm: ostream, dest: str)
+      def `Print` as write(self, strm: ostream, dest: str)
 
     class `FstPrinter<LogArc>` as LogFstPrinter:
       def __init__(self, fst: LogFst, isyms: SymbolTable, osyms: SymbolTable,
                    ssyms: SymbolTable, accep: bool, show_weight_one: bool,
                    field_separator: str, missing_symbol: str = default)
 
-      def `Print` as print(self, strm: ostream, dest: str)
+      def `Print` as write(self, strm: ostream, dest: str)
 
     class `FstPrinter<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstPrinter:
       def __init__(self, fst: LatticeFst, isyms: SymbolTable,
@@ -26,7 +26,7 @@ from "fst/script/print-impl.h":
                    accep: bool, show_weight_one: bool,
                    field_separator: str, missing_symbol: str = default)
 
-      def `Print` as print(self, strm: ostream, dest: str)
+      def `Print` as write(self, strm: ostream, dest: str)
 
     class `FstPrinter<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
         as CompactLatticeFstPrinter:
@@ -35,4 +35,4 @@ from "fst/script/print-impl.h":
                    accep: bool, show_weight_one: bool,
                    field_separator: str, missing_symbol: str = default)
 
-      def `Print` as print(self, strm: ostream, dest: str)
+      def `Print` as write(self, strm: ostream, dest: str)

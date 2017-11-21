@@ -27,12 +27,20 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 CLIF_CXX_FLAGS = os.getenv("CLIF_CXX_FLAGS", "")
 
-if not PYCLIF:
+if CLIF_DIR and not PYCLIF:
+    PYCLIF = os.path.join(CLIF_DIR, 'bin/pyclif')
+
+if not (PYCLIF and os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
     try:
         PYCLIF = check_output(['which', 'pyclif']).decode("utf-8").strip()
     except OSError:
         raise RuntimeError("Could not find pyclif. Please add pyclif binary to"
                            " your PATH or set PYCLIF environment variable.")
+
+if not CLIF_DIR:
+    CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
+    print("CLIF_DIR environment variable is not set.")
+    print("Defaulting to {}".format(CLIF_DIR))
 
 if KALDI_DIR:
     KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
@@ -45,11 +53,6 @@ if KALDI_DIR:
     check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
-
-if not CLIF_DIR:
-    CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
-    print("CLIF_DIR environment variable is not set.")
-    print("Defaulting to {}".format(CLIF_DIR))
 
 NUMPY_INC_DIR = numpy.get_include()
 
@@ -79,7 +82,7 @@ class Extension(setuptools.extension.Extension):
         return "Extension({})".format(self.name)
 
 
-def populateExtensionList():
+def populate_extension_list():
     extensions = []
     lib_dir = os.path.join(BUILD_DIR, "lib")
     for dirpath, _, filenames in os.walk(os.path.join(lib_dir, "kaldi")):
@@ -114,7 +117,8 @@ class build_ext(setuptools.command.build_ext.build_ext):
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
                       '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR,
-                      '-DCUDA=TRUE' if KALDI_HAVE_CUDA else '-DCUDA=FALSE']
+                      '-DCUDA=TRUE' if KALDI_HAVE_CUDA else '-DCUDA=FALSE',
+                      '-DDEBUG=TRUE' if DEBUG else '-DDEBUG=FALSE']
         if DEBUG:
             cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
@@ -126,7 +130,7 @@ class build_ext(setuptools.command.build_ext.build_ext):
         print() # Add an empty line for cleaner output
 
         # Populates extension list
-        self.extensions = populateExtensionList()
+        self.extensions = populate_extension_list()
 
         if DEBUG:
             for ext in self.extensions:

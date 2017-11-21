@@ -200,48 +200,56 @@ function(add_CC_library module_name SOURCES)
       string(REPLACE "/build" "/build/lib" PYCLIF_LIBRARY_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
   endif()
 
-  message("Module: ${module_name}")
-
-  message("- Sources:")
-
-  foreach(source ${SOURCES})
-    message("    ${source}")
-  endforeach()
+  if(DEBUG)
+    message("Module: ${module_name}")
+    message("- Sources:")
+    foreach(source ${SOURCES})
+      message("    ${source}")
+    endforeach()
+  endif(DEBUG)
 
   # Create extension module
   add_library(${module_name} SHARED ${SOURCES})
 
-  message("- Dependencies:")
+  if(DEBUG)
+    message("- Dependencies:")
+  endif(DEBUG)
 
   # If PYCLIFDEP is set, add a dependency on ${module_name}_pyclif
   if(PYCLIF_LIBRARY_PYCLIFDEP)
-    message("    ${module_name}_pyclif")
+    if(DEBUG)
+      message("    ${module_name}_pyclif")
+    endif(DEBUG)
     add_dependencies(${module_name} ${module_name}_pyclif)
   endif(PYCLIF_LIBRARY_PYCLIFDEP)
 
   # Link with other extension modules
   foreach(LIB ${PYCLIF_LIBRARY_CLIF_DEPS})
-    message("    ${LIB}")
+    if(DEBUG)
+      message("    ${LIB}")
+    endif(DEBUG)
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 
-  message("- Libraries:")
+  if(DEBUG)
+    message("- Libraries:")
+  endif(DEBUG)
 
   # Link with clif library
   if(NOT "${module_name}" STREQUAL "${CLIF_LIBRARY}")
-    message("    ${CLIF_LIBRARY}")
+    if(DEBUG)
+      message("    ${CLIF_LIBRARY}")
+    endif(DEBUG)
     target_link_libraries(${module_name} ${CLIF_LIBRARY})
   endif()
 
   # Link with other libraries
   foreach(LIB ${PYCLIF_LIBRARY_LIBRARIES})
-    message("    ${LIB}")
+    if(DEBUG)
+      message("    ${LIB}")
+    endif(DEBUG)
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
-
-  message("- Runtime path: ${PYCLIF_LIBRARY_RPATH}")
-
-  message("- Output directory: ${PYCLIF_LIBRARY_OUTPUTDIR}")
 
   # Do not prepend extension modules with "lib"
   set_target_properties(${module_name} PROPERTIES PREFIX "")
@@ -254,7 +262,11 @@ function(add_CC_library module_name SOURCES)
     RUNTIME_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
     INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${PYCLIF_LIBRARY_RPATH}")
 
-  message("")
+  if(DEBUG)
+    message("- Runtime path: ${PYCLIF_LIBRARY_RPATH}")
+    message("- Output directory: ${PYCLIF_LIBRARY_OUTPUTDIR}")
+    message("")
+  endif(DEBUG)
 
 endfunction(add_CC_library)
 

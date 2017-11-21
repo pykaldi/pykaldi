@@ -515,7 +515,7 @@ class _FstBase(object):
         fstprinter = self._printer_type(
             self, isymbols, osymbols, ssymbols,
             acceptor, show_weight_one, "\t", missing_symbol)
-        fstprinter.print(sstrm, "text")
+        fstprinter.write(sstrm, "text")
         return sstrm.to_str()
 
     def type(self):
