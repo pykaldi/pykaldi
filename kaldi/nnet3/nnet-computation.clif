@@ -26,7 +26,7 @@ from "nnet3/nnet-computation.h":
       def `IoSpecification` as new_from_interval(self, name: str,
                                                  t_start: int, t_end: int)
 
-      def `Print` as print(self, os: ostream)
+      def `Print` as print_io_spec(self, os: ostream)
 
       def `Swap` as swap(self, other: IoSpecification)
 
@@ -51,7 +51,7 @@ from "nnet3/nnet-computation.h":
 
       def `IndexForOutput` as index_for_output(self, node_name: str) -> int
 
-      def `Print` as print(self, os: ostream)
+      def `Print` as print_request(self, os: ostream)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -174,7 +174,7 @@ from "nnet3/nnet-computation.h":
 
       def `ComputeCudaIndexes` as compute_cuda_indexes(self)
 
-      def `Print` as print(self, os: ostream, nnet: Nnet)
+      def `Print` as print_computation(self, os: ostream, nnet: Nnet)
 
       def `Read` as read(self, is: istream, binary: bool)
 

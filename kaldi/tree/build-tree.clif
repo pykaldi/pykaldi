@@ -82,7 +82,7 @@ from "tree/build-tree.h":
       Returns:
           tree: EventMap object that is the tree
           leaf_map: Mapping from the leaves of the big tree to the leaves
-            of the little tree
+          of the little tree
       """
 
     def `GenRandStats` as gen_rand_stats(

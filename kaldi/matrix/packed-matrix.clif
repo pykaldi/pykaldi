@@ -98,7 +98,7 @@ from "matrix/packed-matrix.h":
 
         Interprets the vector as having the same layout as the packed matrix.
         Input vector and the packed matrix must have the same size, i.e.
-          orig.size == (self.num_rows * self.num_cols+1) / 2
+        `orig.size == (self.num_rows * self.num_cols+1) / 2`.
 
         Args:
             orig (SubVector): The vector to copy from.
@@ -265,7 +265,7 @@ from "matrix/packed-matrix.h":
 
         Interprets the vector as having the same layout as the packed matrix.
         Input vector and the packed matrix must have the same size, i.e.
-          orig.size == (self.num_rows * self.num_cols+1) / 2
+        `orig.size == (self.num_rows * self.num_cols+1) / 2`.
 
         Args:
             orig (DoubleSubVector): The vector to copy from.

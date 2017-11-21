@@ -1,7 +1,7 @@
 from "online2/online-timing.h":
   namespace `kaldi`:
     class OnlineTimingStats:
-      def `Print` as print(self, online: bool = default)
+      def `Print` as print_stats(self, online: bool = default)
 
     class OnlineTimer:
       def __init__(self, utterance_id: str)
