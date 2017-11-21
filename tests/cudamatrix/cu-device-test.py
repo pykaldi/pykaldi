@@ -2,7 +2,7 @@ from kaldi.base import math as kaldi_math
 from kaldi.base import Timer
 from kaldi.matrix import *
 from kaldi.matrix.common import *
-from kaldi.cudamatrix import CuDevice, CuMatrix
+from kaldi.cudamatrix import cuda_available, CuMatrix
 
 # import unittest
 
@@ -47,13 +47,19 @@ def testCudaMatrixResize():
 		aux(s)
 
 if __name__ == '__main__':
-	for loop in range(2):
-		CuDevice.Instantiate().SetDebugStrideMode(True)
-		if loop == 0:
-			CuDevice.Instantiate().SelectGpuId("no")
-		else:
-			CuDevice.Instantiate().SelectGpuId("yes")
+	if cuda_available():
+		from kaldi.cudamatrix import CuDevice
 
+		for loop in range(2):
+			CuDevice.Instantiate().SetDebugStrideMode(True)
+			if loop == 0:
+				CuDevice.Instantiate().SelectGpuId("no")
+			else:
+				CuDevice.Instantiate().SelectGpuId("yes")
+
+			testCudaMatrixResize()
+
+			CuDevice.Instantiate().PrintProfile()
+
+	else:
 		testCudaMatrixResize()
-
-		CuDevice.Instantiate().PrintProfile()

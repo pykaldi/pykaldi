@@ -89,37 +89,36 @@ class TestHMMTopology(unittest.TestCase):
         for i in range(10):
             binary = random.choice([True, False])
 
-            with self.subTest(binary = binary):
-                topo = HmmTopology()
+            topo = HmmTopology()
 
-                iss = istringstream.from_str(input_str)
-                topo.read(iss, False)
-                self.assertEqual(3, topo.min_length(3))
-                self.assertEqual(2, topo.min_length(11))
+            iss = istringstream.from_str(input_str)
+            topo.read(iss, False)
+            self.assertEqual(3, topo.min_length(3))
+            self.assertEqual(2, topo.min_length(11))
 
-                oss = ostringstream()
-                topo.write(oss, binary)
+            oss = ostringstream()
+            topo.write(oss, binary)
 
-                topo2 = HmmTopology()
-                iss2 = istringstream.from_str(oss.to_bytes())
-                topo2.read(iss2, binary)
+            topo2 = HmmTopology()
+            iss2 = istringstream.from_str(oss.to_bytes())
+            topo2.read(iss2, binary)
 
-                # Test equality
-                oss1 = ostringstream()
-                oss2 = ostringstream()
-                topo.write(oss1, False)
-                topo2.write(oss2, False)
-                self.assertEqual(oss1.to_str(), oss2.to_str())
+            # Test equality
+            oss1 = ostringstream()
+            oss2 = ostringstream()
+            topo.write(oss1, False)
+            topo2.write(oss2, False)
+            self.assertEqual(oss1.to_str(), oss2.to_str())
 
-                # Test chain topology
-                chain_topo = HmmTopology()
-                chain_iss = istringstream.from_str(chain_input_str)
-                chain_topo.read(chain_iss, False)
-                self.assertEqual(1, chain_topo.min_length(3))
+            # Test chain topology
+            chain_topo = HmmTopology()
+            chain_iss = istringstream.from_str(chain_input_str)
+            chain_topo.read(chain_iss, False)
+            self.assertEqual(1, chain_topo.min_length(3))
 
-                # make sure get_default_topology doesnt crash
-                phones = [1, 2]
-                get_default_topology(phones)
+            # make sure get_default_topology doesnt crash
+            phones = [1, 2]
+            get_default_topology(phones)
 
 if __name__ == '__main__':
     unittest.main()

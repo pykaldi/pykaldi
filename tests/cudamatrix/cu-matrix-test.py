@@ -1,8 +1,8 @@
 from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, Matrix
 
-from kaldi.cudamatrix import (CuDevice, CuMatrix, CuVector,
-                              approx_equal_cu_matrix, same_dim_cu_matrix)
+from kaldi.cudamatrix import (CuMatrix, CuVector,
+                              approx_equal_cu_matrix, same_dim_cu_matrix, cuda_available)
 
 import unittest
 import numpy as np
@@ -121,13 +121,18 @@ class TestCuMatrix(unittest.TestCase):
         self.assertFalse(approx_equal_cu_matrix(A, B))
 
 if __name__ == '__main__':
-    for i in range(2):
-        CuDevice.Instantiate().SetDebugStrideMode(True)
-        if i == 0:
-            CuDevice.Instantiate().SelectGpuId("no")
-        else:
-            CuDevice.Instantiate().SelectGpuId("yes")
+    if cuda_available():
+        from kaldi.cudamatrix import CuDevice
+    
+        for i in range(2):
+            CuDevice.Instantiate().SetDebugStrideMode(True)
+            if i == 0:
+                CuDevice.Instantiate().SelectGpuId("no")
+            else:
+                CuDevice.Instantiate().SelectGpuId("yes")
 
+            unittest.main()
+
+            CuDevice.Instantiate().PrintProfile()
+    else:
         unittest.main()
-
-        CuDevice.Instantiate().PrintProfile()

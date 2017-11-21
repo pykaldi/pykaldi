@@ -2,7 +2,7 @@ from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector
 from kaldi.matrix.packed import TpMatrix
 
-from kaldi.cudamatrix import CuDevice, CuVector, CuSubVector
+from kaldi.cudamatrix import cuda_available, CuVector, CuSubVector
 
 import unittest
 import numpy as np
@@ -122,13 +122,17 @@ class TestCuVector(unittest.TestCase):
             v[5]
 
 if __name__ == '__main__':
-    for i in range(2):
-        CuDevice.Instantiate().SetDebugStrideMode(True)
-        if i == 0:
-            CuDevice.Instantiate().SelectGpuId("no")
-        else:
-            CuDevice.Instantiate().SelectGpuId("yes")
+    if cuda_available():
 
+        for i in range(2):
+            CuDevice.Instantiate().SetDebugStrideMode(True)
+            if i == 0:
+                CuDevice.Instantiate().SelectGpuId("no")
+            else:
+                CuDevice.Instantiate().SelectGpuId("yes")
+
+            unittest.main()
+
+            CuDevice.Instantiate().PrintProfile()
+    else:
         unittest.main()
-
-        CuDevice.Instantiate().PrintProfile()
