@@ -1,9 +1,9 @@
 # Build pykaldi image
 
-In order to download all the private repositories needed for installation, you will need to provide your github credentials. Run the following command in this directory (docker):
+Run the following command in this directory (docker):
 
 ```
-docker build --tag pykaldi --build-arg githubuser=XXX --build-arg githubpasswd=XXX .
+docker build --tag pykaldi .
 ```
 
 # Run ipython notebook with installed pykaldi
