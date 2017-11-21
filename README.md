@@ -129,69 +129,75 @@ dimensions:
 Some places to help you get started:
 
 * [PyKaldi Documentation](https://pykaldi.github.io)
-* [Walkthrough Example](https://github.com/usc-sail/pykaldi/tree/master/examples/walkthrough.md)
-* [Kaldi binaries re-implemented using PyKaldi](https://github.com/usc-sail/pykaldi/tree/master/examples)
+* [Walkthrough Example](https://github.com/pykaldi/pykaldi/tree/master/examples/walkthrough.md)
+* [Kaldi binaries re-implemented using PyKaldi](https://github.com/pykaldi/pykaldi/tree/master/examples)
 
 
 ## Installation
 
 ### Docker Image
 
-We supply a Dockerfile to build the image, as usual
+We provide a `Dockerfile` in the `docs` directory to build a new image.
 
 ```bash
+cd pykaldi/docker
 docker build -t pykaldi .
 ```
 
-Alternatively, pre-built images can be downloaded through dockerhub
+Alternatively, a pre-built image can be downloaded from dockerhub.
 
 ```bash
+docker login
 docker pull vrmpx/pykaldi
+```
+
+After building/downloading the image, you can run it in interactive mode.
+
+```bash
+sudo docker run -it pykaldi
 ```
 
 ### From Source
 
-PyKaldi depends on several other projects which must be installed in order to
-build the source files. Here are the instructions:
+To install PyKaldi from CLIF source files, first we need to install all of its
+dependencies. In the following, we provide instructions for installing PyKaldi
+and all of its dependencies on Ubuntu 16.04.
 
-#### Build Dependencies
+#### Standard Dependencies
 
 ```bash
-sudo apt-get install autoconf automake libtool curl make g++ unzip
+sudo apt-get install git autoconf automake libtool curl make cmake g++ unzip \
+  virtualenv libatlas3-base wget zlib1g-dev subversion pkg-config
 ```
 
 #### Protobuf
 
-1. Install [Google's Protobuf](https://github.com/google/protobuf.git)
+CLIF depends on [Google Protobuf](https://github.com/google/protobuf.git) v3.2
+or later. Both the C++ library and the Python package must be installed.
 
 ```bash
-git clone https://github.com/google/protobuf.git protobuf
+git clone https://github.com/google/protobuf.git
 cd protobuf
 ./autogen.sh
 ./configure && make -j4
 sudo make install
 sudo ldconfig
-```
-
-2. Build the Python package for Protobuf
-
-```bash
 cd python
 python setup.py build
-python setup.py install
+sudo python setup.py install
 ```
 
 #### CLIF
 
-We use a fork of clif that supports documentation within a clif file. The source
-code can be found [here](https://github.com/dogancan/clif/tree/pykaldi). Clone
-this repository, making sure to checkout the pykaldi branch. Run the following
-commands to install the correct version:
+To streamline PyKaldi development, we made some changes to CLIF codebase. We
+are hoping to upstream these changes over time. In the meantime we provide a
+[PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif/tree/pykaldi).
+Run the following for a compatible CLIF installation:
 
 ```bash
-git clone -b pykaldi https://github.com/dogancan/clif/
+git clone -b pykaldi https://github.com/pykaldi/clif.git
 cd clif
-./INSTALL $(which python)
+./INSTALL.sh  # This will install CLIF under $HOME/opt
 ```
 
 Note that if there is more than one Python version installed (e.g., Python 2.7
@@ -201,21 +207,21 @@ inside INSTALL.sh (make sure to substitute the correct paths for your system):
 
 ```bash
 cmake ... \
-        -DPYTHON_INCLUDE_DIR="/usr/include/python3.6" \
-        -DPYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython3.6m.so" \
-        -DPYTHON_EXECUTABLE="/usr/bin/python3.6" \
+        -DPYTHON_INCLUDE_DIR="/usr/include/python2.7" \
+        -DPYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython2.7.so" \
+        -DPYTHON_EXECUTABLE="/usr/bin/python2.7" \
         "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
 ```
 
 #### Kaldi
 
-In order to compile with CLIF's requirements we had to modify some of the
-codebase of Kaldi. We put this modifications in a publicly available fork of
-Kaldi, which you can find [here](https://github.com/usc-sail/kaldi-pykaldi.git).
-The following commands clone and install Kaldi in your computer
+To comply with CLIF requirements we had to make some changes to Kaldi codebase.
+We are hoping to upstream these changes over time. In the meantime we provide a
+[PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi). Run the
+following commands for a compatible Kaldi installation:
 
 ```bash
-git clone https://github.com/usc-sail/kaldi-pykaldi.git kaldi
+git clone -b pykaldi https://github.com/pykaldi/kaldi.git
 cd kaldi/tools
 ./extras/check_dependencies.sh && make -j4
 cd ../src
@@ -224,24 +230,25 @@ cd ../src
 
 #### PyKaldi
 
-Set the following environmental variables, make sure to replace the correct
-values for your installation directories
+Set the following environment variables.
 
 ```bash
-export KALDI_DIR=<directory where kaldi was installed>
-export CLIF_DIR=<directory where clif was installed>
+export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME"/kaldi>
+export CLIF_DIR=<directory where CLIF is installed, e.g. "$HOME"/opt/clif>
 
-# The following are optional
-export DEBUG=1
-export PYCLIF=<pyclif executable location>
+# This is needed for finding a compatible limits.h on some systems.
+CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | \
+                     "$CLIF_DIR"/clang/bin/clang -xc -v - 2>&1 | \
+                     tr ' ' '\n' | grep -A1 resource-dir | tail -1)
+export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
 ```
 
-Download and install [PyKaldi](https://github.com/usc-sail/pykaldi/).
+Download and install [PyKaldi](https://github.com/pykaldi/pykaldi).
 
 ```bash
-git clone https://github.com/usc-sail/pykaldi/ pykaldi
+git clone https://github.com/pykaldi/pykaldi.git
 cd pykaldi
-python setup.py install
+sudo python setup.py install
 ```
 
 

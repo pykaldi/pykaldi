@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PYTHON=python3
+PYTHON=python
 
 cd kaldi \
 && git pull origin master \

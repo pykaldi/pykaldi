@@ -25,8 +25,8 @@ base.set_print_stack_trace_on_error(False)
 del base
 
 # from . import base
-# from . import cudamatrix
 # from . import chain
+# from . import cudamatrix
 # from . import decoder
 # from . import feat
 # from . import fstext
