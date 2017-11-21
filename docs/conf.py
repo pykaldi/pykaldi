@@ -106,7 +106,7 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 #
 # html_theme_options = {
-#     'github_user': 'usc-sail',
+#     'github_user': 'pykaldi',
 #     'github_repo': 'pykaldi',
 #     'github_banner': True
 # }
@@ -121,14 +121,14 @@ html_static_path = ['_static']
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {
-    '**': [
-        'about.html',
-        'globaltoc.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html'
-    ]
-}
+# html_sidebars = {
+#     '**': [
+#         'about.html',
+#         'globaltoc.html',
+#         'relations.html',  # needs 'show_related': True theme option to display
+#         'searchbox.html'
+#     ]
+# }
 
 
 autosummary_generate = True

@@ -118,4 +118,4 @@ from "nnet3/nnet-descriptor.h":
 
       def `ConvertToDescriptor` as convert_to_descriptor(self) -> Descriptor
 
-      def `Print` as print(self, node_names: list<str>, os: ostream)
+      def `Print` as print_descriptor(self, node_names: list<str>, os: ostream)

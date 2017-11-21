@@ -78,8 +78,8 @@ from "hmm/transition-model.h":
                                     cfg: MapTransitionUpdateConfig)
         -> (objf_impr_out: float, count_out: float)
 
-      def `Print` as print(self, os: ostream, phone_names: list<str>,
-                           occs: DoubleVector = default)
+      def `Print` as print_model(self, os: ostream, phone_names: list<str>,
+                                 occs: DoubleVector = default)
 
       def `InitStats` as init_stats(self, stats: DoubleVector)
 
