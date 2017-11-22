@@ -29,6 +29,7 @@ def get_utterance_pairs(reco2file_and_channel_rxfilename):
             print("Call {} has {} utterances, expected two; treating them "
                   "singly.".format(key, len(uttlist)), file=sys.stderr)
             utt_pairs.extend([x] for x in uttlist)
+    return utt_pairs
 
 
 def acc_cmvn_stats_for_pair(utt1, utt2, feats1, feats2, quieter_channel_weight,
@@ -53,7 +54,7 @@ def compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
                                    feats_rspecifier, stats_wspecifier, opts):
     utt_pairs = get_utterance_pairs(reco2file_and_channel_rxfilename)
 
-    numdone, num_err = 0, 0
+    num_done, num_err = 0, 0
     with RandomAccessMatrixReader(feats_rspecifier) as feat_reader, \
          DoubleMatrixWriter(stats_wspecifier) as writer:
             for pair in utt_pairs:
@@ -91,10 +92,10 @@ def compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
                 feats = feat_reader[utt]
                 cmvn_stats = DoubleMatrix(2, feats.num_cols + 1)
                 acc_cmvn_stats(feats, None, cmvn_stats)
-                writer.write[utt] = cmvn_stats
+                writer[utt] = cmvn_stats
                 num_done += 1
     print("Done accumulating CMVN stats for {} utterances; {} had errors."
-          .format(num_done, num_err))
+          .format(num_done, num_err), file=sys.stderr)
     return True if num_done != 0 else False
 
 if __name__ == '__main__':

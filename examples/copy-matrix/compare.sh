@@ -2,6 +2,7 @@
 
 # Location for temp files
 MAT_FILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
+diff=$(mktemp /tmp/temporary-file.XXXXXXXX)
 PYTHON=python
 
 # Check that KALDI env variable is set
@@ -18,11 +19,12 @@ echo "1  [
 KALDI_CMD="$KALDI_DIR/src/bin/copy-matrix ark,t:$MAT_FILE ark,t:-"
 PYKALDI_CMD="$PYTHON copy-matrix.py ark,t:$MAT_FILE ark,t:-"
 
-# Compre KALDI copy-matrix output to PyKaldi copy-matrix
-diff <($KALDI_CMD) <($PYKALDI_CMD)
+# Compare KALDI output to PyKaldi output
+diff <($KALDI_CMD) <($PYKALDI_CMD) > $diff || true
 
-if [[ $? -eq 0 ]]; then
-	echo "No differences found!"
+if [ -s $diff ]; then
+	echo -e "\n*** PyKaldi output is different from Kaldi output! See the diff below.***\n"
+	cat $diff
 else
-	echo "Differences were found!"
+	echo -e "\nPyKaldi output matches Kaldi output!"
 fi

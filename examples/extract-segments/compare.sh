@@ -4,6 +4,7 @@ set -e -x
 # Location for temp files
 testfile=$(mktemp /tmp/temporary-file.XXXXXXXX.scp)
 segments=$(mktemp /tmp/temporary-file.XXXXXXXX)
+diff=$(mktemp /tmp/temporary-file.XXXXXXXX)
 PYTHON=python
 
 # Check that KALDI env variable is set
@@ -24,11 +25,12 @@ cat $testfile | awk '{print $1, $1, 0.0, -1.0}' > $segments
 KALDI_CMD="$KALDI_DIR/src/featbin/extract-segments scp:$testfile $segments ark:-"
 PYKALDI_CMD="$PYTHON extract-segments.py scp:$testfile $segments ark:-"
 
-# Compre KALDI copy-matrix output to PyKaldi copy-matrix
-diff <($KALDI_CMD) <($PYKALDI_CMD)
+# Compare KALDI output to PyKaldi output
+diff <($KALDI_CMD) <($PYKALDI_CMD) > $diff || true
 
-if [[ $? -eq 0 ]]; then
-	echo "No differences found!"
+if [ -s $diff ]; then
+	echo -e "\n*** PyKaldi output is different from Kaldi output! See the diff below.***\n"
+	cat $diff
 else
-	echo "Differences were found!"
+	echo -e "\nPyKaldi output matches Kaldi output!"
 fi
