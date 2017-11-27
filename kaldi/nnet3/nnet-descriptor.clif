@@ -65,8 +65,8 @@ from "nnet3/nnet-descriptor.h":
 
     class BinarySumDescriptor(SumDescriptor):
       enum Operation with:
-        `kSum` as SUM
-        `kFailover` as FAILOVER
+        `kSumOperation` as SUM_OPERATION
+        `kFailoverOperation` as FAILOVER_OPERATION
 
       def __init__(self, op: Operation, src1: SumDescriptor,
                    src2: SumDescriptor)

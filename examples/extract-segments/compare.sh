@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -x
+set -e
 
 # Location for temp files
 testfile=$(mktemp /tmp/temporary-file.XXXXXXXX.scp)

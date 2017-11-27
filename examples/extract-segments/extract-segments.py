@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-from __future__ import division, print_function
+
+import logging
+import sys
 
 from kaldi.matrix import SubMatrix
 from kaldi.feat.wave import WaveData
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import RandomAccessWaveReader, WaveWriter
 from kaldi.util.io import xopen
-
-import sys
 
 def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
     with RandomAccessWaveReader(wav_rspecifier) as reader, \
@@ -23,41 +23,41 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                 try:
                     segment, recording, start, end, channel = line.split()
                 except:
-                    print("Invalid line in segments file: {}".format(line),
-                          file=sys.stderr)
+                    logging.warning("Invalid line in segments file: {}"
+                                    .format(line))
                     continue
 
             try:
                 start = float(start)
             except:
-                print("Invalid line in segments file [bad start]: {}"
-                      .format(line), file=sys.stderr)
+                logging.warning("Invalid line in segments file [bad start]: {}"
+                                .format(line))
                 continue
 
             try:
                 end = float(end)
             except:
-                print("Invalid line in segments file [bad end]: {}"
-                      .format(line), file=sys.stderr)
+                logging.warning("Invalid line in segments file [bad end]: {}"
+                                .format(line))
                 continue
 
             if ((start < 0 or (end != -1.0 and end <= 0))
                 or (start >= end and end > 0)):
-                print("Invalid line in segments file [empty or invalid "
-                      "segment]: {}".format(line), file=sys.stderr)
+                logging.warning("Invalid line in segments file [empty or "
+                                "invalid segment]: {}".format(line))
                 continue
 
             try:
                 if channel:
                     channel = int(channel)
             except:
-                print("Invalid line in segments file [bad channel]: {}"
-                      .format(line), file=sys.stderr)
+                logging.warning("Invalid line in segments file "
+                                "[bad channel]: {}".format(line))
                 continue
 
             if not recording in reader:
-                print("Could not find recording {}, skipping segment {}"
-                      .format(recording, segment), file=sys.stderr)
+                logging.warning("Could not find recording {}, skipping "
+                                "segment {}".format(recording, segment))
                 continue
 
             wave = reader[recording]
@@ -70,31 +70,32 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
             # from start time.
             start_samp = start * samp_freq
             end_samp = end * samp_freq if end != -1 else num_samp
+            assert start_samp >= 0 and end_samp > 0, "Invalid start or end."
 
             # start sample must be less than total number of samples,
             # otherwise skip the segment
             if start_samp < 0 or start_samp >= num_samp:
-                print("Start sample out of range {} [length:] {}, skipping "
-                      "segment {}".format(start_samp, num_samp, segment),
-                      file=sys.stderr)
+                logging.warning("Start sample out of range {} [length:] {}, "
+                                "skipping segment {}"
+                                .format(start_samp, num_samp, segment))
                 continue
 
             # end sample must be less than total number samples
             # otherwise skip the segment
             if end_samp > num_samp:
                 if end_samp >= num_samp + int(opts.max_overshoot * samp_freq):
-                    print("End sample too far out of range {} [length:] {},"
-                          " skipping segment {}"
-                          .format(end_samp, num_samp, segment),
-                          file=sys.stderr)
+                    logging.warning("End sample too far out of range {} "
+                                    "[length:] {}, skipping segment {}"
+                                    .format(end_samp, num_samp, segment))
                     continue
                 end_samp = num_samp #for small differences, just truncate.
 
             # Skip if segment size is less than minimum segment length
             # (default 0.1s)
-            if end_samp <= start_samp + int(opts.min_segment_length * samp_freq):
-                print("Segment {} too short, skipping it!".format(segment),
-                      file=sys.stderr)
+            min_samp = int(opts.min_segment_length * samp_freq)
+            if end_samp <= start_samp + min_samp:
+                logging.warning("Segment {} too short, skipping it!"
+                                .format(segment))
                 continue
 
             # check whether the wav file has more than one channel
@@ -104,15 +105,14 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
                 if num_chan == 1:
                     channel = 0
                 else:
-                    print("If your data has multiple channels, you must "
-                          "specify the channel in the segments file. "
-                          "Processing segment {}".format(segment),
-                          file=sys.stderr)
+                    raise ValuError("If your data has multiple channels, you "
+                                    "must specify the channel in the segments "
+                                    "file. Processing segment {}"
+                                    .format(segment))
             else:
                 if channel >= num_chan:
-                    print("Invalid channel {} >= {}, skipping segment {}"
-                          .format(channel, num_chan, segment),
-                          file=sys.stderr)
+                    logging.warning("Invalid channel {} >= {}, skipping segment"
+                                    " {}".format(channel, num_chan, segment))
                     continue
 
             segment_matrix = SubMatrix(wave_data, channel, 1,
@@ -122,10 +122,17 @@ def extract_segments(wav_rspecifier, segments_rxfilename, wav_wspecifier, opts):
             writer[segment] = segment_wave  # write segment in wave format
             num_success += 1
 
-        print("Succesfully processed {} lines out of {} in the segments file"
-              .format(num_success, num_lines), file=sys.stderr)
+        logging.info("Succesfully processed {} lines out of {} in the "
+                     "segments file".format(num_success, num_lines))
 
 if __name__ == '__main__':
+    # Configure log messages to look like Kaldi messages
+    from kaldi import __version__
+    logging.addLevelName(20, 'LOG')
+    logging.basicConfig(format='%(levelname)s (%(module)s[{}]:%(funcName)s():'
+                               '%(filename)s:%(lineno)s) %(message)s'
+                               .format(__version__), level=logging.INFO)
+
     usage = """Extract segments from a large audio file in WAV format.
     Usage:
         extract-segments [options] <wav-rspecifier> <segments-file> <wav-wspecifier>

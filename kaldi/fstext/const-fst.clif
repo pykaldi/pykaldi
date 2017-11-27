@@ -1,0 +1,253 @@
+from "base/iostream-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+
+from kaldi.fstext._expanded_fst import StdExpandedFst
+from kaldi.fstext._expanded_fst import LogExpandedFst
+from kaldi.fstext._expanded_fst import LatticeExpandedFst
+from kaldi.fstext._expanded_fst import CompactLatticeExpandedFst
+
+from kaldi.fstext import StdConstFst
+from kaldi.fstext import LogConstFst
+from kaldi.fstext import LatticeConstFst
+from kaldi.fstext import CompactLatticeConstFst
+
+from "fstext/const-fst-ext.h":
+  namespace `fst`:
+
+    # StdArc
+
+    class `ConstFst<StdArc>` as StdConstFst(StdExpandedFst):
+
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `ConstFst` as from_fst(self, fst: StdFst)
+      #
+      # @add__init__
+      # def `ConstFst` as from_other(self, fst: StdConstFst,
+      #                              safe: bool = default)
+
+      def `Copy` as _copy(self, safe: bool = default) -> StdConstFst:
+        return StdConstFst(...)
+
+      @classmethod
+      def `Read` as _read(cls, filename: str) -> StdConstFst:
+        return StdConstFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> StdConstFst:
+        return StdConstFst(...)
+
+      def `Write` as _write(self, filename: str) -> bool
+
+    class `StateIterator<ConstFst<StdArc>>` as StdConstFstStateIterator:
+
+      def __init__(self, fst: StdConstFst)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> int
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+    class `ArcIterator<ConstFst<StdArc>>` as StdConstFstArcIterator:
+
+      def __init__(self, fst: StdConstFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> StdArc
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
+
+    # LogArc
+
+    class `ConstFst<LogArc>` as LogConstFst(LogExpandedFst):
+
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `ConstFst` as from_fst(self, fst: LogFst)
+      #
+      # @add__init__
+      # def `ConstFst` as from_other(self, fst: LogConstFst,
+      #                              safe: bool = default)
+
+      def `Copy` as _copy(self, safe: bool = default) -> LogConstFst:
+        return LogConstFst(...)
+
+      @classmethod
+      def `Read` as _read(cls, filename: str) -> LogConstFst:
+        return LogConstFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> LogConstFst:
+        return LogConstFst(...)
+
+      def `Write` as _write(self, filename: str) -> bool
+
+    class `StateIterator<ConstFst<LogArc>>` as LogConstFstStateIterator:
+
+      def __init__(self, fst: LogConstFst)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> int
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+    class `ArcIterator<ConstFst<LogArc>>` as LogConstFstArcIterator:
+
+      def __init__(self, fst: LogConstFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> LogArc
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
+
+    # LatticeArc
+
+    class `ConstFst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeConstFst(LatticeExpandedFst):
+
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `ConstFst` as from_fst(self, fst: LatticeFst)
+      #
+      # @add__init__
+      # def `ConstFst` as from_other(self, fst: LatticeConstFst,
+      #                              safe: bool = default)
+
+      def `Copy` as _copy(self, safe: bool = default) -> LatticeConstFst:
+        return LatticeConstFst(...)
+
+      @classmethod
+      def `Read` as _read(cls, filename: str) -> LatticeConstFst:
+        return LatticeConstFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> LatticeConstFst:
+        return LatticeConstFst(...)
+
+      def `Write` as _write(self, filename: str) -> bool
+
+    class `StateIterator<ConstFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeConstFstStateIterator:
+
+      def __init__(self, fst: LatticeConstFst)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> int
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+    class `ArcIterator<ConstFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeConstFstArcIterator:
+
+      def __init__(self, fst: LatticeConstFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> LatticeArc
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
+
+    # CompactLatticeArc
+
+    class `ConstFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeConstFst(CompactLatticeExpandedFst):
+
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `ConstFst` as from_fst(self, fst: CompactLatticeFst)
+      #
+      # @add__init__
+      # def `ConstFst` as from_other(self, fst: CompactLatticeConstFst,
+      #                              safe: bool = default)
+
+      def `Copy` as _copy(self, safe: bool = default) -> CompactLatticeConstFst:
+        return CompactLatticeConstFst(...)
+
+      @classmethod
+      def `Read` as _read(cls, filename: str) -> CompactLatticeConstFst:
+        return CompactLatticeConstFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> CompactLatticeConstFst:
+        return CompactLatticeConstFst(...)
+
+      def `Write` as _write(self, filename: str) -> bool
+
+    class `StateIterator<ConstFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeConstFstStateIterator:
+
+      def __init__(self, fst: CompactLatticeConstFst)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> int
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+    class `ArcIterator<ConstFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeConstFstArcIterator:
+
+      def __init__(self, fst: CompactLatticeConstFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> CompactLatticeArc
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)

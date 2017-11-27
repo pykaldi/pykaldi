@@ -135,8 +135,6 @@ from "nnet3/nnet-component-itf.h":
     enum ComponentProperties with:
       `kSimpleComponent` as SIMPLE_COMPONENT
       `kUpdatableComponent` as UPDATABLE_COMPONENT
-      `kLinearInInput` as LINEAR_IN_INPUT
-      `kLinearInParameters` as LINEAR_IN_PARAMETERS
       `kPropagateInPlace` as PROPAGATE_IN_PLACE
       `kPropagateAdds` as PROPAGATE_ADDS
       `kReordersIndexes` as REORDERS_INDEXES

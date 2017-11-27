@@ -4,15 +4,16 @@ from "fstext/fst-clifwrap.h" import *
 from "fstext/expanded-fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/const-fst-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 
 from kaldi.util import _value_error_on_false
 
-from kaldi.fstext import StdFst
-from kaldi.fstext import LogFst
-from kaldi.fstext import LatticeFst
-from kaldi.fstext import CompactLatticeFst
+from kaldi.fstext import StdVectorFst
+from kaldi.fstext import LogVectorFst
+from kaldi.fstext import LatticeVectorFst
+from kaldi.fstext import CompactLatticeVectorFst
 
 from "fstext/fst-ext.h":
   namespace `fst`:
@@ -25,11 +26,32 @@ from "fstext/fst-ext.h":
     def `AssignVectorFst` as _assign_compact_lattice_vector_fst(ifst: CompactLatticeVectorFst,
                                                                 ofst: CompactLatticeVectorFst)
 
-    def `AssignFst` as _assign_std_fst(ifst: StdFst, ofst: StdVectorFst)
-    def `AssignFst` as _assign_log_fst(ifst: LogFst, ofst: LogVectorFst)
-    def `AssignFst` as _assign_lattice_fst(ifst: LatticeFst, ofst: LatticeVectorFst)
-    def `AssignFst` as _assign_compact_lattice_fst(ifst: CompactLatticeFst, ofst: CompactLatticeVectorFst)
+    def `AssignConstFst` as _assign_std_const_fst(ifst: StdConstFst,
+                                                  ofst: StdConstFst)
+    def `AssignConstFst` as _assign_log_const_fst(ifst: LogConstFst,
+                                                  ofst: LogConstFst)
+    def `AssignConstFst` as _assign_lattice_const_fst(ifst: LatticeConstFst,
+                                                      ofst: LatticeConstFst)
+    def `AssignConstFst` as _assign_compact_lattice_const_fst(ifst: CompactLatticeConstFst,
+                                                              ofst: CompactLatticeConstFst)
 
+    def `AssignFstToVectorFst` as _assign_std_fst_to_vector_fst(ifst: StdFst,
+                                                                ofst: StdVectorFst)
+    def `AssignFstToVectorFst` as _assign_log_fst_to_vector_fst(ifst: LogFst,
+                                                                ofst: LogVectorFst)
+    def `AssignFstToVectorFst` as _assign_lattice_fst_to_vector_fst(ifst: LatticeFst,
+                                                                    ofst: LatticeVectorFst)
+    def `AssignFstToVectorFst` as _assign_compact_lattice_fst_to_vector_fst(ifst: CompactLatticeFst,
+                                                                            ofst: CompactLatticeVectorFst)
+
+    def `AssignFstToConstFst` as _assign_std_fst_to_const_fst(ifst: StdFst,
+                                                              ofst: StdConstFst)
+    def `AssignFstToConstFst` as _assign_log_fst_to_const_fst(ifst: LogFst,
+                                                              ofst: LogConstFst)
+    def `AssignFstToConstFst` as _assign_lattice_fst_to_const_fst(ifst: LatticeFst,
+                                                                  ofst: LatticeConstFst)
+    def `AssignFstToConstFst` as _assign_compact_lattice_fst_to_const_fst(ifst: CompactLatticeFst,
+                                                                          ofst: CompactLatticeConstFst)
 
     def `FstToString` as std_fst_to_string(fst: StdFst,
                                            isyms: SymbolTable = default,
@@ -56,30 +78,30 @@ from "fstext/fst-ext.h":
     def `FstToBytes` as compactlattice_fst_to_bytes(fst: CompactLatticeFst) -> bytes
 
     def `BytesToStdFst` as bytes_to_std_fst(s: bytes) -> StdFst:
-      return StdFst(...)
+      return StdVectorFst(...)
     def `BytesToLogFst` as bytes_to_log_fst(s: bytes) -> LogFst:
-      return LogFst(...)
+      return LogVectorFst(...)
     def `BytesToLatticeFst` as bytes_to_lattice_fst(s: bytes) -> LatticeFst:
-      return LatticeFst(...)
+      return LatticeVectorFst(...)
     def `BytesToCompactLatticeFst` as bytes_to_compact_lattice_fst(s: bytes) -> CompactLatticeFst:
-      return CompactLatticeFst(...)
+      return CompactLatticeVectorFst(...)
 
     def `BytesToStdVectorFst` as bytes_to_std_vector_fst(s: bytes) -> StdVectorFst:
-      return StdFst(...)
+      return StdVectorFst(...)
     def `BytesToLogVectorFst` as bytes_to_log_vector_fst(s: bytes) -> LogVectorFst:
-      return LogFst(...)
+      return LogVectorFst(...)
     def `BytesToLatticeVectorFst` as bytes_to_lattice_vector_fst(s: bytes) -> LatticeVectorFst:
-      return LatticeFst(...)
+      return LatticeVectorFst(...)
     def `BytesToCompactLatticeVectorFst` as bytes_to_compact_lattice_vector_fst(s: bytes) -> CompactLatticeVectorFst:
-      return CompactLatticeFst(...)
+      return CompactLatticeVectorFst(...)
 
     def `CastStdToLog` as cast_std_to_log(ifst: StdVectorFst) -> LogVectorFst:
-      return LogFst(...)
+      return LogVectorFst(...)
     def `CastLogToStd` as cast_log_to_std(ifst: LogVectorFst) -> StdVectorFst:
-      return StdFst(...)
+      return StdVectorFst(...)
 
     def `ReadFstKaldiExt` as read_fst_kaldi(rxfilename: str) -> StdVectorFst:
-      return StdFst(...)
+      return StdVectorFst(...)
 
     def `ConvertLatticeToCompactLattice` as convert_lattice_to_compact_lattice(
         ifst: LatticeExpandedFst,ofst: CompactLatticeMutableFst, invert: bool = default)

@@ -1,3 +1,4 @@
+from "base/iostream-clifwrap.h" import *
 from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
@@ -7,6 +8,136 @@ from "fst/fst.h":
   namespace `fst`:
     const `kNoStateId` as NO_STATE_ID: int
     const `kNoLabel` as NO_LABEL: int
+
+    class FstHeader:
+      """FST file header."""
+      # FIXME(Dogan):
+      # CLIF complains about this enum.
+      #
+      # enum Flags
+
+      def `FstType` as fst_type(self) -> str:
+        """Returns FST type."""
+
+      def `ArcType` as arc_type(self) -> str:
+        """Returns arc type."""
+
+      def `Version` as version(self) -> int:
+        """Returns version."""
+
+      def `GetFlags` as get_flags(self) -> int:
+        """Returns flags."""
+
+      def `Properties` as properties(self) -> int:
+        """Returns FST properties."""
+
+      def `Start` as start(self) -> int:
+        """Returns start state."""
+
+      def `NumStates` as num_states(self) -> int:
+        """Returns number of states."""
+
+      def `NumArcs` as num_arcs(self) -> int:
+        """Returns number of arcs."""
+
+      def `SetFstType` as set_fst_type(self, type: str):
+        """Sets FST type."""
+
+      def `SetArcType` as set_arc_type(self, type: str):
+        """Sets arc type."""
+
+      def `SetVersion` as set_version(self, version: int):
+        """Sets version."""
+
+      def `SetFlags` as set_flags(self, flags: int):
+        """Sets flags."""
+
+      def `SetProperties` as set_properties(self, properties: int):
+        """Sets FST properties."""
+
+      def `SetStart` as set_start(self, start: int):
+        """Sets start state."""
+
+      def `SetNumStates` as set_num_states(self, numstates: int):
+        """Sets number of states."""
+
+      def `SetNumArcs` as set_num_arcs(self, numarcs: int):
+        """Sets number of arcs."""
+
+      def `Read` as read(self, strm: istream, source: str,
+                         rewind: bool = default) -> bool:
+        """Reads header from stream."""
+
+      def `Write` as write(self, strm: ostream, source: str) -> bool:
+        """Writes header to stream."""
+
+      def `DebugString` as debug_string(self) -> str:
+        """Outputs a debug string for the FstHeader object."""
+
+
+    class FstReadOptions:
+      """FST reading options."""
+      enum FileReadMode
+
+      source: str
+      """Where you're reading from."""
+      # FIXME(Dogan):
+      # Exposing constant pointers as data members causes compile error.
+      #
+      # header: FstHeader
+      # """Pointer to FST header.
+      #
+      # If non-None, use this info (don't read a stream header).
+      # """
+      # isymbols: SymbolTable
+      # """Pointer to input symbols.
+      #
+      # If non-None, use this info (read and skip stream symbols).
+      # """
+      # osymbols: SymbolTable
+      # """Pointer to output symbols.
+      #
+      # If non-None, use this info (read and skip stream symbols).
+      # """
+      mode: FileReadMode
+      """Read or map files (advisory, if possible)"""
+      read_isymbols: bool
+      """Read input symbols, if any (default: true)."""
+      read_osymbols: bool
+      """Read output symbols, if any (default: true)."""
+
+      def __init__(self, source: str = default, header: FstHeader = default,
+                   isymbols: SymbolTable = default,
+                   osymbols: SymbolTable = default)
+
+      @classmethod
+      def `ReadMode` as read_mode(cls, mode: str) -> FileReadMode:
+        """Converts mode strings into FileReadMode enum values."""
+
+      def `DebugString` as debug_string(self) -> str:
+        """Outputs a debug string for the FstReadOptions object."""
+
+
+    class FstWriteOptions:
+      """FST writing options."""
+      source: str
+      """Where you're writing to."""
+      write_header: bool
+      """Write the header?"""
+      write_isymbols: bool
+      """Write input symbols?"""
+      write_osymbols: bool
+      """Write output symbols?"""
+      align: bool
+      """Write data aligned (may fail on pipes)?"""
+      stream_write: bool
+      """Avoid seek operations in writing."""
+
+      def __init__(self, source: str = default, write_header: bool = default,
+                   write_isymbols: bool = default,
+                   write_osymbols: bool = default, align: bool = default,
+                   stream_write: bool = default)
+
 
     # StdArc
 

@@ -19,6 +19,30 @@ There are two major differences between the PyKaldi FST package and pywrapfst:
    in PyKaldi, it gives users the ability to pass FST objects directly to the
    myriad PyKaldi functions accepting FST arguments.
 
+Operations which construct new FSTs are implemented as traditional functions, as
+are two-argument boolean functions like `equal` and `equivalent`. Convert
+operation is not implemented as a separate function since FSTs already support
+construction from other FST types, e.g. vector FSTs can be constructed from
+constant FSTs and vice versa. Destructive operations---those that mutate an FST,
+in place---are instance methods, as is `write`.
+
+The following example, based on `Mohri et al. 2002`_, shows the construction of
+an ASR graph given a pronunciation lexicon L, grammar G, a transducer from
+context-dependent phones to context-independent phones C, and an HMM set H::
+
+    import kaldi.fstext as fst
+
+    L = fst.StdVectorFst.read("L.fst")
+    G = fst.StdVectorFst.read("G.fst")
+    C = fst.StdVectorFst.read("C.fst")
+    H = fst.StdVectorFst.read("H.fst")
+    LG = fst.determinize(fst.compose(L, G))
+    CLG = fst.determinize(fst.compose(C, LG))
+    HCLG = fst.determinize(fst.compose(H, CLG))
+    HCLG.minimize()                                      # NB: works in-place.
+
+.. _`Mohri et al. 2002`:
+   http://www.openfst.org/twiki/pub/FST/FstBackground/csl01.pdf
 .. autoconstant:: NO_STATE_ID
 .. autoconstant:: NO_LABEL
 .. autoconstant:: ENCODE_FLAGS
@@ -34,8 +58,10 @@ from ._arc import *
 from ._encode import ENCODE_FLAGS, ENCODE_LABELS, ENCODE_WEIGHTS
 from . import _compiler
 from ._fst import NO_STATE_ID, NO_LABEL
+from ._fst import FstHeader, FstReadOptions, FstWriteOptions
 from . import _fst_ext
 from . import _vector_fst
+from . import _const_fst
 from . import _drawer
 from . import _printer
 from . import _std_ops
@@ -116,9 +142,9 @@ class StdFstCompiler(_api._FstCompiler):
         return _compiler.StdFstCompiler
 
 
-class StdFstStateIterator(_api._StateIteratorBase,
-                          _vector_fst.StdVectorFstStateIterator):
-    """State iterator for an FST over the tropical semiring.
+class StdVectorFstStateIterator(_api._StateIteratorBase,
+                                _vector_fst.StdVectorFstStateIterator):
+    """State iterator for a vector FST over the tropical semiring.
 
     This class is used for iterating over the states. In addition to the full
     C++ API, it also supports the iterator protocol. Most users should just call
@@ -128,9 +154,9 @@ class StdFstStateIterator(_api._StateIteratorBase,
     pass
 
 
-class StdFstArcIterator(_api._ArcIteratorBase,
-                        _vector_fst.StdVectorFstArcIterator):
-    """Arc iterator for an FST over the tropical semiring.
+class StdVectorFstArcIterator(_api._ArcIteratorBase,
+                              _vector_fst.StdVectorFstArcIterator):
+    """Arc iterator for a vector FST over the tropical semiring.
 
     This class is used for iterating over the arcs leaving some state. In
     addition to the full C++ API, it also supports the iterator protocol.
@@ -140,9 +166,10 @@ class StdFstArcIterator(_api._ArcIteratorBase,
     pass
 
 
-class StdFstMutableArcIterator(_api._MutableArcIteratorBase,
-                               _vector_fst.StdVectorFstMutableArcIterator):
-    """Mutable arc iterator for a mutable FST over the tropical semiring.
+class StdVectorFstMutableArcIterator(
+        _api._MutableArcIteratorBase,
+        _vector_fst.StdVectorFstMutableArcIterator):
+    """Mutable arc iterator for a vector FST over the tropical semiring.
 
     This class is used for iterating over the arcs leaving some state and
     optionally replacing them with new ones. In addition to the full C++ API,
@@ -150,7 +177,7 @@ class StdFstMutableArcIterator(_api._MutableArcIteratorBase,
     mutable arc iterator object returns an iterator over `(arc, setter)` pairs.
     The `setter` is a bound method of the mutable arc iterator object that can
     be used to replace the current arc with a new one. Most users should just
-    call the `mutable_arcs` method of a mutable FST object instead of directly
+    call the `mutable_arcs` method of a vector FST object instead of directly
     constructing this iterator and take advantage of the Pythonic API, e.g. ::
 
         for arc, setter in fst.mutable_arcs(0):
@@ -159,38 +186,93 @@ class StdFstMutableArcIterator(_api._MutableArcIteratorBase,
     pass
 
 
-class StdFst(_api._MutableFstBase, _vector_fst.StdVectorFst):
-    """Mutable FST over the tropical semiring."""
+class StdVectorFst(_api._MutableFstBase, _vector_fst.StdVectorFst):
+    """Vector FST over the tropical semiring."""
 
     _ops = _std_ops
     _drawer_type = _drawer.StdFstDrawer
     _printer_type = _printer.StdFstPrinter
     _weight_factory = TropicalWeight
-    _state_iterator_type = StdFstStateIterator
-    _arc_iterator_type = StdFstArcIterator
-    _mutable_arc_iterator_type = StdFstMutableArcIterator
+    _state_iterator_type = StdVectorFstStateIterator
+    _arc_iterator_type = StdVectorFstArcIterator
+    _mutable_arc_iterator_type = StdVectorFstMutableArcIterator
 
     def __init__(self, fst=None):
-        """Creates a new mutable FST over the tropical semiring.
-
+        """
         Args:
             fst (StdFst): The input FST over the tropical semiring.
                 If provided, its contents are used for initializing the new FST.
                 Defaults to ``None``.
         """
-        super(StdFst, self).__init__()
+        super(StdVectorFst, self).__init__()
         if fst is not None:
             if isinstance(fst, _vector_fst.StdVectorFst):
                 # This assignment shares implementation with COW semantics.
                 _fst_ext._assign_std_vector_fst(fst, self)
             elif isinstance(fst, _fst.StdFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_std_fst(fst, self)
+                _fst_ext._assign_std_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the tropical "
                                 "semiring")
 
-StdFst._mutable_fst_type = StdFst
+StdVectorFst._mutable_fst_type = StdVectorFst
+
+
+class StdConstFstStateIterator(_api._StateIteratorBase,
+                               _const_fst.StdConstFstStateIterator):
+    """State iterator for a constant FST over the tropical semiring.
+
+    This class is used for iterating over the states. In addition to the full
+    C++ API, it also supports the iterator protocol. Most users should just call
+    the `states` method of an FST object instead of directly constructing this
+    iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class StdConstFstArcIterator(_api._ArcIteratorBase,
+                             _const_fst.StdConstFstArcIterator):
+    """Arc iterator for a constant FST over the tropical semiring.
+
+    This class is used for iterating over the arcs leaving some state. In
+    addition to the full C++ API, it also supports the iterator protocol.
+    Most users should just call the `arcs` method of an FST object instead of
+    directly constructing this iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class StdConstFst(_api._FstBase, _const_fst.StdConstFst):
+    """Constant FST over the tropical semiring."""
+
+    _ops = _std_ops
+    _drawer_type = _drawer.StdFstDrawer
+    _printer_type = _printer.StdFstPrinter
+    _weight_factory = TropicalWeight
+    _state_iterator_type = StdConstFstStateIterator
+    _arc_iterator_type = StdConstFstArcIterator
+
+    def __init__(self, fst=None):
+        """
+        Args:
+            fst (StdFst): The input FST over the tropical semiring.
+                If provided, its contents are used for initializing the new FST.
+                Defaults to ``None``.
+        """
+        super(StdConstFst, self).__init__()
+        if fst is not None:
+            if isinstance(fst, _const_fst.StdConstFst):
+                # This assignment shares implementation with COW semantics.
+                _fst_ext._assign_std_const_fst(fst, self)
+            elif isinstance(fst, _fst.StdFst):
+                # This assignment makes a copy.
+                _fst_ext._assign_std_fst_to_const_fst(fst, self)
+            else:
+                raise TypeError("fst should be an FST over the tropical "
+                                "semiring")
+
+StdConstFst._mutable_fst_type = StdVectorFst
 
 
 # Log semiring
@@ -234,9 +316,9 @@ class LogFstCompiler(_api._FstCompiler):
         return _compiler.LogFstCompiler
 
 
-class LogFstStateIterator(_api._StateIteratorBase,
-                          _vector_fst.LogVectorFstStateIterator):
-    """State iterator for an FST over the log semiring.
+class LogVectorFstStateIterator(_api._StateIteratorBase,
+                                _vector_fst.LogVectorFstStateIterator):
+    """State iterator for a vector FST over the log semiring.
 
     This class is used for iterating over the states. In addition to the full
     C++ API, it also supports the iterator protocol. Most users should just call
@@ -246,9 +328,9 @@ class LogFstStateIterator(_api._StateIteratorBase,
     pass
 
 
-class LogFstArcIterator(_api._ArcIteratorBase,
-                        _vector_fst.LogVectorFstArcIterator):
-    """Arc iterator for an FST over the log semiring.
+class LogVectorFstArcIterator(_api._ArcIteratorBase,
+                              _vector_fst.LogVectorFstArcIterator):
+    """Arc iterator for a vector FST over the log semiring.
 
     This class is used for iterating over the arcs leaving some state. In
     addition to the full C++ API, it also supports the iterator protocol.
@@ -258,9 +340,10 @@ class LogFstArcIterator(_api._ArcIteratorBase,
     pass
 
 
-class LogFstMutableArcIterator(_api._MutableArcIteratorBase,
-                               _vector_fst.LogVectorFstMutableArcIterator):
-    """Mutable arc iterator for a mutable FST over the log semiring.
+class LogVectorFstMutableArcIterator(
+        _api._MutableArcIteratorBase,
+        _vector_fst.LogVectorFstMutableArcIterator):
+    """Mutable arc iterator for a vector FST over the log semiring.
 
     This class is used for iterating over the arcs leaving some state and
     optionally replacing them with new ones. In addition to the full C++ API,
@@ -268,7 +351,7 @@ class LogFstMutableArcIterator(_api._MutableArcIteratorBase,
     mutable arc iterator object returns an iterator over `(arc, setter)` pairs.
     The `setter` is a bound method of the mutable arc iterator object that can
     be used to replace the current arc with a new one. Most users should just
-    call the `mutable_arcs` method of a mutable FST object instead of directly
+    call the `mutable_arcs` method of a vector FST object instead of directly
     constructing this iterator and take advantage of the Pythonic API, e.g. ::
 
         for arc, setter in logfst.mutable_arcs(0):
@@ -277,37 +360,91 @@ class LogFstMutableArcIterator(_api._MutableArcIteratorBase,
     pass
 
 
-class LogFst(_api._MutableFstBase, _vector_fst.LogVectorFst):
-    """Mutable FST over the log semiring."""
+class LogVectorFst(_api._MutableFstBase, _vector_fst.LogVectorFst):
+    """Vector FST over the log semiring."""
 
     _ops = _log_ops
     _drawer_type = _drawer.LogFstDrawer
     _printer_type = _printer.LogFstPrinter
     _weight_factory = LogWeight
-    _state_iterator_type = LogFstStateIterator
-    _arc_iterator_type = LogFstArcIterator
-    _mutable_arc_iterator_type = LogFstMutableArcIterator
+    _state_iterator_type = LogVectorFstStateIterator
+    _arc_iterator_type = LogVectorFstArcIterator
+    _mutable_arc_iterator_type = LogVectorFstMutableArcIterator
 
     def __init__(self, fst=None):
-        """Creates a new mutable FST over the log semiring.
-
+        """
         Args:
             fst (LogFst): The input FST over the log semiring.
                 If provided, its contents are used for initializing the new FST.
                 Defaults to ``None``.
         """
-        super(LogFst, self).__init__()
+        super(LogVectorFst, self).__init__()
         if fst is not None:
             if isinstance(fst, _vector_fst.LogVectorFst):
                 # This assignment shares implementation with COW semantics.
                 _fst_ext._assign_log_vector_fst(fst, self)
             elif isinstance(fst, _fst.LogFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_log_fst(fst, self)
+                _fst_ext._assign_log_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the log semiring")
 
-LogFst._mutable_fst_type = LogFst
+LogVectorFst._mutable_fst_type = LogVectorFst
+
+
+class LogConstFstStateIterator(_api._StateIteratorBase,
+                               _const_fst.LogConstFstStateIterator):
+    """State iterator for a constant FST over the log semiring.
+
+    This class is used for iterating over the states. In addition to the full
+    C++ API, it also supports the iterator protocol. Most users should just call
+    the `states` method of an FST object instead of directly constructing this
+    iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class LogConstFstArcIterator(_api._ArcIteratorBase,
+                             _const_fst.LogConstFstArcIterator):
+    """Arc iterator for a constant FST over the log semiring.
+
+    This class is used for iterating over the arcs leaving some state. In
+    addition to the full C++ API, it also supports the iterator protocol.
+    Most users should just call the `arcs` method of an FST object instead of
+    directly constructing this iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class LogConstFst(_api._FstBase, _const_fst.LogConstFst):
+    """Constant FST over the log semiring."""
+
+    _ops = _log_ops
+    _drawer_type = _drawer.LogFstDrawer
+    _printer_type = _printer.LogFstPrinter
+    _weight_factory = LogWeight
+    _state_iterator_type = LogConstFstStateIterator
+    _arc_iterator_type = LogConstFstArcIterator
+
+    def __init__(self, fst=None):
+        """
+        Args:
+            fst (LogFst): The input FST over the log semiring.
+                If provided, its contents are used for initializing the new FST.
+                Defaults to ``None``.
+        """
+        super(LogConstFst, self).__init__()
+        if fst is not None:
+            if isinstance(fst, _const_fst.LogConstFst):
+                # This assignment shares implementation with COW semantics.
+                _fst_ext._assign_log_const_fst(fst, self)
+            elif isinstance(fst, _fst.LogFst):
+                # This assignment makes a copy.
+                _fst_ext._assign_log_fst_to_const_fst(fst, self)
+            else:
+                raise TypeError("fst should be an FST over the log semiring")
+
+LogConstFst._mutable_fst_type = LogVectorFst
 
 
 # Lattice semiring
@@ -364,9 +501,9 @@ class LatticeFstCompiler(_api._FstCompiler):
         return _compiler.LatticeFstCompiler
 
 
-class LatticeFstStateIterator(_api._StateIteratorBase,
-                              _vector_fst.LatticeVectorFstStateIterator):
-    """State iterator for an FST over the lattice semiring.
+class LatticeVectorFstStateIterator(_api._StateIteratorBase,
+                                    _vector_fst.LatticeVectorFstStateIterator):
+    """State iterator for a vector FST over the lattice semiring.
 
     This class is used for iterating over the states. In addition to the full
     C++ API, it also supports the iterator protocol. Most users should just call
@@ -376,9 +513,9 @@ class LatticeFstStateIterator(_api._StateIteratorBase,
     pass
 
 
-class LatticeFstArcIterator(_api._ArcIteratorBase,
-                            _vector_fst.LatticeVectorFstArcIterator):
-    """Arc iterator for an FST over the lattice semiring.
+class LatticeVectorFstArcIterator(_api._ArcIteratorBase,
+                                  _vector_fst.LatticeVectorFstArcIterator):
+    """Arc iterator for a vector FST over the lattice semiring.
 
     This class is used for iterating over the arcs leaving some state. In
     addition to the full C++ API, it also supports the iterator protocol.
@@ -388,10 +525,10 @@ class LatticeFstArcIterator(_api._ArcIteratorBase,
     pass
 
 
-class LatticeFstMutableArcIterator(
+class LatticeVectorFstMutableArcIterator(
         _api._MutableArcIteratorBase,
         _vector_fst.LatticeVectorFstMutableArcIterator):
-    """Mutable arc iterator for a mutable FST over the lattice semiring.
+    """Mutable arc iterator for a vector FST over the lattice semiring.
 
     This class is used for iterating over the arcs leaving some state and
     optionally replacing them with new ones. In addition to the full C++ API,
@@ -399,7 +536,7 @@ class LatticeFstMutableArcIterator(
     mutable arc iterator object returns an iterator over `(arc, setter)` pairs.
     The `setter` is a bound method of the mutable arc iterator object that can
     be used to replace the current arc with a new one. Most users should just
-    call the `mutable_arcs` method of a mutable FST object instead of directly
+    call the `mutable_arcs` method of a vector FST object instead of directly
     constructing this iterator and take advantage of the Pythonic API, e.g. ::
 
         for arc, setter in lattice.mutable_arcs(0):
@@ -408,38 +545,93 @@ class LatticeFstMutableArcIterator(
     pass
 
 
-class LatticeFst(_api._MutableFstBase, _vector_fst.LatticeVectorFst):
-    """Mutable FST over the lattice semiring."""
+class LatticeVectorFst(_api._MutableFstBase, _vector_fst.LatticeVectorFst):
+    """Vector FST over the lattice semiring."""
 
     _ops = _lat_ops
     _drawer_type = _drawer.LatticeFstDrawer
     _printer_type = _printer.LatticeFstPrinter
     _weight_factory = LatticeWeight
-    _state_iterator_type = LatticeFstStateIterator
-    _arc_iterator_type = LatticeFstArcIterator
-    _mutable_arc_iterator_type = LatticeFstMutableArcIterator
+    _state_iterator_type = LatticeVectorFstStateIterator
+    _arc_iterator_type = LatticeVectorFstArcIterator
+    _mutable_arc_iterator_type = LatticeVectorFstMutableArcIterator
 
     def __init__(self, fst=None):
-        """Creates a new mutable FST over the lattice semiring.
-
+        """
         Args:
             fst (LatticeFst): The input FST over the lattice semiring.
                 If provided, its contents are used for initializing the new FST.
                 Defaults to ``None``.
         """
-        super(LatticeFst, self).__init__()
+        super(LatticeVectorFst, self).__init__()
         if fst is not None:
             if isinstance(fst, _vector_fst.LatticeVectorFst):
                 # This assignment shares implementation with COW semantics.
                 _fst_ext._assign_lattice_vector_fst(fst, self)
             elif isinstance(fst, _fst.LatticeFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_lattice_fst(fst, self)
+                _fst_ext._assign_lattice_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the lattice "
                                 "semiring")
 
-LatticeFst._mutable_fst_type = LatticeFst
+LatticeVectorFst._mutable_fst_type = LatticeVectorFst
+
+
+class LatticeConstFstStateIterator(_api._StateIteratorBase,
+                                   _const_fst.LatticeConstFstStateIterator):
+    """State iterator for a constant FST over the lattice semiring.
+
+    This class is used for iterating over the states. In addition to the full
+    C++ API, it also supports the iterator protocol. Most users should just call
+    the `states` method of an FST object instead of directly constructing this
+    iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class LatticeConstFstArcIterator(_api._ArcIteratorBase,
+                                 _const_fst.LatticeConstFstArcIterator):
+    """Arc iterator for a constant FST over the lattice semiring.
+
+    This class is used for iterating over the arcs leaving some state. In
+    addition to the full C++ API, it also supports the iterator protocol.
+    Most users should just call the `arcs` method of an FST object instead of
+    directly constructing this iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class LatticeConstFst(_api._FstBase, _const_fst.LatticeConstFst):
+    """Constant FST over the lattice semiring."""
+
+    _ops = _lat_ops
+    _drawer_type = _drawer.LatticeFstDrawer
+    _printer_type = _printer.LatticeFstPrinter
+    _weight_factory = LatticeWeight
+    _state_iterator_type = LatticeConstFstStateIterator
+    _arc_iterator_type = LatticeConstFstArcIterator
+
+    def __init__(self, fst=None):
+        """
+        Args:
+            fst (LatticeFst): The input FST over the lattice semiring.
+                If provided, its contents are used for initializing the new FST.
+                Defaults to ``None``.
+        """
+        super(LatticeConstFst, self).__init__()
+        if fst is not None:
+            if isinstance(fst, _const_fst.LatticeConstFst):
+                # This assignment shares implementation with COW semantics.
+                _fst_ext._assign_lattice_const_fst(fst, self)
+            elif isinstance(fst, _fst.LatticeFst):
+                # This assignment makes a copy.
+                _fst_ext._assign_lattice_fst_to_const_fst(fst, self)
+            else:
+                raise TypeError("fst should be an FST over the lattice "
+                                "semiring")
+
+LatticeConstFst._mutable_fst_type = LatticeVectorFst
 
 
 # CompactLattice semiring
@@ -505,10 +697,10 @@ class CompactLatticeFstCompiler(_api._FstCompiler):
         return _compiler.compactLatticeFstCompiler
 
 
-class CompactLatticeFstStateIterator(
+class CompactLatticeVectorFstStateIterator(
         _api._StateIteratorBase,
         _vector_fst.CompactLatticeVectorFstStateIterator):
-    """State iterator for an FST over the compact lattice semiring.
+    """State iterator for a vector FST over the compact lattice semiring.
 
     This class is used for iterating over the states. In addition to the full
     C++ API, it also supports the iterator protocol. Most users should just call
@@ -518,10 +710,10 @@ class CompactLatticeFstStateIterator(
     pass
 
 
-class CompactLatticeFstArcIterator(
+class CompactLatticeVectorFstArcIterator(
         _api._ArcIteratorBase,
         _vector_fst.CompactLatticeVectorFstArcIterator):
-    """Arc iterator for an FST over the compact lattice semiring.
+    """Arc iterator for a vector FST over the compact lattice semiring.
 
     This class is used for iterating over the arcs leaving some state. In
     addition to the full C++ API, it also supports the iterator protocol.
@@ -531,10 +723,10 @@ class CompactLatticeFstArcIterator(
     pass
 
 
-class CompactLatticeFstMutableArcIterator(
+class CompactLatticeVectorFstMutableArcIterator(
         _api._MutableArcIteratorBase,
         _vector_fst.CompactLatticeVectorFstMutableArcIterator):
-    """Mutable arc iterator for a mutable FST over the compact lattice semiring.
+    """Mutable arc iterator for a vector FST over the compact lattice semiring.
 
     This class is used for iterating over the arcs leaving some state and
     optionally replacing them with new ones. In addition to the full C++ API,
@@ -542,7 +734,7 @@ class CompactLatticeFstMutableArcIterator(
     mutable arc iterator object returns an iterator over `(arc, setter)` pairs.
     The `setter` is a bound method of the mutable arc iterator object that can
     be used to replace the current arc with a new one. Most users should just
-    call the `mutable_arcs` method of a mutable FST object instead of directly
+    call the `mutable_arcs` method of a vector FST object instead of directly
     constructing this iterator and take advantage of the Pythonic API, e.g. ::
 
         for arc, setter in lattice.mutable_arcs(0):
@@ -551,40 +743,96 @@ class CompactLatticeFstMutableArcIterator(
     pass
 
 
-class CompactLatticeFst(_api._MutableFstBase,
+class CompactLatticeVectorFst(_api._MutableFstBase,
                         _vector_fst.CompactLatticeVectorFst):
-    """Mutable FST over the compact lattice semiring."""
+    """Vector FST over the compact lattice semiring."""
 
     _ops = _clat_ops
     _drawer_type = _drawer.CompactLatticeFstDrawer
     _printer_type = _printer.CompactLatticeFstPrinter
     _weight_factory = CompactLatticeWeight
-    _state_iterator_type = CompactLatticeFstStateIterator
-    _arc_iterator_type = CompactLatticeFstArcIterator
-    _mutable_arc_iterator_type = CompactLatticeFstMutableArcIterator
+    _state_iterator_type = CompactLatticeVectorFstStateIterator
+    _arc_iterator_type = CompactLatticeVectorFstArcIterator
+    _mutable_arc_iterator_type = CompactLatticeVectorFstMutableArcIterator
 
     def __init__(self, fst=None):
-        """Creates a new mutable FST over the compact lattice semiring.
-
+        """
         Args:
             fst (CompactLatticeFst): The input FST over the compact lattice
                 semiring. If provided, its contents are used for initializing
                 the new FST. Defaults to ``None``.
         """
-        super(CompactLatticeFst, self).__init__()
+        super(CompactLatticeVectorFst, self).__init__()
         if fst is not None:
             if isinstance(fst, _vector_fst.CompactLatticeVectorFst):
                 # This assignment shares implementation with COW semantics.
                 _fst_ext._assign_compact_lattice_vector_fst(fst, self)
             elif isinstance(fst, _fst.CompactLatticeFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_compact_lattice_fst(fst, self)
+                _fst_ext._assign_compact_lattice_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the compact lattice "
                                 "semiring")
 
-CompactLatticeFst._mutable_fst_type = CompactLatticeFst
+CompactLatticeVectorFst._mutable_fst_type = CompactLatticeVectorFst
 
+
+class CompactLatticeConstFstStateIterator(
+        _api._StateIteratorBase,
+        _const_fst.CompactLatticeConstFstStateIterator):
+    """State iterator for a constant FST over the compact lattice semiring.
+
+    This class is used for iterating over the states. In addition to the full
+    C++ API, it also supports the iterator protocol. Most users should just call
+    the `states` method of an FST object instead of directly constructing this
+    iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class CompactLatticeConstFstArcIterator(
+        _api._ArcIteratorBase,
+        _const_fst.CompactLatticeConstFstArcIterator):
+    """Arc iterator for a constant FST over the compact lattice semiring.
+
+    This class is used for iterating over the arcs leaving some state. In
+    addition to the full C++ API, it also supports the iterator protocol.
+    Most users should just call the `arcs` method of an FST object instead of
+    directly constructing this iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class CompactLatticeConstFst(_api._FstBase, _const_fst.CompactLatticeConstFst):
+    """Constant FST over the compact lattice semiring."""
+
+    _ops = _clat_ops
+    _drawer_type = _drawer.CompactLatticeFstDrawer
+    _printer_type = _printer.CompactLatticeFstPrinter
+    _weight_factory = CompactLatticeWeight
+    _state_iterator_type = CompactLatticeConstFstStateIterator
+    _arc_iterator_type = CompactLatticeConstFstArcIterator
+
+    def __init__(self, fst=None):
+        """
+        Args:
+            fst (CompactLatticeFst): The input FST over the compact lattice
+                semiring. If provided, its contents are used for initializing
+                the new FST. Defaults to ``None``.
+        """
+        super(CompactLatticeConstFst, self).__init__()
+        if fst is not None:
+            if isinstance(fst, _const_fst.CompactLatticeConstFst):
+                # This assignment shares implementation with COW semantics.
+                _fst_ext._assign_compact_lattice_const_fst(fst, self)
+            elif isinstance(fst, _fst.CompactLatticeFst):
+                # This assignment makes a copy.
+                _fst_ext._assign_compact_lattice_fst_to_const_fst(fst, self)
+            else:
+                raise TypeError("fst should be an FST over the compact lattice "
+                                "semiring")
+
+CompactLatticeConstFst._mutable_fst_type = CompactLatticeVectorFst
 
 ################################################################################
 

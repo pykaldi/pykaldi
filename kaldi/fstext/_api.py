@@ -459,6 +459,22 @@ class _FstBase(object):
         """
         return cls._read(filename)
 
+    @classmethod
+    def read_from_stream(cls, strm, ropts):
+        """Reads an FST from an input stream.
+
+        Args:
+            strm (istream): The input stream to read from.
+            ropts (FstReadOptions): FST reading options.
+
+        Returns:
+            An FST object.
+
+        Raises:
+            RuntimeError: Read failed.
+        """
+        return cls._read_from_stream(strm, ropts)
+
     def start(self):
         """
         Returns the start state.
@@ -1441,8 +1457,6 @@ def compose(ifst1, ifst2, connect=True, compose_filter="auto"):
     ifst1._ops.compose(ifst1, ifst2, ofst, connect, compose_filter)
     return ofst
 
-
-# FIXME: Convert
 
 def determinize(ifst, delta=DELTA, weight=None, nstate=NO_STATE_ID,
                 subsequential_label=0, det_type="functional",

@@ -26,13 +26,11 @@ from "lm/arpa-file-parser.h":
       backoff: float
 
     class ArpaFileParser:
-    # FIXME(VM)
-    # Clif complains about pure virtual functions
-    #   def `ArpaFileParser` as __init__(self, options: ArpaParseOptions, symbols: SymbolTable)
+    # NOTE:
+    # CLIF cannot wrap this constructor since this is a base class with pure
+    # virtual methods.
+    # def `ArpaFileParser` as __init__(self, options: ArpaParseOptions, symbols: SymbolTable)
 
-      def `Read` as read(self, is:istream, binary: bool)
+      def `Read` as read(self, is:istream)
 
-      def `Options` as get_options(self) -> ArpaParseOptions
-
-
-
+      def `Options` as options(self) -> ArpaParseOptions

@@ -60,11 +60,10 @@ from "nnet3/nnet-computation.h":
       def __eq__(self, other: ComputationRequest) -> bool
 
     enum CommandType with:
-      `kAllocMatrixUndefined` as ALLOC_MATRIX_UNDEFINED
-      `kAllocMatrixZeroed` as ALLOC_MATRIX_ZEROED
+      `kAllocMatrix` as ALLOC_MATRIX
       `kDeallocMatrix` as DEALLOC_MATRIX
-      `kAllocMatrixFromOther` as ALLOC_MATRIX_FROM_OTHER
-      `kAllocMatrixFromOtherZeroed` as ALLOC_MATRIX_FROM_OTHER_ZEROED
+      `kSwapMatrix` as SWAP_MATRIX
+      `kSetConst` as SET_CONST
       `kPropagate` as PROPAGATE
       `kBackprop` as BACKPROP
       `kBackpropNoModelUpdate` as BACKPROP_NO_MODEL_UPDATE

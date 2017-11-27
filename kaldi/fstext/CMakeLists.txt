@@ -25,7 +25,8 @@ add_pyclif_library("_arc" arc.clif
 
 add_pyclif_library("_fst" fst.clif
   NAMESPACES fst
-  CLIF_DEPS _arc _symbol_table
+  CLIF_DEPS _arc _symbol_table _iostream
+  RPATH $ORIGIN/../base
 )
 
 add_pyclif_library("_expanded_fst" expanded-fst.clif
@@ -40,7 +41,14 @@ add_pyclif_library("_mutable_fst" mutable-fst.clif
 
 add_pyclif_library("_vector_fst" vector-fst.clif
   NAMESPACES fst
-  CLIF_DEPS _fst
+  CLIF_DEPS _fst _iostream
+  RPATH $ORIGIN/../base
+)
+
+add_pyclif_library("_const_fst" const-fst.clif
+  NAMESPACES fst
+  CLIF_DEPS _fst _iostream
+  RPATH $ORIGIN/../base
 )
 
 add_pyclif_library("_context_fst" context-fst.clif
@@ -73,7 +81,7 @@ add_pyclif_library("_table_matcher" table-matcher.clif
 )
 
 add_pyclif_library("_fst_ext" fst-ext.clif
-  CLIF_DEPS _iostream _expanded_fst _mutable_fst _vector_fst
+  CLIF_DEPS _iostream _expanded_fst _mutable_fst _vector_fst _const_fst
   LIBRARIES kaldi-fstext
   RPATH $ORIGIN/../base
 )

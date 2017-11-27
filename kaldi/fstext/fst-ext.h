@@ -3,6 +3,7 @@
 
 #include "fst/fst.h"
 #include "fst/vector-fst.h"
+#include "fstext/const-fst-ext.h"
 #include "fst/script/print.h"
 #include "fstext/lattice-weight.h"
 #include "fstext/lattice-utils.h"
@@ -19,7 +20,17 @@ void AssignVectorFst(const VectorFst<Arc> &ifst, VectorFst<Arc> *ofst) {
 }
 
 template<typename Arc>
-void AssignFst(const Fst<Arc> &ifst, VectorFst<Arc> *ofst) {
+void AssignConstFst(const ConstFst<Arc> &ifst, ConstFst<Arc> *ofst) {
+  *ofst = ifst;  // This assignment shares implementation with COW semantics.
+}
+
+template<typename Arc>
+void AssignFstToVectorFst(const Fst<Arc> &ifst, VectorFst<Arc> *ofst) {
+  *ofst = ifst;  // This assignment makes a copy.
+}
+
+template<typename Arc>
+void AssignFstToConstFst(const Fst<Arc> &ifst, ConstFst<Arc> *ofst) {
   *ofst = ifst;  // This assignment makes a copy.
 }
 

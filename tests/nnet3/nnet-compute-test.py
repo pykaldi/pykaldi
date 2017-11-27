@@ -42,7 +42,7 @@ class TestNnetCompute(unittest.TestCase):
             computation_collapsed.compute_cuda_indexes()
 
         ostrm = ostringstream()
-        computation.print(ostrm, nnet)
+        computation.print_computation(ostrm, nnet)
         print("Generated computation:")
         print(ostrm.to_str())
 
@@ -56,7 +56,7 @@ class TestNnetCompute(unittest.TestCase):
             optimize(opt_config, nnet, max_output_time_in_request(request),
                      computation)
             ostrm = ostringstream()
-            computation.print(ostrm, nnet)
+            computation.print_computation(ostrm, nnet)
             print("Optimized computation:")
             print(ostrm.to_str())
 

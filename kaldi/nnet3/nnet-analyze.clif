@@ -76,7 +76,7 @@ from "nnet3/nnet-analyze.h":
     class ComputationAnalysis:
       def __init__(self, computation: NnetComputation, analyzer: Analyzer)
 
-      def `FirstAccess` as first_access(self, s: int) -> int
+      def `FirstNontrivialAccess` as first_nontrivial_access(self, s: int) -> int
 
       def `LastAccess` as last_access(self, s: int) -> int
 
@@ -84,7 +84,7 @@ from "nnet3/nnet-analyze.h":
 
       def `DataInvalidatedCommand` as data_invalidated_command(self, c: int, s: int) -> int
 
-      def `FirstMatrixAccess` as first_matrix_access(self, m: int) -> int
+      def `FirstNontrivialMatrixAccess` as first_nontrivial_matrix_access(self, m: int) -> int
 
       def `LastMatrixAccess` as last_matrix_access(self, m: int) -> int
 

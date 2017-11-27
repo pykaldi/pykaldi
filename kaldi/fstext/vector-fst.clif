@@ -1,3 +1,4 @@
+from "base/iostream-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
@@ -7,10 +8,10 @@ from kaldi.fstext._mutable_fst import LogMutableFst
 from kaldi.fstext._mutable_fst import LatticeMutableFst
 from kaldi.fstext._mutable_fst import CompactLatticeMutableFst
 
-from kaldi.fstext import StdFst
-from kaldi.fstext import LogFst
-from kaldi.fstext import LatticeFst
-from kaldi.fstext import CompactLatticeFst
+from kaldi.fstext import StdVectorFst
+from kaldi.fstext import LogVectorFst
+from kaldi.fstext import LatticeVectorFst
+from kaldi.fstext import CompactLatticeVectorFst
 
 from "fst/vector-fst.h":
   namespace `fst`:
@@ -29,11 +30,16 @@ from "fst/vector-fst.h":
       #                               safe: bool = default)
 
       def `Copy` as _copy(self, safe: bool = default) -> StdVectorFst:
-        return StdFst(...)
+        return StdVectorFst(...)
 
       @classmethod
       def `Read` as _read(cls, filename: str) -> StdVectorFst:
-        return StdFst(...)
+        return StdVectorFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> StdVectorFst:
+        return StdVectorFst(...)
 
       def `Write` as _write(self, filename: str) -> bool
 
@@ -105,11 +111,16 @@ from "fst/vector-fst.h":
       #                               safe: bool = default)
 
       def `Copy` as _copy(self, safe: bool = default) -> LogVectorFst:
-        return LogFst(...)
+        return LogVectorFst(...)
 
       @classmethod
       def `Read` as _read(cls, filename: str) -> LogVectorFst:
-        return LogFst(...)
+        return LogVectorFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> LogVectorFst:
+        return LogVectorFst(...)
 
       def `Write` as _write(self, filename: str) -> bool
 
@@ -181,11 +192,16 @@ from "fst/vector-fst.h":
       #                               safe: bool = default)
 
       def `Copy` as _copy(self, safe: bool = default) -> LatticeVectorFst:
-        return LatticeFst(...)
+        return LatticeVectorFst(...)
 
       @classmethod
       def `Read` as _read(cls, filename: str) -> LatticeVectorFst:
-        return LatticeFst(...)
+        return LatticeVectorFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> LatticeVectorFst:
+        return LatticeVectorFst(...)
 
       def `Write` as _write(self, filename: str) -> bool
 
@@ -257,11 +273,16 @@ from "fst/vector-fst.h":
       #                               safe: bool = default)
 
       def `Copy` as _copy(self, safe: bool = default) -> CompactLatticeVectorFst:
-        return CompactLatticeFst(...)
+        return CompactLatticeVectorFst(...)
 
       @classmethod
       def `Read` as _read(cls, filename: str) -> CompactLatticeVectorFst:
-        return CompactLatticeFst(...)
+        return CompactLatticeVectorFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> CompactLatticeVectorFst:
+        return CompactLatticeVectorFst(...)
 
       def `Write` as _write(self, filename: str) -> bool
 

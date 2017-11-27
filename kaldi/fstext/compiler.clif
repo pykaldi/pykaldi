@@ -3,10 +3,10 @@ from "fstext/symbol-table-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 
-from kaldi.fstext import StdFst
-from kaldi.fstext import LogFst
-from kaldi.fstext import LatticeFst
-from kaldi.fstext import CompactLatticeFst
+from kaldi.fstext import StdVectorFst
+from kaldi.fstext import LogVectorFst
+from kaldi.fstext import LatticeVectorFst
+from kaldi.fstext import CompactLatticeVectorFst
 
 from "fst/script/compile-impl.h":
   namespace `fst`:
@@ -31,7 +31,7 @@ from "fst/script/compile-impl.h":
                          allow_negative_labels: bool, add_symbols: bool)
 
       def `Fst` as fst(self) -> StdVectorFst:
-        return StdFst(...)
+        return StdVectorFst(...)
 
     class `FstCompiler<LogArc>` as LogFstCompiler:
       def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
@@ -53,7 +53,7 @@ from "fst/script/compile-impl.h":
                          allow_negative_labels: bool, add_symbols: bool)
 
       def `Fst` as fst(self) -> LogVectorFst:
-        return LogFst(...)
+        return LogVectorFst(...)
 
     class `FstCompiler<ArcTpl<LatticeWeightTpl<float>>>` as LatticeFstCompiler:
       def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
@@ -75,7 +75,7 @@ from "fst/script/compile-impl.h":
                          allow_negative_labels: bool, add_symbols: bool)
 
       def `Fst` as fst(self) -> LatticeVectorFst:
-        return LatticeFst(...)
+        return LatticeVectorFst(...)
 
     class `FstCompiler<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>`
         as CompactLatticeFstCompiler:
@@ -98,4 +98,4 @@ from "fst/script/compile-impl.h":
                          allow_negative_labels: bool, add_symbols: bool)
 
       def `Fst` as fst(self) -> CompactLatticeVectorFst:
-        return CompactLatticeFst(...)
+        return CompactLatticeVectorFst(...)

@@ -46,37 +46,52 @@ kaldi\.fstext
       :nosignatures:
    
       CompactLatticeArc
+      CompactLatticeConstFst
+      CompactLatticeConstFstArcIterator
+      CompactLatticeConstFstStateIterator
       CompactLatticeEncodeMapper
-      CompactLatticeFst
-      CompactLatticeFstArcIterator
       CompactLatticeFstCompiler
-      CompactLatticeFstMutableArcIterator
-      CompactLatticeFstStateIterator
+      CompactLatticeVectorFst
+      CompactLatticeVectorFstArcIterator
+      CompactLatticeVectorFstMutableArcIterator
+      CompactLatticeVectorFstStateIterator
       CompactLatticeWeight
       EncodeType
+      FstHeader
+      FstReadOptions
+      FstWriteOptions
       LatticeArc
+      LatticeConstFst
+      LatticeConstFstArcIterator
+      LatticeConstFstStateIterator
       LatticeEncodeMapper
-      LatticeFst
-      LatticeFstArcIterator
       LatticeFstCompiler
-      LatticeFstMutableArcIterator
-      LatticeFstStateIterator
+      LatticeVectorFst
+      LatticeVectorFstArcIterator
+      LatticeVectorFstMutableArcIterator
+      LatticeVectorFstStateIterator
       LatticeWeight
       LogArc
+      LogConstFst
+      LogConstFstArcIterator
+      LogConstFstStateIterator
       LogEncodeMapper
-      LogFst
-      LogFstArcIterator
       LogFstCompiler
-      LogFstMutableArcIterator
-      LogFstStateIterator
+      LogVectorFst
+      LogVectorFstArcIterator
+      LogVectorFstMutableArcIterator
+      LogVectorFstStateIterator
       LogWeight
       StdArc
+      StdConstFst
+      StdConstFstArcIterator
+      StdConstFstStateIterator
       StdEncodeMapper
-      StdFst
-      StdFstArcIterator
       StdFstCompiler
-      StdFstMutableArcIterator
-      StdFstStateIterator
+      StdVectorFst
+      StdVectorFstArcIterator
+      StdVectorFstMutableArcIterator
+      StdVectorFstStateIterator
       SymbolTable
       SymbolTableIterator
       SymbolTableTextOptions

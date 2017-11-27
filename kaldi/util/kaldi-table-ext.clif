@@ -1,8 +1,8 @@
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 
-from kaldi.fstext import StdFst
-from kaldi.fstext import LogFst
+from kaldi.fstext import StdVectorFst
+from kaldi.fstext import LogVectorFst
 
 from "util/kaldi-table-ext.h":
   namespace `kaldi`:
@@ -18,7 +18,7 @@ from "util/kaldi-table-ext.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> StdVectorFst:
-        return StdFst(...)
+        return StdVectorFst(...)
 
       def `Next` as next(self)
 
@@ -41,7 +41,7 @@ from "util/kaldi-table-ext.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> LogVectorFst:
-        return LogFst(...)
+        return LogVectorFst(...)
 
       def `Next` as next(self)
 
@@ -60,7 +60,7 @@ from "util/kaldi-table-ext.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> StdVectorFst:
-        return StdFst(...)
+        return StdVectorFst(...)
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -77,7 +77,7 @@ from "util/kaldi-table-ext.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> LogVectorFst:
-        return LogFst(...)
+        return LogVectorFst(...)
 
       def `IsOpen` as is_open(self) -> bool
 
