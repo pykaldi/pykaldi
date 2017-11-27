@@ -4,12 +4,15 @@
 // Simple concrete immutable FST whose states and arcs are each stored in
 // single arrays.
 
-#ifndef FST_LIB_CONST_FST_H_
-#define FST_LIB_CONST_FST_H_
+#ifndef FST_CONST_FST_H_
+#define FST_CONST_FST_H_
 
+#include <climits>
 #include <string>
 #include <vector>
 
+// Google-only...
+// ...Google-only
 #include <fst/log.h>
 
 #include <fst/expanded-fst.h>
@@ -52,9 +55,7 @@ class ConstFstImpl : public FstImpl<A> {
         start_(kNoStateId) {
     string type = "const";
     if (sizeof(Unsigned) != sizeof(uint32)) {
-      string size;
-      Int64ToStr(8 * sizeof(Unsigned), &size);
-      type += size;
+      type += std::to_string(CHAR_BIT * sizeof(Unsigned));
     }
     SetType(type);
     SetProperties(kNullProperties | kStaticProperties);
@@ -147,9 +148,7 @@ ConstFstImpl<Arc, Unsigned>::ConstFstImpl(const Fst<Arc> &fst)
     : nstates_(0), narcs_(0) {
   string type = "const";
   if (sizeof(Unsigned) != sizeof(uint32)) {
-    string size;
-    Int64ToStr(sizeof(Unsigned) * 8, &size);
-    type += size;
+    type += std::to_string(CHAR_BIT * sizeof(Unsigned));
   }
   SetType(type);
   SetInputSymbols(fst.InputSymbols());
@@ -369,9 +368,7 @@ bool ConstFst<Arc, Unsigned>::WriteFst(const FST &fst, std::ostream &strm,
   hdr.SetNumArcs(num_arcs);
   string type = "const";
   if (sizeof(Unsigned) != sizeof(uint32)) {
-    string size;
-    Int64ToStr(8 * sizeof(Unsigned), &size);
-    type += size;
+    type += std::to_string(CHAR_BIT * sizeof(Unsigned));
   }
   const auto properties =
       fst.Properties(kCopyProperties, true) |
@@ -405,6 +402,14 @@ bool ConstFst<Arc, Unsigned>::WriteFst(const FST &fst, std::ostream &strm,
     for (ArcIterator<FST> aiter(fst, siter.Value()); !aiter.Done();
          aiter.Next()) {
       const auto &arc = aiter.Value();
+// Google-only...
+#ifdef MEMORY_SANITIZER
+      // arc may contain padding which has unspecified contents. Tell MSAN to
+      // not complain about it when writing it to a file.
+      ANNOTATE_MEMORY_IS_INITIALIZED(reinterpret_cast<const char *>(&arc),
+                                     sizeof(arc));
+#endif
+      // ...Google-only
       strm.write(reinterpret_cast<const char *>(&arc), sizeof(arc));
     }
   }
@@ -491,4 +496,4 @@ using StdConstFst = ConstFst<StdArc>;
 
 }  // namespace fst
 
-#endif  // FST_LIB_CONST_FST_H_
+#endif  // FST_CONST_FST_H_
