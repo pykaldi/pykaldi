@@ -38,21 +38,16 @@ kaldi\.transform\.cmvn
 
    
    
-   .. rubric:: Functions
+   
+
+   
+   
+   .. rubric:: Classes
 
    .. autosummary::
       :nosignatures:
    
-      acc_cmvn_stats
-      acc_cmvn_stats_single_frame
-      apply_cmvn
-      apply_cmvn_reverse
-      fake_stats_for_some_dims
-      init_cmvn_stats
-   
-   
-
-   
+      Cmvn
    
    
 
