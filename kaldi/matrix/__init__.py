@@ -591,14 +591,14 @@ class _VectorBase(object):
               dimension, the return value will not share any data with the
               source vector, i.e. a copy will be made. Consider the following:
                 >>> v = Vector(5)
-                >>> s = v[0:4:2]  # s does not share data with v
-                >>> s = v[1:4:2]  # changing s will not change v
+                >>> s = v[0:4:2]     # s does not share data with v
+                >>> s[:] = v[1:4:2]  # changing s will not change v
               Since the slicing operation requires a copy of the data to be
               made, the source vector v will not be updated. On the other hand,
               the following assignment operation will work as expected since
               __setitem__ method does not create a new vector for representing
               the left hand side:
-                >>> v[:,0:4:2] = v[:,1:4:2]
+                >>> v[0:4:2] = v[1:4:2]
 
         .. _NumPy Array Indexing:
             https://docs.scipy.org/doc/numpy-1.13.0/reference/arrays.indexing.html
@@ -1200,8 +1200,8 @@ class _MatrixBase(object):
               dimension, the return value will not share any data with the
               source matrix, i.e. a copy will be made. Consider the following:
                 >>> m = Matrix(3, 5)
-                >>> s = m[:,0:4:2]  # s does not share data with m
-                >>> s = m[:,1:4:2]  # changing s will not change m
+                >>> s = m[:,0:4:2]     # s does not share data with m
+                >>> s[:] = m[:,1:4:2]  # changing s will not change m
               Since the slicing operation requires a copy of the data to be
               made, the source matrix m will not be updated. On the other hand,
               the following assignment operation will work as expected since
@@ -1964,14 +1964,14 @@ class _DoubleVectorBase(object):
               dimension, the return value will not share any data with the
               source vector, i.e. a copy will be made. Consider the following:
                 >>> v = DoubleVector(5)
-                >>> s = v[0:4:2]  # s does not share data with v
-                >>> s = v[1:4:2]  # changing s will not change v
+                >>> s = v[0:4:2]     # s does not share data with v
+                >>> s[:] = v[1:4:2]  # changing s will not change v
               Since the slicing operation requires a copy of the data to be
               made, the source vector v will not be updated. On the other hand,
               the following assignment operation will work as expected since
               __setitem__ method does not create a new vector for representing
               the left hand side:
-                >>> v[:,0:4:2] = v[:,1:4:2]
+                >>> v[0:4:2] = v[1:4:2]
 
         .. _NumPy Array Indexing:
             https://docs.scipy.org/doc/numpy-1.13.0/reference/arrays.indexing.html
@@ -2569,8 +2569,8 @@ class _DoubleMatrixBase(object):
               dimension, the return value will not share any data with the
               source matrix, i.e. a copy will be made. Consider the following:
                 >>> m = DoubleMatrix(3, 5)
-                >>> s = m[:,0:4:2]  # s does not share data with m
-                >>> s = m[:,1:4:2]  # changing s will not change m
+                >>> s = m[:,0:4:2]     # s does not share data with m
+                >>> s[:] = m[:,1:4:2]  # changing s will not change m
               Since the slicing operation requires a copy of the data to be
               made, the source matrix m will not be updated. On the other hand,
               the following assignment operation will work as expected since

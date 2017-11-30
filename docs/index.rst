@@ -3,11 +3,11 @@ PyKaldi
 
 .. warning:: PyKaldi is still at alpha stage. Some features might not work yet.
 
-PyKaldi is a Python wrapper for `Kaldi <http://kaldi-asr.org>`_ exposing nearly
-all of Kaldi's C++ API to Python code. It aims to bridge the gap between Kaldi
-and all the nice things Python has to offer including its mature ecosystem of
-high quality software for scientific computing, machine learning, interactive
-data exploration and visualization.
+`PyKaldi <https://github.com/pykaldi/pykaldi>`_ is a Python wrapper for `Kaldi
+<http://kaldi-asr.org>`_ exposing nearly all of Kaldi's C++ API to Python code.
+It aims to bridge the gap between Kaldi and all the nice things Python has to
+offer including its mature ecosystem of high quality software for scientific
+computing, machine learning, interactive data exploration and visualization.
 
 PyKaldi is more than a collection of bindings into Kaldi libraries. It is a
 scripting layer providing first class support for essential Kaldi and
