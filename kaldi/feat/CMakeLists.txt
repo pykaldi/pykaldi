@@ -28,29 +28,24 @@ add_pyclif_library("_mel_computations" mel-computations.clif
   LIBRARIES kaldi-feat
 )
 add_pyclif_library("_feature_spectrogram" feature-spectrogram.clif
-  CLIF_DEPS _feature_window _options_itf
+  CLIF_DEPS _feature_window _options_itf _kaldi_matrix
   LIBRARIES kaldi-feat
   RPATH $ORIGIN/../itf:$ORIGIN/../matrix
 )
 add_pyclif_library("_feature_mfcc" feature-mfcc.clif
-  CLIF_DEPS _mel_computations _options_itf
+  CLIF_DEPS _mel_computations _options_itf _kaldi_matrix
   LIBRARIES kaldi-feat
   RPATH $ORIGIN/../itf:$ORIGIN/../matrix
 )
 add_pyclif_library("_feature_plp" feature-plp.clif
-  CLIF_DEPS _mel_computations _options_itf
+  CLIF_DEPS _mel_computations _options_itf _kaldi_matrix
   LIBRARIES kaldi-feat
   RPATH $ORIGIN/../itf:$ORIGIN/../matrix
 )
 add_pyclif_library("_feature_fbank" feature-fbank.clif
-  CLIF_DEPS _mel_computations _options_itf
+  CLIF_DEPS _mel_computations _options_itf _kaldi_matrix
   LIBRARIES kaldi-feat
   RPATH $ORIGIN/../itf:$ORIGIN/../matrix
-)
-add_pyclif_library("_feature_common_ext" feature-common-ext.clif
-  CLIF_DEPS _feature_spectrogram _feature_mfcc _feature_plp _feature_fbank _kaldi_matrix
-  LIBRARIES kaldi-feat
-  RPATH $ORIGIN/../matrix
 )
 add_pyclif_library("_online_feature" online-feature.clif
   CLIF_DEPS _online_feature_itf _feature_functions _feature_mfcc _feature_plp _feature_fbank _kaldi_matrix _iostream _options_ext

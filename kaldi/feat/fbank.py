@@ -1,4 +1,3 @@
-from ._feature_common_ext import Fbank
 from ._feature_fbank import *
 
 ################################################################################

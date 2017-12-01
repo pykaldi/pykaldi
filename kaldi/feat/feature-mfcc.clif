@@ -1,10 +1,14 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
 from "feat/mel-computations-clifwrap.h" import *
 
+from kaldi.matrix import _matrix_wrapper
+
 from "feat/feature-mfcc.h":
   namespace `kaldi`:
+
     class MfccOptions:
       frame_opts: FrameExtractionOptions
       mel_opts: MelBanksOptions
@@ -33,3 +37,31 @@ from "feat/feature-mfcc.h":
       def `Compute` as compute(self, signal_log_energy: float,
                                vtln_warp: float, signal_frame: VectorBase,
                                feature: VectorBase)
+
+    class `OfflineFeatureTpl<MfccComputer>` as Mfcc:
+      def __init__(self, opts: MfccOptions)
+
+      @add__init__
+      def `MfccOfflineFeatureTpl` as from_other(self, other: Mfcc)
+
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
+          -> Matrix:
+        return _matrix_wrapper(...)
+
+      def `ComputeFeatures` as compute_features(self,
+          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+        """Computes the features for one file (one sequence of features).
+
+        Args:
+          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
+          sample_freq (float): The sampling frequency with which wave is
+            sampled. If sample_freq is higher than the frequency specified in
+            the config, Kaldi will downsample the waveform
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+
+        Returns:
+          The matrix of features, where the row-index is the frame index
+        """
+        return _matrix_wrapper(...)
+
+      def `Dim` as dim(self) -> int
