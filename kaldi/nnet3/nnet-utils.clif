@@ -6,8 +6,8 @@ from "nnet3/nnet-nnet-clifwrap.h" import *
 
 from "nnet3/nnet-utils.h":
   namespace `kaldi::nnet3`:
-    def `EvaluateComputationRequest` as evaluate_computation_request(nnet: Nnet, request: ComputationRequest)
-        -> list<list<bool>>
+    def `EvaluateComputationRequest` as evaluate_computation_request(
+        nnet: Nnet, request: ComputationRequest) -> list<list<bool>>
 
     def `NumOutputNodes` as num_output_nodes(nnet: Nnet) -> int
 
@@ -19,14 +19,15 @@ from "nnet3/nnet-utils.h":
 
     def `ComponentDotProducts` as component_dot_products(nnet1: Nnet, nnet2: Nnet, dot_prod: VectorBase)
 
-    def `PrintVectorPerUpdatableComponent` as print_vector_per_updatable_component(nnet: Nnet, vec: VectorBase) -> str
+    def `PrintVectorPerUpdatableComponent` as print_vector_per_updatable_component(
+        nnet: Nnet, vec: VectorBase) -> str
 
     def `IsSimpleNnet` as is_simple_nnet(nnet: Nnet) -> bool
 
     def `ZeroComponentStats` as zero_component_stats(nnet: Nnet)
 
-    def `ComputeSimpleNnetContext` as compute_simple_nnet_context(nnet: Nnet) -> (left_context: int,
-                                                 right_context: int)
+    def `ComputeSimpleNnetContext` as compute_simple_nnet_context(nnet: Nnet)
+      -> (left_context: int, right_context: int)
 
     def `SetLearningRate` as set_learning_rate(learning_rate: float, nnet: Nnet)
 
@@ -36,8 +37,7 @@ from "nnet3/nnet-utils.h":
 
     def `AddNnet` as add_nnet(src: Nnet, alpha: float, dest: Nnet)
 
-    def `AddNnetComponents` as add_nnet_components(src: Nnet, alphas: Vector, scale: float,
-                          dest: Nnet)
+    def `AddNnetComponents` as add_nnet_components(src: Nnet, alphas: Vector, scale: float, dest: Nnet)
 
     def `NnetIsRecurrent` as nnet_is_recurrent(nnet: Nnet) -> bool
 
@@ -81,8 +81,15 @@ from "nnet3/nnet-utils.h":
 
     def `ReadEditConfig` as read_edit_config(config_file: istream, nnet: Nnet)
 
-    def `UpdateNnetWithMaxChange` as update_nnet_with_max_change(delta_nnet: Nnet, max_param_change: float,
-                                max_change_scale: float, scale: float,
-                                nnet: Nnet)
+    def `UpdateNnetWithMaxChange` as update_nnet_with_max_change(
+        delta_nnet: Nnet, max_param_change: float,
+        max_change_scale: float, scale: float, nnet: Nnet)
         -> (suc: bool, num_max_change_per_component_applied: list<int>,
             num_max_change_global_applied: int)
+
+    def `ApplyL2Regularization` as apply_l2_regularization(
+        nnet: Nnet, l2_regularize_scale: float, delta_nnet: Nnet)
+
+    def `ScaleBatchnormStats` as scale_batchnorm_stats(batchnorm_stats_scale: float, nnet: Nnet)
+
+    def `GetNumNvalues` as get_num_n_values(io_vec: list<NnetIo>, exhaustive: bool) -> int

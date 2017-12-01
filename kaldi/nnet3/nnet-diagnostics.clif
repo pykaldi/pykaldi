@@ -1,5 +1,7 @@
 from "itf/options-itf-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sparse-matrix-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "nnet3/nnet-example-clifwrap.h" import *
 from "nnet3/nnet-nnet-clifwrap.h" import *
 from "nnet3/nnet-compute-clifwrap.h" import *
@@ -44,4 +46,9 @@ from "nnet3/nnet-diagnostics.h":
 
       def `GetDeriv` as get_deriv(self) -> Nnet
 
-    # ComputeAccuracy
+    # FIXME:
+    # Need to reorder output arguments.
+    # def `ComputeAccuracy` as compute_accuracy(
+    #     supervision: GeneralMatrix, nnet_output: CuMatrixBase,
+    #     tot_weight: `float` as float, tot_accuracy: `float` as float,
+    #     tot_weight_vec: VectorBase = default, tot_accuracy_vec: VectorBase = default)

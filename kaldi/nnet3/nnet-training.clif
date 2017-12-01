@@ -13,8 +13,10 @@ from "nnet3/nnet-training.h":
       print_interval: int
       debug_computation: bool
       momentum: float
+      l2_regularize_factor: float
       backstitch_training_scale: float
       backstitch_training_interval: int
+      batchnorm_stats_scale: float
       read_cache: str
       write_cache: str
       binary_write_cache: bool

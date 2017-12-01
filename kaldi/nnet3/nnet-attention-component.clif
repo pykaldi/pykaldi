@@ -1,0 +1,12 @@
+from kaldi.nnet3._nnet_component_itf import Component
+
+from "nnet3/nnet-attention-component.h":
+  namespace `kaldi::nnet3`:
+    class RestrictedAttentionComponent(Component):
+      @add__init__
+      def `RestrictedAttentionComponent` as new_from_other(
+          self, other: RestrictedAttentionComponent)
+
+      # PrecomputedIndexes
+
+      # Memo

@@ -24,6 +24,9 @@ from "nnet3/nnet-simple-component.h":
                                     dropout_proportion: float = default,
                                     dropout_per_frame: bool = default)
 
+      @add__init__
+      def `DropoutComponent` as new_from_other(self, other: DropoutComponent)
+
       def `SetDropoutProportion` as set_dropout_proportion(self, dropout_proportion: float)
 
       def `DropoutProportion` as dropout_proportion(self) -> float
@@ -36,13 +39,6 @@ from "nnet3/nnet-simple-component.h":
                                                output_dim: int)
 
     class NormalizeComponent(Component):
-      def `Init` as init(self, input_dim: int, target_rms: float, add_log_stddev: bool)
-
-      @add__init__
-      def `NormalizeComponent` as new(self, input_dim: int,
-                                      target_rms: float = default,
-                                      add_log_stddev: bool = default)
-
       @add__init__
       def `NormalizeComponent` as new_from_other(self,
                                                  other: NormalizeComponent)
@@ -71,8 +67,6 @@ from "nnet3/nnet-simple-component.h":
       def `Init` as init(self, input_dim: int, output_dim: int,
                param_stddev: float, bias_stddev: float)
 
-      def `Init` as init_from_matrix(self, matrix_filename: str)
-
       def `Resize` as resize(self, input_dim: int, output_dim: int)
 
     class RepeatedAffineComponent(UpdatableComponent):
@@ -80,17 +74,11 @@ from "nnet3/nnet-simple-component.h":
 
       def `LinearParams` as linear_params(self) -> CuMatrix
 
-      def `Init` as init(self, input_dim: int, output_dim: int, num_repeats: int,
-               param_stddev: float, bias_mean: float, bias_stddev: float)
-
       @add__init__
       def `RepeatedAffineComponent` as new_from_other(
           self, other: RepeatedAffineComponent)
 
     class BlockAffineComponent(UpdatableComponent):
-      def `Init` as init(self, input_dim: int, output_dim: int, num_blocks: int,
-               param_stddev: float, bias_mean: float, bias_stddev: float)
-
       @add__init__
       def `BlockAffineComponent` as new_from_other(self,
                                                    other: BlockAffineComponent)
@@ -114,19 +102,20 @@ from "nnet3/nnet-simple-component.h":
                                                   other: LogSoftmaxComponent)
 
     class NaturalGradientAffineComponent(AffineComponent):
-      def `Init` as init(self, input_dim: int, output_dim: int, param_stddev: float,
-               bias_stddev: float, bias_mean: float, rank_in: int,
-               rank_out: int, update_period: int, num_samples_history: float,
-               alpha: float)
-
-      def `Init` as init_from_matrix(self, rank_in: int, rank_out: int,
-                                   update_period: int,
-                                   num_samples_history: float,
-                                   alpha: float, matrix_filename: str)
-
       @add__init__
       def `NaturalGradientAffineComponent` as new_from_other(
           self, other: NaturalGradientAffineComponent)
+
+      @add__init__
+      def `NaturalGradientAffineComponent` as new_from_params(
+          self, linear_params: CuMatrixBase, bias_params: CuVectorBase)
+
+    class LinearComponent(UpdatableComponent):
+      @add__init__
+      def `LinearComponent` as new_from_other(self, other: LinearComponent)
+
+      @add__init__
+      def `LinearComponent` as new_from_params(self, params: CuMatrix)
 
     class FixedAffineComponent(Component):
       @add__init__
@@ -197,10 +186,6 @@ from "nnet3/nnet-simple-component.h":
       def `PerElementOffsetComponent` as new_from_other(
           self, other: PerElementOffsetComponent)
 
-      def `Init` as init(self, dim: int, param_mean: float, param_stddev: float)
-
-      def `Init` as init_from_vector(self, vector_filename: str)
-
     class ConstantFunctionComponent(UpdatableComponent):
       @add__init__
       def `ConstantFunctionComponent` as new_from_other(
@@ -218,6 +203,11 @@ from "nnet3/nnet-simple-component.h":
       def `Init` as init_from_vector(self, vector_filename: str, rank: int,
                                    update_period: int,
                                    num_samples_history: float, alpha: float)
+
+    class ScaleAndOffsetComponent(UpdatableComponent):
+      @add__init__
+      def `ScaleAndOffsetComponent` as new_from_other(
+          self, other: ScaleAndOffsetComponent)
 
     # ConvolutionComponent
 
@@ -240,11 +230,15 @@ from "nnet3/nnet-simple-component.h":
       def `Offset` as offset(self) -> CuVector
       def `Scale` as scale(self) -> CuVector
 
+      def `SetTestMode` as set_test_mode(self, test_mode: bool)
+
     class CompositeComponent(UpdatableComponent):
       def `Init` as init(self, components: list<Component>, max_rows_process: int)
 
       def `NumComponents` as num_components(self) -> int
 
-      # def `GetComponent` as GetComponent(self, i: int) -> Component
+      # NOTE:
+      # We cannot wrap this since it returns an abstract base class pointer.
+      # def `GetComponent` as get_component(self, i: int) -> Component
 
       def `SetComponent` as set_component(self, i: int, component: Component)

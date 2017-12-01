@@ -128,6 +128,7 @@ from "nnet3/nnet-computation.h":
 
       class Command:
         command_type: CommandType
+        alpha: `float` as float
         arg1: int
         arg2: int
         arg3: int
@@ -136,7 +137,8 @@ from "nnet3/nnet-computation.h":
         arg6: int
         arg7: int
 
-        def __init__(self, command_type: CommandType = default,
+        def __init__(self, alpha: `float` as float,
+                     command_type: CommandType = default,
                      arg1: int = default, arg2: int = default,
                      arg3: int = default, arg4: int = default,
                      arg5: int = default, arg6: int = default,

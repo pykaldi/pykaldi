@@ -110,3 +110,5 @@ from "nnet3/nnet-analyze.h":
 
     def `CheckComputation` as check_computation(nnet: Nnet, computation: NnetComputation,
                          check_rewrite: bool = default)
+
+    def `GetMaxMemoryUse` as get_max_memory_use(computation: NnetComputation) -> int

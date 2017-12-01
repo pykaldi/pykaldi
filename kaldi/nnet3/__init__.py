@@ -6,6 +6,7 @@ from ._nnet_misc_computation_info import *
 from ._nnet_component_itf import *
 from ._nnet_simple_component import *
 from ._nnet_convolutional_component import *
+from ._nnet_attention_component import *
 from ._nnet_general_component import *
 from ._nnet_descriptor import *
 from ._nnet_nnet import *

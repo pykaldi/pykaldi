@@ -16,8 +16,10 @@ from "nnet3/nnet-descriptor.h":
 
       def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
 
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
     class SimpleForwardingDescriptor(ForwardingDescriptor):
-      def __init__(self, src_node: int)
+      def __init__(self, src_node: int, scale: float = default)
 
     class OffsetForwardingDescriptor(ForwardingDescriptor):
       def __init__(self, src: ForwardingDescriptor, offset: Index)
@@ -51,6 +53,8 @@ from "nnet3/nnet-descriptor.h":
 
       def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
 
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
       def `Modulus` as modulus(self) -> int
 
       def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
@@ -62,6 +66,9 @@ from "nnet3/nnet-descriptor.h":
       def __init__(self, src: ForwardingDescriptor)
 
       # def Src(self) -> ForwardingDescriptor
+
+    class ConstantSumDescriptor(SumDescriptor):
+      def __init__(self, value: `float` as float, dim: int)
 
     class BinarySumDescriptor(SumDescriptor):
       enum Operation with:

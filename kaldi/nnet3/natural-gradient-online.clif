@@ -10,6 +10,8 @@ from "nnet3/natural-gradient-online.h":
 
       def `SetNumSamplesHistory` as set_num_samples_history(self, num_samples_history: float)
 
+      def `SetNumMinibatchesHistory` as set_num_minibatches_history(self, num_minibatches_history: float)
+
       def `SetAlpha` as set_alpha(self, alpha: float)
 
       def `TurnOnDebug` as turn_on_debug(self)

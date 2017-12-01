@@ -43,6 +43,10 @@ add_pyclif_library("_nnet_convolutional_component" nnet-convolutional-component.
   LIBRARIES kaldi-nnet3
 )
 
+add_pyclif_library("_nnet_attention_component" nnet-attention-component.clif
+  LIBRARIES kaldi-nnet3
+)
+
 add_pyclif_library("_nnet_general_component" nnet-general-component.clif
   CLIF_DEPS _cu_array _cu_vector
   LIBRARIES kaldi-nnet3
@@ -108,7 +112,7 @@ add_pyclif_library("_nnet_optimize" nnet-optimize.clif
 )
 
 add_pyclif_library("_nnet_optimize_utils" nnet-optimize-utils.clif
-  CLIF_DEPS _nnet_optimize
+  CLIF_DEPS _nnet_analyze _nnet_optimize
   LIBRARIES kaldi-nnet3
 )
 
