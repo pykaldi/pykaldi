@@ -13,6 +13,7 @@ kaldi\.nnet3
       add_nnet
       add_nnet_components
       append_cindexes
+      apply_l2_regularization
       check_computation
       collapse_model
       component_dot_products
@@ -49,7 +50,9 @@ kaldi\.nnet3
       generate_simple_nnet_training_example
       get_commands_of_type
       get_computation_request
+      get_max_memory_use
       get_nnet_example_size
+      get_num_n_values
       graph_has_cycles
       has_batchnorm
       identify_submatrix_args
@@ -58,6 +61,7 @@ kaldi\.nnet3
       is_valid_name
       limit_derivative_times
       make_scc_graph
+      matrix_is_unused
       max_output_time_in_request
       merge_examples
       move_sizing_commands
@@ -89,6 +93,7 @@ kaldi\.nnet3
       read_index_vector
       read_vector_as_char
       recompute_stats
+      remove_commands_for_unused_matrix
       remove_no_ops
       remove_unnecessary_allocation
       remove_unnecessary_zeroing
@@ -96,6 +101,7 @@ kaldi\.nnet3
       replace_row_with_matrix_ops
       request_is_decomposable
       reset_generators
+      scale_batchnorm_stats
       scale_nnet
       set_batchnorm_test_mode
       set_dropout_proportion
@@ -156,6 +162,7 @@ kaldi\.nnet3
       ConfigLine
       ConstantComponent
       ConstantFunctionComponent
+      ConstantSumDescriptor
       DecodableAmNnetLoopedOnline
       DecodableAmNnetSimple
       DecodableAmNnetSimpleLooped
@@ -183,6 +190,7 @@ kaldi\.nnet3
       Index
       IndexSet
       IoSpecification
+      LinearComponent
       LogSoftmaxComponent
       LstmNonlinearityComponent
       MatrixAccesses
@@ -225,7 +233,9 @@ kaldi\.nnet3
       RectifiedLinearComponent
       RepeatedAffineComponent
       ReplaceIndexForwardingDescriptor
+      RestrictedAttentionComponent
       RoundingForwardingDescriptor
+      ScaleAndOffsetComponent
       SigmoidComponent
       SimpleForwardingDescriptor
       SimpleObjectiveInfo
