@@ -8,50 +8,59 @@ class Cmvn(object):
     """Cepstral mean variance normalization (CMVN).
 
     This class is used for accumulating CMVN statistics and applying CMVN using
-    accumulated statistics.
+    accumulated statistics. Global CMVN can be computed and applied as follows::
 
-    The :attr:`stats` attribute is the accumulated mean and variance statistics
-    matrix of size `(2, dim+1)`. `stats[0,:-1]` represents the sum of
-    accumulated feature vectors. `stats[1,:-1]` represents the sum of
-    element-wise squares of accumulated feature vectors. `stats[0,-1]`
-    represents the total count of accumulated feature vectors. `stats[1,-1]` is
-    initialized to zero but otherwise is not used.
+        cmvn = Cmvn(40)  # 40 dimensional features
+
+        for key, feats in SequentialMatrixReader("ark:feats.ark"):
+            cmvn.accumulate(feats)
+
+        with MatrixWriter("ark:feats_norm.ark") as writer:
+            for key, feats in SequentialMatrixReader("ark:feats.ark"):
+                cmvn.apply(feats, norm_vars=True)
+                writer[key] = feats
 
     Attributes:
         stats (DoubleMatrix or None): Accumulated mean/variance statistics
-            matrix of size `(2, dim+1)`. ``None`` if the stats matrix is not
-            initialized yet.
+            matrix of size `2 x dim+1`. This matrix is initialized when a CMVN
+            object is instantiated by specifying a feature dimension or when the
+            :meth:`init` method is explicitly called. It is ``None`` otherwise.
+            `stats[0,:-1]` represents the sum of accumulated feature vectors.
+            `stats[1,:-1]` represents the sum of element-wise squares of
+            accumulated feature vectors. `stats[0,-1]` represents the total
+            count of accumulated feature vectors. `stats[1,-1]` is initialized
+            to zero but otherwise is not used.
     """
     def __init__(self, dim=None):
         """
         Args:
-            dim (int): The feature dimension. If specified, it is used for
-                initializing the `stats` matrix by calling the init method.
+            dim (int): The feature dimension. If specified, :attr:`stats` matrix
+                is initialized with the given dimension.
         """
-        self.stats = None if dim is None else self.init(dim)
+        self.init(dim)
 
     def accumulate(self, feats, weights=None):
         """Accumulates CMVN statistics.
 
-        Computes the CMVN statistics for the given features and adds them
-        to the internal statistics matrix.
-
-        If `feats` is a single feature vector, then `weights` should be a number
-        or ``None``. If `feats` is a feature matrix, then `weights` should be a
-        vector with size `feat.num_rows` or ``None``.
+        Computes the CMVN statistics for given features and adds them to the
+        :attr:`stats` matrix.
 
         Args:
             feats (VectorBase or MatrixBase): The input features.
-            weights (float or VectorBase): The frame weights.
-                Defaults to``1.0`` for each frame if omitted.
+            weights (float or VectorBase): The frame weights. If `feats` is a
+                single feature vector, then `weights` should be a single number.
+                If `feats` is a feature matrix, then `weights` should be a
+                vector of size `feats.num_rows`. If `weights` is not specified
+                or ``None``, then no frame weighting is done.
         """
         if not self.stats:
-            raise ValueError("CMVN stats matrix is not initialized. It should "
-                             "be initialized either by reading from file or by "
-                             "calling the init method and accumulating stats.")
+            raise ValueError("CMVN stats matrix is not initialized. Initialize "
+                             "it either by reading it from file or by calling "
+                             "the init method to accumulate new statistics or "
+                             "by directly setting the stats attribute.")
         if isinstance(feats, _kaldi_matrix.MatrixBase):
             _cmvn.acc_cmvn_stats(feats, weights, self.stats)
-        elif isinstance(feats, _kaldi_matrix.VectorBase):
+        elif isinstance(feats, _kaldi_vector.VectorBase):
             if weights is None:
                 weights = 1.0
             _cmvn.acc_cmvn_stats_single_frame(feats, weights, self.stats)
@@ -69,9 +78,10 @@ class Cmvn(object):
                 the desired mean and variance.
         """
         if not self.stats:
-            raise ValueError("CMVN stats matrix is not initialized. It should "
-                             "be initialized either by reading from file or by "
-                             "calling the init method and accumulating stats.")
+            raise ValueError("CMVN stats matrix is not initialized. Initialize "
+                             "it either by reading it from file or by calling "
+                             "the init method and accumulating new statistics "
+                             "or by directly setting the stats attribute.")
         if reverse:
             _cmvn.apply_cmvn_reverse(self.stats, norm_vars, feats)
         else:
@@ -80,21 +90,22 @@ class Cmvn(object):
     def init(self, dim):
         """Initializes the CMVN statistics matrix.
 
-        The :attr:`stats` matrix is initialized as a `2 x dim+1` matrix of
-        zeros.
-
-        This method is called during object initialization if the feature
-        dimension is specified when constructing the object. It can be also be
+        This method is called during object initialization. It can also be
         called at a later time to initialize or reset the internal statistics
         matrix.
 
         Args:
-            dim (int): The feature dimension.
-        """
-        assert(dim > 0)
-        self.stats = matrix.DoubleMatrix(2, dim + 1)
+            dim (int or None): The feature dimension. If ``None``, then
+                :attr:`stats` attribute is set to ``None``. Otherwise, it is
+                initialized as a `2 x dim+1` matrix of zeros.
+    """
+        if dim is None:
+            self.stats = None
+        else:
+            assert(dim > 0)
+            self.stats = matrix.DoubleMatrix(2, dim + 1)
 
-    def read(self, rxfilename, binary=True):
+    def read_stats(self, rxfilename, binary=True):
         """Reads CMVN statistics from file.
 
         Args:
@@ -107,17 +118,18 @@ class Cmvn(object):
     def skip_dims(self, dims):
         """Modifies the stats to skip normalization for given dimensions.
 
-        This is a destructive operation. The stats for given dimensions are
+        This is a destructive operation. The statistics for given dimensions are
         replaced with fake values that effectively disable normalization in
-        those dimensions. This method should only be called after stats
-        accumulation is finished since accumulation modifies the stats matrix.
+        those dimensions. This method should only be called after statistics
+        accumulation is finished since accumulation modifies the :attr:`stats`
+        matrix.
 
         Args:
             dims(List[int]): Dimensions for which to skip normalization.
         """
         _cmvn.fake_stats_for_some_dims(dims, self.stats)
 
-    def write(self, wxfilename, binary=True):
+    def write_stats(self, wxfilename, binary=True):
         """Writes CMVN statistics to file.
 
         Args:

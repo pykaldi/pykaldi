@@ -5,7 +5,7 @@ import sys
 from collections import defaultdict
 
 from kaldi.matrix import DoubleMatrix
-from kaldi.transform.cmvn import acc_cmvn_stats, acc_cmvn_stats_single_frame
+from kaldi.transform.cmvn import Cmvn  # acc_cmvn_stats, acc_cmvn_stats_single_frame
 from kaldi.util.io import xopen, printable_rxfilename
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import RandomAccessMatrixReader, DoubleMatrixWriter
@@ -32,23 +32,25 @@ def get_utterance_pairs(reco2file_and_channel_rxfilename):
     return utt_pairs
 
 
-def acc_cmvn_stats_for_pair(utt1, utt2, feats1, feats2, quieter_channel_weight,
-                            cmvn_stats1, cmvn_stats2):
+def acc_cmvn_stats_for_pair(utt1, utt2, feats1, feats2, quieter_channel_weight):
     assert(feats1.num_cols == feats2.num_cols)
+    cmvn1 = Cmvn(feats1.num_cols)
+    cmvn2 = Cmvn(feats2.num_cols)
     if feats1.num_rows != feats2.num_rows:
         print("Number of frames differ between {} and {}: {} vs. {}, treating "
               "them separately.".format(utt1, utt2,
                                         feats1.num_rows, feats2.num_rows))
-        acc_cmvn_stats(feats1, None, cmvn_stats1)
-        acc_cmvn_stats(feats2, None, cmvn_stats2)
-        return
-    for v1, v2 in zip(feats1, feats2):
-        if v1[0] > v2[0]:
-            w1, w2 = 1.0, quieter_channel_weight
-        else:
-            w1, w2 = quieter_channel_weight, 1.0
-        acc_cmvn_stats_single_frame(v1, w1, cmvn_stats1)
-        acc_cmvn_stats_single_frame(v2, w2, cmvn_stats2)
+        cmvn1.accumulate(feats1)
+        cmvn2.accumulate(feats2)
+    else:
+        for v1, v2 in zip(feats1, feats2):
+            if v1[0] > v2[0]:
+                w1, w2 = 1.0, quieter_channel_weight
+            else:
+                w1, w2 = quieter_channel_weight, 1.0
+            cmvn1.accumulate(v1, w1)
+            cmvn2.accumulate(v2, w2)
+    return cmvn1, cmvn2
 
 def compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
                                    feats_rspecifier, stats_wspecifier, opts):
@@ -74,13 +76,11 @@ def compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
                     else:
                         feats1 = feat_reader[utt1]
                         feats2 = feat_reader[utt2]
-                        cmvn_stats1 = DoubleMatrix(2, feats1.num_cols + 1)
-                        cmvn_stats2 = DoubleMatrix(2, feats1.num_cols + 1)
-                        acc_cmvn_stats_for_pair(utt1, utt2, feats1, feats2,
-                                                opts.quieter_channel_weight,
-                                                cmvn_stats1, cmvn_stats2)
-                        writer[utt1] = cmvn_stats1
-                        writer[utt2] = cmvn_stats2
+                        cmvn1, cmvn2 = acc_cmvn_stats_for_pair(
+                            utt1, utt2, feats1, feats2,
+                            opts.quieter_channel_weight)
+                        writer[utt1] = cmvn1.stats
+                        writer[utt2] = cmvn2.stats
                         num_done += 2
                         continue
                 # process singletons
@@ -90,9 +90,9 @@ def compute_cmvn_stats_two_channel(reco2file_and_channel_rxfilename,
                     num_err += 1
                     continue
                 feats = feat_reader[utt]
-                cmvn_stats = DoubleMatrix(2, feats.num_cols + 1)
-                acc_cmvn_stats(feats, None, cmvn_stats)
-                writer[utt] = cmvn_stats
+                cmvn = Cmvn(feats.num_cols)
+                cmvn.accumulate(feats)
+                writer[utt] = cmvn.stats
                 num_done += 1
     print("Done accumulating CMVN stats for {} utterances; {} had errors."
           .format(num_done, num_err), file=sys.stderr)

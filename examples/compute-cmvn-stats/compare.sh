@@ -15,8 +15,10 @@ if [[ -z "$KALDI_DIR" ]]; then
 fi
 
 echo "1-A $feats" > $scpfile
+echo "1-B $feats" >> $scpfile
 echo "[ 0 0 0 0 0 1 1 1 1 1 1 0 ]" > $feats
 echo "1-A 1 A" > $reco2file
+echo "1-B 1 B" >> $reco2file
 
 KALDI_CMD="$KALDI_DIR/src/featbin/compute-cmvn-stats-two-channel $reco2file scp:$scpfile ark,t:-"
 PYKALDI_CMD="$PYTHON compute-cmvn-stats-two-channel.py $reco2file scp:$scpfile ark,t:-"
