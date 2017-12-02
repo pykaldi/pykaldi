@@ -179,7 +179,7 @@ class Output(_kaldi_io.Output):
         """
         if not self.is_open():
             raise ValueError("I/O operation on closed stream.")
-        if not self.stream()._good():
+        if not self.stream().good():
             raise IOError("I/O error.")
         self._write(self.stream(), s)
         return len(s)

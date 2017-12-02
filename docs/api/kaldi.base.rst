@@ -43,18 +43,35 @@ kaldi\.base\.io
    .. autosummary::
       :nosignatures:
    
+      expect_token
       flush
       get_stderr
       get_stdin
       get_stdout
       init_kaldi_input_stream
       init_kaldi_output_stream
+      peek
+      peek_token
       read
+      read_bool
+      read_double
+      read_float
+      read_int
+      read_int_pair_vector
+      read_int_vector
       read_text
+      read_token
       readline
       readline_text
       write
+      write_bool
+      write_double
+      write_float
+      write_int
+      write_int_pair_vector
+      write_int_vector
       write_text
+      write_token
    
    
 

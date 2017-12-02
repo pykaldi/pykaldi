@@ -2,9 +2,13 @@
 from "base/timer.h":
   namespace `kaldi`:
     class Timer:
+      """Kaldi timer."""
       @add__init__
-      def `Timer` as new(self, set_timer: bool)
+      def `Timer` as new(self, set_timer: bool):
+        """Creates and optionally resets the timer to current time."""
 
-      def `Reset` as reset(self)
+      def `Reset` as reset(self):
+        """Resets the timer to current time."""
 
-      def `Elapsed` as elapsed(self) -> float
+      def `Elapsed` as elapsed(self) -> float:
+        """Returns elapsed time since timer was reset."""

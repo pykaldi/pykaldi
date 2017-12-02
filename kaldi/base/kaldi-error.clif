@@ -1,9 +1,13 @@
 from "base/kaldi-error.h":
   namespace `kaldi`:
-    def `GetVerboseLevel` as get_verbose_level() -> int
+    def `GetVerboseLevel` as get_verbose_level() -> int:
+      """Returns the verbose level."""
 
-    def `SetVerboseLevel` as set_verbose_level(i: int)
+    def `SetVerboseLevel` as set_verbose_level(i: int):
+      """Sets the verbose level."""
 
-    def `SetAbortOnAssertFailure` as set_abort_on_assert_failure(a: bool)
+    def `SetAbortOnAssertFailure` as set_abort_on_assert_failure(a: bool):
+      """Enables/disables the call to abort in case of assertion failure."""
 
-    def `SetPrintStackTraceOnError` as set_print_stack_trace_on_error(p: bool)
+    def `SetPrintStackTraceOnError` as set_print_stack_trace_on_error(p: bool):
+      """Enables/disables the printing of stack trace in case of an error."""

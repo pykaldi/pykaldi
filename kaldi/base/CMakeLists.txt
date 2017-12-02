@@ -12,6 +12,17 @@ add_pyclif_library("_sstream" sstream.clif)
 
 add_pyclif_library("_io_funcs" io-funcs.clif
   CLIF_DEPS _iostream
+  LIBRARIES kaldi-base
+)
+
+add_pyclif_library("_io_funcs_inl" io-funcs-inl.clif
+  CLIF_DEPS _iostream
+  LIBRARIES kaldi-base
+)
+
+add_pyclif_library("_io_funcs_ext" io-funcs-ext.clif
+  CLIF_DEPS _iostream
+  LIBRARIES kaldi-base
 )
 
 add_pyclif_library("_kaldi_math" kaldi-math.clif

@@ -21,7 +21,7 @@ from kaldi.util.table import (IntVectorWriter, SequentialMatrixReader,
 
 def read_network(rxfilename):
     with xopen(rxfilename) as ki:
-        if not ki.stream()._good():
+        if not ki.stream().good():
             raise IOError("Could not open decoding-graph FST {}"
                           .format(rxfilename))
         hdr = FstHeader()

@@ -1,0 +1,30 @@
+from "base/iostream-clifwrap.h" import *
+
+from kaldi.util import _value_error_on_false
+
+from "base/io-funcs-ext.h":
+  namespace `kaldi`:
+
+    def `WriteBasicTypeExt` as write_int(os: ostream, binary: bool, t: int):
+      """Writes an integer."""
+
+    def `ReadBasicTypeExt` as read_int(is: istream, binary: bool) -> int:
+      """Reads an integer."""
+
+    def `WriteBasicTypeExt` as write_bool(os: ostream, binary: bool, t: bool):
+      """Writes a Boolean."""
+
+    def `ReadBasicTypeExt` as read_bool(is: istream, binary: bool) -> bool:
+      """Reads a Boolean."""
+
+    def `WriteBasicTypeExt` as write_float(os: ostream, binary: bool, t: `float` as float):
+      """Writes a single precision float."""
+
+    def `ReadBasicTypeExt` as read_float(is: istream, binary: bool) -> `float` as float:
+      """Reads a single precision float."""
+
+    def `WriteBasicTypeExt` as write_double(os: ostream, binary: bool, t: float):
+      """Writes a double precision float."""
+
+    def `ReadBasicTypeExt` as read_double(is: istream, binary: bool) -> float:
+      """Reads a double precision float."""

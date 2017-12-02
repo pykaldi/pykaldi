@@ -1,12 +1,25 @@
+"""C++ std::fstream wrapper.
+
+This module provides the wrappers needed for working with C++ std::fstream
+instances. The wrappers for input and/or output stream types do not expose any
+members other than construction from a filename since we do not want to work
+with them directly in Python. They can be used for wrapping methods and
+functions that accept or return fstream objects.
+"""
+
 from kaldi.base._iostream import istream
 from kaldi.base._iostream import ostream
 
 from "fstream":
   namespace `::std`:
     class ifstream(istream):
+      """Input file stream."""
       @add__init__
-      def `ifstream` as from_file(self, filename: str)
+      def `ifstream` as from_file(self, filename: str):
+        """Creates a new input file stream."""
 
     class ofstream(ostream):
+      """Output file stream."""
       @add__init__
-      def `ofstream` as from_file(self, filename: str)
+      def `ofstream` as from_file(self, filename: str):
+        """Creates a new output file stream."""

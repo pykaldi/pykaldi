@@ -5,12 +5,14 @@
 
 namespace kaldi {
 
-inline void InitKaldiOutputStreamExt(std::ostream &os, bool binary) {
-  InitKaldiOutputStream(os, binary);
+// Read/WriteBasicType shims are needed for working around CLIF limitations.
+
+template<class T> void WriteBasicTypeExt(std::ostream &os, bool binary, T t) {
+  WriteBasicType(os, binary, t);
 }
 
-inline bool InitKaldiInputStreamExt(std::istream &is, bool *binary) {
-  return InitKaldiInputStream(is, binary);
+template<class T> void ReadBasicTypeExt(std::istream &is, bool binary, T *t) {
+  ReadBasicType(is, binary, t);
 }
 
 }  // namespace kaldi

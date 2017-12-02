@@ -1,3 +1,13 @@
+"""C++ std::sstream wrapper.
+
+This module provides the wrappers needed for working with C++ std::sstream
+instances. The wrappers for input and/or output stream types do not expose any
+members other than construction from a string and returning stream contents as
+a unicode string (or bytes object) since we do not want to work with them
+directly in Python. They can be used for wrapping methods and functions that
+accept or return sstream objects.
+"""
+
 from kaldi.base._iostream import istream
 from kaldi.base._iostream import ostream
 from kaldi.base._iostream import iostream
@@ -5,25 +15,37 @@ from kaldi.base._iostream import iostream
 from "sstream":
   namespace `::std`:
     class istringstream(istream):
+      """Input string stream."""
       @add__init__
-      def `istringstream` as from_str(self, str: str)
+      def `istringstream` as from_str(self, str: str):
+        """Creates a new input string stream."""
 
-      def `str` as to_str(self) -> str
+      def `str` as to_str(self) -> str:
+        """Returns stream contents as a unicode string."""
 
-      def `str` as to_bytes(self) -> bytes
+      def `str` as to_bytes(self) -> bytes:
+        """Returns stream contents as a bytes object."""
 
     class ostringstream(ostream):
+      """Output string stream."""
       @add__init__
-      def `ostringstream` as from_str(self, str: str)
+      def `ostringstream` as from_str(self, str: str):
+        """Creates a new output string stream."""
 
-      def `str` as to_str(self) -> str
+      def `str` as to_str(self) -> str:
+        """Returns stream contents as a unicode string."""
 
-      def `str` as to_bytes(self) -> bytes
+      def `str` as to_bytes(self) -> bytes:
+        """Returns stream contents as a bytes object."""
 
     class stringstream(iostream):
+      """Input/output string stream."""
       @add__init__
-      def `stringstream` as from_str(self, str: str)
+      def `stringstream` as from_str(self, str: str):
+        """Creates a new input/output string stream."""
 
-      def `str` as to_str(self) -> str
+      def `str` as to_str(self) -> str:
+        """Returns stream contents as a unicode string."""
 
-      def `str` as to_bytes(self) -> bytes
+      def `str` as to_bytes(self) -> bytes:
+        """Returns stream contents as a bytes object."""

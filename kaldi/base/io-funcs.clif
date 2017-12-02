@@ -2,12 +2,20 @@ from "base/iostream-clifwrap.h" import *
 
 from kaldi.util import _value_error_on_false
 
-from "base/io-funcs-ext.h":
+from "base/io-funcs.h":
   namespace `kaldi`:
 
-    def `InitKaldiOutputStreamExt` as init_kaldi_output_stream(os: ostream,
-                                                               binary: bool)
+    def `WriteToken` as write_token(os: ostream, binary: bool, token: str):
+      """Writes non-empty string of non-space characters."""
 
-    def `InitKaldiInputStreamExt` as init_kaldi_input_stream(is: istream)
-      -> (success: bool, binary: bool):
-      return _value_error_on_false(...)
+    def `Peek` as peek(is: istream, binary: bool) -> int:
+      """Consumes whitespace (if binary == True) and returns the peek value."""
+
+    def `ReadToken` as read_token(is: istream, binary: bool) -> str:
+      """Reads and returns the next token (throws exception on failure)"""
+
+    def `PeekToken` as peek_token(is: istream, binary: bool) -> int:
+      """Returns the first character of the next token or -1 if EOF."""
+
+    def `ExpectToken` as expect_token(is: istream, binary: bool, token: str):
+      """Tries to read the given token and throws exception on failure."""
