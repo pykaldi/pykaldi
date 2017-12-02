@@ -14,8 +14,17 @@ kaldi\.decoder
    .. autosummary::
       :nosignatures:
    
+      BiglmFasterDecoder
+      BiglmFasterDecoderOptions
+      DecodableMapped
+      DecodableMatrixMappedOffset
+      DecodableMatrixScaled
+      DecodableMatrixScaledMapped
+      DecodableSum
+      DecodableSumScaled
       FasterDecoder
       FasterDecoderOptions
+      LatticeBiglmFasterDecoder
       LatticeFasterDecoder
       LatticeFasterDecoderOptions
       LatticeFasterOnlineDecoder

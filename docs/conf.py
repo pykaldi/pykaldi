@@ -141,7 +141,7 @@ autosummary_generate = True
 autodoc_default_flags = ['members', 'undoc-members', 'inherited-members']
 
 # Append __init__ docstring to class docstring.
-autoclass_content = 'both'
+autoclass_content = 'class'
 
 # Custom handler for including/excluding members in documentation.
 def skip_member_handler(app, what, name, obj, skip, options):

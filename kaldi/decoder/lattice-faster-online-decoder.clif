@@ -8,13 +8,18 @@ from "decoder/lattice-faster-decoder-clifwrap.h" import *
 from "decoder/lattice-faster-online-decoder.h":
   namespace `kaldi`:
     class LatticeFasterOnlineDecoder:
-      """Lattice generating online decoder.
+      """LatticeFasterOnlineDecoder(fst, config)
+
+      Lattice generating faster online decoder.
 
       Similar to LatticeFasterDecoder but also supports an efficient way of
       getting the best path (see :meth:`best_path_end`), which is useful in
       endpointing.
-      """
 
+      Args:
+        fst (StdFst): Decoding graph.
+        config (LatticeFasterDecoderOptions): Decoding options.
+      """
       def __init__(self, fst: StdFst, config: LatticeFasterDecoderOptions)
 
       def `SetOptions` as set_options(self,

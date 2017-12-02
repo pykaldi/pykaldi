@@ -5,10 +5,21 @@ from kaldi.itf._decodable_itf import DecodableInterface
 from "decoder/decodable-mapped.h":
   namespace `kaldi`:
     class DecodableMapped(DecodableInterface):
+      """DecodableMapped(index_map, d)
+
+      Decodable for mapping the indices of another decodable object.
+
+      Args:
+        index_map (List[int]): The index mapping.
+        d (DecodableInterface): The other decodable object.
+      """
       def __init__(self, index_map: list<int>, d: DecodableInterface)
 
-      def `LogLikelihood` as loglikelihood(self, frame: int, state_index: int) -> float
+      def `LogLikelihood` as loglikelihood(self, frame: int, state_index: int) -> float:
+        """Returns the log-likehood of the mapped index for the given frame."""
 
-      def `NumIndices` as num_indices(self) -> int
+      def `NumIndices` as num_indices(self) -> int:
+        """Returns number of indices."""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Checks if given frame is the last frame."""

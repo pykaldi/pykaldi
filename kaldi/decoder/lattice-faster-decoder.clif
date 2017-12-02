@@ -3,26 +3,46 @@ from "itf/options-itf-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
+from "lat/determinize-lattice-pruned-clifwrap.h" import *
 
 from "decoder/lattice-faster-decoder.h":
   namespace `kaldi`:
     class `LatticeFasterDecoderConfig` as LatticeFasterDecoderOptions:
-      beam: float
-      max_active: int
-      min_active: int
-      lattice_beam: float
-      prune_interval: int
-      determinize_lattice: bool
-      beam_delta: float
-      hash_ratio: float
-      prune_scale: float
-      # det_opts: DeterminizeLatticePhonePrunedOptions
+      """Options for lattice generating faster decoder."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      beam: float
+      """Decoding beam. Larger -> slower but more accurate."""
+      max_active: int
+      """Max number of active states. Larger -> slower but more accurate."""
+      min_active: int
+      """Min number of active states. No pruning if #active is less than this."""
+      lattice_beam: float
+      """Lattice generation beam. Larger -> slower but deeper lattices."""
+      prune_interval: int
+      """Token pruning interval (in frames)."""
+      determinize_lattice: bool
+      """Whether to run lattice-determinization on output lattices."""
+      beam_delta: float
+      """Increment used for increasing decoder beam. This is an obscure option."""
+      hash_ratio: float
+      """Setting used in decoder to control hash behavior."""
+      prune_scale: float
+      """Pruning scale. It affects the algorithm used for pruning the tokens."""
+      det_opts: DeterminizeLatticePhonePrunedOptions
+      """Options for lattice-determinization."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with another options object."""
 
     class LatticeFasterDecoder:
-      """Lattice generating decoder."""
+      """LatticeFasterDecoder(fst, config)
 
+      Lattice generating faster decoder.
+
+      Args:
+        fst (StdFst): Decoding graph.
+        config (LatticeFasterDecoderOptions): Decoding options.
+      """
       def __init__(self, fst: StdFst, config: LatticeFasterDecoderOptions)
 
       def `SetOptions` as set_options(self,

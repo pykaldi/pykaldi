@@ -1,0 +1,12 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "decoder/training-graph-compiler-clifwrap.h" import *
+
+from kaldi.util import _value_error_on_false
+
+from "decoder/training-graph-compiler-ext.h":
+  namespace `kaldi`:
+    def `CompileGraphs` as compile_graphs(
+        training_graph_compiler: TrainingGraphCompiler, word_fsts: list<StdVectorFst>)
+      -> (success: bool, out_fsts: list<StdVectorFst>):
+      return _value_error_on_false(...)
