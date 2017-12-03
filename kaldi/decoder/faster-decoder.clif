@@ -7,66 +7,68 @@ from "fstext/mutable-fst-clifwrap.h" import *
 from "decoder/faster-decoder.h":
   namespace `kaldi`:
     class FasterDecoderOptions:
-      """Options for faster decoder."""
+      """Options for :class:`FasterDecoder`."""
 
       beam: float
       """Decoding beam. Larger -> slower but more accurate."""
       max_active: int
       """Max number of active states. Larger -> slower but more accurate."""
       min_active: int
-      """Min number of active states. No pruning if #active is less than this."""
+      """Min number of active states. No pruning if `active < min_active`."""
       beam_delta: float
-      """Increment used for increasing decoder beam. This is an obscure option."""
+      """Increment used for increasing decoder beam. Obscure option."""
       hash_ratio: float
       """Setting used in decoder to control hash behavior."""
 
       def `Register` as register(self, opts: OptionsItf, full: bool):
-        """Registers options with another options object.
+        """Registers options with an object implementing the options interface.
 
-        If `full == True`, uses obscure options too.
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+          full (bool): If ``True``, registers obscure options too.
         """
 
     class FasterDecoder:
-      """FasterDecoder(fst, config)
+      """FasterDecoder(fst, opts)
 
       Faster decoder.
 
       Args:
-        fst (StdFst): Decoding graph.
-        config (FasterDecoderOptions): Decoding options.
+        fst (StdFst): Decoding graph `HCLG`.
+        opts (FasterDecoderOptions): Decoder options.
       """
-      def __init__(self, fst: StdFst, config: FasterDecoderOptions)
+      def __init__(self, fst: StdFst, opts: FasterDecoderOptions)
 
-      def `SetOptions` as set_options(self, config: FasterDecoderOptions):
-        """Sets decoder options."""
+      def `SetOptions` as set_options(self, opts: FasterDecoderOptions):
+        """Sets decoder options.
+
+        Args:
+          opts (FasterDecoderOptions): Decoder options.
+        """
 
       def `Decode` as decode(self, decodable: DecodableInterface):
-        """Decodes all frames in the decodable object."""
+        """Decodes all available frames in the decodable object.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
+        """
 
       def `ReachedFinal` as reached_final(self) -> bool:
-        """
-        Returns:
-          True if a final state was active on the last frame.
-        """
-
-      def `GetBestPath` as get_best_path(self,
-          fst_out: LatticeMutableFst, use_final_probs: bool = default) -> bool:
-        """Gets best path as an FST.
-
-        If 'use_final_probs' is true and we reached a final state of the graph,
-        then the output will include final probabilities given by the graph;
-        otherwise all final probabilities are treated as one.
+        """Checks if a final state was active on the last decoded frame.
 
         Returns:
-          True if the output best path is not empty,
-          False in the unusual circumstances where no tokens survive.
+          True if a final state was active on the last decoded frame.
         """
+
+      def `GetBestPath` as _get_best_path(self,
+          fst_out: LatticeMutableFst, use_final_probs: bool = default) -> bool
 
       def `InitDecoding` as init_decoding(self):
         """Initializes decoding.
 
-        As a new alternative to :meth:`decode`, you can call init_decoding and
-        then call :meth:`advance_decoding` (posible multiple times) .
+        As an alternative to :meth:`decode`, you can call :meth:`init_decoding`
+        and then call :meth:`advance_decoding` (possibly multiple times).
         """
 
       def `AdvanceDecoding` as advance_decoding(self,
@@ -74,12 +76,18 @@ from "decoder/faster-decoder.h":
         """Advances decoding.
 
         This will decode until there are no more frames ready in the decodable
-        object, but if max_num_frames >= 0 it will decode no more than that
+        object, but if `max_num_frames >= 0` it will decode no more than that
         many frames.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
+          max_num_frames (int): Max number of frames to decode. Defaults to
+            ``-1`` which means decode all available frames.
         """
 
       def `NumFramesDecoded` as num_frames_decoded(self) -> int:
-        """
+        """Queries the number of frames already decoded.
+
         Returns:
           The number of frames already decoded.
         """

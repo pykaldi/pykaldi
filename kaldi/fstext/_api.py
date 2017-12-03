@@ -189,7 +189,7 @@ class _FstCompiler(object):
 
 class _FstBase(object):
     """Base class defining the Python API for FST types."""
-    # IPython notebook magic to produce an SVG of the FST.
+
     def _repr_svg_(self):
         """IPython notebook magic to produce an SVG of the FST using GraphViz.
 
@@ -831,12 +831,12 @@ class _MutableFstBase(_FstBase):
         or vice versa.
 
         Args:
-          project_output: Should the output labels be projected?
+          project_output: Project onto output labels?
 
         Returns:
           self.
 
-        See also: `decode`, `encode`, `relabel`, `relabel_symbols`.
+        See also: `decode`, `encode`, `relabel`, `relabel_tables`.
         """
         self._ops.project(self, _getters.GetProjectType(project_output))
         self._check_mutating_imethod()
@@ -1799,7 +1799,7 @@ def randequivalent(ifst1, ifst2, npath=1, delta=DELTA, seed=None,
     Returns:
         True if the two transducers satisfy the above condition, else False.
 
-    Raise:
+    Raises:
         RuntimeError: Random equivalence test encountered error.
 
     See also: `equal`, `equivalent`, `isomorphic`, `randgen`.

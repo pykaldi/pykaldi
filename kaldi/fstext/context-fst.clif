@@ -11,8 +11,8 @@ from "fstext/context-fst.h":
     class `ContextFst<StdArc>` as StdContextFst(StdFst):
       """Context FST over the tropical semiring.
 
-      Context FST \"C\" transduces from symbols representing phone context
-      windows (e.g. \"a, b, c\") to individual phone, e.g. \"a\".  The context
+      Context FST "C" transduces from symbols representing phone context
+      windows (e.g. "a, b, c") to individual phone, e.g. "a".  The context
       FST is an on-demand FST.  It has its own matcher type that makes it
       particularly efficient to compose with.
 

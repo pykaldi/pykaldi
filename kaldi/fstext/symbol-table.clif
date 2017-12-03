@@ -1,4 +1,3 @@
-
 from "fst/symbol-table.h":
   namespace `fst`:
     class SymbolTableTextOptions:
@@ -31,11 +30,11 @@ from "fst/symbol-table.h":
         import string
 
         table = SymbolTable()
-        table.set_name(\"alphabet\")
-        table.add_symbol(\"<eps>\")
+        table.set_name("alphabet")
+        table.add_symbol("<eps>")
         for symbol in string.ascii_lowercase:
             table.add_symbol(symbol)
-        table.write_text(\"alphabet.syms\")
+        table.write_text("alphabet.syms")
 
       .. autoconstant:: NO_SYMBOL
       """

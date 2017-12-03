@@ -5,75 +5,53 @@ from "fstext/fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/deterministic-fst-clifwrap.h" import *
 
+from kaldi.decoder import FasterDecoderOptions
+
 from "decoder/biglm-faster-decoder.h":
   namespace `kaldi`:
-    class BiglmFasterDecoderOptions:
-      """Options for big LM faster decoder."""
-
-      beam: float
-      """Decoding beam. Larger -> slower but more accurate."""
-      max_active: int
-      """Max number of active states. Larger -> slower but more accurate."""
-      min_active: int
-      """Min number of active states. No pruning if #active is less than this."""
-      beam_delta: float
-      """Increment used for increasing decoder beam. This is an obscure option."""
-      hash_ratio: float
-      """Setting used in decoder to control hash behavior."""
-
-      def `Register` as register(self, opts: OptionsItf, full: bool):
-        """Registers options with another options object.
-
-        If `full == True`, uses obscure options too.
-        """
+    class BiglmFasterDecoderOptions(FasterDecoderOptions):
+      """Options for :class:`BiglmFasterDecoder`."""
+      pass
 
     class BiglmFasterDecoder:
-      """BiglmFasterDecoder(fst, config, lm_diff_fst)
+      """BiglmFasterDecoder(fst, opts, lm_diff_fst)
 
       Faster decoder for decoding with big language models.
 
-      This is as FasterDecoder, but does online composition between HCLG and
-      the difference language model, which is a deterministic FST that
-      represents the difference between the language model you want and the
-      language model you compiled HCLG with. The class DeterministicOnDemandFst
-      follows through the epsilons in G for you (assuming G is a standard
-      backoff language model) and makes it look like a determinized FST.
-      Actually, in practice, DeterministicOnDemandFst operates in a mode where
-      it composes two G's together; one has negated likelihoods and works by
-      removing the LM probabilities that you made HCLG with, and one is the
-      language model you want to use.
+      This is as :class:`LatticeFasterDecoder`, but does online composition
+      between decoding graph :attr:`fst` and the difference language model
+      :attr:`lm_diff_fst`.
 
       Args:
         fst (StdFst): Decoding graph.
-        opts (BiglmFasterDecoderOptions): Decoding options.
-        lm_diff_fst (StdDeterministicOnDemandFst): The FST representing the
-          difference in LM scores between the LM we want to decode with and
-          the LM the decoding graph :attr:`fst` was built with.
+        opts (BiglmFasterDecoderOptions): Decoder options.
+        lm_diff_fst (StdDeterministicOnDemandFst): The deterministic on-demand
+          FST representing the difference in scores between the LM to decode
+          with and the LM the decoding graph :attr:`fst` was compiled with.
       """
       def __init__(self, fst: StdFst, opts: BiglmFasterDecoderOptions,
                    lm_diff_fst: StdDeterministicOnDemandFst)
 
       def `SetOptions` as set_options(self, opts: BiglmFasterDecoderOptions):
-        """Sets decoder options."""
+        """Sets decoder options.
+
+        Args:
+          opts (BiglmFasterDecoderOptions): Decoder options.
+        """
 
       def `Decode` as decode(self, decodable: DecodableInterface):
-        """Decodes all frames in the decodable object."""
+        """Decodes all available frames in the decodable object.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
+        """
 
       def `ReachedFinal` as reached_final(self) -> bool:
-        """
-        Returns:
-          True if a final state was active on the last frame.
-        """
-
-      def `GetBestPath` as get_best_path(self,
-          fst_out: LatticeMutableFst, use_final_probs: bool = default) -> bool:
-        """Gets best path as an FST.
-
-        If 'use_final_probs' is true and we reached a final state of the graph,
-        then the output will include final probabilities given by the graph;
-        otherwise all final probabilities are treated as one.
+        """Checks if a final state was active on the last decoded frame.
 
         Returns:
-          True if the output best path is not empty,
-          False in the unusual circumstances where no tokens survive.
+          True if a final state was active on the last decoded frame.
         """
+
+      def `GetBestPath` as _get_best_path(self,
+          fst_out: LatticeMutableFst, use_final_probs: bool = default) -> bool

@@ -35,7 +35,7 @@ from "fstext/deterministic-fst.h":
       """Deterministic on demand backoff language model.
 
       This class wraps a conventional Fst, representing a language model, with
-      a \"DeterministicOnDemandFst\" interface. Backoff arcs in the language
+      a "DeterministicOnDemandFst" interface. Backoff arcs in the language
       model should have the epsilon label (label 0) on the arcs, and that there
       should be no other epsilons in the language model. The backoff (i.e.
       epsilon) arcs are followed if a particular arc (or a final-prob) is not

@@ -8,14 +8,14 @@ from "lat/determinize-lattice-pruned-clifwrap.h" import *
 from "decoder/lattice-faster-decoder.h":
   namespace `kaldi`:
     class `LatticeFasterDecoderConfig` as LatticeFasterDecoderOptions:
-      """Options for lattice generating faster decoder."""
+      """Options for :class:`LatticeFasterDecoder`."""
 
       beam: float
       """Decoding beam. Larger -> slower but more accurate."""
       max_active: int
       """Max number of active states. Larger -> slower but more accurate."""
       min_active: int
-      """Min number of active states. No pruning if #active is less than this."""
+      """Min number of active states. No pruning if `active < min_active`."""
       lattice_beam: float
       """Lattice generation beam. Larger -> slower but deeper lattices."""
       prune_interval: int
@@ -23,39 +23,54 @@ from "decoder/lattice-faster-decoder.h":
       determinize_lattice: bool
       """Whether to run lattice-determinization on output lattices."""
       beam_delta: float
-      """Increment used for increasing decoder beam. This is an obscure option."""
+      """Increment used for increasing decoder beam. Obscure option."""
       hash_ratio: float
       """Setting used in decoder to control hash behavior."""
       prune_scale: float
-      """Pruning scale. It affects the algorithm used for pruning the tokens."""
+      """Pruning scale. It affects the algorithm used for pruning tokens."""
       det_opts: DeterminizeLatticePhonePrunedOptions
       """Options for lattice-determinization."""
 
       def `Register` as register(self, opts: OptionsItf):
-        """Registers options with another options object."""
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class LatticeFasterDecoder:
-      """LatticeFasterDecoder(fst, config)
+      """LatticeFasterDecoder(fst, opts)
 
       Lattice generating faster decoder.
 
       Args:
-        fst (StdFst): Decoding graph.
-        config (LatticeFasterDecoderOptions): Decoding options.
+        fst (StdFst): Decoding graph `HCLG`.
+        opts (LatticeFasterDecoderOptions): Decoder options.
       """
-      def __init__(self, fst: StdFst, config: LatticeFasterDecoderOptions)
+      def __init__(self, fst: StdFst, opts: LatticeFasterDecoderOptions)
 
-      def `SetOptions` as set_options(self,
-                                      config: LatticeFasterDecoderOptions):
-        """Sets decoder options."""
+      def `SetOptions` as set_options(self, opts: LatticeFasterDecoderOptions):
+        """Sets decoder options.
+
+        Args:
+          opts (LatticeFasterDecoderOptions): Decoder options.
+        """
 
       def `GetOptions` as get_options(self) -> LatticeFasterDecoderOptions:
-        """Gets decoder options."""
+        """Gets decoder options.
+
+        Returns:
+          The decoder options.
+        """
 
       def `Decode` as decode(self, decodable: DecodableInterface) -> bool:
-        """Decodes all frames in the decodable object.
+        """Decodes all available frames in the decodable object.
 
-        This may block waiting for input if the "decodable" object blocks.
+        This may block waiting for input if the `decodable` object blocks.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
 
         Returns:
           True if any kind of traceback is available (not necessarily from a
@@ -63,59 +78,26 @@ from "decoder/lattice-faster-decoder.h":
         """
 
       def `ReachedFinal` as reached_final(self) -> bool:
-        """Check if decoding reached a final state of the graph.
+        """Checks if a final state was active on the last decoded frame.
 
         Returns:
-          True if a final state of the graph was active on the last frame.
+          True if a final state was active on the last decoded frame.
         """
 
-      def `GetBestPath` as get_best_path(self,
-          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool:
-        """Gets best path as an FST.
+      def `GetBestPath` as _get_best_path(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool
 
-        If 'use_final_probs' is true and we reached a final state of the graph,
-        then the output will include final probabilities given by the graph;
-        otherwise all final probabilities are treated as one.
+      def `GetRawLattice` as _get_raw_lattice(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool
 
-        Returns:
-          True if the output best path is not empty,
-          False in the unusual circumstances where no tokens survive.
-        """
-
-      def `GetRawLattice` as get_raw_lattice(self,
-          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool:
-        """Gets raw state-level lattice.
-
-        If 'use_final_probs' is true and we reached a final state of the graph,
-        then the output will include final probabilities given by the graph;
-        otherwise all final probabilities are treated as one.
-
-        The output raw lattice will be topologically sorted.
-
-        Returns:
-          True if the output is not empty.
-        """
-
-      def `GetLattice` as get_lattice(self, fst_out: CompactLatticeVectorFst,
-                                      use_final_probs: bool = default) -> bool:
-        """Gets the lattice-determinized lattice.
-
-        The output is a deterministic compact lattice with a unique path for
-        each word sequence.
-
-        If 'use_final_probs' is true and we reached a final state of the graph,
-        then the output will include final probabilities given by the graph;
-        otherwise all final probabilities are treated as one.
-
-        Returns:
-          True if the output is not empty.
-        """
+      def `GetLattice` as _get_lattice(self, fst_out: CompactLatticeVectorFst,
+                                      use_final_probs: bool = default) -> bool
 
       def `InitDecoding` as init_decoding(self):
         """Initializes decoding.
 
-        As a new alternative to :meth:`decode`, you can call init_decoding and
-        then call :meth:`advance_decoding` (posible multiple times) .
+        As an alternative to :meth:`decode`, you can call :meth:`init_decoding`
+        and then call :meth:`advance_decoding` (possibly multiple times).
         """
 
       def `AdvanceDecoding` as advance_decoding(self,
@@ -123,8 +105,13 @@ from "decoder/lattice-faster-decoder.h":
         """Advances decoding.
 
         This will decode until there are no more frames ready in the decodable
-        object, but if max_num_frames >= 0 it will decode no more than that
+        object, but if `max_num_frames >= 0` it will decode no more than that
         many frames.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
+          max_num_frames (int): Max number of frames to decode. Defaults to
+            ``-1`` which means decode all available frames.
         """
 
       def `FinalizeDecoding` as finalize_decoding(self):
@@ -137,19 +124,23 @@ from "decoder/lattice-faster-decoder.h":
         """
 
       def `FinalRelativeCost` as final_relative_cost(self) -> float:
-        """Return the final relative cost.
+        """Queries the final relative cost.
 
-        final_relative_cost serves the same purpose as reached_final, but
-        gives more information.  It returns the difference between the best
+        This method serves the same purpose as :meth:`reached_final`, but gives
+        more information. It returns the difference between the best
         (final-cost plus cost) of any token on the final frame, and the best
-        cost of any token on the final frame.  If it is infinity it means no
-        final-states were present on the final frame.  It will usually be
-        nonnegative.  If it not too positive (e.g. < 5) you can take it as an
+        cost of any token on the final frame. If it is infinity it means no
+        final-states were present on the final frame. It will usually be
+        nonnegative. If it not too positive (e.g. < 5) you can take it as an
         indication that we reached the final-state with reasonable likelihood.
+
+        Returns:
+          The final relative cost.
         """
 
       def `NumFramesDecoded` as num_frames_decoded(self) -> int:
-        """
+        """Queries the number of frames already decoded.
+
         Returns:
           The number of frames already decoded.
         """
