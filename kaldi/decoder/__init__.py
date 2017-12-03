@@ -25,14 +25,14 @@ class _DecoderBase(object):
                 treated as one.
 
         Returns:
-            StdVectorFst: The best path.
+            LatticeVectorFst: The best path.
 
         Raises:
             RuntimeError: In the unusual circumstances where no tokens survive.
         """
-        ofst = _fst.StdVectorFst()
+        ofst = _fst.LatticeVectorFst()
         success = self._get_best_path(ofst, use_final_probs)
-        if not sucess:
+        if not success:
             raise RuntimeError("Decoding failed. No tokens survived.")
         return ofst
 
@@ -59,7 +59,7 @@ class _LatticeDecoderBase(_DecoderBase):
         """
         ofst = _fst.LatticeVectorFst()
         success = self._get_raw_lattice(ofst, use_final_probs)
-        if not sucess:
+        if not success:
             raise RuntimeError("Decoding failed. No tokens survived.")
         return ofst
 
@@ -83,7 +83,7 @@ class _LatticeDecoderBase(_DecoderBase):
         """
         ofst = _fst.CompactLatticeVectorFst()
         success = self._get_lattice(ofst, use_final_probs)
-        if not sucess:
+        if not success:
             raise RuntimeError("Decoding failed. No tokens survived.")
         return ofst
 
@@ -117,7 +117,7 @@ class _LatticeOnlineDecoderBase(_LatticeDecoderBase):
         """
         ofst = _fst.LatticeVectorFst()
         success = self._get_raw_lattice_pruned(ofst, use_final_probs, beam)
-        if not sucess:
+        if not success:
             raise RuntimeError("Decoding failed. No tokens survived.")
         return ofst
 

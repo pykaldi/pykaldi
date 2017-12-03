@@ -9,7 +9,7 @@ from kaldi.decoder import FasterDecoderOptions, FasterDecoder
 from kaldi.fstext import (SymbolTable, FstHeader, FstReadOptions, StdArc,
                           StdVectorFst, StdConstFst,
                           LatticeVectorFst, CompactLatticeVectorFst)
-from kaldi.fstext.utils import (get_linear_symbol_sequence_from_lattice_fst,
+from kaldi.fstext.utils import (get_linear_symbol_sequence_from_lattice,
                                 acoustic_lattice_scale, scale_lattice,
                                 convert_lattice_to_compact_lattice)
 from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
@@ -18,6 +18,7 @@ from kaldi.util.io import xopen
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import (IntVectorWriter, SequentialMatrixReader,
                               CompactLatticeWriter)
+
 
 def read_network(rxfilename):
     with xopen(rxfilename) as ki:
@@ -42,89 +43,108 @@ def read_network(rxfilename):
             raise IOError("Error reading FST (after reading header).")
         return decode_fst
 
-def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
+
+def gmm_decode_faster(model_rxfilename, fst_rxfilename,
                       feature_rspecifier, words_wspecifier,
-                      alignment_wspecifier, lattice_wspecifier):
+                      alignment_wspecifier="", lattice_wspecifier="",
+                      word_symbol_table="", acoustic_scale=0.1,
+                      allow_partial=True, decoder_opts=FasterDecoderOptions()):
+    # Read model.
     trans_model = TransitionModel()
     am_gmm = AmDiagGmm()
     with xopen(model_rxfilename) as ki:
         trans_model.read(ki.stream(), ki.binary)
         am_gmm.read(ki.stream(), ki.binary)
 
+    # Open table readers/writers.
+    feature_reader = SequentialMatrixReader(feature_rspecifier)
     words_writer = IntVectorWriter(words_wspecifier)
     alignment_writer = IntVectorWriter(alignment_wspecifier)
     clat_writer = CompactLatticeWriter(lattice_wspecifier)
 
+    # Read symbol table.
     word_syms = None
-    if opts.word_symbol_table != "":
-        word_syms = SymbolTable.read_text(opts.word_symbol_table)
+    if word_symbol_table != "":
+        word_syms = SymbolTable.read_text(word_symbol_table)
         if not word_syms:
             raise RuntimeError("Could not read symbol table from file {}"
-                               .format(opts.word_symbol_table))
+                               .format(word_symbol_table))
 
-    feature_reader = SequentialMatrixReader(feature_rspecifier)
+    # NOTE:
+    # It is important to read decode_fst after opening feature reader as
+    # it can prevent crashes on systems without enough virtual memory.
 
+    # Read decoding graph and instantiate decoder.
     decode_fst = read_network(fst_rxfilename)
+    decoder = FasterDecoder(decode_fst, decoder_opts)
 
     tot_like = 0.0
     frame_count = 0
     num_success, num_fail = 0, 0
-    decoder = FasterDecoder(decode_fst, decoder_opts)
-
     start = time.time()
+
     for key, features in feature_reader:
         if features.num_rows == 0:
-            logging.warning("Zero-length utterance: {}".format(key))
             num_fail += 1
+            logging.warning("Zero-length utterance: {}".format(key))
             continue
-        gmm_decodable = DecodableAmDiagGmmScaled(am_gmm, trans_model, features,
-                                                 opts.acoustic_scale)
+
+        gmm_decodable = DecodableAmDiagGmmScaled(am_gmm, trans_model,
+                                                 features, acoustic_scale)
         decoder.decode(gmm_decodable)
-        decoded = LatticeVectorFst()
 
-        if ((opts.allow_partial or decoder.reached_final())
-            and decoder.get_best_path(decoded)):
-            if not decoder.reached_final():
-                logging.warning("Decoder did not reach end-state, outputting "
-                                "partial traceback since --allow-partial=true")
-            num_success += 1
-            frame_count += features.num_rows
-
-            ret = get_linear_symbol_sequence_from_lattice_fst(decoded)
-            alignment, words, weight = ret
-
-            words_writer[key] = words
-            if alignment_writer.is_open():
-                alignment_writer[key] = alignment
-
-            if lattice_wspecifier != "":
-                if opts.acoustic_scale != 0.0:
-                    scale = acoustic_lattice_scale(1.0 / opts.acoustic_scale)
-                    scale_lattice(scale, decoded)
-                clat = CompactLatticeVectorFst()
-                convert_lattice_to_compact_lattice(decoded, clat, true)
-                clat_writer[key] = clat
-
-            if word_syms:
-                print(key, end=' ', file=sys.stderr)
-                for idx in words:
-                    sym = word_syms.find_symbol(idx)
-                    if sym == "":
-                        raise RuntimeError("Word-id {} not in symbol table."
-                                           .format(idx))
-                    print(sym, end=' ', file=sys.stderr)
-                print(file=sys.stderr)
-            like = - (weight.value1 + weight.value2);
-            tot_like += like
-            logging.info("Log-like per frame for utterance {} is {} over {} "
-                         "frames.".format(key, like / features.num_rows,
-                                          features.num_rows))
-            logging.debug("Cost for utterance {} is {} + {}"
-                          .format(key, weight.value1, weight.value2))
-        else:
+        if not (allow_partial or decoder.reached_final()):
             num_fail += 1
             logging.warning("Did not successfully decode utterance {}, len = {}"
                             .format(key, features.num_rows))
+            continue
+
+        try:
+            decoded = decoder.get_best_path()
+        except RuntimeError:
+            num_fail += 1
+            logging.warning("Did not successfully decode utterance {}, len = {}"
+                            .format(key, features.num_rows))
+            continue
+
+        if not decoder.reached_final():
+            logging.warning("Decoder did not reach end-state, outputting "
+                            "partial traceback since --allow-partial=true")
+
+        ali, words, weight = get_linear_symbol_sequence_from_lattice(decoded)
+
+        words_writer[key] = words
+
+        if alignment_writer.is_open():
+            alignment_writer[key] = ali
+
+        if clat_writer.is_open():
+            if acoustic_scale != 0.0:
+                scale = acoustic_lattice_scale(1.0 / acoustic_scale)
+                scale_lattice(scale, decoded)
+            clat = CompactLatticeVectorFst()
+            convert_lattice_to_compact_lattice(decoded, clat, true)
+            clat_writer[key] = clat
+
+        if word_syms:
+            print(key, end=" ", file=sys.stderr)
+            for idx in words:
+                sym = word_syms.find_symbol(idx)
+                if sym == "":
+                    raise RuntimeError("Word-id {} not in symbol table."
+                                       .format(idx))
+                print(sym, end=" ", file=sys.stderr)
+            print(file=sys.stderr)
+
+        num_success += 1
+        frame_count += features.num_rows
+        like = - (weight.value1 + weight.value2);
+        tot_like += like
+        logging.info("Log-like per frame for utterance {} is {} over {} "
+                     "frames.".format(key, like / features.num_rows,
+                                      features.num_rows))
+        logging.debug("Cost for utterance {} is {} + {}"
+                      .format(key, weight.value1, weight.value2))
 
     elapsed = time.time() - start
     logging.info("Time taken [excluding initialization] {}s: real-time factor "
@@ -144,12 +164,13 @@ def gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
 
     return True if num_success != 0 else False
 
+
 if __name__ == '__main__':
     # Configure log messages to look like Kaldi messages
     from kaldi import __version__
-    logging.addLevelName(20, 'LOG')
-    logging.basicConfig(format='%(levelname)s (%(module)s[{}]:%(funcName)s():'
-                               '%(filename)s:%(lineno)s) %(message)s'
+    logging.addLevelName(20, "LOG")
+    logging.basicConfig(format="%(levelname)s (%(module)s[{}]:%(funcName)s():"
+                               "%(filename)s:%(lineno)s) %(message)s"
                                .format(__version__), level=logging.INFO)
 
     usage = """Decode features using GMM-based model.
@@ -182,6 +203,8 @@ if __name__ == '__main__':
     alignment_wspecifier = po.get_opt_arg(5)
     lattice_wspecifier = po.get_opt_arg(6)
 
-    gmm_decode_faster(opts, decoder_opts, model_rxfilename, fst_rxfilename,
+    gmm_decode_faster(model_rxfilename, fst_rxfilename,
                       feature_rspecifier, words_wspecifier,
-                      alignment_wspecifier, lattice_wspecifier)
+                      alignment_wspecifier, lattice_wspecifier,
+                      opts.word_symbol_table, opts.acoustic_scale,
+                      opts.allow_partial, decoder_opts)

@@ -120,6 +120,6 @@ from "fstext/fst-ext.h":
         as compact_lattice_has_alignment(fst: CompactLatticeExpandedFst) -> bool
 
     def `GetLinearSymbolSequenceFromLatticeFst`
-        as get_linear_symbol_sequence_from_lattice_fst(fst: LatticeFst)
+        as get_linear_symbol_sequence_from_lattice(fst: LatticeFst)
         -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>, tot_weight_out: LatticeWeight):
       return _value_error_on_false(...)
