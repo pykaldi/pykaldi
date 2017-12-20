@@ -166,7 +166,8 @@ from "fst/symbol-table.h":
           key: An index.
 
         Returns:
-          The symbol associated with the index key. -1 if index is not found.
+          The symbol associated with the index key. Empty string if index is
+          not found.
         """
 
       def `Find` as find_index(self, symbol: str) -> int:

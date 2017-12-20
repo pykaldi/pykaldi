@@ -1,7 +1,7 @@
 add_pyclif_library("_wave_reader" wave-reader.clif
-  CLIF_DEPS _kaldi_matrix
+  CLIF_DEPS _iostream _kaldi_matrix
   LIBRARIES kaldi-feat
-  RPATH $ORIGIN/../matrix
+  RPATH $ORIGIN/../base:$ORIGIN/../matrix
 )
 add_pyclif_library("_resample" resample.clif
   CLIF_DEPS _kaldi_matrix

@@ -26,8 +26,8 @@ from "gmm/am-diag-gmm.h":
 
       def `LogLikelihood` as log_likelihood(self, pdf_index: int, data: VectorBase) -> float
 
-      def `Read` as read(self, is: istream, binary: bool)
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool) -> self
+      def `Write` as write(self, os: ostream, binary: bool) -> self
 
       def `Dim` as dim(self) -> int
 

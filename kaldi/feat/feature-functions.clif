@@ -15,7 +15,7 @@ from "feat/feature-functions.h":
       def __init__(self, opts: DeltaFeaturesOptions)
 
       def `Process` as process(self, input_feats: MatrixBase, frame: int,
-                  output_frame: VectorBase)
+                               output_frame: VectorBase)
 
     class ShiftedDeltaFeaturesOptions:
       window: int
@@ -26,21 +26,20 @@ from "feat/feature-functions.h":
       def __init__(self, opts: ShiftedDeltaFeaturesOptions)
 
       def `Process` as process(self, input_feats: MatrixBase, frame: int,
-                  output_frame: VectorBase)
+                               output_frame: VectorBase)
 
     def `ComputeDeltas` as compute_deltas(delta_opts: DeltaFeaturesOptions,
-                      input_features: MatrixBase, output_features: Matrix)
+                                          input_features: MatrixBase) -> Matrix
 
-    def `ComputeShiftedDeltas` as compute_shift_deltas(delta_opts: ShiftedDeltaFeaturesOptions,
-                             input_features: MatrixBase,
-                             output_features: Matrix)
+    def `ComputeShiftedDeltas` as compute_shift_deltas(
+        delta_opts: ShiftedDeltaFeaturesOptions, input_features: MatrixBase) -> Matrix
 
     def `SpliceFrames` as splice_frames(input_features: MatrixBase, left_context: int,
-                     right_context: int, output_features: Matrix)
+                                        right_context: int) -> Matrix
 
-    def `ReverseFrames` as reverse_frames(input_features: MatrixBase, output_features: Matrix)
+    def `ReverseFrames` as reverse_frames(input_features: MatrixBase) -> Matrix
 
-    def `InitIdftBases` as init_idft_bases(n_bases: int, dimension: int, mat_out: Matrix)
+    def `InitIdftBases` as init_idft_bases(n_bases: int, dimension: int) -> Matrix
 
     class SlidingWindowCmnOptions:
       cmn_window: int
@@ -51,4 +50,4 @@ from "feat/feature-functions.h":
       def `Check` as check(self)
 
     def `SlidingWindowCmn` as sliding_window_cmn(opts: SlidingWindowCmnOptions,
-                         input: MatrixBase, output: Matrix)
+                                                 input: MatrixBase, output: MatrixBase)
