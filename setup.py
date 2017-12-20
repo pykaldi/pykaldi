@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import os
+import sys
 
 import distutils.command.build
 import setuptools.command.build_ext
@@ -11,9 +12,7 @@ import setuptools.extension
 
 from distutils.file_util import copy_file
 from setuptools import setup, find_packages, Command
-from subprocess import check_output, check_call
-
-import numpy
+from subprocess import check_output, check_call, CalledProcessError
 
 ################################################################################
 # Check variables / find programs
@@ -26,6 +25,8 @@ KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 CLIF_CXX_FLAGS = os.getenv("CLIF_CXX_FLAGS", "")
+NPROC = check_output(['getconf', '_NPROCESSORS_ONLN']).decode("utf-8").strip()
+MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS', NPROC)
 
 if CLIF_DIR and not PYCLIF:
     PYCLIF = os.path.join(CLIF_DIR, 'bin/pyclif')
@@ -54,19 +55,28 @@ if KALDI_DIR:
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
 
-NUMPY_INC_DIR = numpy.get_include()
+MAKE_ARGS = []
+try:
+    import ninja
+    CMAKE_GENERATOR = '-GNinja'
+    MAKE = 'ninja'
+except ImportError:
+    CMAKE_GENERATOR = ''
+    MAKE = 'make'
+    if MAKE_NUM_JOBS:
+        MAKE_ARGS += ['-j', MAKE_NUM_JOBS]
 
 if DEBUG:
     print("#"*50)
-    print("CWD: {}".format(CWD))
-    print("PYCLIF: {}".format(PYCLIF))
-    print("KALDI_DIR: {}".format(KALDI_DIR))
-    print("CLIF_DIR: {}".format(CLIF_DIR))
-    print("NUMPY_INC_DIR: {}".format(NUMPY_INC_DIR))
-    print("CXX_FLAGS: {}".format(CXX_FLAGS))
-    print("CLIF_CXX_FLAGS: {}".format(CLIF_CXX_FLAGS))
-    print("BUILD_DIR: {}".format(BUILD_DIR))
-    print("KALDI_HAVE_CUDA: {}".format(KALDI_HAVE_CUDA))
+    print("CWD:", CWD)
+    print("PYCLIF:", PYCLIF)
+    print("KALDI_DIR:", KALDI_DIR)
+    print("CLIF_DIR:", CLIF_DIR)
+    print("CXX_FLAGS:", CXX_FLAGS)
+    print("CLIF_CXX_FLAGS:", CLIF_CXX_FLAGS)
+    print("BUILD_DIR:", BUILD_DIR)
+    print("KALDI_HAVE_CUDA:", KALDI_HAVE_CUDA)
+    print("MAKE:", MAKE, *MAKE_ARGS)
     print("#"*50)
 
 ################################################################################
@@ -111,22 +121,32 @@ class build_ext(setuptools.command.build_ext.build_ext):
     def run(self):
         old_inplace, self.inplace = self.inplace, 0
 
-        cmake_args = ['-DKALDI_DIR=' + KALDI_DIR,
+        import numpy as np
+        CMAKE_ARGS = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
                       '-DCLIF_DIR=' + CLIF_DIR,
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
-                      '-DNUMPY_INC_DIR='+ NUMPY_INC_DIR,
+                      '-DNUMPY_INC_DIR='+ np.get_include(),
                       '-DCUDA=TRUE' if KALDI_HAVE_CUDA else '-DCUDA=FALSE',
                       '-DDEBUG=TRUE' if DEBUG else '-DDEBUG=FALSE']
+
+        if CMAKE_GENERATOR:
+            CMAKE_ARGS += [CMAKE_GENERATOR]
+
         if DEBUG:
-            cmake_args += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
+            CMAKE_ARGS += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
 
         if not os.path.exists(BUILD_DIR):
             os.makedirs(BUILD_DIR)
 
-        check_call(['cmake', '..'] + cmake_args, cwd = BUILD_DIR)
-        check_call(['make', '-j'], cwd = BUILD_DIR)
+        try:
+            check_call(['cmake', '..'] + CMAKE_ARGS, cwd = BUILD_DIR)
+            check_call([MAKE] + MAKE_ARGS, cwd = BUILD_DIR)
+        except CalledProcessError as err:
+            # We catch this exception to disable stack trace.
+            print(str(err), file=sys.stderr)
+            sys.exit(1)
         print() # Add an empty line for cleaner output
 
         # Populates extension list
@@ -194,8 +214,7 @@ class build_sphinx(Command):
 class install_lib(setuptools.command.install_lib.install_lib):
     def install(self):
         self.build_dir = 'build/lib'
-        outfiles = setuptools.command.install_lib.install_lib.install(self)
-        print(outfiles)
+        setuptools.command.install_lib.install_lib.install(self)
 
 ################################################################################
 # Setup pykaldi
@@ -211,8 +230,8 @@ with open(os.path.join('kaldi', '__version__.py')) as f:
 
 setup(name = 'pykaldi',
       version = __version__,
-      description = 'Kaldi Python Wrapper',
-      author = 'SAIL',
+      description = 'A Python wrapper for Kaldi',
+      author = 'Dogan Can, Victor Martinez',
       ext_modules=extensions,
       cmdclass = {
           'build': build,
