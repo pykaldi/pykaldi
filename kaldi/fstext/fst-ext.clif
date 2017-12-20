@@ -70,8 +70,6 @@ from "fstext/fst-ext.h":
                                                       osyms: SymbolTable = default,
                                                       ssyms: SymbolTable = default) -> str
 
-    def `WriteString` as _write_string(s: str, strm: iostream)
-
     def `FstToBytes` as std_fst_to_bytes(fst: StdFst) -> bytes
     def `FstToBytes` as log_fst_to_bytes(fst: LogFst) -> bytes
     def `FstToBytes` as lattice_fst_to_bytes(fst: LatticeFst) -> bytes
@@ -103,12 +101,12 @@ from "fstext/fst-ext.h":
     def `ReadFstKaldiExt` as read_fst_kaldi(rxfilename: str) -> StdVectorFst:
       return StdVectorFst(...)
 
-    def `ConvertLatticeToCompactLattice` as convert_lattice_to_compact_lattice(
-        ifst: LatticeExpandedFst,ofst: CompactLatticeMutableFst, invert: bool = default)
-    def `ConvertCompactLatticeToLattice` as convert_compact_lattice_to_lattice(
+    def `ConvertLatticeToCompactLattice` as _convert_lattice_to_compact_lattice(
+        ifst: LatticeExpandedFst, ofst: CompactLatticeMutableFst, invert: bool = default)
+    def `ConvertCompactLatticeToLattice` as _convert_compact_lattice_to_lattice(
         ifst: CompactLatticeExpandedFst, ofst: LatticeMutableFst, invert: bool = default)
-    def `ConvertLatticeToStd` as convert_lattice_to_std(ifst: LatticeExpandedFst, ofst: StdMutableFst)
-    def `ConvertStdToLattice` as convert_std_to_lattice(ifst: StdExpandedFst, ofst: LatticeMutableFst)
+    def `ConvertLatticeToStd` as _convert_lattice_to_std(ifst: LatticeExpandedFst, ofst: StdMutableFst)
+    def `ConvertStdToLattice` as _convert_std_to_lattice(ifst: StdExpandedFst, ofst: LatticeMutableFst)
 
     def `ScaleKaldiLattice` as scale_lattice(scale: list<list<float>>,
                                             fst: LatticeMutableFst)

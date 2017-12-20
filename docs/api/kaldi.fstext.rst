@@ -204,7 +204,7 @@ kaldi\.fstext\.utils
       convert_lattice_to_std
       convert_std_to_lattice
       default_lattice_scale
-      get_linear_symbol_sequence_from_lattice_fst
+      get_linear_symbol_sequence_from_lattice
       get_symbols
       graph_lattice_scale
       lattice_fst_to_bytes

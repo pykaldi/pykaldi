@@ -123,22 +123,20 @@ class _LatticeOnlineDecoderBase(_LatticeDecoderBase):
 
 
 class FasterDecoder(_DecoderBase, _faster_decoder.FasterDecoder):
-    """FasterDecoder(fst, opts)
-
-    Faster decoder.
+    """Faster decoder.
 
     Args:
         fst (StdFst): Decoding graph `HCLG`.
         opts (FasterDecoderOptions): Decoder options.
     """
-    pass
+    def __init__(self, fst, opts):
+        super(FasterDecoder, self).__init__(fst, opts)
+        self._fst = fst  # keep a reference to FST to keep it in scope
 
 
 class BiglmFasterDecoder(_DecoderBase,
                          _biglm_faster_decoder.BiglmFasterDecoder):
-    """BiglmFasterDecoder(fst, opts, lm_diff_fst)
-
-    Faster decoder for decoding with big language models.
+    """Faster decoder for decoding with big language models.
 
     This is as :class:`LatticeFasterDecoder`, but does online composition
     between decoding graph :attr:`fst` and the difference language model
@@ -151,28 +149,28 @@ class BiglmFasterDecoder(_DecoderBase,
             FST representing the difference in scores between the LM to decode
             with and the LM the decoding graph :attr:`fst` was compiled with.
     """
-    pass
-
+    def __init__(self, fst, opts, lm_diff_fst):
+        super(BiglmFasterDecoder, self).__init__(fst, opts, lm_diff_fst)
+        self._fst = fst                  # keep references to FSTs
+        self._lm_diff_fst = lm_diff_fst  # to keep them in scope
 
 class LatticeFasterDecoder(_LatticeDecoderBase,
                            _lattice_faster_decoder.LatticeFasterDecoder):
-    """LatticeFasterDecoder(fst, opts)
-
-    Lattice generating faster decoder.
+    """Lattice generating faster decoder.
 
     Args:
         fst (StdFst): Decoding graph `HCLG`.
         opts (LatticeFasterDecoderOptions): Decoder options.
     """
-    pass
+    def __init__(self, fst, opts):
+        super(LatticeFasterDecoder, self).__init__(fst, opts)
+        self._fst = fst  # keep a reference to FST to keep it in scope
 
 
 class LatticeBiglmFasterDecoder(
     _LatticeDecoderBase,
     _lattice_biglm_faster_decoder.LatticeBiglmFasterDecoder):
-    """LatticeBiglmFasterDecoder(fst, opts, lm_diff_fst)
-
-    Lattice generating faster decoder for decoding with big language models.
+    """Lattice generating faster decoder for decoding with big language models.
 
     This is as :class:`LatticeFasterDecoder`, but does online composition
     between decoding graph :attr:`fst` and the difference language model
@@ -185,15 +183,16 @@ class LatticeBiglmFasterDecoder(
             FST representing the difference in scores between the LM to decode
             with and the LM the decoding graph :attr:`fst` was compiled with.
     """
-    pass
+    def __init__(self, fst, opts, lm_diff_fst):
+        super(LatticeBiglmFasterDecoder, self).__init__(fst, opts, lm_diff_fst)
+        self._fst = fst                  # keep references to FSTs
+        self._lm_diff_fst = lm_diff_fst  # to keep them in scope
 
 
 class LatticeFasterOnlineDecoder(
     _LatticeOnlineDecoderBase,
     _lattice_faster_online_decoder.LatticeFasterOnlineDecoder):
-    """LatticeFasterOnlineDecoder(fst, opts)
-
-    Lattice generating faster online decoder.
+    """Lattice generating faster online decoder.
 
     Similar to :class:`LatticeFasterDecoder` but computes the best path
     without generating the entire raw lattice and finding the best path
@@ -203,6 +202,10 @@ class LatticeFasterOnlineDecoder(
         fst (StdFst): Decoding graph `HCLG`.
         opts (LatticeFasterDecoderOptions): Decoder options.
     """
+    def __init__(self, fst, opts):
+        super(LatticeFasterOnlineDecoder, self).__init__(fst, opts)
+        self._fst = fst  # keep a reference to FST to keep it in scope
+
     # This method is missing from the C++ class so we implement it here.
     def _get_lattice(self, use_final_probs=True):
         raw_fst = self.get_raw_lattice(use_final_probs).invert().arcsort()
@@ -231,6 +234,10 @@ class TrainingGraphCompiler(_training_graph_compiler.TrainingGraphCompiler):
         """
         super(TrainingGraphCompiler, self).__init__(
             trans_model, ctx_dep, lex_fst, disambig_syms, opts)
+        # keep references to these objects to keep them in scope
+        self._trans_model = trans_model
+        self._ctx_dep = ctx_dep
+        self._lex_fst = lex_fst
 
     def compile_graph(self, word_fst):
         """Compiles a single training graph from a weighted acceptor.

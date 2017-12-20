@@ -206,7 +206,7 @@ class build_sphinx(Command):
     def run(self):
         try:
             import sphinx
-            check_call(['make', 'docs'], cwd = BUILD_DIR)
+            check_call([MAKE, 'docs'], cwd = BUILD_DIR)
         except ImportError:
             print("Sphinx was not found. Install it using pip install sphinx.")
 

@@ -27,9 +27,9 @@ from "hmm/transition-model.h":
       def `TransitionModel` as from_topo(
         self, ctx_dep: ContextDependencyInterface, hmm_topo: HmmTopology)
 
-      def `Read` as read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool) -> self
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool) -> self
 
       def `GetTopo` as get_topo(self) -> HmmTopology
 

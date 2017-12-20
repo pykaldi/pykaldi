@@ -5,10 +5,10 @@ import logging
 import sys
 import time
 
+from kaldi.asr import convert_indices_to_symbols, read_decoding_graph
 from kaldi.decoder import FasterDecoderOptions, FasterDecoder
-from kaldi.fstext import (SymbolTable, FstHeader, FstReadOptions, StdArc,
-                          StdVectorFst, StdConstFst,
-                          LatticeVectorFst, CompactLatticeVectorFst)
+from kaldi.fstext import (SymbolTable, FstHeader, FstReadOptions,
+                          StdArc, StdVectorFst, StdConstFst)
 from kaldi.fstext.utils import (get_linear_symbol_sequence_from_lattice,
                                 acoustic_lattice_scale, scale_lattice,
                                 convert_lattice_to_compact_lattice)
@@ -16,32 +16,8 @@ from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
 from kaldi.hmm import TransitionModel
 from kaldi.util.io import xopen
 from kaldi.util.options import ParseOptions
-from kaldi.util.table import (IntVectorWriter, SequentialMatrixReader,
+from kaldi.util.table import (SequentialMatrixReader, IntVectorWriter,
                               CompactLatticeWriter)
-
-
-def read_network(rxfilename):
-    with xopen(rxfilename) as ki:
-        if not ki.stream().good():
-            raise IOError("Could not open decoding-graph FST {}"
-                          .format(rxfilename))
-        hdr = FstHeader()
-        if not hdr.read(ki.stream(), "<unknown>"):
-            raise IOError("Reading FST: error reading FST header.")
-        if hdr.arc_type() != StdArc.type():
-            raise ValueError("FST with arc type {} not supported"
-                             .format(hdr.arc_type()))
-        ropts = FstReadOptions("<unspecified>", hdr)
-        if hdr.fst_type() == "vector":
-            decode_fst = StdVectorFst.read_from_stream(ki.stream(), ropts)
-        elif hdr.fst_type() == "const":
-            decode_fst = StdConstFst.read_from_stream(ki.stream(), ropts)
-        else:
-            raise ValueError("Reading FST: unsupported FST type: {}"
-                             .format(hdr.fst_type()))
-        if not decode_fst:
-            raise IOError("Error reading FST (after reading header).")
-        return decode_fst
 
 
 def gmm_decode_faster(model_rxfilename, fst_rxfilename,
@@ -75,7 +51,7 @@ def gmm_decode_faster(model_rxfilename, fst_rxfilename,
     # it can prevent crashes on systems without enough virtual memory.
 
     # Read decoding graph and instantiate decoder.
-    decode_fst = read_network(fst_rxfilename)
+    decode_fst = read_decoding_graph(fst_rxfilename)
     decoder = FasterDecoder(decode_fst, decoder_opts)
 
     tot_like = 0.0
@@ -100,7 +76,7 @@ def gmm_decode_faster(model_rxfilename, fst_rxfilename,
             continue
 
         try:
-            decoded = decoder.get_best_path()
+            best_path = decoder.get_best_path()
         except RuntimeError:
             num_fail += 1
             logging.warning("Did not successfully decode utterance {}, len = {}"
@@ -111,7 +87,7 @@ def gmm_decode_faster(model_rxfilename, fst_rxfilename,
             logging.warning("Decoder did not reach end-state, outputting "
                             "partial traceback since --allow-partial=true")
 
-        ali, words, weight = get_linear_symbol_sequence_from_lattice(decoded)
+        ali, words, weight = get_linear_symbol_sequence_from_lattice(best_path)
 
         words_writer[key] = words
 
@@ -121,20 +97,13 @@ def gmm_decode_faster(model_rxfilename, fst_rxfilename,
         if clat_writer.is_open():
             if acoustic_scale != 0.0:
                 scale = acoustic_lattice_scale(1.0 / acoustic_scale)
-                scale_lattice(scale, decoded)
-            clat = CompactLatticeVectorFst()
-            convert_lattice_to_compact_lattice(decoded, clat, true)
-            clat_writer[key] = clat
+                scale_lattice(scale, best_path)
+            best_path = convert_lattice_to_compact_lattice(best_path)
+            clat_writer[key] = best_path
 
         if word_syms:
-            print(key, end=" ", file=sys.stderr)
-            for idx in words:
-                sym = word_syms.find_symbol(idx)
-                if sym == "":
-                    raise RuntimeError("Word-id {} not in symbol table."
-                                       .format(idx))
-                print(sym, end=" ", file=sys.stderr)
-            print(file=sys.stderr)
+            syms = convert_indices_to_symbols(word_syms, words)
+            print(key, " ".join(syms), file=sys.stderr)
 
         num_success += 1
         frame_count += features.num_rows
