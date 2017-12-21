@@ -15,7 +15,7 @@ from kaldi.fstext import LogVectorFst
 from kaldi.fstext import LatticeVectorFst
 from kaldi.fstext import CompactLatticeVectorFst
 
-from "fstext/fst-ext.h":
+from "fstext/fstext-shims.h":
   namespace `fst`:
     def `AssignVectorFst` as _assign_std_vector_fst(ifst: StdVectorFst,
                                                     ofst: StdVectorFst)
@@ -118,6 +118,6 @@ from "fstext/fst-ext.h":
         as compact_lattice_has_alignment(fst: CompactLatticeExpandedFst) -> bool
 
     def `GetLinearSymbolSequenceFromLatticeFst`
-        as get_linear_symbol_sequence_from_lattice(fst: LatticeFst)
+        as _get_linear_symbol_sequence_from_lattice(fst: LatticeFst)
         -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>, tot_weight_out: LatticeWeight):
       return _value_error_on_false(...)

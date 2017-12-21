@@ -1,11 +1,14 @@
-from . import _fst_ext
-from ._fst_ext import *
+from .. import fstext as _fstext
+from . import _fst
+from . import _fstext_shims
+from . import _fstext_utils_inl
+
+from ._fstext_shims import *
 from ._fstext_utils import *
 from ._fstext_utils_inl import *
 from ._kaldi_fst_io import *
 from ._lattice_utils import *
 
-from .. import fstext as _fst
 
 def convert_lattice_to_compact_lattice(ifst, invert=True):
     """Converts lattice to compact lattice.
@@ -17,8 +20,8 @@ def convert_lattice_to_compact_lattice(ifst, invert=True):
     Returns:
         CompactLatticeVectorFst: The output compact lattice.
     """
-    ofst = _fst.CompactLatticeVectorFst()
-    _fst_ext._convert_lattice_to_compact_lattice(ifst, ofst, invert)
+    ofst = _fstext.CompactLatticeVectorFst()
+    _fstext_shims._convert_lattice_to_compact_lattice(ifst, ofst, invert)
     return ofst
 
 
@@ -32,8 +35,8 @@ def convert_compact_lattice_to_lattice(ifst, invert=True):
     Returns:
         LatticeVectorFst: The output lattice.
     """
-    ofst = _fst.LatticeVectorFst()
-    _fst_ext._convert_compact_lattice_to_lattice(ifst, ofst, invert)
+    ofst = _fstext.LatticeVectorFst()
+    _fstext_shims._convert_compact_lattice_to_lattice(ifst, ofst, invert)
     return ofst
 
 
@@ -46,8 +49,8 @@ def convert_lattice_to_std(ifst):
     Returns:
         StdVectorFst: The output FST.
     """
-    ofst = _fst.StdVectorFst()
-    _fst_ext._convert_lattice_to_std(ifst, ofst)
+    ofst = _fstext.StdVectorFst()
+    _fstext_shims._convert_lattice_to_std(ifst, ofst)
     return ofst
 
 
@@ -60,9 +63,26 @@ def convert_std_to_lattice(ifst):
     Returns:
         LatticeVectorFst: The output lattice.
     """
-    ofst = _fst.LatticeVectorFst()
-    _fst_ext._convert_std_to_lattice(ifst, ofst)
+    ofst = _fstext.LatticeVectorFst()
+    _fstext_shims._convert_std_to_lattice(ifst, ofst)
     return ofst
+
+
+def get_linear_symbol_sequence(fst):
+    """Extracts linear symbol sequences from the input FST.
+
+    Args:
+        fst: The input FST.
+
+    Returns:
+        A tuple of `(isymbols: List[int], osymbols: List[int], tot_weight)`.
+    """
+    if isinstance(fst, _fst.StdFst):
+        return _fstext_utils_inl._get_linear_symbol_sequence_from_std(fst)
+    elif isinstance(fst, _fst.LatticeFst):
+        return _fstext_shims._get_linear_symbol_sequence_from_lattice(fst)
+    else:
+        raise TypeError("Input FST arc type is not supported.")
 
 
 ################################################################################

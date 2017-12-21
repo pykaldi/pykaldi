@@ -31,7 +31,7 @@ from "fstext/fstext-utils-inl.h":
     def `GetSymbols` as get_symbols(
       symtab: SymbolTable, include_eps: bool) -> list<int>
 
-    def `GetLinearSymbolSequence` as std_get_linear_symbol_sequence(
+    def `GetLinearSymbolSequence` as _get_linear_symbol_sequence_from_std(
       fst: StdFst) -> (success: bool, isymbols_out: list<int>,
                        osymbols_out: list<int>,
                        tot_weight_out: TropicalWeight):

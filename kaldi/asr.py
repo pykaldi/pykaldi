@@ -1,13 +1,9 @@
 from __future__ import division
 
-from .fstext import (FstHeader, FstReadOptions,
-                     StdArc, StdVectorFst, StdConstFst,
-                     CompactLatticeVectorFst)
-from .fstext.utils import (get_linear_symbol_sequence_from_lattice,
-                           acoustic_lattice_scale, scale_compact_lattice,
-                           scale_lattice, convert_lattice_to_compact_lattice)
-from .lat import determinize_lattice_phone_pruned_wrapper
-from .util.io import xopen
+from . import fstext as _fst
+from .fstext import utils as _utils
+from . import lat as _lat
+from .util import io as _io
 
 
 __all__ = ['convert_indices_to_symbols', 'read_decoding_graph',
@@ -48,21 +44,21 @@ def read_decoding_graph(graph_rxfilename):
     Returns:
         StdVectorFst or StdConstFst: The decoding graph.
     """
-    with xopen(graph_rxfilename) as ki:
+    with _io.xopen(graph_rxfilename) as ki:
         if not ki.stream().good():
             raise IOError("Could not open decoding graph FST {}"
                           .format(rxfilename))
-        hdr = FstHeader()
+        hdr = _fst.FstHeader()
         if not hdr.read(ki.stream(), "<unknown>"):
             raise IOError("Reading FST: error reading FST header.")
-        if hdr.arc_type() != StdArc.type():
+        if hdr.arc_type() != _fst.StdArc.type():
             raise ValueError("FST with arc type {} not supported"
                              .format(hdr.arc_type()))
-        ropts = FstReadOptions("<unspecified>", hdr)
+        ropts = _fst.FstReadOptions("<unspecified>", hdr)
         if hdr.fst_type() == "vector":
-            decode_fst = StdVectorFst.read_from_stream(ki.stream(), ropts)
+            decode_fst = _fst.StdVectorFst.read_from_stream(ki.stream(), ropts)
         elif hdr.fst_type() == "const":
-            decode_fst = StdConstFst.read_from_stream(ki.stream(), ropts)
+            decode_fst = _fst.StdConstFst.read_from_stream(ki.stream(), ropts)
         else:
             raise ValueError("Reading FST: unsupported FST type: {}"
                              .format(hdr.fst_type()))
@@ -146,7 +142,7 @@ class Recognizer(object):
         except RuntimeError:
             raise RuntimeError("Empty decoding output.")
 
-        ali, words, weight = get_linear_symbol_sequence_from_lattice(best_path)
+        ali, words, weight = _utils.get_linear_symbol_sequence(best_path)
 
         if self.symbols:
             text = " ".join(convert_indices_to_symbols(self.symbols, words))
@@ -156,9 +152,9 @@ class Recognizer(object):
         likelihood = - (weight.value1 + weight.value2)
 
         if acoustic_scale != 0.0:
-            scale = acoustic_lattice_scale(1.0 / acoustic_scale)
-            scale_lattice(scale, best_path)
-        best_path = convert_lattice_to_compact_lattice(best_path)
+            scale = _utils.acoustic_lattice_scale(1.0 / acoustic_scale)
+            _utils.scale_lattice(scale, best_path)
+        best_path = _utils.convert_lattice_to_compact_lattice(best_path)
 
         try:
             lat = self.decoder.get_raw_lattice()
@@ -177,18 +173,18 @@ class Recognizer(object):
 
         if determinize_lattice:
             opts = self.decoder.get_options()
-            clat = CompactLatticeVectorFst()
-            success = determinize_lattice_phone_pruned_wrapper(
+            clat = _fst.CompactLatticeVectorFst()
+            success = _lat.determinize_lattice_phone_pruned_wrapper(
                 trans_model, lat, opts.lattice_beam, clat, opts.det_opts)
             if not success:
                 raise RuntimeError("Lattice determinization failed.")
             lat = clat
 
         if acoustic_scale != 0.0:
-            if isinstance(lat, CompactLatticeVectorFst):
-                scale_compact_lattice(scale, lat)
+            if isinstance(lat, _fst.CompactLatticeVectorFst):
+                _utils.scale_compact_lattice(scale, lat)
             else:
-                scale_lattice(scale, lat)
+                _utils.scale_lattice(scale, lat)
 
         return {
             "alignment": ali,

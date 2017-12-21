@@ -59,7 +59,7 @@ from ._encode import ENCODE_FLAGS, ENCODE_LABELS, ENCODE_WEIGHTS
 from . import _compiler
 from ._fst import NO_STATE_ID, NO_LABEL
 from ._fst import FstHeader, FstReadOptions, FstWriteOptions
-from . import _fst_ext
+from . import _fstext_shims
 from . import _vector_fst
 from . import _const_fst
 from . import _drawer
@@ -208,10 +208,10 @@ class StdVectorFst(_api._MutableFstBase, _vector_fst.StdVectorFst):
         if fst is not None:
             if isinstance(fst, _vector_fst.StdVectorFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_std_vector_fst(fst, self)
+                _fstext_shims._assign_std_vector_fst(fst, self)
             elif isinstance(fst, _fst.StdFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_std_fst_to_vector_fst(fst, self)
+                _fstext_shims._assign_std_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the tropical "
                                 "semiring")
@@ -264,10 +264,10 @@ class StdConstFst(_api._FstBase, _const_fst.StdConstFst):
         if fst is not None:
             if isinstance(fst, _const_fst.StdConstFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_std_const_fst(fst, self)
+                _fstext_shims._assign_std_const_fst(fst, self)
             elif isinstance(fst, _fst.StdFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_std_fst_to_const_fst(fst, self)
+                _fstext_shims._assign_std_fst_to_const_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the tropical "
                                 "semiring")
@@ -382,10 +382,10 @@ class LogVectorFst(_api._MutableFstBase, _vector_fst.LogVectorFst):
         if fst is not None:
             if isinstance(fst, _vector_fst.LogVectorFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_log_vector_fst(fst, self)
+                _fstext_shims._assign_log_vector_fst(fst, self)
             elif isinstance(fst, _fst.LogFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_log_fst_to_vector_fst(fst, self)
+                _fstext_shims._assign_log_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the log semiring")
 
@@ -437,10 +437,10 @@ class LogConstFst(_api._FstBase, _const_fst.LogConstFst):
         if fst is not None:
             if isinstance(fst, _const_fst.LogConstFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_log_const_fst(fst, self)
+                _fstext_shims._assign_log_const_fst(fst, self)
             elif isinstance(fst, _fst.LogFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_log_fst_to_const_fst(fst, self)
+                _fstext_shims._assign_log_fst_to_const_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the log semiring")
 
@@ -567,10 +567,10 @@ class LatticeVectorFst(_api._MutableFstBase, _vector_fst.LatticeVectorFst):
         if fst is not None:
             if isinstance(fst, _vector_fst.LatticeVectorFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_lattice_vector_fst(fst, self)
+                _fstext_shims._assign_lattice_vector_fst(fst, self)
             elif isinstance(fst, _fst.LatticeFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_lattice_fst_to_vector_fst(fst, self)
+                _fstext_shims._assign_lattice_fst_to_vector_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the lattice "
                                 "semiring")
@@ -623,10 +623,10 @@ class LatticeConstFst(_api._FstBase, _const_fst.LatticeConstFst):
         if fst is not None:
             if isinstance(fst, _const_fst.LatticeConstFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_lattice_const_fst(fst, self)
+                _fstext_shims._assign_lattice_const_fst(fst, self)
             elif isinstance(fst, _fst.LatticeFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_lattice_fst_to_const_fst(fst, self)
+                _fstext_shims._assign_lattice_fst_to_const_fst(fst, self)
             else:
                 raise TypeError("fst should be an FST over the lattice "
                                 "semiring")
@@ -766,10 +766,11 @@ class CompactLatticeVectorFst(_api._MutableFstBase,
         if fst is not None:
             if isinstance(fst, _vector_fst.CompactLatticeVectorFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_compact_lattice_vector_fst(fst, self)
+                _fstext_shims._assign_compact_lattice_vector_fst(fst, self)
             elif isinstance(fst, _fst.CompactLatticeFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_compact_lattice_fst_to_vector_fst(fst, self)
+                _fstext_shims._assign_compact_lattice_fst_to_vector_fst(fst,
+                                                                        self)
             else:
                 raise TypeError("fst should be an FST over the compact lattice "
                                 "semiring")
@@ -824,10 +825,11 @@ class CompactLatticeConstFst(_api._FstBase, _const_fst.CompactLatticeConstFst):
         if fst is not None:
             if isinstance(fst, _const_fst.CompactLatticeConstFst):
                 # This assignment shares implementation with COW semantics.
-                _fst_ext._assign_compact_lattice_const_fst(fst, self)
+                _fstext_shims._assign_compact_lattice_const_fst(fst, self)
             elif isinstance(fst, _fst.CompactLatticeFst):
                 # This assignment makes a copy.
-                _fst_ext._assign_compact_lattice_fst_to_const_fst(fst, self)
+                _fstext_shims._assign_compact_lattice_fst_to_const_fst(fst,
+                                                                       self)
             else:
                 raise TypeError("fst should be an FST over the compact lattice "
                                 "semiring")

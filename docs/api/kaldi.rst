@@ -10,15 +10,8 @@ kaldi\.asr
 
    .. autosummary::
    
-      acoustic_lattice_scale
       convert_indices_to_symbols
-      convert_lattice_to_compact_lattice
-      determinize_lattice_phone_pruned_wrapper
-      get_linear_symbol_sequence_from_lattice
       read_decoding_graph
-      scale_compact_lattice
-      scale_lattice
-      xopen
    
    
 
@@ -28,13 +21,7 @@ kaldi\.asr
 
    .. autosummary::
    
-      CompactLatticeVectorFst
-      FstHeader
-      FstReadOptions
       Recognizer
-      StdArc
-      StdConstFst
-      StdVectorFst
    
    
 

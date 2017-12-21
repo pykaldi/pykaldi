@@ -9,7 +9,7 @@ from kaldi.asr import convert_indices_to_symbols, read_decoding_graph
 from kaldi.decoder import FasterDecoderOptions, FasterDecoder
 from kaldi.fstext import (SymbolTable, FstHeader, FstReadOptions,
                           StdArc, StdVectorFst, StdConstFst)
-from kaldi.fstext.utils import (get_linear_symbol_sequence_from_lattice,
+from kaldi.fstext.utils import (get_linear_symbol_sequence,
                                 acoustic_lattice_scale, scale_lattice,
                                 convert_lattice_to_compact_lattice)
 from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
@@ -87,7 +87,7 @@ def gmm_decode_faster(model_rxfilename, fst_rxfilename,
             logging.warning("Decoder did not reach end-state, outputting "
                             "partial traceback since --allow-partial=true")
 
-        ali, words, weight = get_linear_symbol_sequence_from_lattice(best_path)
+        ali, words, weight = get_linear_symbol_sequence(best_path)
 
         words_writer[key] = words
 

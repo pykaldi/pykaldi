@@ -80,7 +80,7 @@ add_pyclif_library("_table_matcher" table-matcher.clif
   CLIF_DEPS _getters _fst _mutable_fst
 )
 
-add_pyclif_library("_fst_ext" fst-ext.clif
+add_pyclif_library("_fstext_shims" fstext-shims.clif
   CLIF_DEPS _iostream _expanded_fst _mutable_fst _vector_fst _const_fst
   LIBRARIES kaldi-fstext
   RPATH $ORIGIN/../base
