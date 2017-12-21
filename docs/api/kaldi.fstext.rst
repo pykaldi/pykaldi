@@ -193,10 +193,6 @@ kaldi\.fstext\.utils
       :nosignatures:
    
       acoustic_lattice_scale
-      bytes_to_compact_lattice_fst
-      bytes_to_lattice_fst
-      bytes_to_log_fst
-      bytes_to_std_fst
       cast_log_to_std
       cast_or_convert_to_vector_fst
       cast_std_to_log
