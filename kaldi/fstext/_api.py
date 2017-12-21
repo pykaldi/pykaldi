@@ -163,7 +163,7 @@ class _FstCompiler(object):
             self._acceptor, self._keep_isymbols, self._keep_osymbols,
             self._keep_state_numbering, self._allow_negative_labels)
         ofst = compiler.Fst()
-        self._strbuf = ''
+        self._strbuf = ""
         if ofst is None:
             raise RuntimeError("Compilation failed")
         return ofst
@@ -206,15 +206,9 @@ class _FstBase(object):
         # Throws OSError if the dot executable is not found.
         proc = subprocess.Popen(["dot", "-Tsvg"], stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # NOTE: input_symbols and ouput_symbols methods make copies of internal
-        # symbol tables. We need the symbol tables returned by these methods to
-        # live until the draw call is complete since FstDrawer keeps internal
-        # pointers to the symbol tables passed as arguments.
-        isymbols = self._input_symbols()
-        osymbols = self._output_symbols()
         sstrm = ostringstream()
         fstdrawer = self._drawer_type(
-            self, isymbols, osymbols, None,
+            self, self._input_symbols(), self._output_symbols(), None,
             self._properties(ACCEPTOR, True) == ACCEPTOR,
             "", 8.5, 11, True, False, 0.4, 0.25, 14, 5, "g", False)
         fstdrawer.draw(sstrm, "_repr_svg")
@@ -300,10 +294,6 @@ class _FstBase(object):
 
         See also: `text`.
         """
-        # NOTE: input_symbols and ouput_symbols methods make copies of internal
-        # symbol tables. We need the symbol tables returned by these methods to
-        # live until the draw call is complete since FstDrawer keeps internal
-        # pointers to the symbol tables passed as arguments.
         if isymbols is None:
             isymbols = self._input_symbols()
         if osymbols is None:
@@ -331,6 +321,18 @@ class _FstBase(object):
         if not self._valid_state_id(state):
             raise IndexError("State index out of range")
         return self._final(state)
+
+    @classmethod
+    def from_bytes(cls, s):
+        """Returns the FST represented by the bytes object.
+
+        Args:
+            s (bytes): The bytes object representing the FST.
+
+        Returns:
+            An FST object.
+        """
+        return cls(cls._ops.from_bytes(s))
 
     def input_symbols(self):
         """
@@ -518,21 +520,24 @@ class _FstBase(object):
         Returns:
           A formatted string representing the FST.
         """
-        # NOTE: input_symbols and ouput_symbols methods make copies of internal
-        # symbol tables. We need the symbol tables returned by these methods to
-        # live until the print call is complete since FstPrinter keeps internal
-        # pointers to the symbol tables passed as arguments.
         if isymbols is None:
             isymbols = self._input_symbols()
         if osymbols is None:
             osymbols = self._output_symbols()
-        # Prints FST to stringstream, then returns resulting string.
         sstrm = ostringstream()
         fstprinter = self._printer_type(
             self, isymbols, osymbols, ssymbols,
             acceptor, show_weight_one, "\t", missing_symbol)
         fstprinter.print_fst(sstrm, "text")
         return sstrm.to_str()
+
+    def to_bytes(self):
+        """Returns a bytes object representing the FST.
+
+        Returns:
+            A bytes object.
+        """
+        return self._ops.to_bytes(self)
 
     def type(self):
         """

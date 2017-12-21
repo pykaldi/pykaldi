@@ -53,46 +53,6 @@ from "fstext/fstext-shims.h":
     def `AssignFstToConstFst` as _assign_compact_lattice_fst_to_const_fst(ifst: CompactLatticeFst,
                                                                           ofst: CompactLatticeConstFst)
 
-    def `FstToString` as std_fst_to_string(fst: StdFst,
-                                           isyms: SymbolTable = default,
-                                           osyms: SymbolTable = default,
-                                           ssyms: SymbolTable = default) -> str
-    def `FstToString` as log_fst_to_string(fst: LogFst,
-                                           isyms: SymbolTable = default,
-                                           osyms: SymbolTable = default,
-                                           ssyms: SymbolTable = default) -> str
-    def `FstToString` as lattice_fst_to_string(fst: LatticeFst,
-                                               isyms: SymbolTable = default,
-                                               osyms: SymbolTable = default,
-                                               ssyms: SymbolTable = default) -> str
-    def `FstToString` as compactlattice_fst_to_string(fst: CompactLatticeFst,
-                                                      isyms: SymbolTable = default,
-                                                      osyms: SymbolTable = default,
-                                                      ssyms: SymbolTable = default) -> str
-
-    def `FstToBytes` as std_fst_to_bytes(fst: StdFst) -> bytes
-    def `FstToBytes` as log_fst_to_bytes(fst: LogFst) -> bytes
-    def `FstToBytes` as lattice_fst_to_bytes(fst: LatticeFst) -> bytes
-    def `FstToBytes` as compactlattice_fst_to_bytes(fst: CompactLatticeFst) -> bytes
-
-    def `BytesToStdFst` as bytes_to_std_fst(s: bytes) -> StdFst:
-      return StdVectorFst(...)
-    def `BytesToLogFst` as bytes_to_log_fst(s: bytes) -> LogFst:
-      return LogVectorFst(...)
-    def `BytesToLatticeFst` as bytes_to_lattice_fst(s: bytes) -> LatticeFst:
-      return LatticeVectorFst(...)
-    def `BytesToCompactLatticeFst` as bytes_to_compact_lattice_fst(s: bytes) -> CompactLatticeFst:
-      return CompactLatticeVectorFst(...)
-
-    def `BytesToStdVectorFst` as bytes_to_std_vector_fst(s: bytes) -> StdVectorFst:
-      return StdVectorFst(...)
-    def `BytesToLogVectorFst` as bytes_to_log_vector_fst(s: bytes) -> LogVectorFst:
-      return LogVectorFst(...)
-    def `BytesToLatticeVectorFst` as bytes_to_lattice_vector_fst(s: bytes) -> LatticeVectorFst:
-      return LatticeVectorFst(...)
-    def `BytesToCompactLatticeVectorFst` as bytes_to_compact_lattice_vector_fst(s: bytes) -> CompactLatticeVectorFst:
-      return CompactLatticeVectorFst(...)
-
     def `CastStdToLog` as cast_std_to_log(ifst: StdVectorFst) -> LogVectorFst:
       return LogVectorFst(...)
     def `CastLogToStd` as cast_log_to_std(ifst: LogVectorFst) -> StdVectorFst:

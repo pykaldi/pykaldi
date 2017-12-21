@@ -15,6 +15,27 @@ typedef ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>> CompactLa
 typedef Fst<CompactLatticeArc> CompactLatticeFst;
 typedef MutableFst<CompactLatticeArc> CompactLatticeMutableFst;
 
+template<class Arc>
+void FstToBytes(const Fst<Arc> &fst, string *result) {
+  FstToString<Arc>(fst, result);
+}
+
+Fst<StdArc> *BytesToStdFst(const string &s) {
+  return StringToFst<StdArc>(s);
+}
+
+Fst<LogArc> *BytesToLogFst(const string &s) {
+  return StringToFst<LogArc>(s);
+}
+
+Fst<LatticeArc> *BytesToLatticeFst(const string &s) {
+  return StringToFst<LatticeArc>(s);
+}
+
+Fst<CompactLatticeArc> *BytesToCompactLatticeFst(const string &s) {
+  return StringToFst<CompactLatticeArc>(s);
+}
+
 template <class Arc>
 bool VerifyExt(const Fst<Arc> &fst) {
   return Verify(fst);

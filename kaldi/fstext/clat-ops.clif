@@ -14,6 +14,10 @@ from "fstext/fst-ops.h":
 
 # Constant Ops
 
+    def `FstToBytes` as to_bytes(fst: CompactLatticeFst) -> bytes
+
+    def `BytesToCompactLatticeFst` as from_bytes(s: bytes) -> CompactLatticeFst
+
     def `VerifyExt` as verify(fst: CompactLatticeFst) -> bool
 
     def `CountStatesExt` as count_states(fst: CompactLatticeFst) -> int

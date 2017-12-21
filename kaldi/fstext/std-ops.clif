@@ -16,6 +16,10 @@ from "fstext/fst-ops.h":
 
 # Constant Ops
 
+    def `FstToBytes` as to_bytes(fst: StdFst) -> bytes
+
+    def `BytesToStdFst` as from_bytes(s: bytes) -> StdFst
+
     def `VerifyExt` as verify(fst: StdFst) -> bool
 
     def `CountStatesExt` as count_states(fst: StdFst) -> int

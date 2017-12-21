@@ -51,6 +51,8 @@ kaldi\.fstext
       CompactLatticeConstFstStateIterator
       CompactLatticeEncodeMapper
       CompactLatticeFstCompiler
+      CompactLatticeFstDrawer
+      CompactLatticeFstPrinter
       CompactLatticeVectorFst
       CompactLatticeVectorFstArcIterator
       CompactLatticeVectorFstMutableArcIterator
@@ -66,6 +68,8 @@ kaldi\.fstext
       LatticeConstFstStateIterator
       LatticeEncodeMapper
       LatticeFstCompiler
+      LatticeFstDrawer
+      LatticeFstPrinter
       LatticeVectorFst
       LatticeVectorFstArcIterator
       LatticeVectorFstMutableArcIterator
@@ -77,6 +81,8 @@ kaldi\.fstext
       LogConstFstStateIterator
       LogEncodeMapper
       LogFstCompiler
+      LogFstDrawer
+      LogFstPrinter
       LogVectorFst
       LogVectorFstArcIterator
       LogVectorFstMutableArcIterator
@@ -88,6 +94,8 @@ kaldi\.fstext
       StdConstFstStateIterator
       StdEncodeMapper
       StdFstCompiler
+      StdFstDrawer
+      StdFstPrinter
       StdVectorFst
       StdVectorFstArcIterator
       StdVectorFstMutableArcIterator
@@ -186,19 +194,13 @@ kaldi\.fstext\.utils
    
       acoustic_lattice_scale
       bytes_to_compact_lattice_fst
-      bytes_to_compact_lattice_vector_fst
       bytes_to_lattice_fst
-      bytes_to_lattice_vector_fst
       bytes_to_log_fst
-      bytes_to_log_vector_fst
       bytes_to_std_fst
-      bytes_to_std_vector_fst
       cast_log_to_std
       cast_or_convert_to_vector_fst
       cast_std_to_log
       compact_lattice_has_alignment
-      compactlattice_fst_to_bytes
-      compactlattice_fst_to_string
       convert_compact_lattice_to_lattice
       convert_lattice_to_compact_lattice
       convert_lattice_to_std
@@ -207,11 +209,7 @@ kaldi\.fstext\.utils
       get_linear_symbol_sequence
       get_symbols
       graph_lattice_scale
-      lattice_fst_to_bytes
-      lattice_fst_to_string
       lattice_scale
-      log_fst_to_bytes
-      log_fst_to_string
       read_fst_kaldi
       read_fst_kaldi_generic
       remove_alignments_from_compact_lattice
@@ -222,8 +220,6 @@ kaldi\.fstext\.utils
       std_convert_nbest_to_vector
       std_equal_align
       std_following_input_symbols_are_same
-      std_fst_to_bytes
-      std_fst_to_string
       std_get_input_symbols
       std_get_output_symbols
       std_highest_numbered_input_symbol

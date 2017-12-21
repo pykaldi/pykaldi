@@ -142,6 +142,36 @@ class StdFstCompiler(_api._FstCompiler):
         return _compiler.StdFstCompiler
 
 
+class StdFstDrawer(_drawer.StdFstDrawer):
+    """Drawer for FSTs over the tropical semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
+                 portrait, vertical, ranksep, nodesep, fontsize, precision,
+                 float_format, show_weight_one):
+        super(StdFstDrawer, self).__init__(
+            fst, isyms, osyms, ssyms, accep, title, width, height,
+            portrait, vertical, ranksep, nodesep, fontsize, precision,
+            float_format, show_weight_one)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
+class StdFstPrinter(_printer.StdFstPrinter):
+    """Printer for FSTs over the tropical semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
+                 field_separator, missing_symbol=""):
+        super(StdFstPrinter, self).__init__(
+            fst, isyms, osyms, ssyms, accep, show_weight_one,
+            field_separator, missing_symbol)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
 class StdVectorFstStateIterator(_api._StateIteratorBase,
                                 _vector_fst.StdVectorFstStateIterator):
     """State iterator for a vector FST over the tropical semiring.
@@ -190,8 +220,8 @@ class StdVectorFst(_api._MutableFstBase, _vector_fst.StdVectorFst):
     """Vector FST over the tropical semiring."""
 
     _ops = _std_ops
-    _drawer_type = _drawer.StdFstDrawer
-    _printer_type = _printer.StdFstPrinter
+    _drawer_type = StdFstDrawer
+    _printer_type = StdFstPrinter
     _weight_factory = TropicalWeight
     _state_iterator_type = StdVectorFstStateIterator
     _arc_iterator_type = StdVectorFstArcIterator
@@ -247,8 +277,8 @@ class StdConstFst(_api._FstBase, _const_fst.StdConstFst):
     """Constant FST over the tropical semiring."""
 
     _ops = _std_ops
-    _drawer_type = _drawer.StdFstDrawer
-    _printer_type = _printer.StdFstPrinter
+    _drawer_type = StdFstDrawer
+    _printer_type = StdFstPrinter
     _weight_factory = TropicalWeight
     _state_iterator_type = StdConstFstStateIterator
     _arc_iterator_type = StdConstFstArcIterator
@@ -316,6 +346,36 @@ class LogFstCompiler(_api._FstCompiler):
         return _compiler.LogFstCompiler
 
 
+class LogFstDrawer(_drawer.LogFstDrawer):
+    """Drawer for FSTs over the log semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
+                 portrait, vertical, ranksep, nodesep, fontsize, precision,
+                 float_format, show_weight_one):
+        super(LogFstDrawer, self).__init__(
+            fst, isyms, osyms, ssyms, accep, title, width, height,
+            portrait, vertical, ranksep, nodesep, fontsize, precision,
+            float_format, show_weight_one)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
+class LogFstPrinter(_printer.LogFstPrinter):
+    """Printer for FSTs over the log semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
+                 field_separator, missing_symbol=""):
+        super(LogFstPrinter, self).__init__(
+            fst, isyms, osyms, ssyms, accep, show_weight_one,
+            field_separator, missing_symbol)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
 class LogVectorFstStateIterator(_api._StateIteratorBase,
                                 _vector_fst.LogVectorFstStateIterator):
     """State iterator for a vector FST over the log semiring.
@@ -364,8 +424,8 @@ class LogVectorFst(_api._MutableFstBase, _vector_fst.LogVectorFst):
     """Vector FST over the log semiring."""
 
     _ops = _log_ops
-    _drawer_type = _drawer.LogFstDrawer
-    _printer_type = _printer.LogFstPrinter
+    _drawer_type = LogFstDrawer
+    _printer_type = LogFstPrinter
     _weight_factory = LogWeight
     _state_iterator_type = LogVectorFstStateIterator
     _arc_iterator_type = LogVectorFstArcIterator
@@ -420,8 +480,8 @@ class LogConstFst(_api._FstBase, _const_fst.LogConstFst):
     """Constant FST over the log semiring."""
 
     _ops = _log_ops
-    _drawer_type = _drawer.LogFstDrawer
-    _printer_type = _printer.LogFstPrinter
+    _drawer_type = LogFstDrawer
+    _printer_type = LogFstPrinter
     _weight_factory = LogWeight
     _state_iterator_type = LogConstFstStateIterator
     _arc_iterator_type = LogConstFstArcIterator
@@ -501,6 +561,36 @@ class LatticeFstCompiler(_api._FstCompiler):
         return _compiler.LatticeFstCompiler
 
 
+class LatticeFstDrawer(_drawer.LatticeFstDrawer):
+    """Drawer for FSTs over the lattice semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
+                 portrait, vertical, ranksep, nodesep, fontsize, precision,
+                 float_format, show_weight_one):
+        super(LatticeFstDrawer, self).__init__(
+            fst, isyms, osyms, ssyms, accep, title, width, height,
+            portrait, vertical, ranksep, nodesep, fontsize, precision,
+            float_format, show_weight_one)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
+class LatticeFstPrinter(_printer.LatticeFstPrinter):
+    """Printer for FSTs over the lattice semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
+                 field_separator, missing_symbol=""):
+        super(LatticeFstPrinter, self).__init__(
+            fst, isyms, osyms, ssyms, accep, show_weight_one,
+            field_separator, missing_symbol)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
 class LatticeVectorFstStateIterator(_api._StateIteratorBase,
                                     _vector_fst.LatticeVectorFstStateIterator):
     """State iterator for a vector FST over the lattice semiring.
@@ -549,8 +639,8 @@ class LatticeVectorFst(_api._MutableFstBase, _vector_fst.LatticeVectorFst):
     """Vector FST over the lattice semiring."""
 
     _ops = _lat_ops
-    _drawer_type = _drawer.LatticeFstDrawer
-    _printer_type = _printer.LatticeFstPrinter
+    _drawer_type = LatticeFstDrawer
+    _printer_type = LatticeFstPrinter
     _weight_factory = LatticeWeight
     _state_iterator_type = LatticeVectorFstStateIterator
     _arc_iterator_type = LatticeVectorFstArcIterator
@@ -606,8 +696,8 @@ class LatticeConstFst(_api._FstBase, _const_fst.LatticeConstFst):
     """Constant FST over the lattice semiring."""
 
     _ops = _lat_ops
-    _drawer_type = _drawer.LatticeFstDrawer
-    _printer_type = _printer.LatticeFstPrinter
+    _drawer_type = LatticeFstDrawer
+    _printer_type = LatticeFstPrinter
     _weight_factory = LatticeWeight
     _state_iterator_type = LatticeConstFstStateIterator
     _arc_iterator_type = LatticeConstFstArcIterator
@@ -697,6 +787,36 @@ class CompactLatticeFstCompiler(_api._FstCompiler):
         return _compiler.compactLatticeFstCompiler
 
 
+class CompactLatticeFstDrawer(_drawer.CompactLatticeFstDrawer):
+    """Drawer for FSTs over the compact lattice semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
+                 portrait, vertical, ranksep, nodesep, fontsize, precision,
+                 float_format, show_weight_one):
+        super(CompactLatticeFstDrawer, self).__init__(
+            fst, isyms, osyms, ssyms, accep, title, width, height,
+            portrait, vertical, ranksep, nodesep, fontsize, precision,
+            float_format, show_weight_one)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
+class CompactLatticeFstPrinter(_printer.CompactLatticeFstPrinter):
+    """Printer for FSTs over the compact lattice semiring."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
+                 field_separator, missing_symbol=""):
+        super(CompactLatticeFstPrinter, self).__init__(
+            fst, isyms, osyms, ssyms, accep, show_weight_one,
+            field_separator, missing_symbol)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
 class CompactLatticeVectorFstStateIterator(
         _api._StateIteratorBase,
         _vector_fst.CompactLatticeVectorFstStateIterator):
@@ -748,8 +868,8 @@ class CompactLatticeVectorFst(_api._MutableFstBase,
     """Vector FST over the compact lattice semiring."""
 
     _ops = _clat_ops
-    _drawer_type = _drawer.CompactLatticeFstDrawer
-    _printer_type = _printer.CompactLatticeFstPrinter
+    _drawer_type = CompactLatticeFstDrawer
+    _printer_type = CompactLatticeFstPrinter
     _weight_factory = CompactLatticeWeight
     _state_iterator_type = CompactLatticeVectorFstStateIterator
     _arc_iterator_type = CompactLatticeVectorFstArcIterator
@@ -808,8 +928,8 @@ class CompactLatticeConstFst(_api._FstBase, _const_fst.CompactLatticeConstFst):
     """Constant FST over the compact lattice semiring."""
 
     _ops = _clat_ops
-    _drawer_type = _drawer.CompactLatticeFstDrawer
-    _printer_type = _printer.CompactLatticeFstPrinter
+    _drawer_type = CompactLatticeFstDrawer
+    _printer_type = CompactLatticeFstPrinter
     _weight_factory = CompactLatticeWeight
     _state_iterator_type = CompactLatticeConstFstStateIterator
     _arc_iterator_type = CompactLatticeConstFstArcIterator

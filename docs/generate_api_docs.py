@@ -50,7 +50,6 @@ with open("api.rst", "w") as api, \
                                                    onerror=lambda x: None):
         if modname.split(".")[-1][0] == "_" and not args.include_private:
             continue
-        print(modname)
         if ispkg:
             print("   {}/{}".format(args.out_dir, modname), file=api)
             print("   {}".format(modname), file=packages)
