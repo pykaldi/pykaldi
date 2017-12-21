@@ -39,6 +39,7 @@ with open("api.rst", "w") as api, \
      open("modules.rst", "w") as modules:
 
     print(".. toctree::\n   :caption: API Guide\n", file=api)
+    print("   {}/kaldi".format(args.out_dir), file=api)
     print(".. autosummary::\n   :toctree: {}\n".format(args.out_dir),
           file=packages)
     print(".. autosummary::\n   :toctree: {}\n".format(args.out_dir),
@@ -49,6 +50,7 @@ with open("api.rst", "w") as api, \
                                                    onerror=lambda x: None):
         if modname.split(".")[-1][0] == "_" and not args.include_private:
             continue
+        print(modname)
         if ispkg:
             print("   {}/{}".format(args.out_dir, modname), file=api)
             print("   {}".format(modname), file=packages)

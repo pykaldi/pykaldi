@@ -6,8 +6,7 @@ from . import lat as _lat
 from .util import io as _io
 
 
-__all__ = ['convert_indices_to_symbols', 'read_decoding_graph',
-           'DiagGmmDecoder']
+__all__ = ['convert_indices_to_symbols', 'read_decoding_graph', 'Recognizer']
 
 
 def convert_indices_to_symbols(symbol_table, indices):
@@ -79,7 +78,7 @@ class Recognizer(object):
         symbols (SymbolTable): The symbol table. If provided, "text" output of
             :meth:`decode` includes symbols instead of integer indices.
     """
-    def __init__(self, decoder, decodable_wrapper, trans_model, symbols=None):
+    def __init__(self, decoder, decodable_wrapper, symbols=None):
         self.decoder = decoder
         self.decodable_wrapper = decodable_wrapper
         self.symbols = symbols
@@ -91,7 +90,7 @@ class Recognizer(object):
         Decoding output is a dictionary with the following `(key, value)` pairs:
 
         ============  ========================== ==============================
-        key           value                      type
+        key           value                      value type
         ============  ========================== ==============================
         "alignment"   Frame-level alignment.     `List[int]`
         "best_path"   Best lattice path.         `CompactLattice`

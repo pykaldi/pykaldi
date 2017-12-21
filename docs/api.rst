@@ -1,6 +1,7 @@
 .. toctree::
    :caption: API Guide
 
+   api/kaldi
    api/kaldi.base
    api/kaldi.chain
    api/kaldi.cudamatrix
