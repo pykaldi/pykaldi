@@ -50,6 +50,8 @@ context-dependent phones to context-independent phones C, and an HMM set H::
 .. autoconstant:: ENCODE_WEIGHTS
 """
 
+from ..util import io as _io
+
 from ._getters import EncodeType
 from ._symbol_table import *
 from . import _float_weight
@@ -70,7 +72,6 @@ from . import _lat_ops
 from . import _clat_ops
 
 from ._api import *
-
 
 class SymbolTableIterator(_symbol_table.SymbolTableIterator):
     """Symbol table iterator.
@@ -142,34 +143,14 @@ class StdFstCompiler(_api._FstCompiler):
         return _compiler.StdFstCompiler
 
 
-class _StdFstDrawer(_drawer.StdFstDrawer):
+class _StdFstDrawer(_api._FstDrawer, _drawer.StdFstDrawer):
     """Drawer for FSTs over the tropical semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
-                 portrait, vertical, ranksep, nodesep, fontsize, precision,
-                 float_format, show_weight_one):
-        super(_StdFstDrawer, self).__init__(
-            fst, isyms, osyms, ssyms, accep, title, width, height,
-            portrait, vertical, ranksep, nodesep, fontsize, precision,
-            float_format, show_weight_one)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
-class _StdFstPrinter(_printer.StdFstPrinter):
+class _StdFstPrinter(_api._FstPrinter, _printer.StdFstPrinter):
     """Printer for FSTs over the tropical semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
-                 field_separator, missing_symbol=""):
-        super(_StdFstPrinter, self).__init__(
-            fst, isyms, osyms, ssyms, accep, show_weight_one,
-            field_separator, missing_symbol)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
 class StdVectorFstStateIterator(_api._StateIteratorBase,
@@ -346,34 +327,14 @@ class LogFstCompiler(_api._FstCompiler):
         return _compiler.LogFstCompiler
 
 
-class _LogFstDrawer(_drawer.LogFstDrawer):
+class _LogFstDrawer(_api._FstDrawer, _drawer.LogFstDrawer):
     """Drawer for FSTs over the log semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
-                 portrait, vertical, ranksep, nodesep, fontsize, precision,
-                 float_format, show_weight_one):
-        super(_LogFstDrawer, self).__init__(
-            fst, isyms, osyms, ssyms, accep, title, width, height,
-            portrait, vertical, ranksep, nodesep, fontsize, precision,
-            float_format, show_weight_one)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
-class _LogFstPrinter(_printer.LogFstPrinter):
+class _LogFstPrinter(_api._FstPrinter, _printer.LogFstPrinter):
     """Printer for FSTs over the log semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
-                 field_separator, missing_symbol=""):
-        super(_LogFstPrinter, self).__init__(
-            fst, isyms, osyms, ssyms, accep, show_weight_one,
-            field_separator, missing_symbol)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
 class LogVectorFstStateIterator(_api._StateIteratorBase,
@@ -561,34 +522,14 @@ class LatticeFstCompiler(_api._FstCompiler):
         return _compiler.LatticeFstCompiler
 
 
-class _LatticeFstDrawer(_drawer.LatticeFstDrawer):
+class _LatticeFstDrawer(_api._FstDrawer, _drawer.LatticeFstDrawer):
     """Drawer for FSTs over the lattice semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
-                 portrait, vertical, ranksep, nodesep, fontsize, precision,
-                 float_format, show_weight_one):
-        super(_LatticeFstDrawer, self).__init__(
-            fst, isyms, osyms, ssyms, accep, title, width, height,
-            portrait, vertical, ranksep, nodesep, fontsize, precision,
-            float_format, show_weight_one)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
-class _LatticeFstPrinter(_printer.LatticeFstPrinter):
+class _LatticeFstPrinter(_api._FstPrinter, _printer.LatticeFstPrinter):
     """Printer for FSTs over the lattice semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
-                 field_separator, missing_symbol=""):
-        super(_LatticeFstPrinter, self).__init__(
-            fst, isyms, osyms, ssyms, accep, show_weight_one,
-            field_separator, missing_symbol)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
 class LatticeVectorFstStateIterator(_api._StateIteratorBase,
@@ -787,34 +728,14 @@ class CompactLatticeFstCompiler(_api._FstCompiler):
         return _compiler.compactLatticeFstCompiler
 
 
-class _CompactLatticeFstDrawer(_drawer.CompactLatticeFstDrawer):
+class _CompactLatticeFstDrawer(_api._FstDrawer, _drawer.CompactLatticeFstDrawer):
     """Drawer for FSTs over the compact lattice semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
-                 portrait, vertical, ranksep, nodesep, fontsize, precision,
-                 float_format, show_weight_one):
-        super(_CompactLatticeFstDrawer, self).__init__(
-            fst, isyms, osyms, ssyms, accep, title, width, height,
-            portrait, vertical, ranksep, nodesep, fontsize, precision,
-            float_format, show_weight_one)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
-class _CompactLatticeFstPrinter(_printer.CompactLatticeFstPrinter):
+class _CompactLatticeFstPrinter(_api._FstPrinter, _printer.CompactLatticeFstPrinter):
     """Printer for FSTs over the compact lattice semiring."""
-    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
-                 field_separator, missing_symbol=""):
-        super(_CompactLatticeFstPrinter, self).__init__(
-            fst, isyms, osyms, ssyms, accep, show_weight_one,
-            field_separator, missing_symbol)
-        # Keep references to these to keep them in scope
-        self._fst = fst
-        self._isyms = isyms
-        self._osyms = osyms
-        self._ssyms = ssyms
+    pass
 
 
 class CompactLatticeVectorFstStateIterator(
@@ -955,6 +876,88 @@ class CompactLatticeConstFst(_api._FstBase, _const_fst.CompactLatticeConstFst):
                                 "semiring")
 
 CompactLatticeConstFst._mutable_fst_type = CompactLatticeVectorFst
+
+
+# Kaldi I/O
+
+def read_fst_kaldi(rxfilename):
+    """Reads FST using Kaldi I/O mechanisms.
+
+    Does not support reading in text mode.
+
+    Args:
+        rxfilename (str): Extended filename for reading the FST.
+
+    Returns:
+        An FST object.
+
+    Raises:
+        IOError: If reading fails.
+        TypeError: If FST type or arc type is not supported.
+    """
+    with _io.xopen(rxfilename) as ki:
+        rxfilename = _io.printable_rxfilename(rxfilename)
+        if not ki.stream().good():
+            raise IOError("Could not open {} for reading.".format(rxfilename))
+        hdr = FstHeader()
+        if not hdr.read(ki.stream(), rxfilename):
+            raise IOError("Error reading FST header.")
+        fst_type = hdr.fst_type()
+        if fst_type not in ["vector", "const"]:
+            raise TypeError("Unsupported FST type: {}.".format(fst_type))
+        arc_type = hdr.arc_type()
+        if arc_type == StdArc.type():
+            if fst_type == "vector":
+                fst_class = StdVectorFst
+            elif fst_type == "const":
+                fst_class = StdConstFst
+        elif arc_type == LogArc.type():
+            if fst_type == "vector":
+                fst_class = LogVectorFst
+            elif fst_type == "const":
+                fst_class = LogConstFst
+        elif arc_type == LatticeArc.type():
+            if fst_type == "vector":
+                fst_class = LatticeVectorFst
+            elif fst_type == "const":
+                fst_class = LatticeConstFst
+        elif arc_type == CompactLatticeArc.type():
+            if fst_type == "vector":
+                fst_class = CompactLatticeVectorFst
+            elif fst_type == "const":
+                fst_class = CompactLatticeConstFst
+        else:
+            raise TypeError("Unsupported FST arc type: {}.".format(arc_type))
+        ropts = FstReadOptions(rxfilename, hdr)
+        fst = fst_class.read_from_stream(ki.stream(), ropts)
+        if not fst:
+            raise IOError("Error reading FST (after reading header).")
+        return fst
+
+
+def write_fst_kaldi(fst, wxfilename):
+    """Writes FST using Kaldi I/O mechanisms.
+
+    FST is written in binary mode without Kaldi binary mode header.
+
+    Args:
+        fst: The FST to write.
+        wxfilename (str): Extended filename for writing the FST.
+
+    Raises:
+        IOError: If writing fails.
+    """
+    with _io.xopen(wxfilename, "wb", write_header=False) as ko:
+        wxfilename = _io.printable_wxfilename(wxfilename)
+        if not ko.stream().good():
+            raise IOError("Could not open {} for writing.".format(wxfilename))
+        wopts = FstWriteOptions(wxfilename)
+        try:
+            if not fst.write_to_stream(ko.stream(), wopts):
+                raise IOError("Error writing FST.")
+        except RuntimeError as err:
+            raise IOError("{}".format(err))
+
 
 ################################################################################
 

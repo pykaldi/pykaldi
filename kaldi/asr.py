@@ -3,10 +3,9 @@ from __future__ import division
 from . import fstext as _fst
 from .fstext import utils as _utils
 from . import lat as _lat
-from .util import io as _io
 
 
-__all__ = ['convert_indices_to_symbols', 'read_decoding_graph', 'Recognizer']
+__all__ = ['convert_indices_to_symbols', 'Recognizer']
 
 
 def convert_indices_to_symbols(symbol_table, indices):
@@ -30,40 +29,6 @@ def convert_indices_to_symbols(symbol_table, indices):
                            .format(idx))
         syms.append(sym)
     return syms
-
-
-def read_decoding_graph(graph_rxfilename):
-    """Reads decoding graph FST from an extended filename.
-
-    Supports reading mutable as well as constant FSTs.
-
-    Args:
-        graph_rxfilename (str): Extended filename for reading the graph.
-
-    Returns:
-        StdVectorFst or StdConstFst: The decoding graph.
-    """
-    with _io.xopen(graph_rxfilename) as ki:
-        if not ki.stream().good():
-            raise IOError("Could not open decoding graph FST {}"
-                          .format(rxfilename))
-        hdr = _fst.FstHeader()
-        if not hdr.read(ki.stream(), "<unknown>"):
-            raise IOError("Reading FST: error reading FST header.")
-        if hdr.arc_type() != _fst.StdArc.type():
-            raise ValueError("FST with arc type {} not supported"
-                             .format(hdr.arc_type()))
-        ropts = _fst.FstReadOptions("<unspecified>", hdr)
-        if hdr.fst_type() == "vector":
-            decode_fst = _fst.StdVectorFst.read_from_stream(ki.stream(), ropts)
-        elif hdr.fst_type() == "const":
-            decode_fst = _fst.StdConstFst.read_from_stream(ki.stream(), ropts)
-        else:
-            raise ValueError("Reading FST: unsupported FST type: {}"
-                             .format(hdr.fst_type()))
-        if not decode_fst:
-            raise IOError("Error reading FST (after reading header).")
-        return decode_fst
 
 
 class Recognizer(object):

@@ -5,7 +5,7 @@ import logging
 import sys
 import time
 
-from kaldi.asr import convert_indices_to_symbols, read_decoding_graph
+from kaldi.asr import convert_indices_to_symbols, read_fst_kaldi
 from kaldi.decoder import FasterDecoderOptions, FasterDecoder
 from kaldi.fstext import (SymbolTable, FstHeader, FstReadOptions,
                           StdArc, StdVectorFst, StdConstFst)
@@ -51,7 +51,7 @@ def gmm_decode_faster(model_rxfilename, fst_rxfilename,
     # it can prevent crashes on systems without enough virtual memory.
 
     # Read decoding graph and instantiate decoder.
-    decode_fst = read_decoding_graph(fst_rxfilename)
+    decode_fst = read_fst_kaldi(fst_rxfilename)
     decoder = FasterDecoder(decode_fst, decoder_opts)
 
     tot_like = 0.0

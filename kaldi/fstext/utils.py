@@ -6,7 +6,6 @@ from . import _fstext_utils_inl
 from ._fstext_shims import *
 from ._fstext_utils import *
 from ._fstext_utils_inl import *
-from ._kaldi_fst_io import *
 from ._lattice_utils import *
 
 

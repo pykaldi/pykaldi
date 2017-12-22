@@ -11,7 +11,6 @@ kaldi\.asr
    .. autosummary::
    
       convert_indices_to_symbols
-      read_decoding_graph
    
    
 

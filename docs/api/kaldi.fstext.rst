@@ -26,6 +26,7 @@ kaldi\.fstext
       push
       randequivalent
       randgen
+      read_fst_kaldi
       relabel_symbol_table
       replace
       reverse
@@ -35,6 +36,7 @@ kaldi\.fstext
       shortestpath
       statemap
       synchronize
+      write_fst_kaldi
    
    
 
@@ -187,7 +189,6 @@ kaldi\.fstext\.utils
       acoustic_lattice_scale
       apply_probability_scale
       cast_log_to_std
-      cast_or_convert_to_vector_fst
       cast_std_to_log
       clear_symbols
       compact_lattice_has_alignment
@@ -219,7 +220,6 @@ kaldi\.fstext\.utils
       phi_compose
       preceding_input_symbols_are_same
       propagate_final
-      read_fst_kaldi_generic
       remove_alignments_from_compact_lattice
       remove_some_input_symbols
       remove_useless_arcs
@@ -230,7 +230,6 @@ kaldi\.fstext\.utils
       safe_determinize_wrapper
       scale_compact_lattice
       scale_lattice
-      write_fst_kaldi
    
    
 

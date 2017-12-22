@@ -86,12 +86,6 @@ add_pyclif_library("_fstext_shims" fstext-shims.clif
   RPATH $ORIGIN/../base
 )
 
-add_pyclif_library("_kaldi_fst_io" kaldi-fst-io.clif
-  CLIF_DEPS _iostream _vector_fst
-  LIBRARIES kaldi-fstext
-  RPATH $ORIGIN/../base
-)
-
 add_pyclif_library("_fstext_utils" fstext-utils.clif
   CLIF_DEPS _vector_fst
   LIBRARIES kaldi-fstext

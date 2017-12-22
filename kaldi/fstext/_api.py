@@ -185,6 +185,40 @@ class _FstCompiler(object):
         self._strbuf += expression
 
 
+# Drawer API
+
+class _FstDrawer(object):
+    """Base class defining the Python API for FST drawers."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, title, width, height,
+                 portrait, vertical, ranksep, nodesep, fontsize, precision,
+                 float_format, show_weight_one):
+        super(_FstDrawer, self).__init__(
+            fst, isyms, osyms, ssyms, accep, title, width, height,
+            portrait, vertical, ranksep, nodesep, fontsize, precision,
+            float_format, show_weight_one)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
+# Printer API
+
+class _FstPrinter(object):
+    """Base class defining the Python API for FST printers."""
+    def __init__(self, fst, isyms, osyms, ssyms, accep, show_weight_one,
+                 field_separator, missing_symbol=""):
+        super(_FstPrinter, self).__init__(
+            fst, isyms, osyms, ssyms, accep, show_weight_one,
+            field_separator, missing_symbol)
+        # Keep references to these to keep them in scope
+        self._fst = fst
+        self._isyms = isyms
+        self._osyms = osyms
+        self._ssyms = ssyms
+
+
 # FST API
 
 class _FstBase(object):
@@ -570,6 +604,21 @@ class _FstBase(object):
         """
         if not self._write(filename):
             raise IOError("Write failed: {!r}".format(filename))
+
+    def write_to_stream(self, strm, wopts):
+        """Serializes FST to an output stream.
+
+        Args:
+            strm (ostream): The output stream to write to.
+            wopts (FstWriteOptions): FST writing options.
+
+        Returns:
+            True if write was successful, False otherwise.
+
+        Raises:
+            RuntimeError: Write failed.
+        """
+        return self._write_to_stream(strm, wopts)
 
 
 class _MutableFstBase(_FstBase):

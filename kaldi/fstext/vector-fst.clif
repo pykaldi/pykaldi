@@ -43,6 +43,9 @@ from "fst/vector-fst.h":
 
       def `Write` as _write(self, filename: str) -> bool
 
+      def `Write` as _write_to_stream(self, strm: ostream,
+                                      opts: FstWriteOptions) -> bool
+
     class `StateIterator<VectorFst<StdArc>>` as StdVectorFstStateIterator:
 
       def __init__(self, fst: StdVectorFst)

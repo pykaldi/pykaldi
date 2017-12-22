@@ -1,8 +1,8 @@
-from kaldi.asr import read_decoding_graph, Recognizer
+from kaldi.asr import Recognizer
 from kaldi.decoder import FasterDecoder, FasterDecoderOptions
 from kaldi.feat.mfcc import Mfcc, MfccOptions
 from kaldi.feat.functions import compute_deltas, DeltaFeaturesOptions
-from kaldi.fstext import SymbolTable
+from kaldi.fstext import SymbolTable, read_fst_kaldi
 from kaldi.gmm.am import AmDiagGmm, DecodableAmDiagGmmScaled
 from kaldi.hmm import TransitionModel
 from kaldi.util.io import xopen
@@ -32,7 +32,7 @@ def make_decodable_wrapper(trans_model, acoustic_model):
 decodable_wrapper = make_decodable_wrapper(trans_model, acoustic_model)
 
 # Define the decoder
-decoding_graph = read_decoding_graph("/home/dogan/tools/pykaldi/egs/models/wsj/HCLG.fst")
+decoding_graph = read_fst_kaldi("/home/dogan/tools/pykaldi/egs/models/wsj/HCLG.fst")
 decoder_opts = FasterDecoderOptions()
 decoder_opts.beam = 13
 decoder_opts.max_active = 7000

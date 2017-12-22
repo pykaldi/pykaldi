@@ -43,6 +43,9 @@ from "fstext/const-fst-ext.h":
 
       def `Write` as _write(self, filename: str) -> bool
 
+      def `Write` as _write_to_stream(self, strm: ostream,
+                                      opts: FstWriteOptions) -> bool
+
     class `StateIterator<ConstFst<StdArc>>` as StdConstFstStateIterator:
 
       def __init__(self, fst: StdConstFst)
