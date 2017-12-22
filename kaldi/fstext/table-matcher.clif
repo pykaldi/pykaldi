@@ -7,32 +7,64 @@ from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/table-matcher.h":
   namespace `fst`:
     class TableMatcherOptions:
+      """Options for table matcher.
+
+      Table matcher is a matcher specialized for the case where the output
+      side of the left FST always has either all-epsilons coming out of
+      a state, or a majority of the symbol table. Therefore we can
+      either store nothing (for the all-epsilon case) or store a lookup
+      table from labels to arc offsets. Since the table matcher has to
+      iterate over all arcs in each left-hand state the first time it sees
+      it, this matcher type is not efficient if you compose with
+      something very small on the right -- unless you do it multiple
+      times and keep the matcher around.
+
+      Table matcher class is not exposed to Python code directly. Instances of
+      `TableMatcherOptions` can be passed to :meth:`table_compose` and
+      `TableComposeCache` for controlling the table matcher behavior.
+      """
+
       table_ratio: float
+      """Construct the table if it would be at least this full."""
       min_table_size: int
+      """Minimum table size."""
 
     class TableComposeOptions(TableMatcherOptions):
+      """Options for table composition."""
       connect: bool
+      """Connect output"""
       filter_type: ComposeFilter
+      """Which pre-defined filter to use."""
       table_match_type: MatchType
+      """Type of table match."""
 
       @add__init__
-      def `TableComposeOptions` as from_matcher_opts(self,
-        mo: TableMatcherOptions, connect: bool = default,
+      def `TableComposeOptions` as from_matcher_opts(
+        self, mo: TableMatcherOptions, connect: bool = default,
         filter_type: ComposeFilter = default,
-        table_match_type: MatchType = default)
+        table_match_type: MatchType = default):
+        """Creates a new `TableComposeOptions` instance."""
 
-    def `TableCompose` as std_table_compose(
-      ifst1: StdFst, ifst2: StdFst, ofst: StdMutableFst,
-      opts: TableComposeOptions = default)
+    def `TableCompose` as table_compose(ifst1: StdFst, ifst2: StdFst,
+                                        ofst: StdMutableFst,
+                                        opts: TableComposeOptions = default):
+      """Performs table composition."""
 
-    class `TableComposeCache<StdFst>` as StdTableComposeCache:
-      # matcher: StdTableMatcher
+    class `TableComposeCache<StdFst>` as TableComposeCache:
+      """Cache for table compose.
+
+      Used for doing multiple compositions while caching the same matcher.
+      """
+      # matcher: TableMatcher
       opts: TableComposeOptions
+      """Table compose options."""
 
       @add__init__
-      def `TableComposeCache` as from_compose_opts(self,
-        opts: TableComposeOptions = default)
+      def `TableComposeCache` as from_compose_opts(
+        self, opts: TableComposeOptions = default):
+        """Creates a new `TableComposeCache` instance."""
 
-    def `TableCompose` as std_table_compose_cache(
-      ifst1: StdFst, ifst2: StdFst, ofst: StdMutableFst,
-      cache: StdTableComposeCache)
+    def `TableCompose` as table_compose_cache(ifst1: StdFst, ifst2: StdFst,
+                                              ofst: StdMutableFst,
+                                              cache: TableComposeCache):
+      """Performs table composition using the cached table matcher."""

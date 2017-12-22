@@ -54,11 +54,11 @@ from "fstext/fstext-shims.h":
                                                                           ofst: CompactLatticeConstFst)
 
     def `CastStdToLog` as cast_std_to_log(ifst: StdVectorFst) -> LogVectorFst:
+      """Casts FST in tropical semiring to log semiring."""
       return LogVectorFst(...)
-    def `CastLogToStd` as cast_log_to_std(ifst: LogVectorFst) -> StdVectorFst:
-      return StdVectorFst(...)
 
-    def `ReadFstKaldiExt` as read_fst_kaldi(rxfilename: str) -> StdVectorFst:
+    def `CastLogToStd` as cast_log_to_std(ifst: LogVectorFst) -> StdVectorFst:
+      """Casts FST in log semiring to tropical semiring."""
       return StdVectorFst(...)
 
     def `ConvertLatticeToCompactLattice` as _convert_lattice_to_compact_lattice(
@@ -68,14 +68,32 @@ from "fstext/fstext-shims.h":
     def `ConvertLatticeToStd` as _convert_lattice_to_std(ifst: LatticeExpandedFst, ofst: StdMutableFst)
     def `ConvertStdToLattice` as _convert_std_to_lattice(ifst: StdExpandedFst, ofst: LatticeMutableFst)
 
-    def `ScaleKaldiLattice` as scale_lattice(scale: list<list<float>>,
-                                            fst: LatticeMutableFst)
+    def `ScaleKaldiLattice` as scale_lattice(scale: list<list<float>>, fst: LatticeMutableFst):
+      """Scales the lattice weights.
+
+      Scales the pair of weights in `LatticeWeight` by viewing the pair (a, b)
+      as a 2-vector and pre-multiplying by the 2x2 matrix in `scale`.  E.g.
+      typically scale would equal `[[1, 0], [0, acwt]]` if we want to scale the
+      acoustics by `acwt`.
+      """
+
     def `ScaleCompactLattice` as scale_compact_lattice(scale: list<list<float>>,
-                                                       fst: CompactLatticeMutableFst)
+                                                       fst: CompactLatticeMutableFst):
+      """Scales the compact lattice weights.
+
+      Scales the pair of weights in `CompactLatticeWeight` by viewing the pair (a, b)
+      as a 2-vector and pre-multiplying by the 2x2 matrix in `scale`.  E.g.
+      typically scale would equal `[[1, 0], [0, acwt]]` if we want to scale the
+      acoustics by `acwt`.
+      """
+
     def `RemoveAlignmentsFromCompactLatticeExt`
-        as remove_alignments_from_compact_lattice(fst: CompactLatticeMutableFst)
+        as remove_alignments_from_compact_lattice(fst: CompactLatticeMutableFst):
+      """Removes state-level alignments in a compact lattice."""
+
     def `CompactLatticeHasAlignmentExt`
-        as compact_lattice_has_alignment(fst: CompactLatticeExpandedFst) -> bool
+        as compact_lattice_has_alignment(fst: CompactLatticeExpandedFst) -> bool:
+      """Checks if compact lattice has state-level alignments."""
 
     def `GetLinearSymbolSequenceFromLatticeFst`
         as _get_linear_symbol_sequence_from_lattice(fst: LatticeFst)

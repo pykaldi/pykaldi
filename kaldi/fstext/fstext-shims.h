@@ -44,12 +44,6 @@ void CastLogToStd(const VectorFst<LogArc> &ifst, VectorFst<StdArc> *ofst) {
   Cast<VectorFst<LogArc>, VectorFst<StdArc>>(ifst, ofst);
 }
 
-// Kaldi FST I/O
-
-VectorFst<StdArc> *ReadFstKaldiExt(std::string rxfilename) {
-  return ReadFstKaldi(rxfilename);
-}
-
 // Kaldi Lattice Utility Functions
 
 void ConvertLatticeToCompactLattice(

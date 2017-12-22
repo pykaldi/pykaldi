@@ -1,7 +1,14 @@
 
 from "fstext/lattice-utils.h":
   namespace `fst`:
-    def `DefaultLatticeScale` as default_lattice_scale() -> list<list<float>>
-    def `AcousticLatticeScale` as acoustic_lattice_scale(acwt: float) -> list<list<float>>
-    def `GraphLatticeScale` as graph_lattice_scale(lmwt: float) -> list<list<float>>
-    def `LatticeScale` as lattice_scale(lmwt: float, acwt: float) -> list<list<float>>
+    def `DefaultLatticeScale` as default_lattice_scale() -> list<list<float>>:
+      """Returns a default 2x2 matrix for scaling lattice weights."""
+
+    def `AcousticLatticeScale` as acoustic_lattice_scale(acwt: float) -> list<list<float>>:
+      """Returns a 2x2 matrix for scaling acoustic cost in lattice weights."""
+
+    def `GraphLatticeScale` as graph_lattice_scale(lmwt: float) -> list<list<float>>:
+      """Returns a 2x2 matrix for scaling graph cost in lattice weights."""
+
+    def `LatticeScale` as lattice_scale(lmwt: float, acwt: float) -> list<list<float>>:
+      """Returns a 2x2 matrix for scaling graph and acoustic costs in lattice weights."""

@@ -3,9 +3,15 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 
+from kaldi.fstext import StdVectorFst
+from kaldi.fstext import LogVectorFst
+from kaldi.fstext import LatticeVectorFst
+from kaldi.fstext import CompactLatticeVectorFst
+
 from "fstext/kaldi-fst-io.h":
   namespace `fst`:
-    # def `ReadFstKaldi` as read_fst_kaldi(rxfilename: str) -> StdVectorFst
+    # def `ReadFstKaldi` as read_fst_kaldi(rxfilename: str) -> StdVectorFst:
+    #   return StdVectorFst(...)
 
     def `ReadFstKaldiGeneric` as read_fst_kaldi_generic(
       rxfilename: str, throw_on_err: bool = default) -> StdFst

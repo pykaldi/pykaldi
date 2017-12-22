@@ -793,12 +793,12 @@ class _MutableFstBase(_FstBase):
         acceptor with a minimal number of states that is equivalent to A. If the
         input FST A is a transducer, this operation internally builds an
         equivalent transducer with a minimal number of states. However, this
-        minimality is obtained by allowing transition having strings of symbols
-        as output labels, this known in the litterature as a real-time
+        minimality is obtained by allowing transitions to have strings of
+        symbols as output labels, this is known in the literature as a real-time
         transducer. Such transducers are not directly supported by the library.
-        This function will convert such transducer by expanding each
+        This function will convert such transducers by expanding each
         string-labeled transition into a sequence of transitions. This will
-        results in the creation of new states, hence losing the minimality
+        result in the creation of new states, hence losing the minimality
         property.
 
         Args:

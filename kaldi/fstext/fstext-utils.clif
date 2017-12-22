@@ -4,5 +4,14 @@ from "fstext/vector-fst-clifwrap.h" import *
 
 from "fstext/fstext-utils.h":
   namespace `fst`:
-    def `MinimizeEncoded` as std_minimize_encoded(fst: StdVectorFst,
-                                                  delta: float = default)
+    def `MinimizeEncoded` as minimize_encoded_std_fst(fst: StdVectorFst,
+                                                      delta: float = default):
+      """Minimizes FST in place after encoding labels and weights.
+
+      Similar to minimize operation, except it does not push the weights, or
+      the labels.
+
+      Args:
+        fst (StdVectorFst): Input FST.
+        delta (float): Quantization delta (default=0.0009765625).
+      """

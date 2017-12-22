@@ -6,11 +6,17 @@ from "fstext/context-fst.h" import *
 from "fstext/context-fst-inl.h":
   namespace `fst`:
     def `WriteILabelInfo` as write_ilabel_info(os: ostream, binary: bool,
-                                               info: list<list<int>>)
+                                               info: list<list<int>>):
+      """Writes ilabel info to output stream."""
 
     def `ReadILabelInfo` as read_ilabel_info(is: istream, binary: bool)
-        -> list<list<int>>
+        -> list<list<int>>:
+      """Reads ilabel info from input stream."""
 
     def `CreateILabelInfoSymbolTable` as create_ilabel_info_symbol_table(
         info: list<list<int>>, phones_symtab: SymbolTable,
-        separator: str, disambig_prefix: str) -> SymbolTable
+        separator: str, disambig_prefix: str) -> SymbolTable:
+        """Creates a symbol table from the ilabel info and phones symbol table.
+
+        This is mainly used for debugging.
+        """

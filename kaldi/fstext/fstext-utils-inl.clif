@@ -11,25 +11,28 @@ from kaldi.util import _value_error_on_false
 
 from "fstext/fstext-utils-inl.h":
   namespace `fst`:
-    def `HighestNumberedOutputSymbol` as std_highest_numbered_output_symbol(
-      fst: StdFst) -> int
+    def `HighestNumberedOutputSymbol` as highest_numbered_output_symbol(fst: StdFst) -> int:
+      """Returns the highest numbered output label of the FST (zero if FST is empty)."""
 
-    def `HighestNumberedInputSymbol` as std_highest_numbered_input_symbol(
-      fst: StdFst) -> int
+    def `HighestNumberedInputSymbol` as highest_numbered_input_symbol(fst: StdFst) -> int:
+      """Returns the highest numbered input label of the FST (zero if FST is empty)."""
 
     # NumArcs == CountArcs
 
-    def `GetInputSymbols` as std_get_input_symbols(
-      fst: StdFst, include_eps: bool) -> list<int>
+    def `GetInputSymbols` as get_input_symbols(fst: StdFst, include_eps: bool) -> list<int>:
+      """Gets input labels of the FST as a sorted unique list."""
 
-    def `GetOutputSymbols` as std_get_output_symbols(
-      fst: StdFst, include_eps: bool) -> list<int>
+    def `GetOutputSymbols` as get_output_symbols(fst: StdFst, include_eps: bool) -> list<int>:
+      """Gets output labels of the FST as a sorted unique list."""
 
-    def `ClearSymbols` as std_clear_symbols(
-      clear_input: bool, clear_output: bool, fst: StdMutableFst)
+    def `ClearSymbols` as clear_symbols(clear_input: bool, clear_output: bool, fst: StdMutableFst):
+      """Sets all input/output labels of the FST to zero.
 
-    def `GetSymbols` as get_symbols(
-      symtab: SymbolTable, include_eps: bool) -> list<int>
+      Does not alter symbol tables.
+      """
+
+    def `GetSymbols` as get_symbols(symtab: SymbolTable, include_eps: bool) -> list<int>:
+      """Gets labels in the symbol table as a sorted unique list."""
 
     def `GetLinearSymbolSequence` as _get_linear_symbol_sequence_from_std(
       fst: StdFst) -> (success: bool, isymbols_out: list<int>,
@@ -37,77 +40,220 @@ from "fstext/fstext-utils-inl.h":
                        tot_weight_out: TropicalWeight):
       return _value_error_on_false(...)
 
-    def `ConvertNbestToVector` as std_convert_nbest_to_vector(fst: StdFst)
-      -> list<StdVectorFst>
+    def `ConvertNbestToVector` as convert_nbest_to_list(fst: StdFst) -> list<StdVectorFst>:
+      """Converts n-best FST to a list of FSTs."""
 
-    def `NbestAsFsts` as std_nbest_as_fsts(fst: StdFst, n: int)
-      -> list<StdVectorFst>
+    def `NbestAsFsts` as nbest_as_fsts(fst: StdFst, n: int) -> list<StdVectorFst>:
+      """Outputs (up to) n-best paths in the FST as a list of FSTs."""
 
-    def `MakeLinearAcceptor` as std_make_linear_acceptor(labels: list<int>,
-                                                         ofst: StdMutableFst)
+    def `MakeLinearAcceptor` as make_linear_acceptor(labels: list<int>, ofst: StdMutableFst):
+      """Creates an unweighted linear acceptor from the label sequence."""
 
-    def `MakeLinearAcceptorWithAlternatives`
-        as std_make_linear_acceptor_with_alternatives(labels: list<list<int>>,
-                                                      ofst: StdMutableFst)
+    def `MakeLinearAcceptorWithAlternatives` as make_linear_acceptor_with_alternatives(
+      labels: list<list<int>>, ofst: StdMutableFst):
+      """Creates an unweighted acceptor with a linear structure.
 
-    def `SafeDeterminizeWrapper` as std_safe_determinize_wrapper(
-      ifst: StdMutableFst, ofst: StdMutableFst, delta: float = default)
+      Each position in the input list is a list of labels.  Each position must
+      have at least one alternative. Epsilon/0 is treated like a normal symbol.
+      """
 
-    def `SafeDeterminizeMinimizeWrapper`
-        as std_safe_determinize_minimize_wrapper(
-      ifst: StdMutableFst, ofst: StdVectorFst, delta: float = default)
+    def `SafeDeterminizeWrapper` as safe_determinize_wrapper(
+      ifst: StdMutableFst, ofst: StdMutableFst, delta: float = default):
+      """Performs safe determinization.
 
-    def `SafeDeterminizeMinimizeWrapperInLog`
-        as std_safe_determinize_minimize_wrapper_in_log(
-      ifst: StdVectorFst, ofst: StdVectorFst, delta: float = default)
+      This is a form of determinization that will never blow up. Note that
+      `ifst` is non-const and can be destroyed by this operation. Does not do
+      epsilon removal. This is so it's safe to cast to log and do this, and
+      maintain equivalence in tropical.
+      """
 
-    def `RemoveSomeInputSymbols` as std_remove_some_input_symbols(
-      to_remove: list<int>, fst: StdMutableFst)
+    def `SafeDeterminizeMinimizeWrapper` as safe_determinize_minimize_wrapper(
+      ifst: StdMutableFst, ofst: StdVectorFst, delta: float = default):
+      """Performs safe determinization and minimization.
 
-    def `MapInputSymbols` as std_map_input_symbols(symbol_map: list<int>,
-                                                   fst: StdMutableFst)
+      Like meth:`safe_determinize_wrapper` but also does encoded minimization,
+      which is safe. This algorithm will destroy `ifst`.
+      """
 
-    def `RemoveWeights` as std_remove_weights(fst: StdMutableFst)
+    def `SafeDeterminizeMinimizeWrapperInLog` as safe_determinize_minimize_wrapper_in_log(
+      ifst: StdVectorFst, ofst: StdVectorFst, delta: float = default):
+      """Performs safe determinization and minimization in log semiring.
 
-    def `PrecedingInputSymbolsAreSame` as std_preceding_input_symbols_are_same(
-      start_is_epsilon: bool, fst: StdFst) -> bool
+      Like meth:`safe_determinize_minimize_wrapper` but first casts to the log
+      semiring. This algorithm will destroy `ifst`.
+      """
 
-    def `FollowingInputSymbolsAreSame` as std_following_input_symbols_are_same(
-      end_is_epsilon: bool, fst: StdFst) -> bool
+    def `RemoveSomeInputSymbols` as remove_some_input_symbols(
+      to_remove: list<int>, fst: StdMutableFst):
+      """Replaces given input labels with zeros."""
 
-    def `MakePrecedingInputSymbolsSame`
-        as std_make_preceding_input_symbols_same(
-      start_is_epsilon: bool, fst: StdMutableFst)
+    def `MapInputSymbols` as map_input_symbols(symbol_map: list<int>, fst: StdMutableFst):
+      """Maps input labels to labels given in the symbol map."""
 
-    def `MakeFollowingInputSymbolsSame`
-        as std_make_following_input_symbols_same(
-      end_is_epsilon: bool, fst: StdMutableFst)
+    def `RemoveWeights` as remove_weights(fst: StdMutableFst):
+      """Removes FST weights."""
 
-    # def `MakeLoopFst` as std_make_loop_fst(fsts: list<StdExpandedFst>)
-    #   -> StdVectorFst
+    def `PrecedingInputSymbolsAreSame` as preceding_input_symbols_are_same(
+      start_is_epsilon: bool, fst: StdFst) -> bool:
+      """Checks if all arcs entering any state have the same input symbol.
 
-    def `ApplyProbabilityScale` as std_apply_probability_scale(
-      scale: float, fst: StdMutableFst)
+      Returns true if and only if the FST is such that the input symbols on
+      arcs entering any given state all have the same value. If
+      `start_is_epsilon == True`, treats start-state as an epsilon input arc
+      [i.e. ensures only epsilons can enter start-state].
+      """
 
-    def `EqualAlign` as std_equal_align(ifst: StdFst, length: int,
-                                        rand_seed: int, ofst: StdMutableFst,
-                                        num_retries: int = default) -> bool
+    # PrecedingInputSymbolsAreSameClass
 
-    def `RemoveUselessArcs` as std_remove_useless_arcs(fst: StdMutableFst)
+    def `FollowingInputSymbolsAreSame` as following_input_symbols_are_same(
+      end_is_epsilon: bool, fst: StdFst) -> bool:
+      """Checks if all arcs exiting any state have the same input symbol.
 
-    def `PhiCompose` as std_phi_compose(fst1: StdFst, fst2: StdFst,
-                                        phi_label: int, ofst: StdMutableFst)
+      Returns true if and only if the FST is such that the input symbols on
+      arcs exiting any given state all have the same value. If
+      `end_is_epsilon == True`, treats final-states as epsilon output arcs
+      [i.e. ensures only epsilons can exit final-states].
+      """
 
-    def `PropagateFinal` as std_propagate_final(phi_label: int,
-                                                fst: StdMutableFst)
+    def `MakePrecedingInputSymbolsSame` as make_preceding_input_symbols_same(
+      start_is_epsilon: bool, fst: StdMutableFst):
+      """Ensures that all arcs entering any state have the same input symbol.
 
-    def `RhoCompose` as std_rho_compose(fst1: StdFst, fst2: StdFst,
-                                        rho_label: int, ofst: StdMutableFst)
+      Detects states that have differing input symbols going in, and inserts,
+      for each of the preceding arcs with non-epsilon input symbol, a new dummy
+      state that has an epsilon link to the fst state. If `start_is_epsilon ==
+      True`, ensures that start-state can have only epsilon-links into it.
+      """
 
-    def `IsStochasticFst` as std_is_stochastic_fst(
+    # MakePrecedingInputSymbolsSameClass
+
+    def `MakeFollowingInputSymbolsSame` as make_following_input_symbols_same(
+      end_is_epsilon: bool, fst: StdMutableFst):
+      """Ensures that all arcs exiting any state have the same input symbol.
+
+      Detects states that have differing input symbols going out, and inserts,
+      for each of the following arcs with non-epsilon input symbol, a new dummy
+      state that has an epsilon link from the fst state. The output symbol and
+      weight stay on the link to the dummy state (in order to keep the FST
+      output-deterministic and stochastic, if it already was). If
+      `end_is_epsilon == True`, treats "being a final-state" like having an
+      epsilon output link.
+      """
+
+    # MakeFollowingInputSymbolsSameClass
+
+    # def `MakeLoopFst` as make_loop_fst(fsts: list<StdExpandedFst>) -> StdVectorFst
+
+    def `ApplyProbabilityScale` as apply_probability_scale(scale: float, fst: StdMutableFst):
+      """Applies a probability scale to the FST.
+
+      This is applicable to FSTs in the log or tropical semiring. It multiplies
+      the arc and final weights by `scale` [this is not the multiplication
+      operation of the semiring, it's actual multiplication, which is
+      equivalent to taking a power in the semiring].
+      """
+
+    def `EqualAlign` as equal_align(ifst: StdFst, length: int,
+                                    rand_seed: int, ofst: StdMutableFst,
+                                    num_retries: int = default) -> bool:
+      """Generates sequences from the input FST with exactly "length" symbols.
+
+      This is similar to randgen, but it generates a sequence with exactly
+      "length" input symbols.  It returns `True` on success, `False` on failure
+      (failure is partly random but should never happen in practice for normal
+      speech models.) It generates a random path through the input FST, finds
+      out which subset of the states it visits along the way have self-loops
+      with inupt symbols on them, and outputs a path with exactly enough
+      self-loops to have the requested number of input symbols. Note that
+      EqualAlign does not use the probabilities on the FST.  It just uses equal
+      probabilities in the first stage of selection (since the output will
+      anyway not be a truly random sample from the FST). The input fst "ifst"
+      must be connected or this may enter an infinite loop.
+      """
+
+    def `RemoveUselessArcs` as remove_useless_arcs(fst: StdMutableFst):
+      """Removes arcs that are not on best paths for any input symbol sequence.
+
+      This removes arcs such that there is no input symbol sequence for which
+      the best path through the FST would contain those arcs [for these
+      purposes, epsilon is not treated as a real symbol]. This is mainly geared
+      towards decoding-graph FSTs which may contain transitions that have less
+      likely words on them that would never be taken.  We do not claim that
+      this algorithm removes all such arcs; it just does the best job it can.
+      Only works for tropical (not log) semiring as it uses NaturalLess.
+      """
+
+    def `PhiCompose` as phi_compose(fst1: StdFst, fst2: StdFst,
+                                    phi_label: int, ofst: StdMutableFst):
+      """Performs composition by handling phi (failure) transitions.
+
+      This is a version of composition where the right hand FST (fst2) is
+      treated as a backoff language model, with the phi symbol (e.g. #0)
+      treated as a "failure transition", only taken when there is no match for
+      the requested symbol.
+      """
+
+    def `PropagateFinal` as propagate_final(phi_label: int, fst: StdMutableFst):
+      """Propagates final-probs through "phi" transitions.
+
+      Note that here, phi_label may be epsilon. If you have a backoff language
+      model with special symbols ("phi") on the backoff arcs instead of
+      epsilon, you may use :meth:`phi_compose` to compose with it, but this
+      won't do the right thing w.r.t. final probabilities.  You should first
+      call :meth:`propagate_final` on the FST with phi's in it (`fst2` in
+      :meth:`phi_compose`), to fix this.  If a state does not have a
+      final-prob, but has a phi transition, it makes the state's final-prob
+      (phi-prob * final-prob-of-dest-state), and does this recursively i.e.
+      follows phi transitions on the dest state first.  It behaves as if there
+      were a super-final state with a special symbol leading to it, from each
+      currently final state.  Note that this may not behave as desired if there
+      are epsilons in your FST; it might be better to remove those before
+      calling this function.
+      """
+
+    def `RhoCompose` as rho_compose(fst1: StdFst, fst2: StdFst,
+                                    rho_label: int, ofst: StdMutableFst):
+      """Performs composition by handling rho transitions.
+
+      This is a version of composition where the right hand FST (fst2) has
+      special "rho transitions" which are taken whenever no normal transition
+      matches; these transitions will be rewritten with whatever symbol was on
+      the first FST.
+      """
+
+    def `IsStochasticFst` as is_stochastic_fst(
       fst: StdFst, delta: float = default, min_sum: TropicalWeight = default,
-      max_sum: TropicalWeight = default) -> bool
+      max_sum: TropicalWeight = default) -> bool:
+      """Checks if FST is stochastic.
 
-    def `IsStochasticFstInLog` as std_is_stochastic_fst_in_log(
+      This function returns true if, in the semiring of the FST, the sum
+      (within the semiring) of all the arcs out of each state in the FST is
+      one, to within delta.
+
+      Args:
+        fst: The FST that we are testing.
+        delta: The tolerance to within which we test equality to 1.
+        min_sum: If provided, it will be set to the minimum sum of weights.
+        max_sum: If provided, it will be set to the maximum sum of weights.
+
+      Returns:
+        True if the FST is stochastic, and False otherwise.
+      """
+
+    def `IsStochasticFstInLog` as is_stochastic_fst_in_log(
       fst: StdFst, delta: float = default, min_sum: TropicalWeight = default,
-      max_sum: TropicalWeight = default) -> bool
+      max_sum: TropicalWeight = default) -> bool:
+      """Checks if FST is stochastic in log semiring.
+
+      This function returns true if, in the log semiring, the sum of all the
+      arcs out of each state in the FST is one, to within delta.
+
+      Args:
+        fst: The FST that we are testing.
+        delta: The tolerance to within which we test equality to 1.
+        min_sum: If provided, it will be set to the minimum sum of weights.
+        max_sum: If provided, it will be set to the maximum sum of weights.
+
+      Returns:
+        True if the FST is stochastic, and False otherwise.
+      """

@@ -51,8 +51,6 @@ kaldi\.fstext
       CompactLatticeConstFstStateIterator
       CompactLatticeEncodeMapper
       CompactLatticeFstCompiler
-      CompactLatticeFstDrawer
-      CompactLatticeFstPrinter
       CompactLatticeVectorFst
       CompactLatticeVectorFstArcIterator
       CompactLatticeVectorFstMutableArcIterator
@@ -68,8 +66,6 @@ kaldi\.fstext
       LatticeConstFstStateIterator
       LatticeEncodeMapper
       LatticeFstCompiler
-      LatticeFstDrawer
-      LatticeFstPrinter
       LatticeVectorFst
       LatticeVectorFstArcIterator
       LatticeVectorFstMutableArcIterator
@@ -81,8 +77,6 @@ kaldi\.fstext
       LogConstFstStateIterator
       LogEncodeMapper
       LogFstCompiler
-      LogFstDrawer
-      LogFstPrinter
       LogVectorFst
       LogVectorFstArcIterator
       LogVectorFstMutableArcIterator
@@ -94,8 +88,6 @@ kaldi\.fstext
       StdConstFstStateIterator
       StdEncodeMapper
       StdFstCompiler
-      StdFstDrawer
-      StdFstPrinter
       StdVectorFst
       StdVectorFstArcIterator
       StdVectorFstMutableArcIterator
@@ -150,8 +142,8 @@ kaldi\.fstext\.special
       push_special
       read_ilabel_info
       remove_eps_local
-      std_table_compose
-      std_table_compose_cache
+      table_compose
+      table_compose_cache
       write_ilabel_info
    
    
@@ -170,8 +162,8 @@ kaldi\.fstext\.special
       StdContextFstArcIterator
       StdContextFstStateIterator
       StdDeterministicOnDemandFst
-      StdTableComposeCache
       StdUnweightedNgramFst
+      TableComposeCache
       TableComposeOptions
       TableMatcherOptions
    
@@ -193,52 +185,51 @@ kaldi\.fstext\.utils
       :nosignatures:
    
       acoustic_lattice_scale
+      apply_probability_scale
       cast_log_to_std
       cast_or_convert_to_vector_fst
       cast_std_to_log
+      clear_symbols
       compact_lattice_has_alignment
       convert_compact_lattice_to_lattice
       convert_lattice_to_compact_lattice
       convert_lattice_to_std
+      convert_nbest_to_list
       convert_std_to_lattice
       default_lattice_scale
+      equal_align
+      following_input_symbols_are_same
+      get_input_symbols
       get_linear_symbol_sequence
+      get_output_symbols
       get_symbols
       graph_lattice_scale
+      highest_numbered_input_symbol
+      highest_numbered_output_symbol
+      is_stochastic_fst
+      is_stochastic_fst_in_log
       lattice_scale
-      read_fst_kaldi
+      make_following_input_symbols_same
+      make_linear_acceptor
+      make_linear_acceptor_with_alternatives
+      make_preceding_input_symbols_same
+      map_input_symbols
+      minimize_encoded_std_fst
+      nbest_as_fsts
+      phi_compose
+      preceding_input_symbols_are_same
+      propagate_final
       read_fst_kaldi_generic
       remove_alignments_from_compact_lattice
+      remove_some_input_symbols
+      remove_useless_arcs
+      remove_weights
+      rho_compose
+      safe_determinize_minimize_wrapper
+      safe_determinize_minimize_wrapper_in_log
+      safe_determinize_wrapper
       scale_compact_lattice
       scale_lattice
-      std_apply_probability_scale
-      std_clear_symbols
-      std_convert_nbest_to_vector
-      std_equal_align
-      std_following_input_symbols_are_same
-      std_get_input_symbols
-      std_get_output_symbols
-      std_highest_numbered_input_symbol
-      std_highest_numbered_output_symbol
-      std_is_stochastic_fst
-      std_is_stochastic_fst_in_log
-      std_make_following_input_symbols_same
-      std_make_linear_acceptor
-      std_make_linear_acceptor_with_alternatives
-      std_make_preceding_input_symbols_same
-      std_map_input_symbols
-      std_minimize_encoded
-      std_nbest_as_fsts
-      std_phi_compose
-      std_preceding_input_symbols_are_same
-      std_propagate_final
-      std_remove_some_input_symbols
-      std_remove_useless_arcs
-      std_remove_weights
-      std_rho_compose
-      std_safe_determinize_minimize_wrapper
-      std_safe_determinize_minimize_wrapper_in_log
-      std_safe_determinize_wrapper
       write_fst_kaldi
    
    
