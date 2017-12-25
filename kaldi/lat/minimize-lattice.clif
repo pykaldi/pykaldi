@@ -4,4 +4,19 @@ from "fstext/mutable-fst-clifwrap.h" import *
 from "lat/minimize-lattice.h":
   namespace `fst`:
     def `MinimizeCompactLattice` as minimize_compact_lattice(
-      clat: CompactLatticeMutableFst, delta: float = default) -> bool
+      clat: CompactLatticeMutableFst, delta: float = default) -> bool:
+      """Applies a specialized minimization operation to compact lattices.
+
+      It is to be called after determinization and pushing. If the lattice is
+      not determinized and pushed this function will not combine as many states
+      as it could, but it won't throw an exception. The output will be
+      topologically sorted.
+
+      Returns:
+        True on success, False if topological sorting fails.
+
+      See Also:
+        :meth:`determinize_lattice_pruned`
+        :meth:`push_compact_lattice_strings`
+        :meth:`push_compact_lattice_weights`
+      """

@@ -3,14 +3,8 @@ from "fstext/vector-fst-clifwrap.h" import *
 
 from "lat/confidence.h":
   namespace `kaldi`:
-    def `SentenceLevelConfidence`
-        as sentence_level_confidence_from_compact_lattice(
-      clat: CompactLatticeVectorFst) -> (confidence: float, num_paths: int,
-                                         best_sentence: list<int>,
-                                         second_best_sentence: list<int>)
+    def `SentenceLevelConfidence` as _sentence_level_confidence_from_compact_lattice(clat: CompactLatticeVectorFst)
+      -> (confidence: float, num_paths: int, best_sentence: list<int>, second_best_sentence: list<int>)
 
-    def `SentenceLevelConfidence`
-        as sentence_level_confidence_from_lattice(
-      clat: LatticeVectorFst) -> (confidence: float, num_paths: int,
-                                  best_sentence: list<int>,
-                                  second_best_sentence: list<int>)
+    def `SentenceLevelConfidence` as _sentence_level_confidence_from_lattice(clat: LatticeVectorFst)
+      -> (confidence: float, num_paths: int, best_sentence: list<int>, second_best_sentence: list<int>)

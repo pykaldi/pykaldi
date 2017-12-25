@@ -4,34 +4,126 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 
+from kaldi.util import _value_error_on_false
+
 from "lat/word-align-lattice-lexicon.h":
   namespace `kaldi`:
     def `ReadLexiconForWordAlign` as read_lexicon_for_word_align(is: istream)
-      -> (success: bool, lexicon: list<list<int>>)
+      -> (success: bool, lexicon: list<list<int>>):
+      """Reads the lexicon in the special format required for word alignment.
+
+      Each line has a series of integers on it (at least two on each line),
+      representing:
+
+      <old-word-id> <new-word-id> [<phone-id-1> [<phone-id-2> ... ] ]
+
+      Here, <old-word-id> is the word-id that appears in the lattice before
+      alignment, and <new-word-id> is the word-is that should appear in the
+      lattice after alignment. This is mainly useful when the lattice may have
+      no symbol for the optional-silence arcs (so <old-word-id> would equal
+      zero), but we want it to be output with a symbol on those arcs (so
+      <new-word-id> would be nonzero). If the silence should not be added to
+      the lattice, both <old-word-id> and <new-word-id> may be zero.
+
+      Args:
+        is (istream): The input stream to read the lexicon from.
+
+      Returns
+        List[List[int]]: The lexicon in the format required for word alignment.
+
+      Raises:
+        ValueError: If reading the lexicon fails.
+      """
+      return _value_error_on_false(...)
 
     class WordAlignLatticeLexiconInfo:
+      """WordAlignLatticeLexiconInfo(lexicon)
+
+      This class extracts some information from the lexicon and stores it in a
+      suitable form for the word-alignment code to use.
+
+      Args:
+        lexicon (List[List[int]]): The lexicon.
+      """
       def __init__(self, lexicon: list<list<int>>)
 
-      def `IsValidEntry` as is_valid_entry(self, entry: list<int>) -> bool
+      def `IsValidEntry` as is_valid_entry(self, entry: list<int>) -> bool:
+        """Checks if entry is valid.
 
-      def `EquivalenceClassOf` as equivalence_class_of(self, word: int) -> int
+        This function is used in testing code.
+
+        Returns:
+          True if the entry intepreted as (output-word phone1 phone2 ...)
+          can appear in the lexicon.
+        """
+
+      def `EquivalenceClassOf` as equivalence_class_of(self, word: int) -> int:
+        """Returns the equivalence class for the word.
+
+        This function is used in testing code.
+
+        Words are mapped into equivalence classes derived from the mappings in
+        the first two fields of each line in the lexicon. This function maps
+        from each word-id to the lowest member of its equivalence class.
+        """
 
     class WordAlignLatticeLexiconOpts:
-      partial_word_label: int
-      reorder: bool
-      test: bool
-      allow_duplicate_paths: bool
-      max_expand: float
+      """Options for word alignment using a lexicon."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      partial_word_label: int
+      """Label for partial word arcs at the end of "forced-out" utterances."""
+      reorder: bool
+      """Whether lattice was created from a graph with reorder option set."""
+      test: bool
+      """Whether to activate the testing code to validate the algorithm."""
+      allow_duplicate_paths: bool
+      """Whether to allow duplicate paths in testing code."""
+      max_expand: float
+      """Maximum allowed ratio of #states in aligned lattice vs input lattice.
+
+      If >0.0, the maximum ratio by which we allow the lattice-alignment code
+      to increase the #states in a lattice (vs. the phone-aligned lattice)
+      before we fail and  refuse to align the lattice. This is helpful in order
+      to prevent 'pathological' lattices from causing the program to exhaust
+      memory. Actual max-states is 1000 + max-expand * orig-num-states.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     def `WordAlignLatticeLexicon` as word_align_lattice_lexicon(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,
       lexicon_info: WordAlignLatticeLexiconInfo,
       opts: WordAlignLatticeLexiconOpts)
-      -> (success: bool, lat_out: CompactLatticeVectorFst)
+      -> (success: bool, lat_out: CompactLatticeVectorFst):
+      """Aligns the word labels and transition-ids using a lexicon.
 
-    # def `TestWordAlignedLatticeLexicon` as test_word_aligned_lattice_lexicon(
-    #   lat: CompactLatticeVectorFst, tmodel: TransitionModel,
-    #   lexicon: list<list<int>>, aligned_lat: CompactLatticeVectorFst,
-    #   allow_duplicate_paths: bool)
+      Aligns compact lattice so that each arc has the transition-ids on it that
+      correspond to the word that is on that arc. It is OK for the lattice to
+      have epsilon arcs for optional silences.
+
+      Args:
+        lat (CompactLatticeVectorFst): The input lattice.
+        tmodel (TransitionModel): The transition model.
+        lexicon_info (WordAlignLatticeLexiconInfo): The lexicon information.
+        opts (WordAlignLatticeLexiconOpts): The word alignment options.
+
+      Returns:
+        A tuple representing the return value and the output lattice. The
+        return value is set to True if the operation was successful, False if
+        some kind of problem was detected, e.g. transition-id sequences in the
+        lattice were incompatible with the word boundary information, or the
+        lattice seems to have been "forced out" (did not reach end state,
+        resulting in partial words at the end).
+
+      Note:
+        If this function returns False, it doesn't mean the input lattice is
+        necessarily bad: it might just be that the lattice was "forced out" as
+        the end-state was not reached during decoding, and in this case the
+        output might still be usable.
+      """

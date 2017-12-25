@@ -4,7 +4,27 @@ from "fstext/mutable-fst-clifwrap.h" import *
 from "lat/push-lattice.h":
   namespace `fst`:
     def `PushCompactLatticeStrings` as push_compact_lattice_strings(
-      clat: CompactLatticeMutableFst) -> bool
+      clat: CompactLatticeMutableFst) -> bool:
+      """Pushes the transition-ids as far towards the start as they will go.
+
+      It can be useful prior to :meth:`word_align_lattice` (for non-linear
+      lattices).  We can't use the generic OpenFst "push" function because
+      it uses the sum as the divisor, which is not appropriate in this case
+      (a+b generally won't divide a or b in this semiring).
+
+      Returns:
+        True on success, False if topological sorting fails.
+      """
 
     def `PushCompactLatticeWeights` as push_compact_lattice_weights(
-      clat: CompactLatticeMutableFst) -> bool
+      clat: CompactLatticeMutableFst) -> bool:
+      """Pushes the weights in compact lattice toward the start state.
+
+      This function pushes the weights in the compact lattice so that all
+      states except possibly the start state, have weight components (of type
+      LatticeWeight) that "sum to one" in the lattice semiring (i.e.
+      interpreting the weights as negated log-probs).
+
+      Returns:
+        True on success, False if topological sorting fails.
+      """

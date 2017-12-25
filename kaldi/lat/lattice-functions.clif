@@ -12,126 +12,388 @@ from kaldi.util import _value_error_on_false
 from "lat/lattice-functions.h":
   namespace `kaldi`:
     def `GetPerFrameAcousticCosts` as get_per_frame_acoustic_costs(
-      nbest: LatticeVectorFst) -> Vector
+      linear_lattice: LatticeVectorFst) -> Vector:
+      """Extracts per-frame log likelihoods from a linear lattice.
+
+      The size of output vector will be set to the number of non-epsilon
+      input symbols in `linear_lattice`. The elements of output vector will be
+      set to the second elements of the lattice weights, which represent the
+      acoustic costs; you may want to scale this vector afterward by
+      -1/acoustic_scale to get the original loglikes. If there are acoustic
+      costs on input-epsilon arcs or the final-probs (and this should
+      not normally be the case in situations where it makes sense to call this
+      function), they will be included to the cost of the preceding input
+      symbol, or the following input symbol for input-epsilons encountered
+      prior to any input symbol.  If `linear_lattice` has no input symbols,
+      output vector will be set to the empty vector.
+      """
 
     def `LatticeStateTimes` as lattice_state_times(lat: LatticeVectorFst)
-      -> (num_frames: int, times: list<int>)
+      -> (num_frames: int, times: list<int>):
+      """Extracts lattice state times (in terms of frames).
 
-    def `CompactLatticeStateTimes` as compact_lattice_state_times(
-      clat: CompactLatticeVectorFst) -> (num_frames: int, times: list<int>)
+      Iterates over the states of a topologically sorted lattice and computes
+      the corresponding time instances. The times are returned as a vector of
+      integers `times` with size equal to the number of states in the lattice.
+      Also returns the number of frames which is equal to the maximum state
+      time in the lattice.
+      """
 
-    # def `LatticeForwardBackward` as lattice_forward_backward(
-    #   lat: LatticeVectorFst)
-    #   -> (total_prob: float, arc_post: list<tuple<int,float>>,
-    #       acoustic_like_sum: float)
+    def `CompactLatticeStateTimes` as compact_lattice_state_times(clat: CompactLatticeVectorFst)
+      -> (num_frames: int, times: list<int>):
+      """Extracts compact lattice state times (in terms of frames).
 
-    def `ComputeCompactLatticeAlphas` as compute_compact_lattice_alphas(
-      clat: CompactLatticeVectorFst) -> (success: bool, alpha: list<float>):
+      Iterates over the states of a topologically sorted compact lattice and
+      computes the the corresponding time instances. The times are returned as
+      a vector of integers `times` with size equal to the number of states in
+      the lattice. Also returns the number of frames which might not be equal
+      to the maximum state time in the lattice due to frames in final states.
+      """
+
+    def `LatticeForwardBackward` as lattice_forward_backward(lat: LatticeVectorFst)
+      -> (total_prob: float, arc_post: list<list<tuple<int, float>>>, acoustic_like_sum: float):
+      """Computes lattice arc posteriors using forward-backward algorithm.
+
+      Returns the total log-probability of the lattice, arc posteriors and the
+      sum over the arcs, of the posterior of the arc times the acoustic
+      likelihood [i.e. negated acoustic score] on that arc. The arc posteriors
+      contain pairs of `(transition-id, weight)` for each frame.
+      """
+
+    def `ComputeCompactLatticeAlphas` as compute_compact_lattice_alphas(clat: CompactLatticeVectorFst)
+      -> (success: bool, alpha: list<float>):
+      """Computes the forward scores (alpha) for compact lattice states."""
       return _value_error_on_false(...)
 
-    def `ComputeCompactLatticeBetas` as compute_compact_lattice_betas(
-      clat: CompactLatticeVectorFst) -> (success: bool, beta: list<float>):
+    def `ComputeCompactLatticeBetas` as compute_compact_lattice_betas(clat: CompactLatticeVectorFst)
+      -> (success: bool, beta: list<float>):
+      """Computes the backward scores (beta) for compact lattice states."""
       return _value_error_on_false(...)
 
-    def `ComputeLatticeAlphasAndBetas`
-        as compute_lattice_alphas_and_betas(
-      clat: LatticeVectorFst, viterbi: bool)
-      -> (total_prob: float, alpha: list<float>, beta: list<float>)
+    def `ComputeLatticeAlphasAndBetas` as compute_lattice_alphas_and_betas(
+      lat: LatticeVectorFst, viterbi: bool)
+      -> (total_prob: float, alpha: list<float>, beta: list<float>):
+      """Computes forward and backward scores for lattice states.
 
-    def `ComputeLatticeAlphasAndBetas`
-        as compute_compact_lattice_alphas_and_betas(
+      If `viterbi == True`, computes the Viterbi scores, i.e. forward (alpha)
+      and backward (beta) scores are the scores of best paths reaching/leaving
+      each state. Otherwise, computes regular forward and backward scores. Also
+      returns the total-prob (or best-path prob). Note that alphas and betas
+      are negated costs. Requires the input lattice to be topologically sorted.
+      """
+
+    def `ComputeLatticeAlphasAndBetas` as compute_compact_lattice_alphas_and_betas(
       clat: CompactLatticeVectorFst, viterbi: bool)
-      -> (total_prob: float, alpha: list<float>, beta: list<float>)
+      -> (total_prob: float, alpha: list<float>, beta: list<float>):
+      """Computes forward and backward scores for compact lattice states.
+
+      If `viterbi == True`, computes the Viterbi scores, i.e. forward (alpha)
+      and backward (beta) scores are the scores of best paths reaching/leaving
+      each state. Otherwise, computes regular forward and backward scores. Also
+      returns the total-prob (or best-path prob). Note that alphas and betas
+      are negated costs. Requires the input lattice to be topologically sorted.
+      """
 
     def `TopSortCompactLatticeIfNeeded` as top_sort_compact_lattice_if_needed(
-      clat: CompactLatticeVectorFst)
+      clat: CompactLatticeVectorFst):
+      """Topologically sorts the compact lattice if it is not already sorted.
 
-    def `TopSortLatticeIfNeeded` as top_sort_lattice_if_needed(
-      clat: LatticeVectorFst)
+      Raises:
+        RuntimeError: If lattice cannot be topologically sorted.
+      """
 
-    # def `CompactLatticeDepth` as compact_lattice_depth(
-    #   clat: CompactLatticeVectorFst) -> (depth: float, num_frames: int)
+    def `TopSortLatticeIfNeeded` as top_sort_lattice_if_needed(lat: LatticeVectorFst):
+      """Topologically sorts the lattice if it is not already sorted.
+
+      Raises:
+        RuntimeError: If lattice cannot be topologically sorted.
+      """
+
+    def `CompactLatticeDepth` as compact_lattice_depth(clat: CompactLatticeVectorFst)
+      -> (depth: float, num_frames: int):
+      """Computes the depth of the compact lattice.
+
+      Returns the depth of the lattice, defined as the average number of arcs
+      (or final-prob strings) crossing any given frame, and the number of
+      frames. Lattice depth is ``1`` for empty lattices. Requires that the
+      lattice is topologically sorted!
+      """
 
     def `CompactLatticeDepthPerFrame` as compact_lattice_depth_per_frame(
-      clat: CompactLatticeVectorFst) -> list<int>
+      clat: CompactLatticeVectorFst) -> list<int>:
+      """Computes the per-frame depth of the compact lattice.
+
+      Returns the per-frame depth of the lattice, defined as the number of arcs
+      (or final-prob strings) crossing any given frame. Requires that the
+      lattice is topologically sorted!
+      """
 
     def `CompactLatticeLimitDepth` as compact_lattice_limit_depth(
-      max_arcs_per_frame: int, clat: CompactLatticeVectorFst)
+      max_arcs_per_frame: int, clat: CompactLatticeVectorFst):
+      """Limits the depth of the compact lattice.
+
+      Does not allow more than a specified number of arcs active on any given
+      frame. This can be used to reduce the size of the "very deep" portions of
+      the lattice.
+      """
 
     def `LatticeActivePhones` as lattice_active_phones(
       lat: LatticeVectorFst, trans: TransitionModel, sil_phones: list<int>)
-      -> list<`std::set` as set<int>>
+      -> list<`std::set` as set<int>>:
+      """Computes the set of phones active on each frame.
+
+      Given a lattice, and a transition model to map pdf-ids to phones, outputs
+      for each frame the set of phones active on that frame.  If `sil_phones`
+      (which must be sorted and uniq) is non-empty, it excludes phones in this
+      list.
+      """
 
     def `ConvertLatticeToPhones` as convert_lattice_to_phones(
-      trans_model: TransitionModel, lat: LatticeVectorFst)
+      trans_model: TransitionModel, lat: LatticeVectorFst):
+      """Replaces output symbols in lattice with phones.
+
+      Given a lattice, and a transition model to map pdf-ids to phones,
+      replaces the output symbols (presumably words), with phones. Uses the
+      `trans_model` to work out the phone sequence.  Note that the phone labels
+      are not exactly aligned with the phone boundaries. Inserted phone labels
+      coincide with any transition to the final, nonemitting state of a phone
+      (this state always exists). This would be the last transition-id in the
+      phone if reordering is not done (but this is typically not the case).
+
+      See Also:
+        :meth:`phone_align_lattice`
+      """
 
     def `ConvertCompactLatticeToPhones` as convert_compact_lattice_to_phones(
-      trans_model: TransitionModel, lat: CompactLatticeVectorFst)
+      trans_model: TransitionModel, lat: CompactLatticeVectorFst):
+      """Replaces output symbols in compact lattice with phones.
 
-    def `PruneLattice` as prune_lattice(beam: float, lat: LatticeVectorFst)
-      -> bool:
+      Given a lattice, and a transition model to map pdf-ids to phones,
+      replaces the sequences of transition-ids with sequences of phones. Note
+      that this is different from :meth:`convert_lattice_to_phones`, in that it
+      replaces the transition-ids not the words.
+      """
+
+    def `PruneLattice` as prune_lattice(beam: float, lat: LatticeVectorFst) -> bool:
+      """Prunes a lattice.
+
+      Raises:
+        ValueError: If pruning fails.
+      """
       return _value_error_on_false(...)
 
-    def `PruneLattice` as prune_compact_lattice(
-      beam: float, lat: CompactLatticeVectorFst) -> bool:
+    def `PruneLattice` as prune_compact_lattice(beam: float, lat: CompactLatticeVectorFst) -> bool:
+      """Prunes a compact lattice.
+
+      Raises:
+        ValueError: If pruning fails.
+      """
       return _value_error_on_false(...)
 
     def `LatticeBoost` as lattice_boost(
       trans: TransitionModel, alignment: list<int>, silence_phones: list<int>,
       b: float, max_silence_error: float, lat: LatticeVectorFst) -> bool:
+      """Boosts graph scores in the lattice.
+
+      Boosts LM probabilities by b * [number of frame errors]; equivalently,
+      adds -b*[number of frame errors] to the graph-component of the cost of
+      each arc/path. There is a frame error if a particular transition-id on a
+      particular frame corresponds to a phone not matching transcription's
+      alignment for that frame. This is used in "margin-inspired"
+      discriminative training, esp. Boosted MMI. The transition model is used to
+      map transition-ids in the lattice input-side to phones; the phones
+      appearing in `silence_phones` are treated specially in that we replace
+      the frame error f (either zero or 1) for a frame, with the minimum of f
+      or `max_silence_error`. In the normal case, `max_silence_error` would be
+      zero. Note that `silence_phones` must be sorted and unique.
+
+      Raises:
+        ValueError: In case of failure.
+      """
       return _value_error_on_false(...)
 
-    def `LatticeForwardBackwardMpeVariants`
-        as lattice_forward_backward_mpe_variants(
+    def `LatticeForwardBackwardMpeVariants` as lattice_forward_backward_mpe_variants(
       trans: TransitionModel, silence_phones: list<int>, lat: LatticeVectorFst,
       num_ali: list<int>, criterion: str, one_silence_class: bool)
-      -> (objf_val: float, post: list<list<tuple<int, float>>>)
+      -> (objf_val: float, post: list<list<tuple<int, float>>>):
+      """Computes lattice posteriors for MPFE (or SMBR).
 
-    def `LatticeForwardBackwardMmi`
-        as lattice_forward_backward_mmi(
+      This function computes either the MPFE (minimum phone frame error) or
+      sMBR (state-level minimum bayes risk) forward-backward, depending on
+      whether `criterion` is `"mpfe"` or `"smbr"`.
+
+      Args:
+        trans (TransitionModel): The transition model. Used to map the
+          transition-ids to phones or pdfs.
+        silence_phones (List[int]): A list of integer ids of silence phones.
+          The silence frames i.e. the frames where num_ali corresponds to a
+          silence phones are treated specially. The behavior is determined by
+          'one_silence_class' being false (traditional behavior) or true.
+          Usually in our setup, several phones including the silence, vocalized
+          noise, non-spoken noise and unk are treated as "silence phones".
+        lat (LatticeVectorFst): The denominator lattice.
+        num_ali (List[int]): The numerator alignment.
+        criterion (str): The objective function. Must be "mpfe" or "smbr" for
+          MPFE (minimum phone frame error) or sMBR (state-level minimum bayes
+          risk) training.
+        one_silence_class (bool): Determines how the silence frames are
+          treated. Setting this to false gives the old traditional behavior,
+          where the silence frames (according to num_ali) are treated as
+          incorrect. However, this means that the insertions are not penalized
+          by the objective. Setting this to true gives the new behaviour, where
+          we treat silence as any other phone, except that all pdfs of silence
+          phones are collapsed into a single class for the frame-error
+          computation. This can possible reduce the insertions in the trained
+          model. This is closer to the WER metric that we actually care about,
+          since WER is generally computed after filtering out noises, but does
+          penalize insertions.
+
+      Returns:
+        The objective function value (MPFE or sMBR criterion) and the
+        posteriors (which may be positive or negative).
+      """
+
+    def `LatticeForwardBackwardMmi` as lattice_forward_backward_mmi(
       trans: TransitionModel, lat: LatticeVectorFst, num_ali: list<int>,
       drop_frames: bool, convert_to_pdf_ids: bool, cancel: bool)
-      -> (objf_val: float, post: list<list<tuple<int, float>>>)
+      -> (objf_val: float, post: list<list<tuple<int, float>>>):
+      """Computes lattice posteriors for MMI.
 
-    def `CompactLatticeToWordAlignment` as compact_lattice_word_alignement(
+      Args:
+        trans (TransitionModel): The transition model. Used to map the
+          transition-ids to phones or pdfs.
+        lat (LatticeVectorFst): The denominator lattice
+        num_ali (List[int]): The numerator alignment
+        drop_frames (bool): If `True`, it will not compute any posteriors on
+          frames where the num and den have disjoint pdf-ids.
+        convert_to_pdf_ids (bool): If `True`, it will convert the output to be
+          at the level of pdf-ids, not transition-ids.
+        cancel (bool): If `true`, it will cancel out any positive and negative
+          parts from the same transition-id (or pdf-id, if `convert_to_pdf_ids
+          == True`).
+
+      Returns:
+        The forward-backward likelihood of the lattice and the MMI posteriors
+        for transition-ids (or pdf-ids if `convert_to_pdf_ids == True`) at each
+        frame i.e. the difference between the numerator and denominator
+        posteriors.
+      """
+
+    def `CompactLatticeToWordAlignment` as compact_lattice_to_word_alignment(
       clat: CompactLatticeVectorFst)
-      -> (success: bool, words: list<int>, begin_times: list<int>,
-          lengths: list<int>):
+      -> (success: bool, words: list<int>, begin_times: list<int>, lengths: list<int>):
+      """Extracts word alignment from a linear compact lattice.
+
+      This function takes a compact lattice that should only contain a single
+      linear sequence (e.g. output of :meth:`compact_lattice_shortest_path`),
+      and that should have been processed so that the arcs align correctly with
+      the word boundaries (e.g. by :meth:`word_align_lattice`). It outputs 3
+      lists of the same size, which represent, for each word in the lattice (in
+      sequence), the word label and the begin time and length in frames. This
+      is done even for zero (epsilon) words, generally corresponding to
+      optional silence -- if you don't want them, just ignore them in the
+      output.
+
+      Raises:
+        ValueError: If the lattice does not have the correct format (e.g. if
+        it is empty or if it is not linear).
+      """
       return _value_error_on_false(...)
 
-    def `CompactLatticeToWordProns` as compact_lattice_word_prons(
+    def `CompactLatticeToWordProns` as compact_lattice_to_word_prons(
       tmodel: TransitionModel, clat: CompactLatticeVectorFst)
       -> (success: bool, words: list<int>, begin_times: list<int>,
           lengths: list<int>, prons: list<list<int>>,
           phone_lengths: list<list<int>>):
+      """Extracts word pronunciations from a linear compact lattice.
+
+      This function takes a compact lattice that should only contain a single
+      linear sequence (e.g. output of :meth:`compact_lattice_shortest_path`),
+      and that should have been processed so that the arcs align correctly with
+      the word boundaries (e.g. by :meth:`word_align_lattice`).  It outputs 4
+      vectors of the same size, which represent, for each word in the lattice
+      (in sequence), the word label, the begin time, length in frames, and the
+      pronunciation (sequence of phones). This is done even for zero (epsilon)
+      words, corresponding to optional silences -- if you don't want them, just
+      ignore them in the output.
+
+      Raises:
+        ValueError: If the lattice does not have the correct format (e.g. if
+        it is empty or if it is not linear).
+      """
       return _value_error_on_false(...)
 
     def `CompactLatticeShortestPath` as compact_lattice_shortest_path(
-      clat: CompactLatticeVectorFst) -> CompactLatticeVectorFst
+      clat: CompactLatticeVectorFst) -> CompactLatticeVectorFst:
+      """Computes the shortest path in an acyclic compact lattice."""
 
     def `AddWordInsPenToCompactLattice` as add_word_ins_pen_to_compact_lattice(
-      word_ins_penalty: float, clat: CompactLatticeVectorFst)
+      word_ins_penalty: float, clat: CompactLatticeVectorFst):
+      """Adds the penalty term to the graph scores of arcs in the lattice."""
 
     def `RescoreLattice` as rescore_lattice(
       decodable: DecodableInterface, lat: LatticeVectorFst) -> bool:
+      """Rescores acoustic scores in the lattice.
+
+      This function *adds* the negated scores obtained from the decodable
+      object, to the acoustic scores on the arcs. If you want to replace them,
+      you should use :meth:`scale_compact_lattice` to first set the acoustic
+      scores to zero. The input labels, if nonzero, are interpreted as
+      transition-ids or whatever other index the decodable object expects.
+
+      Raises:
+        ValueError: If the inputs are not compatible.
+      """
       return _value_error_on_false(...)
 
     def `RescoreCompactLattice` as rescore_compact_lattice(
       decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool:
+      """Rescores acoustic scores in the compact lattice.
+
+      This function *adds* the negated scores obtained from the decodable
+      object, to the acoustic scores on the arcs. If you want to replace them,
+      you should use :meth:`scale_compact_lattice` to first set the acoustic
+      scores to zero.
+
+      Raises:
+        ValueError: If the inputs are not compatible.
+      """
       return _value_error_on_false(...)
 
     def `LongestSentenceLength` as longest_sentence_length_in_lattice(
-      lat: LatticeVectorFst) -> int
+      lat: LatticeVectorFst) -> int:
+      """Returns the number of words in the longest sentence in a lattice."""
 
     def `LongestSentenceLength` as longest_sentence_length_in_compact_lattice(
-      lat: CompactLatticeVectorFst) -> int
+      lat: CompactLatticeVectorFst) -> int:
+      """Returns the number of words in the longest sentence in a compact lattice."""
 
     def `RescoreCompactLatticeSpeedup` as rescore_compact_lattice_speedup(
       tmodel: TransitionModel, speedup_factor: float,
       decodable: DecodableInterface, clat: CompactLatticeVectorFst) -> bool:
+      """Rescores acoustic scores in the compact lattice.
+
+      This function is like :meth:`rescore_compact_lattice`, but it is modified
+      to avoid computing probabilities on most frames where all the pdf-ids are
+      the same. It needs the transition-model to work out whether two
+      transition-ids map to the same pdf-id, and it assumes that the lattice
+      has transition-ids on it. The naive thing would be to just set all
+      probabilities to zero on frames where all the pdf-ids are the same
+      (because this value won't affect the lattice posterior).  But this would
+      become confusing when we compute corpus-level diagnostics such as the MMI
+      objective function. Instead, for `speedup_factor = 100` (must be >= 1.0),
+      with probability `1.0 / speedup_factor` we compute those likelihoods and
+      multiply them by `speedup_factor`; otherwise we set them to zero. This
+      gives the right expected probability so our corpus-level diagnostics will
+      be about right.
+      """
       return _value_error_on_false(...)
 
-    def `ComposeCompactLatticeDeterministic`
-        as compose_compact_lattice_deterministic(
+    def `ComposeCompactLatticeDeterministic` as compose_compact_lattice_deterministic(
       clat: CompactLatticeVectorFst, det_fst: StdDeterministicOnDemandFst)
-      -> CompactLatticeVectorFst
+      -> CompactLatticeVectorFst:
+      """Composes a compact lattice with a deterministic on-demand FST.
+
+      This function is used in language model rescoring. Composition affects
+      only graph costs. The output is another compact lattice.
+      """

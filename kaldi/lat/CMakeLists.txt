@@ -3,12 +3,6 @@ add_pyclif_library("_arctic_weight" arctic-weight.clif
   RPATH $ORIGIN/../fstext
 )
 
-add_pyclif_library("_kaldi_lattice" kaldi-lattice.clif
-  CLIF_DEPS _iostream _vector_fst
-  LIBRARIES kaldi-lat
-  RPATH $ORIGIN/../base:$ORIGIN/../fstext
-)
-
 add_pyclif_library("_confidence" confidence.clif
   CLIF_DEPS _vector_fst
   LIBRARIES kaldi-lat

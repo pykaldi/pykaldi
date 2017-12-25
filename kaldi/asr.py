@@ -68,7 +68,7 @@ class Recognizer(object):
 
         The "lattice" output requires a lattice generating decoder. It will be a
         raw state-level lattice if `determinize_lattice == False`. Otherwise, it
-        will be a compact deterministic lattice. If attr:`symbols` is ``None``,
+        will be a compact deterministic lattice. If :attr:`symbols` is ``None``,
         the "text" output will be a string of space separated integer indices.
         Otherwise it will be a string of space separated symbols. The "weight"
         output is a lattice weight consisting of (graph-score, acoustic-score).

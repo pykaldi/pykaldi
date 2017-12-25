@@ -5,38 +5,84 @@ from "fstext/vector-fst-clifwrap.h" import *
 from "lat/sausages.h":
   namespace `kaldi`:
     class MinimumBayesRiskOptions:
+      """Options for Minimum Bayes Risk decoding."""
       decode_mbr: bool
+      """Whether to output MBR hypothesis."""
       print_silence: bool
+      """Whether the 1-best path will "keep" <eps> bins."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class MinimumBayesRisk:
+      """MinimumBayesRisk(clat, opts=MinimumBayesRiskOptions())
+
+      Minimum Bayes Risk decoding.
+
+      This class does the word-level Minimum Bayes Risk computation, and gives
+      you either the 1-best MBR output together with the expected Bayes Risk,
+      or a sausage-like structure. Initial 1-best is set to lattice 1-best.
+
+      Args:
+        clat (CompactLatticeVectorFst): The input lattice.
+        opts (MinimumBayesRiskOptions): The MBR options.
+      """
       def __init__(self, clat: CompactLatticeVectorFst,
                    opts: MinimumBayesRiskOptions = default)
 
       @add__init__
       def `MinimumBayesRisk` as new_with_words(
         self, clat: CompactLatticeVectorFst, words: list<int>,
-        opts: MinimumBayesRiskOptions = default)
+        opts: MinimumBayesRiskOptions = default):
+        """Creates an instance using `words` as the initial 1-best.
+
+        Args:
+          clat (CompactLatticeVectorFst): The input lattice.
+          words (List[int]): Initial best word sequence.
+          opts (MinimumBayesRiskOptions): The MBR options.
+        """
 
       @add__init__
       def `MinimumBayesRisk` as new_with_words_times(
         self, clat: CompactLatticeVectorFst,
         words: list<int>, times: list<tuple<float, float>>,
-        opts: MinimumBayesRiskOptions = default)
+        opts: MinimumBayesRiskOptions = default):
+        """Creates an instance using `words` and `times` as the initial 1-best.
 
-      def `GetOneBest` as get_one_best(self) -> list<int>
+        Args:
+          clat (CompactLatticeVectorFst): The input lattice.
+          words (List[int]): Initial best word sequence.
+          times (List[Tuple[float, float]]): Initial times for the bins.
+          opts (MinimumBayesRiskOptions): The MBR options.
+        """
+
+      def `GetOneBest` as get_one_best(self) -> list<int>:
+        """Returns one-best output (with no epsilons)."""
 
       def `GetSausageTimes` as get_sausage_times(self)
-        -> list<tuple<float, float>>
+        -> list<tuple<float, float>>:
+        """Returns average (start, end) times for each bin."""
 
       def `GetOneBestTimes` as get_one_best_times(self)
-        -> list<tuple<float, float>>
+        -> list<tuple<float, float>>:
+        """Returns average (start, end) times for bins of the one-best output.
+
+        This is just the appopriate subsequence of times output by
+        :meth:`get_sausage_times`.
+        """
 
       def `GetOneBestConfidences` as get_one_best_confidences(self)
-        -> list<float>
+        -> list<float>:
+        """Returns the confidences for the one-best output."""
 
-      def `GetBayesRisk` as get_bayes_risk(self) -> float
+      def `GetBayesRisk` as get_bayes_risk(self) -> float:
+        """Returns the expected WER over this sentence."""
 
       def `GetSausageStats` as get_sausage_stats(self)
-        -> list<list<tuple<int, float>>>
+        -> list<list<tuple<int, float>>>:
+        """Returns the sausage statistics."""

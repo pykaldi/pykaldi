@@ -14,12 +14,13 @@ kaldi\.lat
       arctic_divide
       arctic_plus
       arctic_times
+      compact_lattice_depth
       compact_lattice_depth_per_frame
       compact_lattice_limit_depth
       compact_lattice_shortest_path
       compact_lattice_state_times
-      compact_lattice_word_alignement
-      compact_lattice_word_prons
+      compact_lattice_to_word_alignment
+      compact_lattice_to_word_prons
       compose_compact_lattice_deterministic
       compute_compact_lattice_alphas
       compute_compact_lattice_alphas_and_betas
@@ -37,6 +38,7 @@ kaldi\.lat
       get_per_frame_acoustic_costs
       lattice_active_phones
       lattice_boost
+      lattice_forward_backward
       lattice_forward_backward_mmi
       lattice_forward_backward_mpe_variants
       lattice_state_times
@@ -48,21 +50,16 @@ kaldi\.lat
       prune_lattice
       push_compact_lattice_strings
       push_compact_lattice_weights
-      read_compact_lattice
-      read_lattice
       read_lexicon_for_word_align
       rescore_compact_lattice
       rescore_compact_lattice_speedup
       rescore_lattice
-      sentence_level_confidence_from_compact_lattice
-      sentence_level_confidence_from_lattice
+      sentence_level_confidence
       test_word_aligned_lattice
       top_sort_compact_lattice_if_needed
       top_sort_lattice_if_needed
       word_align_lattice
       word_align_lattice_lexicon
-      write_compact_lattice
-      write_lattice
    
    
 

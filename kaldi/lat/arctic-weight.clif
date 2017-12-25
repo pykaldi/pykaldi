@@ -5,29 +5,52 @@ from kaldi.fstext._float_weight import FloatWeight
 from "lat/arctic-weight-ext.h":
   namespace `fst`:
     class `ArcticWeightTpl<float>` as ArcticWeight(FloatWeight):
+      """Arctic weight."""
+
       @add__init__
-      def `TropicalWeightTpl` as new(self, f: float)
+      def `ArcticWeightTpl` as from_float(self, f: float):
+        """Create a new arctic weight from a float."""
+
       @add__init__
-      def `TropicalWeightTpl` as from_other(self, weight: ArcticWeight)
+      def `ArcticWeightTpl` as from_other(self, weight: ArcticWeight):
+        """Create a new arctic weight from another."""
 
       @classmethod
-      def `Zero` as zero(cls) -> ArcticWeight
-      @classmethod
-      def `One` as one(cls) -> ArcticWeight
-      @classmethod
-      def `NoWeight` as noweight(cls) -> ArcticWeight
-      @classmethod
-      def `Type` as type(cls) -> str
-      @classmethod
-      def Properties(cls) -> int
+      def `Zero` as zero(cls) -> ArcticWeight:
+        """Zero in arctic semiring, i.e. float -infinity."""
 
-      def Member(self) -> bool
-      def Quantize(self, delta: float = default) -> ArcticWeight
-      def Reverse(self) -> ArcticWeight
+      @classmethod
+      def `One` as one(cls) -> ArcticWeight:
+        """One in arctic semiring, i.e. 0.0."""
+
+      @classmethod
+      def `NoWeight` as noweight(cls) -> ArcticWeight:
+        """No weight in arctic semiring."""
+      @classmethod
+      def `Type` as type(cls) -> str:
+        """Returns weight type."""
+
+      @classmethod
+      def Properties(cls) -> int:
+        """Returns weight properties."""
+
+      def Member(self) -> bool:
+        """Checks if weight is a member of the arctic semiring."""
+
+      def Quantize(self, delta: float = default) -> ArcticWeight:
+        """Quantizes the weight."""
+
+      def Reverse(self) -> ArcticWeight:
+        """Reverses the weight."""
 
     def `Plus` as arctic_plus(w1: ArcticWeight,
-                              w2: ArcticWeight) -> ArcticWeight
+                              w2: ArcticWeight) -> ArcticWeight:
+      """:math:`\\oplus` operation in the arctic semiring."""
+
     def `Times` as arctic_times(w1: ArcticWeight,
-                                w2: ArcticWeight) -> ArcticWeight
+                                w2: ArcticWeight) -> ArcticWeight:
+      """:math:`\\otimes` operation in the arctic semiring."""
+
     def `Divide` as arctic_divide(w1: ArcticWeight, w2: ArcticWeight,
-                                  typ: DivideType = default) -> ArcticWeight
+                                  typ: DivideType = default) -> ArcticWeight:
+      """:math:`\\oslash` operation in the arctic semiring."""
