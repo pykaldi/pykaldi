@@ -69,45 +69,11 @@ from "lat/word-align-lattice.h":
       """Whether lattice was created from a graph with reorder option set."""
 
 
-    def `WordAlignLattice` as word_align_lattice(
+    def `WordAlignLattice` as _word_align_lattice(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,
       info: WordBoundaryInfo, max_states: int)
-      -> (success: bool, lat_out: CompactLatticeVectorFst):
-      """Aligns the word labels and transition-ids.
+      -> (success: bool, lat_out: CompactLatticeVectorFst)
 
-      Aligns compact lattice so that each arc has the transition-ids on it that
-      correspond to the word that is on that arc. It is OK for the lattice to
-      have epsilon arcs for optional silences.
-
-      Args:
-        lat (CompactLatticeVectorFst): The input lattice.
-        tmodel (TransitionModel): The transition model.
-        info (WordBoundaryInfo): The word boundary information.
-        max_states (int): Maximum #states allowed in the output lattice. If
-          `max_states > 0` and the #states of the output will be greater than
-          `max_states`, this function will abort the computation, return False
-          and output an empty lattice.
-
-      Returns:
-        A tuple representing the return value and the output lattice. The
-        return value is set to True if the operation was successful, False if
-        some kind of problem was detected, e.g. transition-id sequences in the
-        lattice were incompatible with the word boundary information, or the
-        lattice seems to have been "forced out" (did not reach end state,
-        resulting in partial words at the end).
-
-      Note:
-        We don't expect silence inside words, or empty words (words with no
-        phones), and we expect the word to start with a wbegin_phone, to end
-        with a wend_phone, and to possibly have winternal_phones inside (or to
-        consist of just one wbegin_and_end_phone).
-
-      Note:
-        If this function returns False, it doesn't mean the input lattice is
-        necessarily bad: it might just be that the lattice was "forced out" as
-        the end-state was not reached during decoding, and in this case the
-        output might still be usable.
-      """
 
     def `TestWordAlignedLattice` as test_word_aligned_lattice(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,

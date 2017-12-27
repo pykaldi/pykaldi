@@ -1,8 +1,3 @@
-add_pyclif_library("_arctic_weight" arctic-weight.clif
-  CLIF_DEPS _weight
-  RPATH $ORIGIN/../fstext
-)
-
 add_pyclif_library("_confidence" confidence.clif
   CLIF_DEPS _vector_fst
   LIBRARIES kaldi-lat

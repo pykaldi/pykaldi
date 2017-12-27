@@ -2,7 +2,7 @@ from "fstext/weight-clifwrap.h" import *
 
 from kaldi.fstext._float_weight import FloatWeight
 
-from "lat/arctic-weight-ext.h":
+from "fstext/arctic-weight-ext.h":
   namespace `fst`:
     class `ArcticWeightTpl<float>` as ArcticWeight(FloatWeight):
       """Arctic weight."""
@@ -43,14 +43,14 @@ from "lat/arctic-weight-ext.h":
       def Reverse(self) -> ArcticWeight:
         """Reverses the weight."""
 
-    def `Plus` as arctic_plus(w1: ArcticWeight,
-                              w2: ArcticWeight) -> ArcticWeight:
+    def `Plus` as plus_arctic_weight(w1: ArcticWeight,
+                                     w2: ArcticWeight) -> ArcticWeight:
       """:math:`\\oplus` operation in the arctic semiring."""
 
-    def `Times` as arctic_times(w1: ArcticWeight,
-                                w2: ArcticWeight) -> ArcticWeight:
+    def `Times` as times_arctic_weight(w1: ArcticWeight,
+                                       w2: ArcticWeight) -> ArcticWeight:
       """:math:`\\otimes` operation in the arctic semiring."""
 
-    def `Divide` as arctic_divide(w1: ArcticWeight, w2: ArcticWeight,
-                                  typ: DivideType = default) -> ArcticWeight:
+    def `Divide` as divide_arctic_weight(w1: ArcticWeight, w2: ArcticWeight,
+                                         typ: DivideType = default) -> ArcticWeight:
       """:math:`\\oslash` operation in the arctic semiring."""

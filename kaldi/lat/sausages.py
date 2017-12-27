@@ -1,6 +1,4 @@
-from . import align
-from . import functions
-from . import sausages
+from ._sausages import *
 
 __all__ = [name for name in dir()
            if name[0] != '_'

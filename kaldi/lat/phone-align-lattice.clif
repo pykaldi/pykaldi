@@ -28,25 +28,7 @@ from "lat/phone-align-lattice.h":
             Typically a command-line option parser.
         """
 
-    def `PhoneAlignLattice` as phone_align_lattice(
+    def `PhoneAlignLattice` as _phone_align_lattice(
       lat: CompactLatticeVectorFst, tmodel: TransitionModel,
       opts: PhoneAlignLatticeOptions)
-      -> (success: bool, lat_out: CompactLatticeVectorFst):
-      """Aligns the phone labels and transition-ids.
-
-      Outputs a lattice in which the arcs correspond exactly to sequences of
-      phones, so the boundaries between the arcs correspond to the boundaries
-      between phones. If `opts.remove_epsilon == False` and
-      `opts.replace_output_symbols == False`, an arc may have >1 phone on it,
-      but the boundaries will still correspond with the boundaries between
-      phones.
-
-      Raises:
-        ValueError: If some kind of error was detected (e.g. the "reorder"
-        option was incorrectly specified.)
-
-      Note:
-        It is possible to have arcs with words on them but no transition-ids at
-        all.
-      """
-      return _value_error_on_false(...)
+      -> (success: bool, lat_out: CompactLatticeVectorFst)

@@ -258,6 +258,7 @@ kaldi\.fstext\.weight
       compact_lattice_weight_to_cost
       compare_compact_lattice_weight
       compare_lattice_weight
+      divide_arctic_weight
       divide_compact_lattice_weight
       divide_lattice_weight
       divide_log_weight
@@ -266,6 +267,7 @@ kaldi\.fstext\.weight
       get_tropical_to_log_converter
       lattice_weight_to_cost
       lattice_weight_to_tropical
+      plus_arctic_weight
       plus_compact_lattice_weight
       plus_lattice_weight
       plus_log_weight
@@ -274,6 +276,7 @@ kaldi\.fstext\.weight
       power_tropical_weight
       scale_compact_lattice_weight
       scale_lattice_weight
+      times_arctic_weight
       times_compact_lattice_weight
       times_lattice_weight
       times_log_weight
@@ -289,6 +292,7 @@ kaldi\.fstext\.weight
    .. autosummary::
       :nosignatures:
    
+      ArcticWeight
       CompactLatticeNaturalLess
       CompactLatticeWeight
       DivideType

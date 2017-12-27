@@ -70,5 +70,5 @@ from "fstext/special-ops.h":
       Raises:
           RuntimeError: If determization fails.
 
-      See Also: `determinize_star`
+      See Also: :meth:`determinize_star`
       """

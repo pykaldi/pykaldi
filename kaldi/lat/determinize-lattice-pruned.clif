@@ -71,64 +71,15 @@ from "lat/determinize-lattice-pruned.h":
             Typically a command-line option parser.
         """
 
-    def `DeterminizeLatticePruned` as determinize_lattice_pruned(
+    def `DeterminizeLatticePruned` as _determinize_lattice_pruned(
       ifst: LatticeExpandedFst, prune: float, ofst: LatticeMutableFst,
-      opts: DeterminizeLatticePrunedOptions = default) -> bool:
-      """Prunes and determinizes a lattice.
+      opts: DeterminizeLatticePrunedOptions = default) -> bool
 
-      This function implements the normal version of lattice determinization,
-      in which the output strings are represented using sequences of arcs,
-      where all but the first one has an epsilon on the input side. It also
-      prunes using the beam in the "prune" parameter. The input lattice must be
-      topologically sorted in order for the algorithm to work. For efficiency
-      it is recommended to sort the input lattice with respect to input labels
-      as well.
-
-      Args:
-        ifst (LatticeExpandedFst): The input lattice.
-        prune (float): The pruning beam.
-        ofst (LatticeMutableFst): The output lattice.
-        opts (DeterminizeLatticePrunedOptions): The options for lattice
-          determinization.
-
-      Raises:
-        ValueError: If determinization is terminated because of the max_mem,
-        max_loop or max_arcs constraints in the options.
-
-      See Also:
-        :meth:`determinize_lattice_pruned_to_compact`
-      """
-      return _value_error_on_false(...)
-
-    def `DeterminizeLatticePruned` as determinize_lattice_pruned_to_compact(
+    def `DeterminizeLatticePruned` as _determinize_lattice_pruned_to_compact(
       ifst: LatticeExpandedFst, prune: float, ofst: CompactLatticeMutableFst,
-      opts: DeterminizeLatticePrunedOptions = default) -> bool:
-      """Prunes and determinizes a lattice.
+      opts: DeterminizeLatticePrunedOptions = default) -> bool
 
-      This function implements a version of lattice determinization, in which
-      the output symbol sequences are represented directly as strings using
-      CompactLatticeArc weight type. It also prunes using the beam in the
-      "prune" parameter. The input lattice must be topologically sorted in
-      order for the algorithm to work. For efficiency it is recommended to sort
-      the input lattice with respect to input labels as well.
-
-      Args:
-        ifst (LatticeExpandedFst): The input lattice.
-        prune (float): The pruning beam.
-        ofst (CompactLatticeMutableFst): The output lattice.
-        opts (DeterminizeLatticePrunedOptions): The options for lattice
-          determinization.
-
-      Raises:
-        ValueError: If determinization is terminated because of the max_mem,
-        max_loop or max_arcs constraints in the options.
-
-      See Also:
-        :meth:`determinize_lattice_pruned`
-      """
-      return _value_error_on_false(...)
-
-    def `DeterminizeLatticeInsertPhones` as determinize_lattice_insert_phones(
+    def `DeterminizeLatticeInsertPhones` as _determinize_lattice_insert_phones(
       trans_model: TransitionModel, fst: LatticeMutableFst) -> int:
       """Inserts phones at phone boundaries in a lattice.
 
@@ -148,10 +99,10 @@ from "lat/determinize-lattice-pruned.h":
         The starting index of the phone labels.
 
       See Also:
-        meth:`determinize_lattice_delete_phones`
+        meth:`_determinize_lattice_delete_phones`
       """
 
-    def `DeterminizeLatticeDeletePhones` as determinize_lattice_delete_phones(
+    def `DeterminizeLatticeDeletePhones` as _determinize_lattice_delete_phones(
       first_phone_label: int, fst: LatticeMutableFst):
       """Deletes phones larger than `first_phone_label` in a lattice.
 
@@ -167,94 +118,17 @@ from "lat/determinize-lattice-pruned.h":
         fst (LatticeMutableFst): The input lattice.
 
       See Also:
-        meth:`determinize_lattice_insert_phones`
+        meth:`_determinize_lattice_insert_phones`
       """
 
-    def `DeterminizeLatticePhonePruned` as determinize_lattice_phone_pruned(
+    def `DeterminizeLatticePhonePruned` as _determinize_lattice_phone_pruned(
       trans_model: TransitionModel, ifst: LatticeExpandedFst, prune: float,
-      ofst: CompactLatticeMutableFst, opts: DeterminizeLatticePhonePrunedOptions = default) -> bool:
-      """Prunes and phone+word determinizes a lattice.
+      ofst: CompactLatticeMutableFst, opts: DeterminizeLatticePhonePrunedOptions = default) -> bool
 
-      If `opts.phone_determinize` is set to `True`, it first does the initial
-      pass of determinization on the phone + word lattices.  If
-      `opts.word_determinize` is set to `True`, it then does a second pass of
-      determinization on the word lattice. If both are set to `False`, then it
-      gives a warning and copies the lattice without determinization.
-
-      Args:
-        trans_model (TransitionModel): The transition model.
-        ifst (LatticeExpandedFst): The input lattice.
-        prune (float): The pruning beam.
-        ofst (CompactLatticeMutableFst): The output lattice.
-        opts (DeterminizeLatticePrunedOptions): The options for lattice
-          determinization.
-
-      Raises:
-        ValueError: If determinization is terminated because of the max_mem,
-        max_loop or max_arcs constraints in the options.
-
-      Note:
-        The point of doing first a phone-level determinization pass and then a
-        word-level determinization pass is that it allows us to determinize
-        deeper lattices without "failing early" and returning a too-small
-        lattice due to the max-mem constraint. The result should be the same
-        as word-level determinization in general, but for deeper lattices it is
-        a bit faster, despite the fact that we now have two passes of
-        determinization by default.
-      """
-      return _value_error_on_false(...)
-
-    def `DeterminizeLatticePhonePruned` as determinize_lattice_phone_pruned_destructive(
+    def `DeterminizeLatticePhonePruned` as _determinize_lattice_phone_pruned_destructive(
       trans_model: TransitionModel, ifst: LatticeMutableFst, prune: float,
-      ofst: CompactLatticeMutableFst, opts: DeterminizeLatticePhonePrunedOptions = default) -> bool:
-      """Prunes and phone+word determinizes a lattice.
+      ofst: CompactLatticeMutableFst, opts: DeterminizeLatticePhonePrunedOptions = default) -> bool
 
-      This is the destructive version of
-      :meth:`determinize_lattice_phone_pruned`.
-
-      Args:
-        trans_model (TransitionModel): The transition model.
-        ifst (LatticeExpandedFst): The input lattice.
-        prune (float): The pruning beam.
-        ofst (CompactLatticeMutableFst): The output lattice.
-        opts (DeterminizeLatticePrunedOptions): The options for lattice
-          determinization.
-
-      Raises:
-        ValueError: If determinization is terminated because of the max_mem,
-        max_loop or max_arcs constraints in the options.
-
-      See Also:
-        :meth:`determinize_lattice_phone_pruned`
-      """
-      return _value_error_on_false(...)
-
-    def `DeterminizeLatticePhonePrunedWrapper` as determinize_lattice_phone_pruned_wrapper(
+    def `DeterminizeLatticePhonePrunedWrapper` as _determinize_lattice_phone_pruned_wrapper(
       trans_model: TransitionModel, ifst: LatticeMutableFst, prune: float,
-      ofst: CompactLatticeMutableFst, opts: DeterminizeLatticePhonePrunedOptions = default) -> bool:
-      """Prunes and phone+word determinizes a lattice.
-
-      This function is a wrapper of :meth:`determinize_lattice_phone_pruned`
-      that works for raw state-level lattices.  It simplifies the calling
-      process by calling `topsort`, `invert` and `arcsort` for you. Unlike
-      other determinization routines, the function requires "ifst" to have
-      transition-id's on the input side and words on the output side. This
-      function can be used as the top-level interface to all the
-      determinization code.
-
-      Args:
-        trans_model (TransitionModel): The transition model.
-        ifst (LatticeMutableFst): The input lattice.
-        prune (float): The pruning beam.
-        ofst (CompactLatticeMutableFst): The output lattice.
-        opts (DeterminizeLatticePrunedOptions): The options for lattice
-          determinization.
-
-      Raises:
-        ValueError: If determinization is terminated because of the max_mem,
-        max_loop or max_arcs constraints in the options.
-
-      See Also:
-        :meth:`determinize_lattice_phone_pruned`
-      """
-      return _value_error_on_false(...)
+      ofst: CompactLatticeMutableFst, opts: DeterminizeLatticePhonePrunedOptions = default) -> bool

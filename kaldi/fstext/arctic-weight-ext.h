@@ -1,4 +1,4 @@
-// lat/arctic-weight.h
+// fstext/arctic-weight.h
 
 // Copyright 2012  Johns Hopkins University (Author: Guoguo Chen)
 
@@ -18,8 +18,8 @@
 // limitations under the License.
 
 
-#ifndef KALDI_LAT_ARCTIC_WEIGHT_H_
-#define KALDI_LAT_ARCTIC_WEIGHT_H_
+#ifndef KALDI_FSTEXT_ARCTIC_WEIGHT_H_
+#define KALDI_FSTEXT_ARCTIC_WEIGHT_H_
 
 #include "fst/float-weight.h"
 
@@ -150,4 +150,4 @@ inline ArcticWeightTpl<T> Divide(const ArcticWeightTpl<T> &w1,
 
 } // namespace fst
 
-#endif  // KALDI_LAT_ARCTIC_WEIGHT_H_
+#endif  // KALDI_FSTEXT_ARCTIC_WEIGHT_H_

@@ -10,6 +10,10 @@ add_pyclif_library("_float_weight" float-weight.clif
   CLIF_DEPS _weight
 )
 
+add_pyclif_library("_arctic_weight" arctic-weight.clif
+  CLIF_DEPS _weight
+)
+
 add_pyclif_library("_lattice_weight" lattice-weight.clif
   NAMESPACES fst
   CLIF_DEPS _float_weight
