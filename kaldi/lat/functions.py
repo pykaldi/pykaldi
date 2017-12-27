@@ -53,9 +53,8 @@ def sentence_level_confidence(lat):
         return _sentence_level_confidence_from_lattice(lat)
 
 
-def determinize_lattice_phone_pruned(
-    ifst, trans_model, prune,
-    opts=DeterminizeLatticePhonePrunedOptions(), destructive=True):
+def determinize_lattice_phone_pruned(ifst, trans_model, prune,
+                                     opts=None, destructive=True):
     """Applies a specialized determinization operation to a lattice.
 
     Determinizes a raw state-level lattice, keeping only the best output-symbol
@@ -90,6 +89,8 @@ def determinize_lattice_phone_pruned(
         a bit faster, despite the fact that we now have two passes of
         determinization by default.
     """
+    if opts is None:
+        opts = DeterminizeLatticePhonePrunedOptions()
     if not destructive or not isinstance(ifst, _api.MutableFstBase):
         ifst = _fst.LatticeVectorFst(ifst)
     ofst = _fst.CompactLatticeVectorFst()
@@ -104,8 +105,7 @@ def determinize_lattice_phone_pruned(
     return ofst
 
 
-def determinize_lattice_pruned(
-    ifst, prune, opts=DeterminizeLatticePrunedOptions(), compact_out=True):
+def determinize_lattice_pruned(ifst, prune, opts=None, compact_out=True):
     """Applies a specialized determinization operation to a lattice.
 
     Determinizes a raw state-level lattice, keeping only the best output-symbol
@@ -130,6 +130,8 @@ def determinize_lattice_pruned(
     See Also:
         :meth:`determinize_lattice_phone_pruned`
     """
+    if opts is None:
+        opts = DeterminizeLatticePrunedOptions()
     ifst = _fst.LatticeVectorFst(ifst).invert().topsort().arcsort()
     if compact_out:
         ofst = _fst.CompactLatticeVectorFst()
