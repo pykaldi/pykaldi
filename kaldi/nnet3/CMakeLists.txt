@@ -93,12 +93,6 @@ add_pyclif_library("_nnet_analyze" nnet-analyze.clif
   RPATH $ORIGIN/../base
 )
 
-add_pyclif_library("_nnet_combine" nnet-combine.clif
-  CLIF_DEPS _options_itf _kaldi_vector _nnet_example _nnet_nnet
-  LIBRARIES kaldi-nnet3
-  RPATH $ORIGIN/../itf
-)
-
 add_pyclif_library("_nnet_compute" nnet-compute.clif
   CLIF_DEPS _options_itf _cu_matrix _nnet_example _nnet_nnet _nnet_computation
   LIBRARIES kaldi-nnet3
