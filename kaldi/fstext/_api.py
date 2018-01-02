@@ -267,13 +267,13 @@ class _FstBase(object):
 
     def arcs(self, state):
         """
-        Returns an iterator over arcs leaving some state.
+        Returns an iterator over arcs leaving the specified state.
 
         Args:
           state: The source state index.
 
         Returns:
-          An ArcIterator over arcs leaving state `state`.
+          An ArcIterator.
 
         See also: `mutable_arcs`, `states`.
         """
@@ -374,6 +374,8 @@ class _FstBase(object):
 
         Returns:
           The input symbol table.
+
+        See Also: :meth:`output_symbols`.
         """
         return self._input_symbols()
 
@@ -405,7 +407,7 @@ class _FstBase(object):
             raise IndexError("State index out of range")
         return self._num_arcs(state)
 
-    def num_input_epsilsons(self, state):
+    def num_input_epsilons(self, state):
         """
         Returns the number of arcs with epsilon input labels leaving a state.
 
@@ -424,7 +426,7 @@ class _FstBase(object):
             raise IndexError("State index out of range")
         return self._num_input_epsilons(state)
 
-    def num_output_epsilsons(self, state):
+    def num_output_epsilons(self, state):
         """
         Returns the number of arcs with epsilon output labels leaving a state.
 
@@ -460,6 +462,8 @@ class _FstBase(object):
 
         Returns:
           The output symbol table.
+
+        See Also: :meth:`input_symbols`.
         """
         return self._output_symbols()
 
@@ -882,14 +886,13 @@ class _MutableFstBase(_FstBase):
 
     def mutable_arcs(self, state):
         """
-        Returns an iterator over arcs leaving some state which supports
-        arc mutation.
+        Returns a mutable iterator over arcs leaving the specified state.
 
         Args:
           state: The source state index.
 
         Returns:
-          A MutableArcIterator over arcs leaving state `state`.
+          A MutableArcIterator.
 
         See also: `arcs`, `states`.
         """
@@ -1144,7 +1147,7 @@ class _MutableFstBase(_FstBase):
 
     def set_final(self, state, weight=None):
         """
-        Sets a state to be final with a fixed cost.
+        Sets the final weight for a state.
 
         Args:
           state: The integer index of a state.
@@ -1598,7 +1601,7 @@ def difference(ifst1, ifst2, connect=True, compose_filter="auto"):
             "alt_sequence", "auto", "match", "null", "sequence", "trivial".
 
     Returns:
-        An FST representing the difference of the two input FSTs.
+        An FST representing the difference of the FSTs.
     """
     try:
         compose_filter = _getters.GetComposeFilter(compose_filter)
@@ -1686,7 +1689,7 @@ def equal(ifst1, ifst2, delta=DELTA):
         delta: Comparison/quantization delta (0.0009765625).
 
     Returns:
-        True if the two transducers satisfy the above condition, else False.
+        True if the FSTs satisfy the above condition, else False.
 
     See also: `equivalent`, `isomorphic`, `randequivalent`.
     """
@@ -1707,7 +1710,7 @@ def equivalent(ifst1, ifst2, delta=DELTA):
         delta: Comparison/quantization delta (default: 0.0009765625).
 
     Returns:
-        True if the two transducers satisfy the above condition, else False.
+        True if the FSTs satisfy the above condition, else False.
 
     Raises:
         RuntimeError: Equivalence test encountered error.
@@ -1737,7 +1740,7 @@ def intersect(ifst1, ifst2, connect=True, compose_filter="auto"):
             "alt_sequence", "auto", "match", "null", "sequence", "trivial".
 
     Returns:
-        An equivalent epsilon-normalized FST.
+        An intersected FST.
     """
     try:
         compose_filter = _getters.GetComposeFilter(compose_filter)
@@ -1917,7 +1920,7 @@ def randgen(ifst, npath=1, seed=None, select="uniform",
             `weighted` is False)?
 
     Returns:
-        An Fst containing one or more random paths.
+        An FST containing one or more random paths.
 
     See also: `randequivalent`.
     """
