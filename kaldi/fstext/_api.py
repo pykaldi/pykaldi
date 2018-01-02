@@ -110,10 +110,10 @@ class _FstCompiler(object):
         for writing::
 
             # /ba+/
-            print >> compiler, "0 1 50 50"
-            print >> compiler, "1 2 49 49"
-            print >> compiler, "2 2 49 49"
-            print >> compiler, "2"
+            print("0 1 50 50", file=compiler)
+            print("1 2 49 49", file=compiler)
+            print("2 2 49 49", file=compiler)
+            print("2", file=compiler)
 
         The `compile` method returns an actual FST instance::
 
@@ -172,12 +172,12 @@ class _FstCompiler(object):
         """
         Writes a string into the compiler string buffer.
 
-        This method adds a line to the compiler string buffer. It is normally
-        invoked using the right shift operator, like so::
+        This method adds a line to the compiler string buffer. It can also be
+        invoked with a print call, like so::
 
             compiler = FstCompiler()
-            print >> compiler, "0 0 49 49"
-            print >> compiler, "0"
+            print("0 0 49 49", file=compiler)
+            print("0", file=compiler)
 
         Args:
             expression: A string expression to add to compiler string buffer.
