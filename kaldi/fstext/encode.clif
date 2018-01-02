@@ -1,9 +1,288 @@
+from "base/iostream-clifwrap.h" import *
 from "fstext/getters-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/lexicographic-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 
 from "fst/encode.h":
+  namespace `fst::internal`:
+    class `EncodeTable<StdArc>` as StdEncodeTable:
+      """Encode table for StdArc.
+
+      StdEncodeTable(flags):
+        Creates a new encode table with the given flags.
+      """
+      def __init__(self, flags: int)
+
+      class Tuple:
+        """StdArc encoding tuple."""
+        ilabel: int
+        """Input label."""
+        olabel: int
+        """Output label."""
+        weight: TropicalWeight
+        """Weight."""
+
+      def `Encode` as encode(self, arc: StdArc) -> int:
+        """Encodes the given arc (either labels or weights or both)."""
+
+      def `GetLabel` as get_label(self, arc: StdArc) -> int:
+        """Looks up the encoded label for the given arc.
+
+        Returns -1 if arc is not found.
+        """
+
+      def `Decode` as decode(self, key: int) -> Tuple:
+        """Decodes an encoded arc label back to labels and cost."""
+
+      def `Size` as size(self) -> int:
+        """Returns the size of the table."""
+
+      def `Write` as write(self, strm: ostream, source: str) -> bool:
+        """Writes table to output stream."""
+
+      @classmethod
+      def `Read` as read(cls, strm: istream, source: str) -> StdEncodeTable:
+        """Reads encode table from input stream."""
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoding flags."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbols."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbols."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets input symbols."""
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets output symbols."""
+
+
+    class `EncodeTable<LogArc>` as LogEncodeTable:
+      """Encode table for LogArc.
+
+      LogEncodeTable(flags):
+        Creates a new encode table with the given flags.
+      """
+      def __init__(self, flags: int)
+
+      class Tuple:
+        """LogArc encoding tuple."""
+        ilabel: int
+        """Input label."""
+        olabel: int
+        """Output label."""
+        weight: LogWeight
+        """Weight."""
+
+      def `Encode` as encode(self, arc: LogArc) -> int:
+        """Encodes the given arc (either labels or weights or both)."""
+
+      def `GetLabel` as get_label(self, arc: LogArc) -> int:
+        """Looks up the encoded label for the given arc.
+
+        Returns -1 if arc is not found.
+        """
+
+      def `Decode` as decode(self, key: int) -> Tuple:
+        """Decodes an encoded arc label back to labels and cost."""
+
+      def `Size` as size(self) -> int:
+        """Returns the size of the table."""
+
+      def `Write` as write(self, strm: ostream, source: str) -> bool:
+        """Writes table to output stream."""
+
+      @classmethod
+      def `Read` as read(cls, strm: istream, source: str) -> LogEncodeTable:
+        """Reads encode table from input stream."""
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoding flags."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbols."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbols."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets input symbols."""
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets output symbols."""
+
+
+    class `EncodeTable<ArcTpl<LatticeWeightTpl<float>>>` as LatticeEncodeTable:
+      """Encode table for LatticeArc.
+
+      LatticeEncodeTable(flags):
+        Creates a new encode table with the given flags.
+      """
+      def __init__(self, flags: int)
+
+      class Tuple:
+        """LatticeArc encoding tuple."""
+        ilabel: int
+        """Input label."""
+        olabel: int
+        """Output label."""
+        weight: LatticeWeight
+        """Weight."""
+
+      def `Encode` as encode(self, arc: LatticeArc) -> int:
+        """Encodes the given arc (either labels or weights or both)."""
+
+      def `GetLabel` as get_label(self, arc: LatticeArc) -> int:
+        """Looks up the encoded label for the given arc.
+
+        Returns -1 if arc is not found.
+        """
+
+      def `Decode` as decode(self, key: int) -> Tuple:
+        """Decodes an encoded arc label back to labels and cost."""
+
+      def `Size` as size(self) -> int:
+        """Returns the size of the table."""
+
+      def `Write` as write(self, strm: ostream, source: str) -> bool:
+        """Writes table to output stream."""
+
+      @classmethod
+      def `Read` as read(cls, strm: istream, source: str) -> LatticeEncodeTable:
+        """Reads encode table from input stream."""
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoding flags."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbols."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbols."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets input symbols."""
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets output symbols."""
+
+
+    class `EncodeTable<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeEncodeTable:
+      """Encode table for CompactLatticeArc.
+
+      CompactLatticeEncodeTable(flags):
+        Creates a new encode table with the given flags.
+      """
+      def __init__(self, flags: int)
+
+      class Tuple:
+        """CompactLatticeArc encoding tuple."""
+        ilabel: int
+        """Input label."""
+        olabel: int
+        """Output label."""
+        weight: CompactLatticeWeight
+        """Weight."""
+
+      def `Encode` as encode(self, arc: CompactLatticeArc) -> int:
+        """Encodes the given arc (either labels or weights or both)."""
+
+      def `GetLabel` as get_label(self, arc: CompactLatticeArc) -> int:
+        """Looks up the encoded label for the given arc.
+
+        Returns -1 if arc is not found.
+        """
+
+      def `Decode` as decode(self, key: int) -> Tuple:
+        """Decodes an encoded arc label back to labels and cost."""
+
+      def `Size` as size(self) -> int:
+        """Returns the size of the table."""
+
+      def `Write` as write(self, strm: ostream, source: str) -> bool:
+        """Writes table to output stream."""
+
+      @classmethod
+      def `Read` as read(cls, strm: istream, source: str) -> CompactLatticeEncodeTable:
+        """Reads encode table from input stream."""
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoding flags."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbols."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbols."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets input symbols."""
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets output symbols."""
+
+
+    class `EncodeTable<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexEncodeTable:
+      """Encode table for KwsIndexArc.
+
+      KwsIndexEncodeTable(flags):
+        Creates a new encode table with the given flags.
+      """
+      def __init__(self, flags: int)
+
+      class Tuple:
+        """KwsIndexArc encoding tuple."""
+        ilabel: int
+        """Input label."""
+        olabel: int
+        """Output label."""
+        weight: KwsIndexWeight
+        """Weight."""
+
+      def `Encode` as encode(self, arc: KwsIndexArc) -> int:
+        """Encodes the given arc (either labels or weights or both)."""
+
+      def `GetLabel` as get_label(self, arc: KwsIndexArc) -> int:
+        """Looks up the encoded label for the given arc.
+
+        Returns -1 if arc is not found.
+        """
+
+      def `Decode` as decode(self, key: int) -> Tuple:
+        """Decodes an encoded arc label back to labels and cost."""
+
+      def `Size` as size(self) -> int:
+        """Returns the size of the table."""
+
+      def `Write` as write(self, strm: ostream, source: str) -> bool:
+        """Writes table to output stream."""
+
+      @classmethod
+      def `Read` as read(cls, strm: istream, source: str) -> KwsIndexEncodeTable:
+        """Reads encode table from input stream."""
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoding flags."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbols."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbols."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets input symbols."""
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets output symbols."""
+
   namespace `fst`:
     const `kEncodeLabels` as ENCODE_LABELS: int
     const `kEncodeWeights` as ENCODE_WEIGHTS: int
@@ -393,6 +672,109 @@ from "fst/encode.h":
 
       @classmethod
       def `Read` as read(cls, filename: str, type: EncodeType = default) -> CompactLatticeEncodeMapper:
+        """Reads encoder from file."""
+
+      def `InputSymbols` as input_symbols(self) -> SymbolTable:
+        """Returns input symbol table."""
+
+      def `OutputSymbols` as output_symbols(self) -> SymbolTable:
+        """Returns output symbol table."""
+
+      def `SetInputSymbols` as set_input_symbols(self, syms: SymbolTable):
+        """Sets the input symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_output_symbols`.
+        """
+
+      def `SetOutputSymbols` as set_output_symbols(self, syms: SymbolTable):
+        """Sets the output symbol table.
+
+        Args:
+          syms: A SymbolTable.
+
+        See also: `set_input_symbols`.
+        """
+
+    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+
+    # KwsIndex Semiring
+
+    class `EncodeMapper<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>` as KwsIndexEncodeMapper:
+    """Arc encoder for an FST over the KWS index semiring."""
+
+      def __init__(self, flags: int, type: EncodeType):
+        """
+        This class provides an object which can be used to encode or decode FST
+        arcs. This is most useful to convert an FST to an unweighted acceptor,
+        on which some FST operations are more efficient, and then decoding the
+        FST afterwards.
+
+        To use an instance of this class to encode or decode a mutable FST,
+        pass it as the first argument to the FST instance methods `encode` and
+        `decode`.  Alternatively, an instance of this class can be used as a
+        callable to encode/decode arcs.
+
+        Args:
+            flags (int): Encoder flags.
+            type (EncodeType): Encoder type.
+        """
+
+      @add__init__
+      def `EncodeMapper` as from_other(self, mapper: KwsIndexEncodeMapper):
+        """Creates a new encoder with the contents of another."""
+
+      @add__init__
+      def `EncodeMapper` as from_other_with_type(self, mapper: KwsIndexEncodeMapper,
+                                                 type: EncodeType):
+        """Creates a new encoder with the contents of another and given type."""
+
+      def __call__(self, arc: KwsIndexArc) -> KwsIndexArc:
+        """
+        Uses the encoder to encode/decode an arc.
+
+        Args:
+            arc: input arc to be encoded/decoded
+
+        Raises:
+          RuntimeError: Incompatible or invalid weight.
+        """
+
+      # def FinalAction(self) -> MapFinalAction
+      # def InputSymbolsAction(self) -> MapSymbolsAction
+      # def OutputSymbolsAction(self) -> MapSymbolsAction
+
+      def `Properties` as properties(self, inprops: int) -> int:
+        """Provides property bits.
+
+        This method provides user access to the properties attributes for the
+        encoder. The resulting value is a long integer, but when it is cast to a
+        boolean, it represents whether or not the FST has the `mask` property.
+
+        Args:
+          mask: The property mask to be compared to the encoder's properties.
+
+        Returns:
+          A 64-bit bitmask representing the requested properties.
+        """
+
+      def `Flags` as flags(self) -> int:
+        """Returns encoder flags."""
+
+      def `Type` as type(self) -> EncodeType:
+        """Returns encoder type."""
+
+      def `Write` as write(self, filename: str) -> bool:
+        """Writes encoder to file.
+
+        Returns:
+            True if write was successful, False otherwise.
+        """
+
+      @classmethod
+      def `Read` as read(cls, filename: str, type: EncodeType = default) -> KwsIndexEncodeMapper:
         """Reads encoder from file."""
 
       def `InputSymbols` as input_symbols(self) -> SymbolTable:

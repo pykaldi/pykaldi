@@ -1,5 +1,6 @@
 from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/lexicographic-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 
@@ -7,6 +8,8 @@ from kaldi.fstext._expanded_fst import StdExpandedFst
 from kaldi.fstext._expanded_fst import LogExpandedFst
 from kaldi.fstext._expanded_fst import LatticeExpandedFst
 from kaldi.fstext._expanded_fst import CompactLatticeExpandedFst
+from kaldi.fstext._expanded_fst import KwsTimeExpandedFst
+from kaldi.fstext._expanded_fst import KwsIndexExpandedFst
 
 from "fst/mutable-fst.h":
   namespace `fst`:
@@ -53,30 +56,6 @@ from "fst/mutable-fst.h":
       # def Read(cls, filename: str, convert: bool = default,
       #          convert_type: str = default) -> StdMutableFst
 
-    # NOTE: We do not need this in Python.
-    #
-    # class `MutableArcIterator<MutableFst<StdArc>>` as StdFstMutableArcIterator:
-    #
-    #   def __init__(self, fst: StdMutableFst, s: int)
-    #
-    #   def Done(self) -> bool
-    #
-    #   def Value(self) -> StdArc
-    #
-    #   def SetValue(self, arc: StdArc)
-    #
-    #   def Next(self)
-    #
-    #   def Position(self) -> int
-    #
-    #   def Reset(self)
-    #
-    #   def Seek(self, a: int)
-    #
-    #   def Flags(self) -> int
-    #
-    #   def SetFlags(self, flags: int, mask: int)
-
     # LogArc
 
     class `MutableFst<LogArc>` as LogMutableFst(LogExpandedFst):
@@ -119,31 +98,7 @@ from "fst/mutable-fst.h":
       # def Read(cls, filename: str, convert: bool = default,
       #          convert_type: str = default) -> LogMutableFst
 
-    # NOTE: We do not need this in Python.
-    #
-    # class `MutableArcIterator<MutableFst<LogArc>>` as LogFstMutableArcIterator:
-    #
-    #   def __init__(self, fst: LogMutableFst, s: int)
-    #
-    #   def Done(self) -> bool
-    #
-    #   def Value(self) -> LogArc
-    #
-    #   def SetValue(self, arc: LogArc)
-    #
-    #   def Next(self)
-    #
-    #   def Position(self) -> int
-    #
-    #   def Reset(self)
-    #
-    #   def Seek(self, a: int)
-    #
-    #   def Flags(self) -> int
-    #
-    #   def SetFlags(self, flags: int, mask: int)
-
-    # LatticeArc
+  # LatticeArc
 
     class `MutableFst<ArcTpl<LatticeWeightTpl<float>>>` as LatticeMutableFst(LatticeExpandedFst):
 
@@ -184,30 +139,6 @@ from "fst/mutable-fst.h":
       # @classmethod
       # def Read(cls, filename: str, convert: bool = default,
       #          convert_type: str = default) -> LatticeMutableFst
-
-    # NOTE: We do not need this in Python.
-    #
-    # class `MutableArcIterator<MutableFst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstMutableArcIterator:
-    #
-    #   def __init__(self, fst: LatticeMutableFst, s: int)
-    #
-    #   def Done(self) -> bool
-    #
-    #   def Value(self) -> LatticeArc
-    #
-    #   def SetValue(self, arc: LatticeArc)
-    #
-    #   def Next(self)
-    #
-    #   def Position(self) -> int
-    #
-    #   def Reset(self)
-    #
-    #   def Seek(self, a: int)
-    #
-    #   def Flags(self) -> int
-    #
-    #   def SetFlags(self, flags: int, mask: int)
 
     # CompactLatticeArc
 
@@ -251,26 +182,45 @@ from "fst/mutable-fst.h":
       # def Read(cls, filename: str, convert: bool = default,
       #          convert_type: str = default) -> CompactLatticeMutableFst
 
-    # NOTE: We do not need this in Python.
-    #
-    # class `MutableArcIterator<MutableFst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstMutableArcIterator:
-    #
-    #   def __init__(self, fst: CompactLatticeMutableFst, s: int)
-    #
-    #   def Done(self) -> bool
-    #
-    #   def Value(self) -> CompactLatticeArc
-    #
-    #   def SetValue(self, arc: CompactLatticeArc)
-    #
-    #   def Next(self)
-    #
-    #   def Position(self) -> int
-    #
-    #   def Reset(self)
-    #
-    #   def Seek(self, a: int)
-    #
-    #   def Flags(self) -> int
-    #
-    #   def SetFlags(self, flags: int, mask: int)
+    # KwsIndexArc
+
+    class `MutableFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexMutableFst(KwsIndexExpandedFst):
+
+      def `SetStart` as _set_start(self, state: int)
+
+      def `SetFinal` as _set_final(self, state: int, weight: KwsIndexWeight)
+
+      def `SetProperties` as _set_properties(self, props: int, mask: int)
+
+      def `AddState` as _add_state(self) -> int
+
+      def `AddArc` as _add_arc(self, state: int, arc: KwsIndexArc)
+
+      def `DeleteStates` as _delete_states(self, dstates: list<int>)
+
+      def `DeleteStates` as _delete_all_states(self)
+
+      def `DeleteArcs` as _delete_arcs(self, state: int, n: int)
+
+      def `DeleteArcs` as _delete_all_arcs(self, state: int)
+
+      def `ReserveStates` as _reserve_states(self, n: int)
+
+      def `ReserveArcs` as _reserve_arcs(self, state: int, n: int)
+
+      def `MutableInputSymbols` as _mutable_input_symbols(self) -> SymbolTable
+
+      def `MutableOutputSymbols` as _mutable_output_symbols(self) -> SymbolTable
+
+      def `SetInputSymbols` as _set_input_symbols(self, isyms: SymbolTable)
+
+      def `SetOutputSymbols` as _set_output_symbols(self, osyms: SymbolTable)
+
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> KwsIndexMutableFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str, convert: bool = default,
+      #          convert_type: str = default) -> KwsIndexMutableFst

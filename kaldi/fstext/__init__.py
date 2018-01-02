@@ -1,10 +1,11 @@
 """
-PyKaldi has built-in support for common FST types (including Kaldi lattices) and
-operations. The API for the user facing PyKaldi FST types and operations is
-mostly defined in Python mimicking the API exposed by OpenFst's official Python
-wrapper `pywrapfst <http://www.openfst.org/twiki/bin/view/FST/PythonExtension>`_
-to a large extent. This includes integrations with Graphviz and IPython for
-interactive visualization of FSTs.
+PyKaldi has built-in support for common FST types (including Kaldi lattices and
+KWS index) and operations. The API for the user facing PyKaldi FST types and
+operations is mostly defined in Python mimicking the API exposed by OpenFst's
+official Python wrapper `pywrapfst
+<http://www.openfst.org/twiki/bin/view/FST/PythonExtension>`_ to a large extent.
+This includes integrations with Graphviz and IPython for interactive
+visualization of FSTs.
 
 There are two major differences between the PyKaldi FST package and pywrapfst:
 
@@ -56,8 +57,9 @@ from ._getters import EncodeType
 from ._symbol_table import *
 from . import _float_weight
 from . import _lattice_weight
+from . import _lexicographic_weight
 from ._arc import *
-from ._encode import ENCODE_FLAGS, ENCODE_LABELS, ENCODE_WEIGHTS
+from ._encode import *
 from . import _compiler
 from ._fst import NO_STATE_ID, NO_LABEL
 from ._fst import FstHeader, FstReadOptions, FstWriteOptions
@@ -70,6 +72,7 @@ from . import _std_ops
 from . import _log_ops
 from . import _lat_ops
 from . import _clat_ops
+from . import _index_ops
 
 from ._api import *
 
@@ -706,7 +709,7 @@ class CompactLatticeWeight(_lattice_weight.CompactLatticeWeight):
             if not isinstance(w, _lattice_weight.LatticeWeight):
                 w = LatticeWeight(w)
             return _lattice_weight.CompactLatticeWeight.from_pair(w, s)
-        raise TypeError("CompactLatticeWeight.__new__() accepts 1 to 3 "
+        raise TypeError("CompactLatticeWeight accepts 0 to 2 "
                         "positional arguments; {} given".format(len(args)))
 
 
@@ -878,6 +881,247 @@ class CompactLatticeConstFst(_api._FstBase, _const_fst.CompactLatticeConstFst):
 CompactLatticeConstFst._mutable_fst_type = CompactLatticeVectorFst
 
 
+# KWS index semiring
+
+class KwsTimeWeight(_lexicographic_weight.KwsTimeWeight):
+    """KWS time weight factory.
+
+    This class is used for creating new `~weight.KwsTimeWeight` instances.
+
+    KwsTimeWeight():
+        Creates an uninitialized `~weight.KwsTimeWeight` instance.
+
+    KwsTimeWeight(weight):
+        Creates a new `~weight.KwsTimeWeight` instance initalized with the
+        weight.
+
+    Args:
+        weight(Tuple[float, float] or KwsTimeWeight): A pair of weight values
+        or another `~weight.KwsTimeWeight` instance.
+
+    KwsTimeWeight(weight1, weight2):
+        Creates a new `~weight.KwsTimeWeight` instance initalized with the
+        weights.
+
+    Args:
+        weight1(float): The first weight value.
+        weight2(float): The second weight value.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _lexicographic_weight.KwsTimeWeight()
+        if len(args) == 1:
+            if isinstance(args[0], tuple) and len(args[0]) == 2:
+                args = args[0]
+            else:
+                args = (args[0].value1, args[0].value2)
+        args = (TropicalWeight(args[0]), TropicalWeight(args[1]))
+        return _lexicographic_weight.KwsTimeWeight.from_components(*args)
+
+
+class KwsIndexWeight(_lexicographic_weight.KwsIndexWeight):
+    """KWS index weight factory.
+
+    This class is used for creating new `~weight.KwsIndexWeight`
+    instances.
+
+    KwsIndexWeight():
+        Creates an uninitialized `~weight.KwsIndexWeight` instance.
+
+    KwsIndexWeight(weight):
+        Creates a new `~weight.KwsIndexWeight` instance initalized with
+        the weight.
+
+    Args:
+        weight(Tuple[float, Tuple[float, float]] or Tuple[TropicalWeight, KwsTimeWeight] or KwsIndexWeight):
+            A pair of weight values or another `~weight.KwsIndexWeight`
+            instance.
+
+    KwsIndexWeight(weight1, weight2):
+        Creates a new `~weight.KwsIndexWeight` instance initalized with
+        weights.
+
+    Args:
+        weight1(float or TropicalWeight): The first weight value.
+        weight2(Tuple[float, float] or KwsTimeWeight): The second weight value.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _lexicographic_weight.KwsIndexWeight()
+        if len(args) == 1:
+            if isinstance(args[0], tuple) and len(args[0]) == 2:
+                args = (TropicalWeight(args[0][0]), KwsTimeWeight(args[0][1]))
+            else:
+                args = (args[0].value1, args[0].value2)
+            return _lexicographic_weight.KwsIndexWeight.from_components(*args)
+        if len(args) == 2:
+            args = (TropicalWeight(args[0]), KwsTimeWeight(args[1]))
+            return _lexicographic_weight.KwsIndexWeight.from_components(*args)
+        raise TypeError("KwsIndexWeight accepts 0 to 2 "
+                        "positional arguments; {} given".format(len(args)))
+
+
+class KwsIndexArc(_api._ArcBase, _arc.KwsIndexArc):
+    """FST Arc with KWS index weight."""
+    pass
+
+
+class KwsIndexEncodeMapper(_api._EncodeMapper, _encode.KwsIndexEncodeMapper):
+    """Arc encoder for an FST over the KWS index semiring."""
+    pass
+
+
+class KwsIndexFstCompiler(_api._FstCompiler):
+    """Compiler for FSTs over the KWS index semiring."""
+    @classmethod
+    def _compiler_type():
+        return _compiler.KwsIndexFstCompiler
+
+
+class _KwsIndexFstDrawer(_api._FstDrawer, _drawer.KwsIndexFstDrawer):
+    """Drawer for FSTs over the KWS index semiring."""
+    pass
+
+
+class _KwsIndexFstPrinter(_api._FstPrinter, _printer.KwsIndexFstPrinter):
+    """Printer for FSTs over the KWS index semiring."""
+    pass
+
+
+class KwsIndexVectorFstStateIterator(
+        _api._StateIteratorBase,
+        _vector_fst.KwsIndexVectorFstStateIterator):
+    """State iterator for a vector FST over the KWS index semiring.
+
+    This class is used for iterating over the states. In addition to the full
+    C++ API, it also supports the iterator protocol. Most users should just call
+    the `states` method of an FST object instead of directly constructing this
+    iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class KwsIndexVectorFstArcIterator(_api._ArcIteratorBase,
+                                   _vector_fst.KwsIndexVectorFstArcIterator):
+    """Arc iterator for a vector FST over the KWS index semiring.
+
+    This class is used for iterating over the arcs leaving some state. In
+    addition to the full C++ API, it also supports the iterator protocol.
+    Most users should just call the `arcs` method of an FST object instead of
+    directly constructing this iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class KwsIndexVectorFstMutableArcIterator(
+        _api._MutableArcIteratorBase,
+        _vector_fst.KwsIndexVectorFstMutableArcIterator):
+    """Mutable arc iterator for a vector FST over the KWS index semiring.
+
+    This class is used for iterating over the arcs leaving some state and
+    optionally replacing them with new ones. In addition to the full C++ API,
+    it also supports the iterator protocol. Calling the `__iter__` method of a
+    mutable arc iterator object returns an iterator over `(arc, setter)` pairs.
+    The `setter` is a bound method of the mutable arc iterator object that can
+    be used to replace the current arc with a new one. Most users should just
+    call the `mutable_arcs` method of a vector FST object instead of directly
+    constructing this iterator and take advantage of the Pythonic API, e.g. ::
+
+        for arc, setter in fst.mutable_arcs(0):
+            setter(KwsIndexArc(arc.ilabel, 0, arc.weight, arc.nextstate))
+    """
+    pass
+
+
+class KwsIndexVectorFst(_api._MutableFstBase, _vector_fst.KwsIndexVectorFst):
+    """Vector FST over the KWS index semiring."""
+
+    _ops = _index_ops
+    _drawer_type = _KwsIndexFstDrawer
+    _printer_type = _KwsIndexFstPrinter
+    _weight_factory = KwsIndexWeight
+    _state_iterator_type = KwsIndexVectorFstStateIterator
+    _arc_iterator_type = KwsIndexVectorFstArcIterator
+    _mutable_arc_iterator_type = KwsIndexVectorFstMutableArcIterator
+
+    def __init__(self, fst=None):
+        """
+        Args:
+            fst (KwsIndexFst): The input FST over the KWS index semiring.
+                If provided, its contents are used for initializing the new FST.
+                Defaults to ``None``.
+        """
+        super(KwsIndexVectorFst, self).__init__()
+        if fst is not None:
+            if isinstance(fst, _vector_fst.KwsIndexVectorFst):
+                # This assignment shares implementation with COW semantics.
+                _fstext_shims._assign_kws_index_vector_fst(fst, self)
+            elif isinstance(fst, _fst.KwsIndexFst):
+                # This assignment makes a copy.
+                _fstext_shims._assign_kws_index_fst_to_vector_fst(fst, self)
+            else:
+                raise TypeError("fst should be an FST over the KWS index "
+                                "semiring")
+
+KwsIndexVectorFst._mutable_fst_type = KwsIndexVectorFst
+
+
+class KwsIndexConstFstStateIterator(_api._StateIteratorBase,
+                                    _const_fst.KwsIndexConstFstStateIterator):
+    """State iterator for a constant FST over the KWS index semiring.
+
+    This class is used for iterating over the states. In addition to the full
+    C++ API, it also supports the iterator protocol. Most users should just call
+    the `states` method of an FST object instead of directly constructing this
+    iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class KwsIndexConstFstArcIterator(_api._ArcIteratorBase,
+                                  _const_fst.KwsIndexConstFstArcIterator):
+    """Arc iterator for a constant FST over the KWS index semiring.
+
+    This class is used for iterating over the arcs leaving some state. In
+    addition to the full C++ API, it also supports the iterator protocol.
+    Most users should just call the `arcs` method of an FST object instead of
+    directly constructing this iterator and take advantage of the Pythonic API.
+    """
+    pass
+
+
+class KwsIndexConstFst(_api._FstBase, _const_fst.KwsIndexConstFst):
+    """Constant FST over the KWS index semiring."""
+
+    _ops = _index_ops
+    _drawer_type = _KwsIndexFstDrawer
+    _printer_type = _KwsIndexFstPrinter
+    _weight_factory = KwsIndexWeight
+    _state_iterator_type = KwsIndexConstFstStateIterator
+    _arc_iterator_type = KwsIndexConstFstArcIterator
+
+    def __init__(self, fst=None):
+        """
+        Args:
+            fst (KwsIndexFst): The input FST over the KWS index semiring.
+                If provided, its contents are used for initializing the new FST.
+                Defaults to ``None``.
+        """
+        super(KwsIndexConstFst, self).__init__()
+        if fst is not None:
+            if isinstance(fst, _const_fst.KwsIndexConstFst):
+                # This assignment shares implementation with COW semantics.
+                _fstext_shims._assign_kws_index_const_fst(fst, self)
+            elif isinstance(fst, _fst.KwsIndexFst):
+                # This assignment makes a copy.
+                _fstext_shims._assign_kws_index_fst_to_const_fst(fst, self)
+            else:
+                raise TypeError("fst should be an FST over the KWS index "
+                                "semiring")
+
+KwsIndexConstFst._mutable_fst_type = KwsIndexVectorFst
+
+
 # Kaldi I/O
 
 def read_fst_kaldi(rxfilename):
@@ -926,6 +1170,11 @@ def read_fst_kaldi(rxfilename):
                 fst_class = CompactLatticeVectorFst
             elif fst_type == "const":
                 fst_class = CompactLatticeConstFst
+        elif arc_type == KwsIndexArc.type():
+            if fst_type == "vector":
+                fst_class = KwsIndexVectorFst
+            elif fst_type == "const":
+                fst_class = KwsIndexConstFst
         else:
             raise TypeError("Unsupported FST arc type: {}.".format(arc_type))
         ropts = FstReadOptions(rxfilename, hdr)

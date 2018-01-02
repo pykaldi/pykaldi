@@ -7,6 +7,7 @@ from kaldi.fstext import StdVectorFst
 from kaldi.fstext import LogVectorFst
 from kaldi.fstext import LatticeVectorFst
 from kaldi.fstext import CompactLatticeVectorFst
+from kaldi.fstext import KwsIndexVectorFst
 
 from "fst/script/compile-impl.h":
   namespace `fst`:
@@ -99,3 +100,26 @@ from "fst/script/compile-impl.h":
 
       def `Fst` as fst(self) -> CompactLatticeVectorFst:
         return CompactLatticeVectorFst(...)
+
+    class `FstCompiler<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexFstCompiler:
+      def __init__(self, istrm: istream, source: str, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                   ikeep: bool, okeep: bool, nkeep: bool,
+                   allow_negative_labels: bool = default)
+
+      @add__init__
+      def `FstCompiler` as with_symbols(self, istrm: istream, source: str,
+                                        isyms: SymbolTable, osyms: SymbolTable,
+                                        ssyms: SymbolTable, accep: bool,
+                                        ikeep: bool, okeep: bool, nkeep: bool,
+                                        allow_negative_labels: bool,
+                                        add_symbols: bool)
+
+      def `Init` as init(self, istrm: istream, source: str, isyms: SymbolTable,
+                         osyms: SymbolTable, ssyms: SymbolTable, accep: bool,
+                         ikeep: bool, okeep: bool, nkeep: bool,
+                         allow_negative_labels: bool, add_symbols: bool)
+
+      def `Fst` as fst(self) -> KwsIndexVectorFst:
+        return KwsIndexVectorFst(...)

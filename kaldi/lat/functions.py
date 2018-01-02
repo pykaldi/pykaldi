@@ -1,5 +1,9 @@
 import logging
 
+from . import _confidence
+from . import _determinize_lattice_pruned as _dlp
+from . import _lattice_functions as _lat_fun
+
 from ._confidence import *
 from ._determinize_lattice_pruned import *
 from ._lattice_functions import *
@@ -48,9 +52,9 @@ def sentence_level_confidence(lat):
         accurate.
     """
     if isinstance(lat, _fst.CompactLatticeVectorFst):
-        return _sentence_level_confidence_from_compact_lattice(lat)
+        return _confidence._sentence_level_confidence_from_compact_lattice(lat)
     else:
-        return _sentence_level_confidence_from_lattice(lat)
+        return _confidence._sentence_level_confidence_from_lattice(lat)
 
 
 def determinize_lattice_phone_pruned(ifst, trans_model, prune,
@@ -94,8 +98,8 @@ def determinize_lattice_phone_pruned(ifst, trans_model, prune,
     if not destructive or not isinstance(ifst, _api.MutableFstBase):
         ifst = _fst.LatticeVectorFst(ifst)
     ofst = _fst.CompactLatticeVectorFst()
-    success = _determinize_lattice_phone_pruned_wrapper(ifst, trans_model,
-                                                        prune, ofst, opts)
+    success = _dlp._determinize_lattice_phone_pruned_wrapper(ifst, trans_model,
+                                                             prune, ofst, opts)
     if not success:
         logging.warning(
             "Lattice determinization is terminated early because at least one "
@@ -135,11 +139,11 @@ def determinize_lattice_pruned(ifst, prune, opts=None, compact_out=True):
     ifst = _fst.LatticeVectorFst(ifst).invert().topsort().arcsort()
     if compact_out:
         ofst = _fst.CompactLatticeVectorFst()
-        success = _determinize_lattice_pruned_to_compact(ifst, prune, ofst,
-                                                         opts)
+        success = _dlp._determinize_lattice_pruned_to_compact(ifst, prune, ofst,
+                                                              opts)
     else:
         ofst = _fst.LatticeVectorFst()
-        success = _determinize_lattice_pruned(ifst, prune, ofst, opts)
+        success = _dlp._determinize_lattice_pruned(ifst, prune, ofst, opts)
     if not success:
         logging.warning(
             "Lattice determinization is terminated early because at least one "
@@ -168,9 +172,9 @@ def lattice_state_times(lat):
         lattice due to frames in final states.
     """
     if isinstance(lat, _fst.LatticeVectorFst):
-        return _lattice_state_times(lat)
+        return _lat_fun._lattice_state_times(lat)
     else:
-        return _compact_lattice_state_times(lat)
+        return _lat_fun._compact_lattice_state_times(lat)
 
 
 def compute_lattice_alphas_and_betas(lat, viterbi):
@@ -191,9 +195,9 @@ def compute_lattice_alphas_and_betas(lat, viterbi):
         prob), the forward (alpha) scores and the backward (beta) scores.
     """
     if isinstance(lat, _fst.LatticeVectorFst):
-        return _compute_lattice_alphas_and_betas(lat, viterbi)
+        return _lat_fun._compute_lattice_alphas_and_betas(lat, viterbi)
     else:
-        return _compute_compact_lattice_alphas_and_betas(lat, viterbi)
+        return _lat_fun._compute_compact_lattice_alphas_and_betas(lat, viterbi)
 
 
 def top_sort_lattice_if_needed(lat):
@@ -206,9 +210,9 @@ def top_sort_lattice_if_needed(lat):
         RuntimeError: If lattice cannot be topologically sorted.
     """
     if isinstance(lat, _fst.LatticeVectorFst):
-        _top_sort_lattice_if_needed(lat)
+        _lat_fun._top_sort_lattice_if_needed(lat)
     else:
-        _top_sort_compact_lattice_if_needed(lat)
+        _lat_fun._top_sort_compact_lattice_if_needed(lat)
 
 
 def prune_lattice(beam, lat):
@@ -222,9 +226,9 @@ def prune_lattice(beam, lat):
         ValueError: If pruning fails.
     """
     if isinstance(lat, _fst.LatticeVectorFst):
-        _prune_lattice(beam, lat)
+        _lat_fun._prune_lattice(beam, lat)
     else:
-        _prune_compact_lattice(beam, lat)
+        _lat_fun._prune_compact_lattice(beam, lat)
 
 
 def rescore_lattice(decodable, lat):
@@ -248,9 +252,9 @@ def rescore_lattice(decodable, lat):
         :meth:`rescore_compact_lattice_speedup`
     """
     if isinstance(lat, _fst.LatticeVectorFst):
-        _rescore_lattice(decodable, lat)
+        _lat_fun._rescore_lattice(decodable, lat)
     else:
-        _rescore_compact_lattice(decodable, lat)
+        _lat_fun._rescore_compact_lattice(decodable, lat)
 
 
 def longest_sentence_length_in_lattice(lat):
@@ -264,9 +268,9 @@ def longest_sentence_length_in_lattice(lat):
 
     """
     if isinstance(lat, _fst.LatticeVectorFst):
-        return _longest_sentence_length_in_lattice(lat)
+        return _lat_fun._longest_sentence_length_in_lattice(lat)
     else:
-        return _longest_sentence_length_in_compact_lattice(lat)
+        return _lat_fun._longest_sentence_length_in_compact_lattice(lat)
 
 
 __all__ = [name for name in dir()

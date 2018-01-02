@@ -44,3 +44,14 @@ from "fst/script/draw-impl.h":
                    precision: int, float_format: str, show_weight_one: bool)
 
       def `Draw` as draw(self, strm: ostream, dest: str)
+
+    class `FstDrawer<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexFstDrawer:
+      def __init__(self, fst: KwsIndexFst, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable,
+                   accep: bool, title: str, width: float,
+                   height: float, portrait: bool, vertical: bool,
+                   ranksep: float, nodesep: float, fontsize: int,
+                   precision: int, float_format: str, show_weight_one: bool)
+
+      def `Draw` as draw(self, strm: ostream, dest: str)

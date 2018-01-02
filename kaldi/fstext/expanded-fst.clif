@@ -5,6 +5,8 @@ from kaldi.fstext._fst import StdFst
 from kaldi.fstext._fst import LogFst
 from kaldi.fstext._fst import LatticeFst
 from kaldi.fstext._fst import CompactLatticeFst
+from kaldi.fstext._fst import KwsTimeFst
+from kaldi.fstext._fst import KwsIndexFst
 
 from "fst/expanded-fst.h":
   namespace `fst`:
@@ -66,5 +68,20 @@ from "fst/expanded-fst.h":
       #
       # @classmethod
       # def Read(cls, filename: str) -> CompactLatticeExpandedFst
+
+    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
+
+    # KwsIndexArc
+
+    class `ExpandedFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>` as KwsIndexExpandedFst(KwsIndexFst):
+
+      def `NumStates` as _num_states(self) -> int
+
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def Copy(self, safe: bool = default) -> KwsIndexExpandedFst
+      #
+      # @classmethod
+      # def Read(cls, filename: str) -> KwsIndexExpandedFst
 
     # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.

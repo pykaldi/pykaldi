@@ -1,0 +1,62 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/encode-clifwrap.h" import *
+
+from kaldi.util import _value_error_on_false
+
+from "kws/kws-functions.h":
+  namespace `kaldi`:
+
+    def `LatticeToKwsIndex` as _lattice_to_kws_index(
+      clat: CompactLatticeVectorFst, utterance_id: int,
+      max_silence_frames: int, max_states: int, allow_partial: bool)
+      -> (success: bool, index_transducer: KwsIndexVectorFst):
+      return _value_error_on_false(...)
+
+    def `LatticeToKwsIndexDestructive` as _lattice_to_kws_index_destructive(
+      clat: CompactLatticeVectorFst, utterance_id: int,
+      max_silence_frames: int, max_states: int, allow_partial: bool)
+      -> (success: bool, index_transducer: KwsIndexVectorFst):
+      return _value_error_on_false(...)
+
+    def `OptimizeKwsIndex` as optimize_kws_index(index: KwsIndexVectorFst,
+                                                 max_states: int = default):
+      """Optimizes KWS index.
+
+      Optimizes KWS index by doing encoded epsilon removal, determinization and
+      minimization.
+
+      Args:
+        index (KwsIndexVectorFst): The index FST.
+        max_states (int): The maximum number of states allowed in the output.
+            If <= 0, any number of states in the output is OK. Default: -1.
+      """
+
+    def `EncodeKwsDisambiguationSymbols` as encode_kws_disambiguation_symbols(
+      index: KwsIndexVectorFst, encode_table: KwsIndexEncodeTable):
+      """Encodes (disambiguation-symbol, utterance-id) pairs.
+
+      Encodes labels on final arcs. Replaces output labels of final arcs
+      (utterance ids) with the encoded labels. Replaces input labels of final
+      arcs (disambiguation symbols) with epsilons.
+
+      Args:
+        index (KwsIndexVectorFst): The index FST.
+        encode_table (KwsIndexEncodeTable): The table to use for encoding
+            (disambiguation-symbol, utterance-id) pairs into output labels.
+            This table is used by :meth:`search_kws_index`.
+      """
+
+    def `SearchKwsIndex` as _search_kws_index(
+      index: KwsIndexVectorFst, keyword: StdVectorFst, encode_table: KwsIndexEncodeTable, n_best: int)
+      -> (success: bool, results: list<`std::tuple` as tuple<int, int, int, float>>):
+      return _value_error_on_false(...)
+
+    def `SearchKwsIndex` as _search_kws_index_detailed(
+      index: KwsIndexVectorFst, keyword: StdVectorFst, encode_table: KwsIndexEncodeTable, n_best: int)
+      -> (success: bool, results: list<`std::tuple` as tuple<int, int, int, float>>, matched_seq: KwsIndexVectorFst):
+      return _value_error_on_false(...)
+
+    def `ComputeDetailedStatistics` as _compute_detailed_statistics(
+      keyword: KwsIndexVectorFst, encode_table: KwsIndexEncodeTable)
+      -> (stats: list<`std::tuple` as tuple<int, int, int, float>>, ilabels: list<list<int>>)

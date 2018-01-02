@@ -1,3 +1,7 @@
+from . import _phone_align_lattice as _pal
+from . import _word_align_lattice as _wal
+from . import _word_align_lattice_lexicon as _wall
+
 from ._phone_align_lattice import *
 from ._word_align_lattice import *
 from ._word_align_lattice_lexicon import *
@@ -35,7 +39,7 @@ def phone_align_lattice(lat, tmodel, opts):
     See Also:
         :meth:`kaldi.lat.functions.convert_lattice_to_phones`
     """
-    success, lat_out = _phone_align_lattice(lat, tmodel, opts)
+    success, lat_out = _pal._phone_align_lattice(lat, tmodel, opts)
     return success, _fst.CompactLatticeVectorFst(lat_out)
 
 
@@ -75,7 +79,7 @@ def word_align_lattice(lat, tmodel, info, max_states):
         the end-state was not reached during decoding, and in this case the
         output might still be usable.
     """
-    success, lat_out = _word_align_lattice(lat, tmodel, info, max_states)
+    success, lat_out = _wal._word_align_lattice(lat, tmodel, info, max_states)
     return success, _fst.CompactLatticeVectorFst(lat_out)
 
 
@@ -106,8 +110,8 @@ def word_align_lattice_lexicon(lat, tmodel, lexicon_info, opts):
         the end-state was not reached during decoding, and in this case the
         output might still be usable.
     """
-    success, lat_out = _word_align_lattice_lexicon(lat, tmodel,
-                                                   lexicon_info, opts)
+    success, lat_out = _wall._word_align_lattice_lexicon(lat, tmodel,
+                                                         lexicon_info, opts)
     return success, _fst.CompactLatticeVectorFst(lat_out)
 
 
@@ -139,7 +143,7 @@ def read_lexicon_for_word_align(rxfilename):
     with _io.xopen(rxfilename) as ki:
         if ki.binary:
             raise IOError("Not expecting binary file for lexicon.")
-        return _read_lexicon_for_word_align(ki.stream())
+        return _wall._read_lexicon_for_word_align(ki.stream())
 
 
 __all__ = [name for name in dir()

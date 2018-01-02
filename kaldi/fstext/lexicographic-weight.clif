@@ -1,0 +1,129 @@
+from "fstext/weight-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+
+from "fstext/lexicographic-weight-ext.h":
+  namespace `fst`:
+
+    class `LexicographicWeight<TropicalWeight, TropicalWeight>` as KwsTimeWeight:
+      """KWS time weight.
+
+      A tropical weight pair with lexicographic ordering.
+      """
+
+      # @add__init__
+      # def `LexicographicWeight` as from_other(self, weight: KwsTimeWeight):
+      #   """Creates a new KWS time weight from another."""
+
+      @add__init__
+      def `LexicographicWeight` as from_components(self, w1: TropicalWeight, w2: TropicalWeight):
+        """Creates a new KWS time weight from component weights."""
+
+      @classmethod
+      def `Zero` as zero(cls) -> KwsTimeWeight:
+        """Zero in the KWS time semiring."""
+
+      @classmethod
+      def `One` as one(cls) -> KwsTimeWeight:
+        """One in the KWS time semiring."""
+
+      @classmethod
+      def `NoWeight` as no_weight(cls) -> KwsTimeWeight:
+        """No weight in the KWS time semiring."""
+
+      @classmethod
+      def `Type` as type(cls) -> str:
+        """Returns weight type."""
+
+      @classmethod
+      def `Properties` as properties(cls) -> int:
+        """Returns weight properties."""
+
+      def `Member` as member(self) -> bool:
+        """Checks if weight is a member of the KWS time semiring."""
+
+      def `Quantize` as quantize(self, delta: float = default) -> KwsTimeWeight:
+        """Quantizes the weight."""
+
+      def `Reverse` as reverse(self) -> KwsTimeWeight:
+        """Reverses the weight."""
+
+      value1: TropicalWeight = property(`Value1`, `SetValue1`)
+      """The first component weight."""
+
+      value2: TropicalWeight = property(`Value2`, `SetValue2`)
+      """The second component weight."""
+
+    def `Plus` as plus_tropical_lt_tropical_weight(
+      w1: KwsTimeWeight, w2: KwsTimeWeight) -> KwsTimeWeight:
+      """:math:`\\oplus` operation in the KWS time semiring."""
+
+    def `Times` as times_tropical_lt_tropical_weight(
+      w1: KwsTimeWeight, w2: KwsTimeWeight) -> KwsTimeWeight:
+      """:math:`\\otimes` operation in the KWS time semiring."""
+
+    def `Divide` as divide_tropical_lt_tropical_weight(
+      w1: KwsTimeWeight, w2: KwsTimeWeight, typ: DivideType = default) -> KwsTimeWeight:
+      """:math:`\\oslash` operation in the KWS time semiring."""
+
+
+    class `LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>`
+        as KwsIndexWeight:
+      """KWS index weight.
+
+      A tropical weight triplet with lexicographic ordering.
+      """
+
+      # @add__init__
+      # def `LexicographicWeight` as from_other(self, weight: KwsIndexWeight):
+      #   """Creates a new KWS lexicographic weight from another."""
+
+      @add__init__
+      def `LexicographicWeight` as from_components(self, w1: TropicalWeight, w2: KwsTimeWeight):
+        """Creates a new KWS index weight from component weights."""
+
+      @classmethod
+      def `Zero` as zero(cls) -> KwsIndexWeight:
+        """Zero in KWS index semiring."""
+
+      @classmethod
+      def `One` as one(cls) -> KwsIndexWeight:
+        """One in KWS index semiring."""
+
+      @classmethod
+      def `NoWeight` as no_weight(cls) -> KwsIndexWeight:
+        """No weight in KWS index semiring."""
+
+      @classmethod
+      def `Type` as type(cls) -> str:
+        """Returns weight type."""
+
+      @classmethod
+      def `Properties` as properties(cls) -> int:
+        """Returns weight properties."""
+
+      def `Member` as member(self) -> bool:
+        """Checks if weight is a member of the KWS index semiring."""
+
+      def `Quantize` as quantize(self, delta: float = default) -> KwsIndexWeight:
+        """Quantizes the weight."""
+
+      def `Reverse` as reverse(self) -> KwsIndexWeight:
+        """Reverses the weight."""
+
+      value1: TropicalWeight = property(`Value1`, `SetValue1`)
+      """The first component weight."""
+
+      value2: KwsTimeWeight = property(`Value2`, `SetValue2`)
+      """The second component weight."""
+
+    def `Plus` as plus_kws_index_weight(
+      w1: KwsIndexWeight, w2: KwsIndexWeight) -> KwsIndexWeight:
+      """:math:`\\oplus` operation in the KWS index semiring."""
+
+    def `Times` as times_kws_index_weight(
+      w1: KwsIndexWeight, w2: KwsIndexWeight) -> KwsIndexWeight:
+      """:math:`\\otimes` operation in the KWS index semiring."""
+
+    def `Divide` as divide_kws_index_weight(
+      w1: KwsIndexWeight, w2: KwsIndexWeight, typ: DivideType = default) -> KwsIndexWeight:
+      """:math:`\\oslash` operation in the KWS index semiring."""

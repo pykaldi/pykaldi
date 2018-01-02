@@ -1,7 +1,7 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
-from "fstext/fst-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
@@ -79,7 +79,7 @@ from "chain/chain-supervision.h":
       def `Swap` as swap(self, other: Supervision)
 
       def `Check` as check(self, trans_model: TransitionModel):
-        """Checks that this supervision objects satisfies some of the properties expected"""      
+        """Checks that this supervision objects satisfies some of the properties expected"""
 
       def `Write` as write(self, os:ostream, binary: bool)
 

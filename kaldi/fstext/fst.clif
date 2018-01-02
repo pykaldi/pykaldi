@@ -1,6 +1,7 @@
 from "base/iostream-clifwrap.h" import *
 from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/lexicographic-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 from "fstext/symbol-table-clifwrap.h" import *
 
@@ -170,40 +171,6 @@ from "fst/fst.h":
       #
       # def `Write` as _write(self, filename: str) -> bool
 
-    # NOTE: We do not need these in Python.
-    #
-    # class `StateIterator<Fst<StdArc>>` as StdFstStateIterator:
-    #
-    #   def __init__(self, fst: StdFst)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> int
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    # class `ArcIterator<Fst<StdArc>>` as StdFstArcIterator:
-    #
-    #   def __init__(self, fst: StdFst, s: int)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> StdArc
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    #   def `Seek` as _seek(self, a: int)
-    #
-    #   def `Position` as _position(self) -> int
-    #
-    #   def `Flags` as _flags(self) -> int
-    #
-    #   def `SetFlags` as _set_flags(self, flags: int, mask: int)
-
     #LogArc
 
     class `Fst<LogArc>` as LogFst:
@@ -234,42 +201,6 @@ from "fst/fst.h":
       # def `Read` as _read(cls, filename: str) -> LogFst
       #
       # def `Write` as _write(self, filename: str) -> bool
-
-
-    # NOTE: We do not need these in Python.
-    #
-    # class `StateIterator<Fst<LogArc>>` as LogFstStateIterator:
-    #
-    #   def __init__(self, fst: LogFst)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> int
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    # class `ArcIterator<Fst<LogArc>>` as LogFstArcIterator:
-    #
-    #   def __init__(self, fst: LogFst, s: int)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> LogArc
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    #   def `Seek` as _seek(self, a: int)
-    #
-    #   def `Position` as _position(self) -> int
-    #
-    #   def `Flags` as _flags(self) -> int
-    #
-    #   def `SetFlags` as _set_flags(self, flags: int, mask: int)
-
 
     # LatticeArc
 
@@ -302,41 +233,6 @@ from "fst/fst.h":
       #
       # def `Write` as _write(self, filename: str) -> bool
 
-
-    # NOTE: We do not need these in Python.
-    #
-    # class `StateIterator<Fst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstStateIterator:
-    #
-    #   def __init__(self, fst: LatticeFst)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> int
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    # class `ArcIterator<Fst<ArcTpl<LatticeWeightTpl<float>>>>` as LatticeFstArcIterator:
-    #
-    #   def __init__(self, fst: LatticeFst, s: int)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> LatticeArc
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    #   def `Seek` as _seek(self, a: int)
-    #
-    #   def `Position` as _position(self) -> int
-    #
-    #   def `Flags` as _flags(self) -> int
-    #
-    #   def `SetFlags` as _set_flags(self, flags: int, mask: int)
-
     # CompactLatticeArc
 
     class `Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>` as CompactLatticeFst:
@@ -368,37 +264,34 @@ from "fst/fst.h":
       #
       # def `Write` as _write(self, filename: str) -> bool
 
+    # KwsIndexArc
 
-    # NOTE: We do not need these in Python.
-    #
-    # class `StateIterator<Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstStateIterator:
-    #
-    #   def __init__(self, fst: CompactLatticeFst)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> int
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    # class `ArcIterator<Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>>>>` as CompactLatticeFstArcIterator:
-    #
-    #   def __init__(self, fst: CompactLatticeFst, s: int)
-    #
-    #   def `Done` as _done(self) -> bool
-    #
-    #   def `Value` as _value(self) -> CompactLatticeArc
-    #
-    #   def `Next` as _next(self)
-    #
-    #   def `Reset` as _reset(self)
-    #
-    #   def `Seek` as _seek(self, a: int)
-    #
-    #   def `Position` as _position(self) -> int
-    #
-    #   def `Flags` as _flags(self) -> int
-    #
-    #   def `SetFlags` as _set_flags(self, flags: int, mask: int)
+    class `Fst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexFst:
+
+      def `Start` as _start(self) -> int
+
+      def `Final` as _final(self, state: int) -> KwsIndexWeight
+
+      def `NumArcs` as _num_arcs(self, state: int) -> int
+
+      def `NumInputEpsilons` as _num_input_epsilons(self, state: int) -> int
+
+      def `NumOutputEpsilons` as _num_output_epsilons(self, state: int) -> int
+
+      def `Properties` as _properties(self, mask: int, test: bool) -> int
+
+      def `Type` as _type(self) -> str
+
+      def `InputSymbols` as _input_symbols(self) -> SymbolTable
+
+      def `OutputSymbols` as _output_symbols(self) -> SymbolTable
+
+      # NOTE: These methods are wrapped in concrete child classes.
+      #
+      # def `Copy` as _copy(self, safe: bool = default) -> KwsIndexFst
+      #
+      # @classmethod
+      # def `Read` as _read(cls, filename: str) -> KwsIndexFst
+      #
+      # def `Write` as _write(self, filename: str) -> bool

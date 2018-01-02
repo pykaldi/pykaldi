@@ -12,8 +12,6 @@ from kaldi.util import _value_error_on_false
 
 from kaldi.fstext import StdVectorFst
 from kaldi.fstext import LogVectorFst
-from kaldi.fstext import LatticeVectorFst
-from kaldi.fstext import CompactLatticeVectorFst
 
 from "fstext/fstext-shims.h":
   namespace `fst`:
@@ -25,6 +23,8 @@ from "fstext/fstext-shims.h":
                                                         ofst: LatticeVectorFst)
     def `AssignVectorFst` as _assign_compact_lattice_vector_fst(ifst: CompactLatticeVectorFst,
                                                                 ofst: CompactLatticeVectorFst)
+    def `AssignVectorFst` as _assign_kws_index_vector_fst(ifst: KwsIndexVectorFst,
+                                                          ofst: KwsIndexVectorFst)
 
     def `AssignConstFst` as _assign_std_const_fst(ifst: StdConstFst,
                                                   ofst: StdConstFst)
@@ -34,6 +34,8 @@ from "fstext/fstext-shims.h":
                                                       ofst: LatticeConstFst)
     def `AssignConstFst` as _assign_compact_lattice_const_fst(ifst: CompactLatticeConstFst,
                                                               ofst: CompactLatticeConstFst)
+    def `AssignConstFst` as _assign_kws_index_const_fst(ifst: KwsIndexConstFst,
+                                                        ofst: KwsIndexConstFst)
 
     def `AssignFstToVectorFst` as _assign_std_fst_to_vector_fst(ifst: StdFst,
                                                                 ofst: StdVectorFst)
@@ -43,6 +45,8 @@ from "fstext/fstext-shims.h":
                                                                     ofst: LatticeVectorFst)
     def `AssignFstToVectorFst` as _assign_compact_lattice_fst_to_vector_fst(ifst: CompactLatticeFst,
                                                                             ofst: CompactLatticeVectorFst)
+    def `AssignFstToVectorFst` as _assign_kws_index_fst_to_vector_fst(ifst: KwsIndexFst,
+                                                                      ofst: KwsIndexVectorFst)
 
     def `AssignFstToConstFst` as _assign_std_fst_to_const_fst(ifst: StdFst,
                                                               ofst: StdConstFst)
@@ -52,6 +56,8 @@ from "fstext/fstext-shims.h":
                                                                   ofst: LatticeConstFst)
     def `AssignFstToConstFst` as _assign_compact_lattice_fst_to_const_fst(ifst: CompactLatticeFst,
                                                                           ofst: CompactLatticeConstFst)
+    def `AssignFstToConstFst` as _assign_kws_index_fst_to_const_fst(ifst: KwsIndexFst,
+                                                                    ofst: KwsIndexConstFst)
 
     def `CastStdToLog` as cast_std_to_log(ifst: StdVectorFst) -> LogVectorFst:
       """Casts FST in tropical semiring to log semiring."""

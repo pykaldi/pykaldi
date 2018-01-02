@@ -52,6 +52,7 @@ kaldi\.fstext
       CompactLatticeConstFstArcIterator
       CompactLatticeConstFstStateIterator
       CompactLatticeEncodeMapper
+      CompactLatticeEncodeTable
       CompactLatticeFstCompiler
       CompactLatticeVectorFst
       CompactLatticeVectorFstArcIterator
@@ -62,11 +63,25 @@ kaldi\.fstext
       FstHeader
       FstReadOptions
       FstWriteOptions
+      KwsIndexArc
+      KwsIndexConstFst
+      KwsIndexConstFstArcIterator
+      KwsIndexConstFstStateIterator
+      KwsIndexEncodeMapper
+      KwsIndexEncodeTable
+      KwsIndexFstCompiler
+      KwsIndexVectorFst
+      KwsIndexVectorFstArcIterator
+      KwsIndexVectorFstMutableArcIterator
+      KwsIndexVectorFstStateIterator
+      KwsIndexWeight
+      KwsTimeWeight
       LatticeArc
       LatticeConstFst
       LatticeConstFstArcIterator
       LatticeConstFstStateIterator
       LatticeEncodeMapper
+      LatticeEncodeTable
       LatticeFstCompiler
       LatticeVectorFst
       LatticeVectorFstArcIterator
@@ -78,6 +93,7 @@ kaldi\.fstext
       LogConstFstArcIterator
       LogConstFstStateIterator
       LogEncodeMapper
+      LogEncodeTable
       LogFstCompiler
       LogVectorFst
       LogVectorFstArcIterator
@@ -89,6 +105,7 @@ kaldi\.fstext
       StdConstFstArcIterator
       StdConstFstStateIterator
       StdEncodeMapper
+      StdEncodeTable
       StdFstCompiler
       StdVectorFst
       StdVectorFstArcIterator
@@ -258,28 +275,31 @@ kaldi\.fstext\.weight
       compact_lattice_weight_to_cost
       compare_compact_lattice_weight
       compare_lattice_weight
-      divide_arctic_weight
       divide_compact_lattice_weight
+      divide_kws_index_weight
       divide_lattice_weight
       divide_log_weight
+      divide_tropical_lt_tropical_weight
       divide_tropical_weight
       get_log_to_tropical_converter
       get_tropical_to_log_converter
       lattice_weight_to_cost
       lattice_weight_to_tropical
-      plus_arctic_weight
       plus_compact_lattice_weight
+      plus_kws_index_weight
       plus_lattice_weight
       plus_log_weight
+      plus_tropical_lt_tropical_weight
       plus_tropical_weight
       power_log_weight
       power_tropical_weight
       scale_compact_lattice_weight
       scale_lattice_weight
-      times_arctic_weight
       times_compact_lattice_weight
+      times_kws_index_weight
       times_lattice_weight
       times_log_weight
+      times_tropical_lt_tropical_weight
       times_tropical_weight
       tropical_weight_to_cost
    
@@ -292,12 +312,13 @@ kaldi\.fstext\.weight
    .. autosummary::
       :nosignatures:
    
-      ArcticWeight
       CompactLatticeNaturalLess
       CompactLatticeWeight
       DivideType
       FloatLimits
       FloatWeight
+      KwsIndexWeight
+      KwsTimeWeight
       LatticeNaturalLess
       LatticeWeight
       LogWeight

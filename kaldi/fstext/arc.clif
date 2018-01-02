@@ -1,5 +1,6 @@
 from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/lexicographic-weight-clifwrap.h" import *
 
 from "fst/arc.h":
   namespace `fst`:
@@ -134,6 +135,41 @@ from "fst/arc.h":
             ilabel (int): The input label.
             olabel (int): The output label.
             weight (CompactLatticeWeight): The arc weight.
+            nextstate (int): The destination state for the arc.
+        """
+
+      @classmethod
+      def `Type` as type(cls) -> str:
+        """Returns arc type."""
+
+    class `ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>`
+        as KwsIndexArc:
+      """FST Arc with KWS index weight.
+
+      Attributes of the arc can be accessed and mutated.
+
+      KwsIndexArc():
+        Creates an uninitialized KwsIndexArc.
+      """
+
+      ilabel: int
+      """int: The input label."""
+      olabel: int
+      """int: The output label."""
+      weight: KwsIndexWeight
+      """TropicalWeight: The arc weight."""
+      nextstate: int
+      """int: The destination state for the arc."""
+
+      @add__init__
+      def `ArcTpl` as from_attrs(self, ilabel: int, olabel:int,
+                                 weight: KwsIndexWeight, nextstate: int):
+        """Creates a new arc with the given attributes.
+
+        Args:
+            ilabel (int): The input label.
+            olabel (int): The output label.
+            weight (KwsIndexWeight): The arc weight.
             nextstate (int): The destination state for the arc.
         """
 

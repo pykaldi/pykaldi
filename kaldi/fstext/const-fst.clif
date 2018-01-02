@@ -7,11 +7,13 @@ from kaldi.fstext._expanded_fst import StdExpandedFst
 from kaldi.fstext._expanded_fst import LogExpandedFst
 from kaldi.fstext._expanded_fst import LatticeExpandedFst
 from kaldi.fstext._expanded_fst import CompactLatticeExpandedFst
+from kaldi.fstext._expanded_fst import KwsIndexExpandedFst
 
 from kaldi.fstext import StdConstFst
 from kaldi.fstext import LogConstFst
 from kaldi.fstext import LatticeConstFst
 from kaldi.fstext import CompactLatticeConstFst
+from kaldi.fstext import KwsIndexConstFst
 
 from "fstext/const-fst-ext.h":
   namespace `fst`:
@@ -242,6 +244,66 @@ from "fstext/const-fst-ext.h":
       def `Done` as _done(self) -> bool
 
       def `Value` as _value(self) -> CompactLatticeArc
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
+
+    # KwsIndexArc
+
+    class `ConstFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexConstFst(KwsIndexExpandedFst):
+
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `VectorFst` as from_fst(self, fst: KwsIndexConstFst)
+      #
+      # @add__init__
+      # def `VectorFst` as from_other(self, fst: KwsIndexConstFst,
+      #                               safe: bool = default)
+
+      def `Copy` as _copy(self, safe: bool = default) -> KwsIndexConstFst:
+        return KwsIndexConstFst(...)
+
+      @classmethod
+      def `Read` as _read(cls, filename: str) -> KwsIndexConstFst:
+        return KwsIndexConstFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> KwsIndexConstFst:
+        return KwsIndexConstFst(...)
+
+      def `Write` as _write(self, filename: str) -> bool
+
+    class `StateIterator<ConstFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>>` as KwsIndexConstFstStateIterator:
+
+      def __init__(self, fst: KwsIndexConstFst)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> int
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+    class `ArcIterator<ConstFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>>` as KwsIndexConstFstArcIterator:
+
+      def __init__(self, fst: KwsIndexConstFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> KwsIndexArc
 
       def `Next` as _next(self)
 

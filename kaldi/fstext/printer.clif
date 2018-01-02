@@ -36,3 +36,12 @@ from "fst/script/print-impl.h":
                    field_separator: str, missing_symbol: str = default)
 
       def `Print` as print_fst(self, strm: ostream, dest: str)
+
+    class `FstPrinter<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexFstPrinter:
+      def __init__(self, fst: KwsIndexFst, isyms: SymbolTable,
+                   osyms: SymbolTable, ssyms: SymbolTable,
+                   accep: bool, show_weight_one: bool,
+                   field_separator: str, missing_symbol: str = default)
+
+      def `Print` as print_fst(self, strm: ostream, dest: str)

@@ -714,6 +714,25 @@ class _MutableFstBase(_FstBase):
         self._check_mutating_imethod()
         return self
 
+    def concat(self, ifst):
+        """
+        Computes the concatenation (product) of two FSTs.
+
+        This operation destructively concatenates the FST with a second FST. If
+        A transduces string x to y with weight a and B transduces string w to v
+        with weight b, then their concatenation transduces string xw to yv with
+        weight a \otimes b.
+
+        Args:
+          ifst: The second input FST.
+
+        Returns:
+          self.
+        """
+        self._ops.concat(self, ifst)
+        self._check_mutating_imethod()
+        return self
+
     def connect(self):
         """
         Removes unsuccessful paths.

@@ -3,9 +3,10 @@ PyKaldi has support for the following weight types:
 
 #. Tropical weight.
 #. Log weight.
-#. Arctic weight.
 #. Lattice weight.
 #. Compact lattice weight.
+#. KWS time weight.
+#. KWS index weight.
 
 .. autoconstant:: DELTA
 .. autoconstant:: LEFT_SEMIRING
@@ -19,8 +20,8 @@ PyKaldi has support for the following weight types:
 
 from _weight import *
 from ._float_weight import *
-from ._arctic_weight import *
 from ._lattice_weight import *
+from ._lexicographic_weight import *
 
 ################################################################################
 

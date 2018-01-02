@@ -15,7 +15,6 @@ from ._nnet_test_utils import *
 from ._nnet_graph import *
 from ._nnet_compile import *
 from ._nnet_analyze import *
-from ._nnet_combine import *
 from ._nnet_compute import *
 from ._nnet_optimize import *
 from ._nnet_optimize_utils import *

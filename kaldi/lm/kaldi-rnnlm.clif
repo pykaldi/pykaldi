@@ -1,6 +1,6 @@
+from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
-from "fstext/float-weight-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 
 from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst

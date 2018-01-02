@@ -7,11 +7,13 @@ from kaldi.fstext._mutable_fst import StdMutableFst
 from kaldi.fstext._mutable_fst import LogMutableFst
 from kaldi.fstext._mutable_fst import LatticeMutableFst
 from kaldi.fstext._mutable_fst import CompactLatticeMutableFst
+from kaldi.fstext._mutable_fst import KwsIndexMutableFst
 
 from kaldi.fstext import StdVectorFst
 from kaldi.fstext import LogVectorFst
 from kaldi.fstext import LatticeVectorFst
 from kaldi.fstext import CompactLatticeVectorFst
+from kaldi.fstext import KwsIndexVectorFst
 
 from "fst/vector-fst.h":
   namespace `fst`:
@@ -330,6 +332,88 @@ from "fst/vector-fst.h":
       def `Value` as _value(self) -> CompactLatticeArc
 
       def `SetValue` as _set_value(self, arc: CompactLatticeArc)
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
+
+    # KwsIndexArc
+
+    class `VectorFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>`
+        as KwsIndexVectorFst(KwsIndexMutableFst):
+
+      # NOTE: These constructors are implemented in Python.
+      #
+      # @add__init__
+      # def `VectorFst` as from_fst(self, fst: KwsIndexVectorFst)
+      #
+      # @add__init__
+      # def `VectorFst` as from_other(self, fst: KwsIndexVectorFst,
+      #                               safe: bool = default)
+
+      def `Copy` as _copy(self, safe: bool = default) -> KwsIndexVectorFst:
+        return KwsIndexVectorFst(...)
+
+      @classmethod
+      def `Read` as _read(cls, filename: str) -> KwsIndexVectorFst:
+        return KwsIndexVectorFst(...)
+
+      @classmethod
+      def `Read` as _read_from_stream(cls, strm: istream,
+                                      opts: FstReadOptions) -> KwsIndexVectorFst:
+        return KwsIndexVectorFst(...)
+
+      def `Write` as _write(self, filename: str) -> bool
+
+    class `StateIterator<VectorFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>>` as KwsIndexVectorFstStateIterator:
+
+      def __init__(self, fst: KwsIndexVectorFst)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> int
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+    class `ArcIterator<VectorFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>>` as KwsIndexVectorFstArcIterator:
+
+      def __init__(self, fst: KwsIndexVectorFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> KwsIndexArc
+
+      def `Next` as _next(self)
+
+      def `Reset` as _reset(self)
+
+      def `Seek` as _seek(self, a: int)
+
+      def `Position` as _position(self) -> int
+
+      def `Flags` as _flags(self) -> int
+
+      def `SetFlags` as _set_flags(self, flags: int, mask: int)
+
+    class `MutableArcIterator<VectorFst<ArcTpl<LexicographicWeight<TropicalWeight, LexicographicWeight<TropicalWeight, TropicalWeight>>>>>` as KwsIndexVectorFstMutableArcIterator:
+
+      def __init__(self, fst: KwsIndexVectorFst, s: int)
+
+      def `Done` as _done(self) -> bool
+
+      def `Value` as _value(self) -> KwsIndexArc
+
+      def `SetValue` as _set_value(self, arc: KwsIndexArc)
 
       def `Next` as _next(self)
 

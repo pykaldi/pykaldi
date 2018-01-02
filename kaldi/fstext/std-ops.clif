@@ -32,6 +32,8 @@ from "fstext/fst-ops.h":
 
     def `ClosureExt` as closure(fst: StdMutableFst, closure_type: ClosureType)
 
+    def `ConcatExt` as concat(fst1: StdMutableFst, fst2: StdFst)
+
     def `ConnectExt` as connect(fst: StdMutableFst)
 
     def `DecodeExt` as decode(fst: StdMutableFst, mapper: StdEncodeMapper)

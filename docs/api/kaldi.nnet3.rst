@@ -200,8 +200,6 @@ kaldi\.nnet3
       NaturalGradientRepeatedAffineComponent
       NetworkNode
       Nnet
-      NnetCombineConfig
-      NnetCombiner
       NnetComputation
       NnetComputeOptions
       NnetComputeProb

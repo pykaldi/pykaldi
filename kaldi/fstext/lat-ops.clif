@@ -30,6 +30,8 @@ from "fstext/fst-ops.h":
 
     def `ClosureExt` as closure(fst: LatticeMutableFst, closure_type: ClosureType)
 
+    def `ConcatExt` as concat(fst1: LatticeMutableFst, fst2: LatticeFst)
+
     def `ConnectExt` as connect(fst: LatticeMutableFst)
 
     def `DecodeExt` as decode(fst: LatticeMutableFst, mapper: LatticeEncodeMapper)

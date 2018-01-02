@@ -14,6 +14,9 @@ typedef MutableFst<LatticeArc> LatticeMutableFst;
 typedef ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>,int32>> CompactLatticeArc;
 typedef Fst<CompactLatticeArc> CompactLatticeFst;
 typedef MutableFst<CompactLatticeArc> CompactLatticeMutableFst;
+typedef ArcTpl<LexicographicWeight<TropicalWeight,LexicographicWeight<TropicalWeight,TropicalWeight>>> KwsIndexArc;
+typedef Fst<KwsIndexArc> KwsIndexFst;
+typedef MutableFst<KwsIndexArc> KwsIndexMutableFst;
 
 template<class Arc>
 void FstToBytes(const Fst<Arc> &fst, string *result) {
@@ -34,6 +37,10 @@ Fst<LatticeArc> *BytesToLatticeFst(const string &s) {
 
 Fst<CompactLatticeArc> *BytesToCompactLatticeFst(const string &s) {
   return StringToFst<CompactLatticeArc>(s);
+}
+
+Fst<KwsIndexArc> *BytesToKwsIndexFst(const string &s) {
+  return StringToFst<KwsIndexArc>(s);
 }
 
 template <class Arc>
@@ -65,6 +72,11 @@ void ArcSortExt(MutableFst<Arc> *fst, script::ArcSortType sort_type) {
 template <class Arc>
 void ClosureExt(MutableFst<Arc> *fst, ClosureType closure_type) {
   Closure(fst, closure_type);
+}
+
+template <class Arc>
+void ConcatExt(MutableFst<Arc> *fst1, const Fst<Arc> &fst2) {
+  Concat(fst1, fst2);
 }
 
 template <class Arc>
@@ -401,6 +413,28 @@ void CompactLatticeReplace(
   // FIXME: This cast is needed because CLIF gets confused if the FST type
   // in the first argument is const.
   ReplaceFst<CompactLatticeArc> rfst(reinterpret_cast<LabelFstPairVector&>(pairs), opts);
+  // Checks for cyclic dependencies before attempting expansion.
+  if (rfst.CyclicDependencies()) {
+    FSTERROR() << "Replace: Cyclic dependencies detected; cannot expand";
+    ofst->SetProperties(kError, kError);
+    return;
+  }
+  opts.gc = true;     // Caching options to speed up batch copy.
+  opts.gc_limit = 0;
+  *ofst = rfst;
+}
+
+void KwsIndexReplace(
+    const std::vector<std::pair<typename KwsIndexArc::Label, KwsIndexFst *>> &pairs,
+    KwsIndexMutableFst *ofst, int64 root_label, ReplaceLabelType call_label_type,
+    ReplaceLabelType return_label_type, int64 return_label) {
+  ReplaceFstOptions<KwsIndexArc> opts(root_label, call_label_type,
+                                      return_label_type, return_label);
+  using LabelFstPair = std::pair<typename KwsIndexArc::Label, const KwsIndexFst *>;
+  using LabelFstPairVector = const std::vector<LabelFstPair>;
+  // FIXME: This cast is needed because CLIF gets confused if the FST type
+  // in the first argument is const.
+  ReplaceFst<KwsIndexArc> rfst(reinterpret_cast<LabelFstPairVector&>(pairs), opts);
   // Checks for cyclic dependencies before attempting expansion.
   if (rfst.CyclicDependencies()) {
     FSTERROR() << "Replace: Cyclic dependencies detected; cannot expand";

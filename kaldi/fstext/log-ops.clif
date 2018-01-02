@@ -30,6 +30,8 @@ from "fstext/fst-ops.h":
 
     def `ClosureExt` as closure(fst: LogMutableFst, closure_type: ClosureType)
 
+    def `ConcatExt` as concat(fst1: LogMutableFst, fst2: LogFst)
+
     def `ConnectExt` as connect(fst: LogMutableFst)
 
     def `DecodeExt` as decode(fst: LogMutableFst, mapper: LogEncodeMapper)
