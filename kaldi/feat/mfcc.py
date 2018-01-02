@@ -1,16 +1,4 @@
-from . import _feature_mfcc
 from ._feature_mfcc import *
-
-class Mfcc(_feature_mfcc.Mfcc):
-    """Mfcc(opts=MfccOptions())
-
-    MFCC extractor.
-
-    Args:
-        opts (MfccOptions): The MFCC extraction options.
-    """
-    def __init__(self, opts=MfccOptions()):
-        super(Mfcc, self).__init__(opts)
 
 ################################################################################
 
