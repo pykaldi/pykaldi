@@ -1,0 +1,151 @@
+from "base/iostream-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "lm/arpa-file-parser-clifwrap.h" import *
+from "rnnlm/sampling-lm-estimate-clifwrap.h" import *
+
+from kaldi.lm._arpa_file_parser import ArpaFileParser
+
+from "rnnlm/sampling-lm.h":
+  namespace `kaldi::rnnlm`:
+    class SamplingLm(ArpaFileParser):
+      """Sampling LM."""
+
+      @add__init__
+      def `SamplingLm` as from_options(self, options: ArpaParseOptions, symbols: SymbolTable):
+        """Creates a new sampling LM with the given options.
+
+        ARPA LM is read from the file specified in the options. Only text mode
+        is supported.
+
+        Args:
+          options (ArpaParseOptions): The options for parsing ARPA LM files.
+          symbols (SymbolTable): The symbol table.
+        """
+
+      @add__init__
+      def `SamplingLm` as from_estimator(self, estimator: SamplingLmEstimator):
+        """Creates a new sampling LM with the given estimator.
+
+        This constructor reads the object directly from a `SamplingLmEstimator`
+        instance, which is much faster than dealing with the ARPA format.  It
+        also allows us to avoid having to add a bunch of unnecessary n-grams to
+        satisfy the requirements of the ARPA file format. It assumes that you
+        have already called :meth:`estimator.estimate`.
+
+        Args:
+          estimator (SamplingLmEstimator): The sampling LM estimator.
+        """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes the sampling LM to output stream.
+
+        Args:
+          os (ostream): The output C++ stream.
+          binary (bool): Whether the stream is binary.
+        """
+
+      def `Read` as read_arpa(self, is: istream):
+        """Reads the sampling LM from a file in ARPA format.
+
+        Args:
+          is (istream): The input C++ stream.
+        """
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads the sampling LM from input stream.
+
+        This method does not read the ARPA format, it reads the special-purpose
+        format written by :meth:`write`.
+
+        Args:
+          is (istream): The input C++ stream.
+          binary (bool): Whether the stream is binary.
+
+        See Also:
+          :meth:`read_arpa`.
+        """
+
+      def `GetUnigramDistribution` as get_unigram_distribution(self) -> list<float>:
+        """Gets unigram probabilities.
+
+        This method outputs the unigram distribution of all words represented
+        by integers from 0 to maximum symbol id.
+
+        Returns:
+          A list of floats representing the unigram distribution of all words.
+
+        Note:
+          There can be gaps of integers for words in the ARPA LM, we set the
+          probabilities of words that are not in the ARPA LM to be 0.0, e.g.,
+          symbol id 0 which represents epsilon has probability 0.0
+        """
+
+      def `GetDistribution` as get_distribution(self, histories: list<tuple<list<int>,float>>)
+        -> (unigram_prob: float, non_unigram_probs: dict<int, float>):
+        """Gets word probabilities given a list of histories.
+
+        Args:
+          histories (List[Tuple[List[int],float]]): A list of histories with
+            associated weights.
+
+        Returns:
+          A scalar `unigram_prob` which is computed by summing all history
+          weights after scaling them with the corresponding backoff weights and
+          a dictionary mapping words to their corresponding probabilities given
+          the list of histories.
+
+        Note:
+          The sum of the returned `unigram_prob` plus the second elements of
+          the output `non_unigram_probs` will not necessarily be equal to 1.0,
+          but it will be equal to the total of the weights of histories in
+          `histories`.
+
+        See Also:
+          :meth:`get_distribution_pairs`.
+        """
+
+      def `GetDistribution` as get_distribution_pairs(self, histories: list<tuple<list<int>,float>>)
+        -> (unigram_prob: float, non_unigram_probs: list<tuple<int, float>>):
+        """Gets word probabilities given a list of histories.
+
+        Args:
+          histories (List[Tuple[List[int],float]]): A list of histories with
+            associated weights.
+
+        Returns:
+          A scalar `unigram_prob` which is computed by summing all history
+          weights after scaling them with the corresponding backoff weights and
+          a list of pairs (word-id, weight), that's sorted and unique on
+          word-id, mapping words to their corresponding probabilities given the
+          list of histories.
+
+        Note:
+          The sum of the returned `unigram_prob` plus the second elements of
+          the output `non_unigram_probs` will not necessarily be equal to 1.0,
+          but it will be equal to the total of the weights of histories in
+          `histories`.
+
+        See Also:
+          :meth:`get_distribution`.
+        """
+
+      def `Order` as order(self) -> int:
+        """Gets n-gram order.
+
+        Returns:
+          int: The n-gram order, e.g. 1 for a unigram LM, 2 for a bigram.
+        """
+
+      def `Swap` as swap(self, other: SamplingLm):
+        """Swaps contents with another sampling LM.
+
+        Args:
+          other (SamplingLm): The other sampling LM.
+        """
+
+      def `VocabSize` as vocab_size(self) -> int:
+        """Gets vocabulary size.
+
+        Returns:
+          int: The vocabulary size, i.e. the highest-numbered word plus one.
+        """

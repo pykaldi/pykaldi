@@ -179,6 +179,12 @@ class SequentialLogFstReader(_SequentialReaderBase,
     pass
 
 
+class SequentialKwsIndexFstReader(_SequentialReaderBase,
+                             _kaldi_table_ext.SequentialKwsIndexFstReader):
+    """Sequential table reader for FSTs over the KWS index semiring."""
+    pass
+
+
 class SequentialLatticeReader(_SequentialReaderBase,
                               _kaldi_table.SequentialLatticeReader):
     """Sequential table reader for lattices."""
@@ -195,6 +201,12 @@ class SequentialCompactLatticeReader(
 class SequentialNnetExampleReader(_SequentialReaderBase,
                                   _kaldi_table.SequentialNnetExampleReader):
     """Sequential table reader for nnet examples."""
+    pass
+
+
+class SequentialRnnlmExampleReader(_SequentialReaderBase,
+                                  _kaldi_table.SequentialRnnlmExampleReader):
+    """Sequential table reader for RNNLM examples."""
     pass
 
 
@@ -393,6 +405,12 @@ class RandomAccessFstReader(_RandomAccessReaderBase,
 class RandomAccessLogFstReader(_RandomAccessReaderBase,
                                _kaldi_table_ext.RandomAccessLogFstReader):
     """Random access table reader for FSTs over the log semiring."""
+    pass
+
+
+class RandomAccessKwsIndexFstReader(_RandomAccessReaderBase,
+                               _kaldi_table_ext.RandomAccessKwsIndexFstReader):
+    """Random access table reader for FSTs over the KWS index semiring."""
     pass
 
 
@@ -737,6 +755,11 @@ class LogFstWriter(_WriterBase, _kaldi_table_ext.LogFstWriter):
     pass
 
 
+class KwsIndexFstWriter(_WriterBase, _kaldi_table_ext.KwsIndexFstWriter):
+    """Table writer for FSTs over the KWS index semiring."""
+    pass
+
+
 class LatticeWriter(_WriterBase, _kaldi_table.LatticeWriter):
     """Table writer for lattices."""
     pass
@@ -749,6 +772,11 @@ class CompactLatticeWriter(_WriterBase, _kaldi_table.CompactLatticeWriter):
 
 class NnetExampleWriter(_WriterBase, _kaldi_table.NnetExampleWriter):
     """Table writer for nnet examples."""
+    pass
+
+
+class RnnlmExampleWriter(_WriterBase, _kaldi_table.RnnlmExampleWriter):
+    """Table writer for RNNLM examples."""
     pass
 
 

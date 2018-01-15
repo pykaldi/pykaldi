@@ -1,0 +1,57 @@
+from "itf/options-itf-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "cudamatrix/cu-sparse-matrix-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "rnnlm/rnnlm-core-training-clifwrap.h" import *
+from "rnnlm/rnnlm-embedding-training-clifwrap.h" import *
+from "rnnlm/rnnlm-example-clifwrap.h" import *
+from "rnnlm/rnnlm-example-utils-clifwrap.h" import *
+
+from "rnnlm/rnnlm-training.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmTrainer:
+      """RNNLM trainer.
+
+      The class RnnlmTrainer is for training an RNNLM (one individual training
+      job, not the top-level logic about learning rate schedules, parameter
+      averaging, and the like).
+
+      Args:
+      train_embedding (bool) Whether to train the embedding matrix.
+      core_config (RnnlmCoreTrainerOptions): Options for training the core
+        RNNLM.
+      embedding_config (RnnlmEmbeddingTrainerOptions): Options for training the
+        embedding matrix (only relevant if train_embedding is True).
+      objective_config (RnnlmObjectiveOptions): Options relating to the
+        objective function used for training.
+      word_feature_mat (CuSparseMatrix): Either None, or a sparse word-feature
+        matrix of dimension vocab-size by feature-dim, where vocab-size is the
+        highest-numbered word plus one.
+      embedding_mat (CuMatrix): The embedding matrix; this is trained if
+        `train_embedding` is True. If `word_feature_mat` is None, this is the
+        word-embedding matrix of dimension vocab-size by embedding-dim;
+        otherwise it is the feature-embedding matrix of dimension feature-dim
+        by by embedding-dim, and we have to multiply it by `word_feature_mat`
+        to get the word embedding matrix.
+      rnnlm (Nnet): The RNNLM to be trained.
+      """
+      def __init__(
+        self, train_embedding: bool,
+        core_config: RnnlmCoreTrainerOptions,
+        embedding_config: RnnlmEmbeddingTrainerOptions,
+        objective_config: RnnlmObjectiveOptions,
+        word_feature_mat: CuSparseMatrix, embedding_mat: CuMatrix, rnnlm: Nnet)
+
+      def `Train` as train(self, minibatch: RnnlmExample):
+        """Train on one example.
+
+        The example is acquired destructively, via swapping contents.
+
+        Note:
+          This function doesn't actually train on this example; what it does is
+          to train on the previous example, and provide this example to the
+          background thread that computes the derived parameters of the example.
+        """
+
+      def `NumMinibatchesProcessed` as num_minibatches_processed(self) -> int:
+        """Returns the number of minibatches processed so far."""

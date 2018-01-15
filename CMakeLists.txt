@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Pykaldi)
+project(PyKaldi)
 
 # Prevent in-source builds
 if( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
@@ -54,9 +54,9 @@ endif(NOT KALDI_DIR)
 set(KALDI_SRC_DIR "${KALDI_DIR}/src")
 set(KALDI_TOOLS_DIR "${KALDI_DIR}/tools")
 set(KALDI_LIBRARIES_DIR "${KALDI_SRC_DIR}/lib")
-set(ATLAS_INC_DIR ${KALDI_TOOLS_DIR}/ATLAS/include)
-set(OPENFST_INC_DIR ${KALDI_TOOLS_DIR}/openfst/include)
-set(OPENFST_LIB_DIR ${KALDI_TOOLS_DIR}/openfst/lib)
+set(ATLAS_INC_DIR "${KALDI_TOOLS_DIR}/ATLAS/include")
+set(OPENFST_INC_DIR "${KALDI_TOOLS_DIR}/openfst/include")
+set(OPENFST_LIB_DIR "${KALDI_TOOLS_DIR}/openfst/lib")
 
 # Find Numpy
 if(NOT NUMPY_INC_DIR)
@@ -111,7 +111,7 @@ link_directories(
 ####################################################################################################
 function(add_pyclif_library name pyclif_file)
   set(oneValueArgs RPATH)
-  set(multiValueArgs CLIF_DEPS NAMESPACES BASETYPES LIBRARIES)
+  set(multiValueArgs CLIF_DEPS NAMESPACES LIBRARIES)
   cmake_parse_arguments(PYCLIF_LIBRARY "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   # PYCLIF configuration

@@ -1,0 +1,57 @@
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "rnnlm/rnnlm-example-clifwrap.h" import *
+from "rnnlm/rnnlm-example-utils-clifwrap.h" import *
+
+from "rnnlm/rnnlm-core-compute.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmCoreComputer:
+      """Core RNNLM computer.
+
+      This class has a similar interface to `RnnlmCoreTrainer`, but it doesn't
+      actually train the RNNLM; it's for computing likelihoods and (optionally)
+      derivatives w.r.t. the embedding, in situations where you are not
+      training the core part of the RNNLM. It reads egs-- it's not for
+      rescoring lattices and similar purposes.
+
+      Args:
+        nnet (Nnet): The neural network that is to be used to evaluate
+          likelihoods (and possibly derivatives).
+      """
+      def __init__(self, nnet: Nnet)
+
+      def `Compute` as compute(
+        self, minibatch: RnnlmExample, derived: RnnlmExampleDerived,
+        word_embedding: CuMatrixBase, word_embedding_deriv: CuMatrixBase = default)
+        -> (objf: float, weight: float):
+        """Computes the objective on one minibatch.
+
+        If `word_embedding_deriv` is provided, it also computes derivatives
+        w.r.t. the embedding.
+
+        Args:
+          minibatch (RnnlmExample): The RNNLM minibatch to evaluate, containing
+            a number of parallel word sequences.  It will not necessarily
+            contain words with the 'original' numbering, it will in most
+            circumstances contain just the ones we used; see
+            :meth:`renumber_rnnlm_example`.
+          derived (RnnlmExampleDerived): Derived quantities of the minibatch,
+            pre-computed by calling :meth:`get_rnnlm_example_derived` with
+            suitable arguments.
+          word_embedding (CuMatrixBase): The matrix giving the embedding of
+            words, of dimension `minibatch.vocab_size` by the embedding
+            dimension. The numbering of the words does not have to be the
+            'real' numbering of words, it can consist of words renumbered by
+            :meth:`renumber_rnnlm_example`; it just has to be consistent with
+            the word-ids present in 'minibatch'.
+          word_embedding_deriv (CuMatrixBase): If not None, the derivative of
+            the objective function w.r.t. the word embedding will be *added* to
+            this location; it must have the same dimension as 'word_embedding'.
+
+        Returns:
+          * **objf** -- The total objective function for this minibatch; divide
+            this by `weight` to normalize it (i.e. get the average log-prob per
+            word).
+          * **weight** -- The total weight of the words in the minibatch. This
+            is just the sum of `minibatch.output_weights`.
+        """

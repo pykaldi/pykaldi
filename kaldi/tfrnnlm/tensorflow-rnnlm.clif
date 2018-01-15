@@ -1,0 +1,82 @@
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+
+from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
+from kaldi.util import _value_error_on_false
+
+from "tfrnnlm/tensorflow-rnnlm.h":
+  namespace `kaldi::tf_rnnlm`:
+    class KaldiTfRnnlmWrapperOpts:
+      """Options for TensorFlow RNNLM wrapper."""
+      unk_symbol: str
+      """Symbol for unknown words."""
+      num_threads: int
+      """Number of threads."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+
+    class KaldiTfRnnlmWrapper:
+      """TensorFlow RNNLM wrapper.
+
+      This class wraps the TensorFlow based RNNLM, and provides a set of
+      interfaces to be used by :class:`TfRnnlmDeterministicFst`.
+
+      Args:
+        opts (KaldiTfRnnlmWrapperOpts): Options for TensorFlow RNNLM wrapper.
+        rnn_wordlist (str): The word-list file. Every line should be in the
+          format "[int-word-id] [word]". The word <oos> must appear in this
+          file.
+        word_symbol_table_rxfilename (str): Standard word-list file in OpenFST
+          style.
+        unk_prob_file (str): Unknown probability file. It has the format
+          "[word]  [prob or count]". The probabilities are automatically
+          normalized.
+        tf_model_path (str): The location of the TensorFlow model.
+      """
+      def __init__(self, opts: KaldiTfRnnlmWrapperOpts, rnn_wordlist: str,
+                   word_symbol_table_rxfilename: str, unk_prob_file: str,
+                   tf_model_path: str)
+
+
+    class TfRnnlmDeterministicFst(StdDeterministicOnDemandFst):
+      """Deterministic on demand RNNLM FST.
+
+      Args:
+        max_ngram_order (int): Maximum ngram order.
+        rnnlm (KaldiTfRnnlmWrapper): TensorFlow RNNLM wrapper.
+      """
+      def __init__(self, max_ngram_order: int, rnnlm: KaldiTfRnnlmWrapper)
+
+      def `Clear` as clear(self):
+        """Clears the internal maps.
+
+        This method is similar to the destructor but we retain the 0-th entries
+        in each map which corresponds to the <bos> state.
+        """
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, s: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int, oarc: StdArc) -> bool:
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          olabel (int): Output label of the arc.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)

@@ -6,31 +6,61 @@ from "itf/options-itf-clifwrap.h" import *
 from "lm/arpa-file-parser.h":
   namespace `kaldi`:
     class ArpaParseOptions:
+      """Options for `ArpaFileParser`."""
       enum OovHandling with:
         `kRaiseError` as RAISE_ERROR
         `kAddToSymbols` as ADD_TO_SYMBOLS
         `kReplaceWithUnk` as REPLACE_WITH_UNK
-        `kSkipNGram` as SKIP_N_GRAM
+        `kSkipNGram` as SKIP_NGRAM
 
       bos_symbol: int
+      """Symbol for <s>, Required non-epsilon."""
       eos_symbol: int
+      """Symbol for </s>, Required non-epsilon."""
       unk_symbol: int
+      """Symbol for <unk>, Required for `OovHandling.REPLACE_WITH_UNK`."""
       oov_handling: OovHandling
+      """How to handle OOV words in the file."""
       max_warnings: int
+      """Maximum warnings to report, <0 unlimited."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class NGram:
+      """A parsed n-gram from ARPA LM file."""
       words: list<int>
+      """Symbols in left to right order."""
       logprob: float
+      """Log-prob of the n-gram."""
       backoff: float
+      """log-backoff weight of the n-gram. Defaults to zero if not specified."""
 
     class ArpaFileParser:
+      """Abstract base class for ARPA LM file conversion.
+
+      See ConstArpaLmBuilder and ArpaLmCompiler for usage examples.
+      """
     # NOTE:
     # CLIF cannot wrap this constructor since this is a base class with pure
     # virtual methods.
     # def `ArpaFileParser` as __init__(self, options: ArpaParseOptions, symbols: SymbolTable)
 
-      def `Read` as read(self, is:istream)
+      def `Read` as read(self, is:istream):
+        """Reads ARPA LM file from input stream.
 
-      def `Options` as options(self) -> ArpaParseOptions
+        Args:
+          is (istream): The input C++ stream.
+        """
+
+      def `Options` as options(self) -> ArpaParseOptions:
+        """Gets ARPA parser options.
+
+        Returns:
+          The ARPA parser options.
+        """

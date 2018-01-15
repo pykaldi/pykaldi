@@ -1,0 +1,92 @@
+from "itf/options-itf-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "rnnlm/rnnlm-example-clifwrap.h" import *
+from "rnnlm/rnnlm-example-utils-clifwrap.h" import *
+
+from "rnnlm/rnnlm-core-training.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmCoreTrainerOptions:
+      """Options for core RNNLM training.
+
+      These are related to the core RNNLM training, i.e. training the actual
+      neural net for the RNNLM (when the word embeddings are given).
+      """
+      print_interval: int
+      """The log printing interval (in terms of #minibatches)."""
+      momentum: float
+      """Momentum constant (help stabilize training updates), e.g. 0.9.
+
+      We automatically multiply the learning rate by (1-momentum) so that the
+      'effective' learning rate is the same as  before (because momentum would
+      normally increase the effective learning rate by 1/(1-momentum)).
+      """
+      max_param_change: float
+      """The maximum change in model parameters allowed per minibatch.
+
+      This is measured in Euclidean norm. Change will be clipped to this value.
+      """
+      l2_regularize_factor: float
+      """Factor that affects the strength of l2 regularization.
+
+      This affects the strength of l2 regularization on model parameters. It
+      will be multiplied by the component-level l2-regularize values and can
+      be used to correct for effects related to parallelization by model
+      averaging.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class RnnlmCoreTrainer:
+      """Core RNNLM trainer.
+
+      This class does the core part of the training of the RNNLM; the
+      word embeddings are supplied to this class for each minibatch and
+      while this class can compute objective function derivatives w.r.t.
+      these embeddings, it is not responsible for updating them.
+
+      Args:
+        config (RnnlmCoreTrainerOptions): Options for core RNNLM training.
+        objective_config (RnnlmObjectiveOptions): Options for RNNLM objective.
+        nnet (Nnet): The neural network that is to be trained. It will be
+          modified each time you call :meth:`train`.
+      """
+      def __init__(self, config: RnnlmCoreTrainerOptions,
+                   objective_config: RnnlmObjectiveOptions, nnet: Nnet)
+
+      def `Train` as train(self, minibatch: RnnlmExample, derived: RnnlmExampleDerived,
+                           word_embedding: CuMatrixBase, word_embedding_deriv: CuMatrixBase):
+        """Trains on one minibatch.
+
+        Args:
+          minibatch (RnnlmExample): The RNNLM minibatch to train on, containing
+            a number of parallel word sequences.  It will not necessarily
+            contain words with the 'original' numbering, it will in most
+            circumstances contain just the ones we used; see
+            :meth:`renumber_rnnlm_example`.
+          derived (RnnlmExampleDerived): Derived quantities of the minibatch,
+            pre-computed by calling :meth:`get_rnnlm_example_derived` with
+            suitable arguments.
+          word_embedding (CuMatrixBase): The matrix giving the embedding of
+            words, of dimension `minibatch.vocab_size` by the embedding
+            dimension. The numbering of the words does not have to be the
+            'real' numbering of words, it can consist of words renumbered by
+            :meth:`renumber_rnnlm_example`; it just has to be consistent with
+            the word-ids present in 'minibatch'.
+          word_embedding_deriv (CuMatrixBase): If not None, the derivative of
+            the objective function w.r.t. the word embedding will be *added* to
+            this location; it must have the same dimension as 'word_embedding'.
+        """
+
+      def `PrintMaxChangeStats` as print_max_change_stats(self):
+        """Prints out the max-change stats (if nonzero).
+
+        This is the percentage of time that per-component max-change and global
+        max-change were enforced.
+        """

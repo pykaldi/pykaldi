@@ -50,8 +50,30 @@ if KALDI_DIR:
         print("print-% : ; @echo $($*)", file=makefile)
     CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
     CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip()
-    KALDI_HAVE_CUDA = CUDA.upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
+    KALDI_CUDA = CUDA.upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
     check_call(["rm", "Makefile"])
+
+    TFRNNLM_LIB_PATH = os.path.join(KALDI_DIR, "src", "lib",
+                                    "libkaldi-tensorflow-rnnlm.so")
+    KALDI_TFRNNLM = True if os.path.exists(TFRNNLM_LIB_PATH) else False
+    if KALDI_TFRNNLM:
+        with open("Makefile", "w") as makefile:
+            TF_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow")
+            print("TENSORFLOW = {}".format(TF_DIR), file=makefile)
+            TFRNNLM_MK_PATH = os.path.join(KALDI_DIR, "src", "tfrnnlm",
+                                           "Makefile")
+            for line in open(TFRNNLM_MK_PATH):
+                if line.startswith("include") or line.startswith("TENSORFLOW"):
+                    continue
+                print(line, file=makefile, end='')
+            print("print-% : ; @echo $($*)", file=makefile)
+        TFRNNLM_CXX_FLAGS = check_output(['make', 'print-EXTRA_CXXFLAGS'])
+        TFRNNLM_CXX_FLAGS = TFRNNLM_CXX_FLAGS.decode("utf-8").strip()
+        TF_LIB_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow",
+                                  "bazel-bin", "tensorflow")
+        # TFRNNLM_LDLIBS = check_output(['make', 'print-LDLIBS'])
+        # TFRNNLM_LDLIBS = TFRNNLM_LDLIBS.decode("utf-8").strip()
+        check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
 
@@ -60,6 +82,8 @@ try:
     import ninja
     CMAKE_GENERATOR = '-GNinja'
     MAKE = 'ninja'
+    if DEBUG:
+        MAKE_ARGS += ['-v']
 except ImportError:
     CMAKE_GENERATOR = ''
     MAKE = 'make'
@@ -75,7 +99,7 @@ if DEBUG:
     print("CXX_FLAGS:", CXX_FLAGS)
     print("CLIF_CXX_FLAGS:", CLIF_CXX_FLAGS)
     print("BUILD_DIR:", BUILD_DIR)
-    print("KALDI_HAVE_CUDA:", KALDI_HAVE_CUDA)
+    print("KALDI_CUDA:", KALDI_CUDA)
     print("MAKE:", MAKE, *MAKE_ARGS)
     print("#"*50)
 
@@ -128,8 +152,13 @@ class build_ext(setuptools.command.build_ext.build_ext):
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
                       '-DNUMPY_INC_DIR='+ np.get_include(),
-                      '-DCUDA=TRUE' if KALDI_HAVE_CUDA else '-DCUDA=FALSE',
+                      '-DCUDA=TRUE' if KALDI_CUDA else '-DCUDA=FALSE',
+                      '-DTFRNNLM=TRUE' if KALDI_TFRNNLM else '-DTFRNNLM=FALSE',
                       '-DDEBUG=TRUE' if DEBUG else '-DDEBUG=FALSE']
+
+        if KALDI_TFRNNLM:
+            CMAKE_ARGS +=['-DTFRNNLM_CXX_FLAGS=' + TFRNNLM_CXX_FLAGS,
+                          '-DTF_LIB_DIR=' + TF_LIB_DIR]
 
         if CMAKE_GENERATOR:
             CMAKE_ARGS += [CMAKE_GENERATOR]

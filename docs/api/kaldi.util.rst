@@ -9,6 +9,13 @@ kaldi\.util
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      TaskSequencerConfig
+   
    
 
    
@@ -120,6 +127,7 @@ kaldi\.util\.table
       IntVectorVectorWriter
       IntVectorWriter
       IntWriter
+      KwsIndexFstWriter
       LatticeWriter
       LogFstWriter
       MatrixWriter
@@ -139,6 +147,7 @@ kaldi\.util\.table
       RandomAccessIntReader
       RandomAccessIntVectorReader
       RandomAccessIntVectorVectorReader
+      RandomAccessKwsIndexFstReader
       RandomAccessLatticeReader
       RandomAccessLogFstReader
       RandomAccessMatrixReader
@@ -147,6 +156,7 @@ kaldi\.util\.table
       RandomAccessVectorReader
       RandomAccessVectorReaderMapped
       RandomAccessWaveReader
+      RnnlmExampleWriter
       RspecifierOptions
       RspecifierType
       SequentialBoolReader
@@ -161,10 +171,12 @@ kaldi\.util\.table
       SequentialIntReader
       SequentialIntVectorReader
       SequentialIntVectorVectorReader
+      SequentialKwsIndexFstReader
       SequentialLatticeReader
       SequentialLogFstReader
       SequentialMatrixReader
       SequentialNnetExampleReader
+      SequentialRnnlmExampleReader
       SequentialVectorReader
       SequentialWaveReader
       VectorWriter

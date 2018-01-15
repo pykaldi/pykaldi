@@ -17,6 +17,7 @@ kaldi\.cudamatrix
       cuda_available
       same_dim_and_stride_cu_matrix
       same_dim_cu_matrix
+      trace_mat_smat
    
    
 
@@ -34,6 +35,7 @@ kaldi\.cudamatrix
       CuIntPairArray
       CuMatrix
       CuMatrixBase
+      CuSparseMatrix
       CuSubMatrix
       CuSubVector
       CuTimer

@@ -19,7 +19,13 @@ add_pyclif_library("_cu_vector" cu-vector.clif
 )
 
 add_pyclif_library("_cu_matrix" cu-matrix.clif
-  CLIF_DEPS _iostream _kaldi_matrix _cu_vector _cu_array _cu_matrixdim
+  CLIF_DEPS _iostream _kaldi_matrix _cu_array _cu_vector
+  LIBRARIES kaldi-cudamatrix
+  RPATH $ORIGIN/../base:$ORIGIN/../matrix
+)
+
+add_pyclif_library("_cu_sparse_matrix" cu-sparse-matrix.clif
+  CLIF_DEPS _iostream _sparse_matrix _cu_matrix
   LIBRARIES kaldi-cudamatrix
   RPATH $ORIGIN/../base:$ORIGIN/../matrix
 )

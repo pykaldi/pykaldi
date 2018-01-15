@@ -1,0 +1,166 @@
+
+from "rnnlm/sampler.h":
+  namespace `kaldi::rnnlm`:
+    def `SampleWithoutReplacement` as sample_without_replacement(probs: list<float>) -> list<int>:
+      """Samples without replacement from a distribution.
+
+      Samples without replacement from a distribution, with provided 1st order
+      inclusion probabilities. For example, if `probs[i] == 1.0`, `i` will
+      definitely be included in the output list, and if `probs[i] == 0.0`, `i`
+      will definitely not be included.
+
+      Args:
+        probs (List[float]): The input list of inclusion probabilities, with
+          0.0 <= probs[i] <= 1.0, and the sum of `probs` should be close to an
+          integer.  (specifically: within 1.0e-03 of a whole number; this
+          should be easy to ensure in double precision). Let 'k' be this sum,
+          rounded to the nearest integer.
+
+      Returns:
+        The output list is an unsorted list of 'k' distinct samples with
+        first order inclusion probabilities given by `probs`.
+      """
+
+    class Sampler:
+      """Word sampler.
+
+      This class allows us to sample a set of words from a distribution over
+      words, where the distribution (which ultimately comes from an ARPA-style
+      language model) is given as a combination of a unigram distribution with
+      a sparse component represented as a list of (word-index, probability)
+      pairs.
+
+      Args:
+        unigram_probs (List[float]): The unigram probabilities for each word.
+          Each elemenet should be >= 0, and they should sum to a value close to
+          1.
+      """
+      def __init__(self, unigram_probs: list<float>)
+
+      def `SampleWords` as sample_words(
+        self, num_words_to_sample: int, unigram_weight: float,
+        higher_order_probs: list<tuple<int, float>>) -> list<tuple<int, float>>:
+        """Samples words from the supplied distribution, appropriately scaled.
+
+        Let the unnormalized distribution be as follows:
+           p(i)  = unigram_weight * u(i) + h(i)
+        where u(i) is the 'unigram_probs' list this class was constructed
+        with, and h(i) is the probability that word i is given (if any) in
+        the sparse vector that 'higher_order_probs' represents.
+        Notice that we are adding to the unigram distribution, we are not
+        backing off to it.  Doing it this way makes a lot of things simpler.
+
+        We define the first-order inclusion probabilities:
+          q(i) = min(alpha p(i), 1.0)
+        where alpha is chosen so that the sum of q(i) equals
+        'num_words_to_sample'. Then we generate a sample whose first-order
+        inclusion probabilities are q(i).  We do all this without explicitly
+        iterating over the unigram distribution, so this is fairly fast.
+
+        Args:
+          num_words_to_sample (int): The number of words that we are
+            directed sample; must be > 0 and less than the number of nonzero
+            elements of the 'unigram_probs' that this class was constructed
+            with.
+          unigram_weight (float): Must be > 0.0. Search above for p(i) to
+            see what effect it has.
+          higher_order_probs (List[Tuple[int,float]]): A list of pairs (i, p)
+            where 0 <= i < unigram_probs.size() (referring to the unigram_probs
+            list used in the constructor), and p > 0.0.  This list must be
+            sorted and unique w.r.t. i.  Note: the probabilities here will be
+            added to the unigram probabilities of the words concerned.
+
+        Returns:
+          The sampled list of words, represented as pairs (i, p), where 0 <= i <
+          unigram_probs.size() is the word index and 0 < p <= 1 is the
+          probabilitity with which that word was included in the set. The list
+          will not be sorted, but it will be unique on the int.  Its size will
+          equal num_words_to_sample.
+        """
+
+      def `SampleWords` as sample_words_with_requirements(
+        self, num_words_to_sample: int, unigram_weight: float,
+        higher_order_probs: list<tuple<int, float>>,
+        words_we_must_sample: list<int>) -> list<tuple<int, float>>:
+        """Sample words by specifiying a list of words that must be sampled.
+
+        This is an alternative version of :meth:`sample_words` which allows you
+        to specify a list of words that must be sampled (i.e. after scaling,
+        they must have probability 1.0.).  It does this by adding them to the
+        distribution with sufficiently large probability and then calling
+        :meth:`sample_words`.
+
+        Args:
+          num_words_to_sample (int): The number of words that we are
+            directed sample; must be > 0 and less than the number of nonzero
+            elements of the 'unigram_probs' that this class was constructed
+            with.
+          unigram_weight (float): Must be > 0.0. Search above for p(i) to
+            see what effect it has.
+          higher_order_probs (List[Tuple[int,float]]): A list of pairs (i, p)
+            where 0 <= i < unigram_probs.size() (referring to the unigram_probs
+            list used in the constructor), and p > 0.0.  This list must be
+            sorted and unique w.r.t. i.  Note: the probabilities here will be
+            added to the unigram probabilities of the words concerned.
+          words_we_must_sample (List[int]): A list of words that must be
+            sampled. It must be sorted and unique, and all elements `i` must
+            satisfy `0 <= i < len(unigram_probs)`, where `unigram_probs` is the
+            list supplied to the constructor.
+
+        Returns:
+          The sampled list of words, represented as pairs (i, p), where 0 <= i <
+          unigram_probs.size() is the word index and 0 < p <= 1 is the
+          probabilitity with which that word was included in the set. The list
+          will not be sorted, but it will be unique on the int.  Its size will
+          equal num_words_to_sample.
+
+        See Also:
+          :meth:`sample_words`.
+        """
+
+    def `CheckDistribution` as check_distribution(d: list<tuple<int, float>>):
+      """Validates a distribution.
+
+      Checks if a distribution is sorted and unique on its first values, and
+      if all of its second values are > 0.
+
+      Args:
+        d (List[Tuple[int,float]]): The input distribution.
+
+      Raises:
+        RuntimeError: If validation fails.
+      """
+
+    # FIXME: Needs a C++ shim.
+    #
+    # def `WeightDistribution` as weight_distribution(weight: float, d: list<tuple<int, float>>):
+    #   """Weights a distribution by multiplying elements by input weight.
+    #
+    #   Args:
+    #     weight (float): The input weight. It must be positive.
+    #     d (List[Tuple[int,float]]): The input distribution.
+    #   """
+
+    def `TotalOfDistribution` as total_of_distribution(d: list<tuple<int, float>>) -> float:
+      """Returns the sum of the elements of a distribution.
+      Args:
+        d (List[Tuple[int,float]]): The input distribution.
+
+      Returns:
+        The sum of elements of a distribution.
+      """
+
+    def `MergeDistributions` as merge_distributions(
+      d1: list<tuple<int, float>>, d2: list<tuple<int, float>>) -> list<tuple<int, float>>:
+      """Merges two distributions.
+
+      Sums the probabilities of any elements that occur in both input
+      distributions.
+
+      Args:
+        d1 (List[Tuple[int,float]]): The first input distribution.
+        d2 (List[Tuple[int,float]]): The second input distribution.
+
+      Returns:
+        The output distribution.
+      """

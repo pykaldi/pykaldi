@@ -1,0 +1,91 @@
+from "itf/options-itf-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-compute-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+
+from "rnnlm/rnnlm-compute-state.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmComputeStateComputationOptions:
+      """Options for RNNLM compute state."""
+      debug_computation: bool
+      """Whether to turn on debug for the actual computation (very verbose!)."""
+      normalize_probs: bool
+      """Whether to normalize word probabilities exactly.
+
+      If False, the sum-to-one normalization is approximate.
+      """
+      bos_index: int
+      """Index in wordlist representing the begin-of-sentence symbol.
+
+      We need this when we initialize the RnnlmComputeState and pass the BOS
+      history.
+      """
+      eos_index: int
+      """Index in wordlist representing the end-of-sentence symbol.
+
+      We need this to compute the final cost of a state.
+      """
+      brk_index: int
+      """Index in wordlist representing the break symbol.
+
+      This is not needed for computation; included only for ease of scripting.
+      """
+      optimize_config: NnetOptimizeOptions
+      """Nnet optimization options."""
+      compute_config: NnetComputeOptions
+      """Nnet compute options."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class RnnlmComputeStateInfo:
+      def __init__(self, opts: RnnlmComputeStateComputationOptions,
+                   rnnlm: Nnet, word_embedding_mat: CuMatrix)
+
+      computation: NnetComputation
+      """The compiled, 'looped' nnet computation."""
+
+    class RnnlmComputeState:
+      """RNNLM computation state.
+
+      This class handles the neural net computation; it's mostly accessed
+      via other wrapper classes.
+
+      At every time step this class takes a new word, advances the nnet
+      computation by one step, and works out the log-prob of words to be used
+      in lattice rescoring.
+
+      Args:
+        info (RnnlmComputeStateInfo): State information for RNNLM computation.
+        bos_index (int): Index of the begin-of-sentence symbol.
+      """
+      def __init__(self, info: RnnlmComputeStateInfo, bos_index: int)
+
+      @add__init__
+      def `RnnlmComputeState` as from_other(self, other: RnnlmComputeState):
+        """Creates a new instance from another.
+        Args:
+          other (RnnlmComputeState): The other RNNLM computation state.
+        """
+
+      def `GetSuccessorState` as get_successor_state(self, next_word: int) -> RnnlmComputeState:
+        """Generates another state by processing the next-word.
+
+        Args:
+          next_word (int): The next word to process.
+        """
+
+      def `LogProbOfWord` as log_prob_of_word(self, word_index: int) -> float:
+        """Gets the log-prob for the provided word.
+
+        Returns:
+          The log-prob that the model predicts for the provided word-index,
+          given the current history.
+        """

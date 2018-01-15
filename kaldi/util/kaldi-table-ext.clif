@@ -3,6 +3,7 @@ from "fstext/vector-fst-clifwrap.h" import *
 
 from kaldi.fstext import StdVectorFst
 from kaldi.fstext import LogVectorFst
+from kaldi.fstext import KwsIndexVectorFst
 
 from "util/kaldi-table-ext.h":
   namespace `kaldi`:
@@ -53,6 +54,29 @@ from "util/kaldi-table-ext.h":
       def Close(self) -> bool
 
 
+    class `SequentialKwsIndexVectorFstReader` as SequentialKwsIndexFstReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> KwsIndexVectorFst:
+        return KwsIndexVectorFst(...)
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `RandomAccessStdVectorFstReader` as RandomAccessFstReader:
 
       def `Open` as open(self, rspecifier: str) -> bool
@@ -87,6 +111,23 @@ from "util/kaldi-table-ext.h":
       def Close(self) -> bool
 
 
+    class `RandomAccessKwsIndexVectorFstReader` as RandomAccessKwsIndexFstReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> KwsIndexVectorFst:
+        return KwsIndexVectorFst(...)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `StdVectorFstWriter` as FstWriter:
 
       def `Open` as open(self, wspecifier: str) -> bool
@@ -107,6 +148,19 @@ from "util/kaldi-table-ext.h":
       def `IsOpen` as is_open(self) -> bool
 
       def `Write` as write(self, key: str, value: LogVectorFst)
+
+      def `Flush` as flush(self)
+
+      def `Close` as close(self) -> bool
+
+
+    class `KwsIndexVectorFstWriter` as KwsIndexFstWriter:
+
+      def `Open` as open(self, wspecifier: str) -> bool
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Write` as write(self, key: str, value: KwsIndexVectorFst)
 
       def `Flush` as flush(self)
 

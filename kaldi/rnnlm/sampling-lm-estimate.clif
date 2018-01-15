@@ -1,0 +1,150 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+
+from "rnnlm/sampling-lm-estimate.h":
+  namespace `kaldi::rnnlm`:
+    class SamplingLmEstimatorOptions:
+      """Options for sampling LM estimator."""
+
+      vocab_size: int
+      """The vocabulary size.
+
+      If set, must be set to the highest-numbered vocabulary word plus one;
+      otherwise this is worked out from the symbol table.
+      """
+      ngram_order: int
+      """Order for the n-gram model (must be >= 1), e.g. 3 means trigram"""
+      discounting_constant: float
+      """Constant for absolute discounting.
+
+      It should be in the range 0.8 to 1.0. Smaller values give a larger
+      language model.
+      """
+      unigram_factor: float
+      """The unigram factor.
+
+      Factor by which p(w|h) for non-unigram history state h (with the backoff
+      term excluded) has to be greater than p(w|unigram-state) for us to
+      include it in the model. Must be >0.0, will normally be >1.0.
+      """
+      backoff_factor: float
+      """The backoff factor.
+
+      Factor by which p(w|h) for higher-than-bigram history state h (with the
+      backoff term excluded) has to be greater than p(w|backoff-state) for us
+      to include it in the model (in addition to the `unigram_factor`
+      constraint). Must be >0.0 and < unigram-factor.
+      """
+      bos_factor: float
+      """The beginning of sentence factor.
+
+      Factor by which p(w|h) for h == the BOS history state (with the backoff
+      term excluded) has to be higher than p(w|unigram-state) for us to
+      include it in the model. Must be >0.0 and <= unigram-factor.
+      """
+      unigram_power: float
+      """The unigram power scalar.
+
+      This is an important configuration value. After all other stages of
+      estimating the model, the unigram probabilities are taken to this power,
+      e.g. 0.75, and then rescaled to sum to 1.0. There are both theoretical
+      and practical reasons why we want to apply this power just to the unigram
+      portion.
+      """
+      bos_symbol: int
+      """Integer id for the BOS word (<s>)."""
+      eos_symbol: int
+      """Integer id for the EOS word (</s>)."""
+      brk_symbol: int
+      """Integer id for the Break word (<brk>).
+
+      Not needed but included for ease of scripting.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `Check` as check(self):
+        """Validates the options.
+
+        Raises:
+          RuntimeError: If validation fails.
+        """
+
+    class SamplingLmEstimator:
+      """Sampling LM estimator.
+
+      This class is responsible for creating a backoff n-gram language model of
+      a type that's suitable for use in the importance sampling algorithm we
+      use for RNNLM training.  It's the type of language model that could in
+      principle be written in ARPA format, but it's created in a special way.
+      There are a few characteristics of the importance sampling algorithm that
+      make it desirable to write a special purpose language model instead of
+      using a generic language model toolkit. These are:
+
+      * When we sample, we sample from a distribution that is the average of a
+        fairly large number of history states N (e.g., N=128), that can be
+        treated as independently chosen for practical purposes (except that
+        sometimes they'll all be the BOS history, which is a special case).
+      * The convergence of the sampling-based method won't be sensitive to
+        small differences in the probabilities of the distribution we sample
+        on.
+      * It's important not to have too many words that are specifically
+        predicted from a typical history-state, or it makes the sampling
+        process slow.
+
+      Args:
+        config (SamplingLmEstimatorOptions): Options for sampling LM estimator.
+      """
+      def __init__(self, config: SamplingLmEstimatorOptions)
+
+      def `ProcessLine` as process_line(self, corpus_weight: float, sentence: list<int>):
+        """Processes one line of the input, adding it to the stored stats.
+
+        Args:
+          corpus_weight (float): Weight attached to the corpus from which this
+            data came. (Note: you shouldn't repeat sentences when providing
+            them to this class, although this is allowed during the actual
+            RNNLM training; instead, you should make sure that the multiplicity
+            that you use in the RNNLM for this corpus is reflected in
+            'corpus_weight'.)
+          sentence (List[int]): The sentence we are processing. It is not
+            expected to contain the BOS symbol, and should not be terminated by
+            the EOS symbol, although the EOS symbol is allowed internally
+            (where it can be used to separate a sequence of sentences from a
+            dialogue or other sequence of text, if you want to do this).
+        """
+
+      def `Process` as process(self, is: istream):
+        """Processes the lines read from the input stream.
+
+        Lines will be of the format:
+          <weight> <possibly-empty-sequence-of-integers>
+        e.g.:
+          1.0  2560 8991
+
+        Args:
+          is (istream): The input stream.
+        """
+
+      def `Estimate` as estimate(self, will_write_arpa: bool):
+        """Estimates the language model (including the discounting).
+
+        Args:
+          will_write_arpa (bool): Whether to retain certain n-grams (required
+            in the ARPA file format) that would otherwise have been pruned.
+        """
+
+      def `PrintAsArpa` as print_as_arpa(self, os: ostream, symbols: SymbolTable):
+        """Prints the LM in ARPA format.
+
+        Args:
+          os (ostream): The output stream to write the model to.
+          symbols (SymbolTable): The symbol table to map integers to words.
+        """

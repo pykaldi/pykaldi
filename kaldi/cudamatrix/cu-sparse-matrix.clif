@@ -1,0 +1,179 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/matrix-common-clifwrap.h" import *
+from "matrix/sparse-matrix-clifwrap.h" import *
+from "cudamatrix/cu-array-clifwrap.h" import *
+from "cudamatrix/cu-vector-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+
+from "cudamatrix/cu-sparse-matrix.h":
+  namespace `kaldi`:
+
+    class `CuSparseMatrix<float>` as CuSparseMatrix:
+      """This class defines a Sparse CUDA Matrix."""
+
+      def `NumRows` as __len__(self) -> int:
+        """Returns the number of rows of the matrix."""
+
+      num_rows: int = property(`NumRows`)
+      """Number of rows (zero for empty matrix)."""
+
+      num_cols: int = property(`NumCols`)
+      """Number of columns (zero for empty matrix)."""
+
+      def `NumElements` as num_elements(self) -> int:
+        """Returns the number of nonzero elements."""
+
+      def `Sum` as sum(self) -> float:
+        """Returns the sum of the elememts."""
+
+      def `FrobeniusNorm` as frobenius_norm(self) -> float:
+        """Computes and returns the Frobenius norm."""
+
+      def `CopyToMat` as copy_to_mat(self, dest: CuMatrixBase, trans: MatrixTransposeType = default):
+        """Copies elements to a CUDA matrix.
+
+        Args:
+            dest (CuMatrixBase): The matrix to copy to.
+            trans (MatrixTransposeType): transpose or not.
+        """
+
+      def `CopyElementsToVec` as copy_elements_to_vec(self, vec: CuVectorBase):
+        """Copies the nonzero elements of the matrix to the vector other.
+
+        Args:
+            vec (CuVectorBase): A CUDA vector to store the nonzero elements of self
+
+        Raises:
+            Error if the size of other is different than the number of nonzero
+            elements of self
+        """
+
+      def `CopyFromSmat` as copy_from_smat_(self, smat: CuSparseMatrix,
+                                            trans: MatrixTransposeType = default) -> self:
+        """Copy data from another sparse CUDA matrix. Will resize if necessary.
+
+        Args:
+            smat (CuSparseMatrix): The sparse CUDA matrix to copy from.
+            trans (MatrixTransposeType): transpose or not
+        """
+
+      def `SelectRows` as select_rows_(self, row_indexes: CuArray, smat_other: CuSparseMatrix) -> self:
+        """Sets self to a subset of the rows of another sparse CUDA matrix.
+
+        Args:
+            row_indexes (CuArray): The rows to select.
+            smat_other (CuSparseMatrix): The other sparse CUDA matrix.
+        """
+
+      def `CopyToSmat` as copy_to_smat(self, smat: SparseMatrix):
+        """Copy data to a sparse matrix.
+
+        Args:
+            smat(SparseMatrix): The sparse matrix to copy to.
+        """
+
+      def `Swap` as swap_with_cpu_(self, other: SparseMatrix) ->  self:
+        """Swaps the contents with a sparse matrix.
+
+        Shallow swap.
+        """
+
+      def `Swap` as swap_(self, other: CuSparseMatrix) ->  self:
+        """Swaps the contents with another sparse CUDA matrix.
+
+        Shallow swap.
+        """
+
+      @add__init__
+      def `CuSparseMatrix` as from_cpu(self, smat: SparseMatrix):
+        """Initialization by copying the elements of a sparse matrix.
+
+        Args:
+            smat(SparseMatrix): A sparse matrix.
+        """
+
+      @add__init__
+      def `CuSparseMatrix` as from_other(self, smat: CuSparseMatrix,
+                                         trans: MatrixTransposeType = default):
+        """Initialization by copying the elements of another sparse CUDA matrix.
+
+        Args:
+            smat (CuSparseMatrix): A sparse CUDA matrix
+            trans (MatrixTransposeType): transpose or not
+        """
+
+      @add__init__
+      def `CuSparseMatrix` as from_indexes(self, indexes: CuArray, dim: int,
+                                           trans: MatrixTransposeType = default):
+        """Initialization from an array of indexes.
+
+        If trans == NO_TRANS, construct a sparse matrix with num-rows ==
+        indexes.Dim() and num-cols = 'dim'. 'indexes' is expected to contain
+        elements in the range [0, dim - 1]. Each row 'i' of self after
+        calling the constructor will contain  a single element at column-index
+        indexes[i] with value 1.0.
+
+        If trans == TRANS, the result will be the transpose of the sparse
+        matrix described above.
+
+        Args:
+            indexes (CuArray): The CUDA array of indexes.
+            dim (int): The column (or row) dimension.
+            trans (MatrixTransposeType): Transpose or not.
+        """
+
+      @add__init__
+      def `CuSparseMatrix` as from_indexes_and_weights(
+        self, indexes: CuArray, weights: CuVectorBase, dim: int,
+        trans: MatrixTransposeType = default):
+        """Initialization from an array of indexes and an array of weights.
+
+        Requires indexes.Dim() == weights.Dim(). If trans == NO_TRANS,
+        construct a sparse matrix with num-rows == indexes.Dim() and num-cols =
+        'dim'. 'indexes' is expected to contain elements in the range [0, dim -
+        1].  Each row 'i' of *this after calling the constructor will contain a
+        single element at column-index indexes[i] with value weights[i]. If
+        trans == TRANS, the result will be the transpose of the sparse matrix
+        described above.
+
+        Args:
+            indexes (CuArray): The CUDA array of indexes.
+            weights (CuVectorBase): The CUDA vector of weights.
+            dim (int): The column (or row) dimension.
+            trans (MatrixTransposeType): Transpose or not.
+       """
+
+      def `SetRandn` as set_randn_(self, zero_prob: float) -> self:
+        """Sets up to a pseudo-randomly initialized matrix,
+           with each element zero with probability zero_prob
+           and else normally distributed.
+        """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes to C++ stream.
+
+        Args:
+            os(ostream): The output straem.
+            binary(bool): If the stream is binary.
+        """
+
+      def `Read` as read_(self, is: istream, binary: bool) -> self:
+        """Reads from C++ stream.
+
+        Args:
+            is(istream): The input straem.
+            binary(bool): If the stream is binary.
+        """
+
+    def `TraceMatSmat` as trace_mat_smat(A: CuMatrixBase, B: CuSparseMatrix,
+                                         trans: MatrixTransposeType = default) -> float:
+      """If trans==kNoTrans compute Trace(A*B). If trans==kTrans compute Trace(A^T*B)
+
+      Args:
+          A(CuMatrix): A CUDA matrix
+          B(CuSparseMatrix): A sparse CUDA matrix
+          trans(MatrixTransposeType): Determines if we use A as is or its transpose
+
+      Raises:
+          Error in case of dimensionality mismatch
+      """

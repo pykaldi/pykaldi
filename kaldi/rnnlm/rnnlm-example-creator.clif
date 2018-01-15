@@ -1,0 +1,64 @@
+from "base/iostream-clifwrap.h" import *
+from "rnnlm/rnnlm-example-clifwrap.h" import *
+# To import kaldi table wrapper, we first need to import wave reader, kaldi
+# lattice and nnet3 example.
+from "feat/wave-reader-clifwrap.h" import *
+from "lat/kaldi-lattice.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "util/kaldi-table-clifwrap.h" import *
+from "util/kaldi-thread-clifwrap.h" import *
+
+from "rnnlm/rnnlm-example.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmExampleCreator:
+      """RNNLM example creator.
+
+      This class takes care of all of the logic of creating minibatches for
+      RNNLM training, including the sampling aspect.
+      """
+      def __init__(self, config: RnnlmEgsConfig, sequencer_config: TaskSequencerConfig,
+                   minibatch_sampler: RnnlmExampleSampler, writer: RnnlmExampleWriter)
+
+      @add__init__
+      def `RnnlmExampleCreator` as without_sampling(self, config: RnnlmEgsConfig,
+                                                    writer: RnnlmExampleWriter):
+        """Instantiates a new RNNLM example creator.
+
+        This constructor is for when you are not using importance sampling,
+        so no samples will be stored in the minibatch and the training code
+        will presumably evaluate all the words each time.  This is intended
+        to be used for testing purposes.
+        """
+
+      def `AcceptSequence` as accept_sequence(self, weight: float, words: list<int>):
+        """Accepts a single sequence.
+
+        The user calls this to provide a single sequence (a sentence; or
+        multiple sentences that are part of a continuous stream or dialogue,
+        separated by </s>), to this class.  This class will write out
+        minibatches when it's ready.
+        This will normally be the result of reading a line of text with the
+        format:
+          <weight> <word1> <word2> ....
+        e.g.:
+          1.0  Hello there
+        although the "hello there" would have been converted to integers
+        by the time it was read in, via sym2int.pl, so it would look like:
+          1.0  7620  12309
+        We also allow:
+          1.0  Hello there </s> Hi </s> My name is Bob
+        if you want to train the model to predict sentences given
+        the history of the conversation.
+        """
+
+      def `Process` as process(self, is: istream):
+        """Processes the lines from input stream.
+
+        Lines will be of the format:
+          <weight> <possibly-empty-sequence-of-integers>
+        e.g.:
+          1.0  2560 8991
+        """
+
+      def `Flush` as flush(self):
+        """Flushes out any pending minibatches."""

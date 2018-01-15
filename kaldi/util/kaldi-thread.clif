@@ -1,0 +1,23 @@
+from "itf/options-itf-clifwrap.h" import *
+
+from "util/kaldi-thread.h":
+  namespace `kaldi`:
+    class TaskSequencerConfig:
+      """Task sequencer options."""
+
+      num_threads: int
+      """The number of active threads to run in parallel."""
+      num_threads_total: int
+      """Total number of threads, including those waiting on others.
+
+      Controls memory use.  If <= 0, defaults to --num-threads plus 20.
+      Otherwise, must be >= num-threads.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """

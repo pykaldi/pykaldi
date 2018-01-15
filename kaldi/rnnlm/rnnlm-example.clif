@@ -1,0 +1,243 @@
+from "base/iostream-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
+from "cudamatrix/cu-vector-clifwrap.h" import *
+from "rnnlm/sampling-lm-clifwrap.h" import *
+
+from "rnnlm/rnnlm-example.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmExample:
+      """A single minibatch for training an RNNLM."""
+
+      vocab_size: int
+      """The vocabulary size.
+
+      The vocabulary size (defined as largest integer word-id plus one) for
+      which this example was obtained; mostly used in bounds checking.
+      """
+      num_chunks: int
+      """The number of parallel word sequences/chunks.
+
+      Some of the word sequences may actually be made up of smaller
+      subsequences appended together.
+      """
+      chunk_length: int
+      """The length of each sequence in a minibatch.
+
+      The length of each sequence in a minibatch, including any terminating
+      </s> symbols, which are included explicitly in the sequences. When </s>
+      appears in the middle of sequences because we splice shorter word
+      sequences together, we will replace it with <s> on the input side of the
+      network. Sentences, or pieces of sentences, that were shorter than
+      `chunk_length`, will be padded as needed.
+      """
+      sample_group_size: int
+      """The sampling group size.
+
+      This is the number of consecutive time-steps which form a single unit for
+      sampling purposes.  This number will always divide `chunk_length`.
+      Example: if `sample_group_size==2`, we'll sample one set of words for
+      `t={0,1}`, another for `t={2,3}`, and so on. The sampling is for the
+      denominator of the objective function.
+      """
+      num_samples: int
+      """The number of samples.
+
+      This is the number of words that we sample at the output of the nnet for
+      each of the `num_sample_groups` groups. If we didn't do sampling because
+      the user didn't provide the ARPA language model, this will be zero (in
+      this case we'll do the summation over all words in the vocab).
+      """
+      input_words: list<int>
+      """The input word labels.
+
+      Contains the input word symbols 0 <= i < vocab_size for each position in
+      each chunk; dimension == chunk_length * num_chunks, where 0 <= t <
+      chunk_length has larger stride than 0 <= n < num_chunks.  In the common
+      case these will be the same as the previous output symbol.
+      """
+      output_words: list<int>
+      """The output word labels.
+
+      The output (predicted) word symbols for each position in each chunk;
+      indexed in the same way as 'input_words'.  What this contains is
+      different from 'input_words' in the sampling case (i.e. if
+      !sampled_words.empty()).  In this case, instead of the word-index it
+      contains the relative index 0 <= i < num_samples within the block of
+      sampled words.  In the not-sampled case it contains actual word indexes
+      0 <= i < vocab_size.
+      """
+      output_weights: CuVector
+      """The output weights.
+
+      Weights for each of the `output_words`, indexed the same way as
+      `output_words`. These reflect any data-weighting we had in the original
+      data, plus some zeros that relate to padding sequences of uneven length.
+      """
+      sampled_words: list<int>
+      """The sampled word labels.
+
+      This list contains the word-indexes that we sampled for each position in
+      the chunk and for each group of chunks.  (It will be empty if the user
+      didn't provide the ARPA language model).  Its dimension is
+      num_sample_groups * num_samples, where num_sample_groups == (chunk_length
+      / sample_group_size). The sample-group index has the largest stride (you
+      can think of the sample group index as the number i = t /
+      sample_group_size, in integer division, where 0 <= t < chunk_length is
+      the position in the chunk).  The sampled words within each block of size
+      `num_samples` are sorted and unique.
+      """
+      sample_inv_probs: CuVector
+      """The inverses probabilities.
+
+      This vector has the same dimension as 'sampled_words', and contains the
+      inverses of the probabilities probability 0 < p <= 1 with which that word
+      was included in the sampled set of words.  These inverse probabilities
+      appear in the objective function computation (it's related to importance
+      sampling).
+      """
+
+      def `Swap` as swap(self, other: RnnlmExample):
+        """Swaps contents with another RNNLM example.
+
+        Args:
+          other (RnnlmExample): The other RNNLM example.
+        """
+
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes the RNNLM example to output stream.
+
+        Args:
+          os (ostream): The output C++ stream.
+          binary (bool): Whether the stream is binary.
+        """
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads the RNNLM example from input stream.
+
+        Args:
+          is (istream): The input C++ stream.
+          binary (bool): Whether the stream is binary.
+        """
+
+    class RnnlmEgsConfig:
+      """RNNLM example configuration."""
+      vocab_size: int
+      """The vocabulary size.
+
+      More specifically, the largest integer word-id plus one.  Must be
+      provided, as it gets included in each minibatch (mostly for checking
+      purposes).
+      """
+      num_chunks_per_minibatch: int
+      """The number of parallel word sequences/chunks per minibatch."""
+
+      chunk_length: int
+      """The length of each sequence in a minibatch.
+
+      The length of each sequence in a minibatch, including any terminating
+      </s> symbols, which are included explicitly in the sequences. When </s>
+      appears in the middle of sequences because we splice shorter word
+      sequences together, we will replace it with <s> on the input side of the
+      network. Sentences, or pieces of sentences, that were shorter than
+      `chunk_length`, will be padded as needed.
+      """
+      min_split_context: int
+      """Min left-context supplied for each training sentence piece."""
+      sample_group_size: int
+      """The sampling group size.
+
+      This is the number of consecutive time-steps which form a single unit for
+      sampling purposes.  This number will always divide `chunk_length`.
+      Example: if `sample_group_size==2`, we'll sample one set of words for
+      `t={0,1}`, another for `t={2,3}`, and so on. We support merging
+      time-steps in this way (but not splitting them smaller), due to
+      considerations of computing time if you assume we also have a network
+      that learns word representation from their character-level features.
+      """
+      num_samples: int
+      """The number of words we choose each time we do the sampling."""
+      chunk_buffer_size: int
+      """The number of chunks that are buffered while processing the input.
+
+      Larger means more complete randomization but also more I/O before we
+      produce any output, and more memory used.
+      """
+      bos_symbol: int
+      """Beginning of sentence symbol.
+
+      It must be set.
+      """
+      eos_symbol: int
+      """End of sentence symbol.
+
+      It must be set.
+      """
+      brk_symbol: int
+      """Break symbol.
+
+      It must be set.
+      """
+      special_symbol_prob: float
+      """Sampling probability for words that aren't supposed to be predicted.
+
+      Sampling probability at the output for words that aren't supposed to be
+      predicted (<s>, <brk>)-- this ensures that the model makes their output
+      probs small, which avoids hassle when computing the normalizer in test
+      time (if we didn't sample them with some probability to ensure their
+      probs are small, we'd have to exclude them from the denominator sum.
+      """
+      uniform_prob_mass: float
+      """The probability mass to uniformly distribute over all words.
+
+      This value should be < 1.0; it is the proportion of the unigram
+      distribution used for sampling assigned to uniformly predicting all
+      words. This may avoid certain pathologies during training, and ensure
+      that all words' probs are bounded away from zero, which might be
+      necessary for the theory of importance sampling.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `Check` as check(self):
+        """Validates the options.
+
+        Raises:
+          RuntimeError: If validation fails.
+        """
+
+    class RnnlmExampleSampler:
+      """RNNLM example sampler.
+
+      This class encapsulates the logic for sampling words for a minibatch.
+      The words at the output of the RNNLM are sampled and we train with an
+      importance-sampling algorithm.
+
+      Args:
+        config (RnnlmEgsConfig): The RNNLM example configuration.
+        arpa_sampling (SamplingLm): The sampling LM.
+      """
+      def __init__(self, config: RnnlmEgsConfig, arpa_sampling: SamplingLm)
+
+      def `SampleForMinibatch` as sample_for_minibatch(self, minibatch: RnnlmExample):
+        """Does the sampling for a minibatch.
+
+        Args:
+          minibatch (RnnlmExample): The minibatch. It is expected to already
+            have all fields populated except for `sampled_words` and
+            `sample_probs`. This method does the sampling and sets those
+            fields.
+        """
+
+      def `VocabSize` as vocab_size(self) -> int:
+        """Gets vocabulary size.
+
+        Returns:
+          int: The vocabulary size, i.e. the highest-numbered word plus one.
+        """

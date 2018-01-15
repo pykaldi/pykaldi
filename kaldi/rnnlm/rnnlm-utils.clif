@@ -1,0 +1,32 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/sparse-matrix-clifwrap.h" import *
+
+from "rnnlm/rnnlm-utils.h":
+  namespace `kaldi::rnnlm`:
+    def `ReadSparseWordFeatures` as read_sparse_word_features(
+      is: istream, feature_dim: int) -> SparseMatrix:
+      """Reads sparse word features from input stream.
+
+      Reads a text file (e.g. exp/rnnlm/word_feats.txt) which maps words to
+      sparse combinations of features.  The text file contains lines of the
+      format:
+        <word-index> <feat1-index> <feat1-value> <feat2-index> <feat2-value>...
+      with the feature-indexes in sorted order, for example:
+        2056  11 3.0 25 1.0 1069 1.0
+      The word-indexes are expected to be in order 0, 1, 2, ...; so they don't
+      really add any information; they are included for human readability.
+
+      Args:
+        is (istream): The stream we are reading.
+        feature_dim (int): The feature dimension, i.e. the highest-numbered
+          possible feature plus one. We don't attempt to work this out from the
+          input, in case for some reason this vocabulary does not use the
+          highest-numbered feature.
+
+     Returns:
+       A sparse matrix of dimension num-words by feature-dim, containing the
+       word feature information in the file we read.
+
+      Raises:
+        RuntimeError: If the input is not as expected.
+      """

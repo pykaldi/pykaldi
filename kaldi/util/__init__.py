@@ -1,3 +1,4 @@
+from ._kaldi_thread import *
 
 # This was adapted from CLIF to make sure it is available even if pyclif is not.
 def _value_error_on_false(ok, *args):

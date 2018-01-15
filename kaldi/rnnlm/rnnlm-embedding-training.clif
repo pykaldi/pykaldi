@@ -1,0 +1,108 @@
+from "itf/options-itf-clifwrap.h" import *
+from "cudamatrix/cu-array-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+
+from "rnnlm/rnnlm-embedding-training.h":
+  namespace `kaldi::rnnlm`:
+    class RnnlmEmbeddingTrainerOptions:
+      """Options for RNNLM embedding training."""
+      print_interval: int
+      """The log printing interval (in terms of #minibatches)."""
+      momentum: float
+      """Momentum constant for training of embeddings (e.g. 0.5 or 0.9).
+
+      We automatically multiply the learning rate by (1-momentum) so that the
+      'effective' learning rate is the same as  before (because momentum would
+      normally increase the effective learning rate by 1/(1-momentum)).
+      """
+      max_param_change: float
+      """The maximum change in embedding parameters allowed per minibatch.
+
+      This is measured in Euclidean norm. The embedding matrix has dimensions
+      num-features by embedding-dim or num-words by embedding-dim if we're not
+      using a feature-based representation.
+      """
+      l2_regularize: float
+      """Factor that affects the strength of l2 regularization.
+
+      This affects the strength of l2 regularization on embedding parameters.
+      """
+      learning_rate: float
+      """The learning rate used in training the word-embedding matrix."""
+      use_natural_gradient: bool
+      """Whether to use natural gradient to update the embedding matrix."""
+      natural_gradient_alpha: float
+      """Smoothing constant alpha to use for natural gradient."""
+      natural_gradient_rank: int
+      """Rank of the Fisher matrix in natural gradient.
+
+      This is applied to learning the embedding matrix (this is in the
+      embedding space, so the rank should probably be less than the embedding
+      dimension.
+      """
+      natural_gradient_update_period: int
+      """
+      Determines how often the Fisher matrix is updated for natural gradient
+      as applied to the embedding matrix.
+      """
+      natural_gradient_num_minibatches_history: int
+      """
+      Determines how quickly the Fisher estimate for the natural gradient
+      is updated, when training the word embedding.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `Check` as check(self):
+        """Validates RNNLM embedding training options."""
+
+    class RnnlmEmbeddingTrainer:
+      """RNNLM embedding trainer.
+
+      This class is responsible for training the word embedding matrix or
+      feature embedding matrix.
+
+      Args:
+        config (RnnlmEmbeddingTrainerOptions): Options for RNNLM embedding
+          training.
+        embedding_mat (CuMatrix): The embedding matrix to be trained,
+          of dimension (num-words or num-features) by embedding-dim (depending
+          whether we are using a feature representation of words, or not).
+      """
+      def __init__(self, config: RnnlmEmbeddingTrainerOptions, embedding_mat: CuMatrix)
+
+      def `Train` as train(self, embedding_deriv: CuMatrixBase):
+        """Trains on one minibatch.
+
+        This version is used either when there is no subsampling, or when there
+        is subsampling but we are using a feature representation so the
+        subsampling is handled outside of this code.
+
+        Args:
+          embedding_deriv (CuMatrixBase): The derivative of the objective
+            function w.r.t. the word (or feature) embedding matrix.
+        """
+
+      def `Train` as train_with_subsampling(
+        self, active_words: CuArray, word_embedding_deriv: CuMatrixBase):
+        """Trains on one minibatch.
+
+        This version is for when there is subsampling, and the user is
+        providing the derivative w.r.t. just the word-indexes that were used in
+        this minibatch. `active_words` is a sorted, unique list of the
+        word-indexes that were used in this minibatch, and
+        `word_embedding_deriv` is the derivative w.r.t. the embedding of that
+        list of words.
+
+        Args:
+          active_words (CuArray): A sorted, unique list of the word indexes
+            used, with dimension equal to `word_embedding_deriv.num_rows`.
+          word_embedding_deriv (CuMatrixBase): The derivative of the objective
+            function w.r.t. the word embedding matrix.
+        """

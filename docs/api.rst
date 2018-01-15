@@ -18,7 +18,9 @@
    api/kaldi.matrix
    api/kaldi.nnet3
    api/kaldi.online2
+   api/kaldi.rnnlm
    api/kaldi.sgmm2
+   api/kaldi.tfrnnlm
    api/kaldi.transform
    api/kaldi.tree
    api/kaldi.util

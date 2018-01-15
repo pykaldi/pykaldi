@@ -1,0 +1,43 @@
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "rnnlm/rnnlm-compute-state-clifwrap.h" import *
+
+from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
+from kaldi.util import _value_error_on_false
+
+from "rnnlm/rnnlm-lattice-rescoring.h":
+  namespace `kaldi::rnnlm`:
+    class KaldiRnnlmDeterministicFst(StdDeterministicOnDemandFst):
+      """Deterministic on demand RNNLM FST.
+
+      Args:
+        max_ngram_order (int): Maximum ngram order.
+        info (RnnlmComputeStateInfo): State information for RNNLM computation.
+      """
+      def __init__(self, max_ngram_order: int, info: RnnlmComputeStateInfo)
+
+      def `Clear` as clear(self):
+        """Clears the internal maps.
+
+        This method is similar to the destructor but we retain the 0-th entries
+        in each map which corresponds to the <bos> state.
+        """
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, s: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int, oarc: StdArc) -> bool:
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          olabel (int): Output label of the arc.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
