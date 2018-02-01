@@ -85,15 +85,15 @@ Citation
 --------
 
 If you use PyKaldi in research, please cite our `ICASSP 2018 paper <https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf>`_ as follows:
-
 ::
-  @inproceedings{pykaldi,
-    title = {PyKaldi: A python wrapper for Kaldi},
-    author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and Shrikanth S. Narayanan},
-    booktitle={Acoustics, Speech and Signal Processing (ICASSP), 2018 IEEE International Conference on},
-    year = {2018},
-    organization = {IEEE}
-  }
+
+    @inproceedings{pykaldi,
+        title = {PyKaldi: A python wrapper for Kaldi},
+        author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and Shrikanth S. Narayanan},
+        booktitle={Acoustics, Speech and Signal Processing (ICASSP), 2018 IEEE International Conference on},
+        year = {2018},
+        organization = {IEEE}
+    }
 
 .. toctree::
    :hidden:
