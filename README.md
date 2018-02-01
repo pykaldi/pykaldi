@@ -23,7 +23,7 @@ underlying memory buffers. PyKaldi FST types, including Kaldi style lattices,
 are first class citizens in Python. The API for the user facing FST types and
 operations is almost entirely defined in Python mimicking the API exposed by
 [pywrapfst](http://www.openfst.org/twiki/bin/view/FST/PythonExtension), the
-official Python wrapper for OpenFst. You can read more about the implementation of PyKaldi in our [ICASSP 2018 paper](https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf>).
+official Python wrapper for OpenFst. You can read more about the implementation of PyKaldi in our [ICASSP 2018 paper](https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf).
 
 ## Features
 
@@ -256,7 +256,7 @@ sudo python setup.py install
 ```
 
 ## Citing
-If you use PyKaldi for research, please cite our [ICASSP 2018 paper](https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf>), as follows:
+If you use PyKaldi for research, please cite our [ICASSP 2018 paper](https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf), as follows:
 
 ```
 @inproceedings{pykaldi,
