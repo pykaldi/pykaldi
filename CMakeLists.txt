@@ -121,11 +121,18 @@ function(add_pyclif_library name pyclif_file)
   set(gen_init "${CMAKE_CURRENT_BINARY_DIR}/${pyclif_file_basename}-clifwrap-init.cc")
   string(REPLACE "-" "_" module_name ${name})
 
+  if(PYTHON_VERSION_MAJOR EQUAL 3)
+    set(PYOUTPUT "--py3output")
+  else()
+    set(PYOUTPUT "--py2output")
+  endif()
+
   # This defines the call to pyclif
   add_custom_command(
       OUTPUT ${gen_cc} ${gen_h} ${gen_init}
       COMMAND
           ${PYCLIF}
+          ${PYOUTPUT}
           --matcher_bin=${CLIF_MATCHER}
           --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
           --modname=${module_name}
