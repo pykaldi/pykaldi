@@ -156,7 +156,7 @@ class TestNnetCompute(unittest.TestCase):
 if __name__ == '__main__':
     for i in range(2):
         if cuda_available():
-            from kaldi.cudamatrix.device import CuDevice
+            from kaldi.cudamatrix import CuDevice
             CuDevice.instantiate().set_debug_stride_mode(True)
             if i == 0:
                 CuDevice.instantiate().select_gpu_id("no")

@@ -123,16 +123,17 @@ class TestCuVector(unittest.TestCase):
 
 if __name__ == '__main__':
     if cuda_available():
+        from kaldi.cudamatrix import CuDevice
 
         for i in range(2):
-            CuDevice.Instantiate().SetDebugStrideMode(True)
+            CuDevice.instantiate().set_debug_stride_mode(True)
             if i == 0:
-                CuDevice.Instantiate().SelectGpuId("no")
+                CuDevice.instantiate().select_gpu_id("no")
             else:
-                CuDevice.Instantiate().SelectGpuId("yes")
+                CuDevice.instantiate().select_gpu_id("yes")
 
             unittest.main()
 
-            CuDevice.Instantiate().PrintProfile()
+            CuDevice.instantiate().print_profile()
     else:
         unittest.main()
