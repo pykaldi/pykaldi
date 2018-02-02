@@ -11,6 +11,7 @@
 # 	python_library (optional) location of the libpython shared library. As default runs a script to find it.
 # 
 # 
+# 
 
 set -x -e 
 
@@ -133,6 +134,7 @@ python setup.py install
 echo ""
 echo ""
 echo "Done installing PyKaldi"
+<<<<<<< 59633ea2511b3ba17a464228c881741a17fe3e52
 echo ""
 echo "=============================================================================="
 echo "For developers:"
@@ -162,3 +164,18 @@ echo ""
 echo ""
 
 exit 0
+=======
+echo "It is highly recomended that you add the following variables to your .bashrc: "
+echo ""
+if NINJA_INSTALLED; then
+    # We did not install ninja
+    echo "export PATH=\$PATH:$HOME/opt/clif/bin"
+else
+    # We installed ninja
+    echo "export PATH=\$PATH:$HOME/opt/clif/bin:$NINJA_DIR"
+echo ""
+echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
+echo "export CLIF_CXX_FLAGS=\"-I$CLIFSRC_DIR/clang/lib/clang/5.0.0/include\""
+echo ""
+echo ""
+>>>>>>> WiP: Installation scripts
