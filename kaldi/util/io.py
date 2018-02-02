@@ -24,7 +24,7 @@ class Input(_kaldi_io.Input):
     and it has Kaldi binary mode header, `self.binary` attribute is set to
     ``True``. Similar to how files are handled in Python, PyKaldi distinguishes
     between input streams opened in binary and text modes, even when the
-    underlying operating system doesn’t. If the input stream is opened in binary
+    underlying operating system doesn't. If the input stream is opened in binary
     mode, `read` and `readline` methods return contents as `bytes` objects
     without any decoding. In text mode, these methods return contents of the
     input stream as `unicode` strings, the bytes having been first decoded using
@@ -42,7 +42,8 @@ class Input(_kaldi_io.Input):
             mode and it has Kaldi binary mode header. Its value is valid only
             if the stream is still open.
     """
-    def __init__(self, rxfilename = None, binary=True):
+
+    def __init__(self, rxfilename=None, binary=True):
         super(Input, self).__init__()
         self.binary = False
         if rxfilename is not None:
@@ -120,7 +121,7 @@ class Output(_kaldi_io.Output):
     If **binary** is ``True``, the output stream is opened in binary mode.
     Otherwise it is opened in text mode. Similar to how files are handled in
     Python, PyKaldi distinguishes between output streams opened in binary and
-    text modes, even when the underlying operating system doesn’t. If the output
+    text modes, even when the underlying operating system doesn't. If the output
     stream is opened in binary mode, `write` and `writelines` methods accept
     `bytes` objects. Otherwise, they accept `unicode` strings.
 
@@ -137,7 +138,8 @@ class Output(_kaldi_io.Output):
         write_header (bool): Whether to write Kaldi binary mode header in
             binary mode.
     """
-    def __init__(self, wxfilename = None, binary=True, write_header=True):
+
+    def __init__(self, wxfilename=None, binary=True, write_header=True):
         super(Output, self).__init__()
         if wxfilename is not None:
             self.open(wxfilename, binary, write_header)
@@ -217,7 +219,7 @@ def xopen(xfilename, mode="r", write_header=True):
 
     Similar to how files are handled in Python, PyKaldi distinguishes between
     streams opened in binary and text modes, even when the underlying operating
-    system doesn’t. If the stream is opened in binary mode, its I/O methods
+    system doesn't. If the stream is opened in binary mode, its I/O methods
     accept and return `bytes` objects. Otherwise, they accept and return
     `unicode` strings.
 
