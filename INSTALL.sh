@@ -84,6 +84,7 @@ fi
 ####################################################################
 CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
 
+
 ####################################################################
 # Start installation
 ####################################################################
@@ -127,6 +128,11 @@ export DEBUG=1
 # cd $PYKALDI_DIR
 ############################################################################
 
+# This assumes clif was installed in $HOME/opt 
+export PATH="$PATH:$HOME/opt/clif/bin"
+export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:${LD_LIBRARY_PATH}"
+export CLIF_CXX_FLAGS="-I$CLIFSRC_DIR/clang/lib/clang/5.0.0/include"
+
 # Install pykaldi
 python setup.py install 
 
@@ -134,37 +140,10 @@ python setup.py install
 echo ""
 echo ""
 echo "Done installing PyKaldi"
-<<<<<<< 59633ea2511b3ba17a464228c881741a17fe3e52
 echo ""
 echo "=============================================================================="
 echo "For developers:"
 echo "=============================================================================="
-echo "It is highly recomended that you add the following variables to your .bashrc: "
-echo ""
-if ! INSTALL_NINJA; then
-    # We did not install ninja
-    echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin"
-else
-    # We installed ninja
-    echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin:$NINJA_DIR"
-echo ""
-echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
-echo "export CLIF_CXX_FLAGS=\"-I$CLIF_DIR/clang/lib/clang/5.0.0/include\""
-echo ""
-echo ""
-echo ""
-if [ -z "$VIRTUAL_ENV" ]; then
-	echo "PyKaldi was installed to the virtualenv $VIRTUAL_ENV"
-else
-	echo "PyKaldi was installed!"
-fi
-echo "You can now test it using "
-echo "python -c 'import kaldi; print(kaldi.__version__)'"
-echo ""
-echo ""
-
-exit 0
-=======
 echo "It is highly recomended that you add the following variables to your .bashrc: "
 echo ""
 if NINJA_INSTALLED; then
@@ -178,4 +157,3 @@ echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
 echo "export CLIF_CXX_FLAGS=\"-I$CLIFSRC_DIR/clang/lib/clang/5.0.0/include\""
 echo ""
 echo ""
->>>>>>> WiP: Installation scripts
