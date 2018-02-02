@@ -51,15 +51,15 @@ if __name__ == '__main__':
 		from kaldi.cudamatrix import CuDevice
 
 		for loop in range(2):
-			CuDevice.Instantiate().SetDebugStrideMode(True)
+			CuDevice.instantiate().set_debug_stride_mode(True)
 			if loop == 0:
-				CuDevice.Instantiate().SelectGpuId("no")
+				CuDevice.instantiate().select_gpu_id("no")
 			else:
-				CuDevice.Instantiate().SelectGpuId("yes")
+				CuDevice.instantiate().select_gpu_id("yes")
 
 			testCudaMatrixResize()
 
-			CuDevice.Instantiate().PrintProfile()
+			CuDevice.instantiate().print_profile()
 
 	else:
 		testCudaMatrixResize()
