@@ -50,7 +50,7 @@ if ! $PYTHON_EXECUTABLE -c 'import numpy'; then
     echo "Please install it with 'pip install \"numpy>=1.13.1\"'"
     status=1
 else
-    NV=$(python -c 'import numpy; print(numpy.__version__)' | cut -f2 -d\ ); NV=(${NV//./ })
+    NV=$($PYTHON_EXECUTABLE -c 'import numpy; print(numpy.__version__)' | cut -f2 -d\ ); NV=(${NV//./ })
     if (( NV[0] < 1 || NV[0] == 1 && NV[1] < 13 || NV[0] == 1 && NV[1] == 13 && NV[2] < 1 )); then
         echo "Numpy version ${NV[@]} found but >= 1.13.1 needed."
         status=1
