@@ -14,31 +14,28 @@ set -x -e
 # Installation configuration
 # This determine where things are going to get installed
 #######################################################################################################
-EXTRAS_DIR="$PWD"
-PYKALDI_DIR="$EXTRAS_DIR/../.."
-PROTOBUF_DIR="$EXTRAS_DIR/protobuf"
-# NINJA_DIR="$EXTRAS_DIR/ninja"
-CLIFSRC_DIR="$EXTRAS_DIR/clif"
-KALDI_DIR="$EXTRAS_DIR/kaldi"
+PYKALDI_DIR="$PWD"
+TOOLS_DIR="$PYKALDI_DIR/extras/tools"
+PROTOBUF_DIR="$TOOLS_DIR/protobuf"
+# NINJA_DIR="$TOOLS_DIR/ninja"
+CLIFSRC_DIR="$TOOLS_DIR/clif"
+KALDI_DIR="$TOOLS_DIR/kaldi"
 
+export PYTHON_EXECUTABLE=$(which python)
+export PYTHON_PIP=$(which pip)
 
 ####################################################################
 # Check dependencies
 ####################################################################
-if ! $EXTRAS_DIR/check_dependencies.sh; then
+if ! $TOOLS_DIR/check_dependencies.sh; then
     exit 1
 fi
 
 #######################################################################################################
 # Python settings
 ######################################################################################################
-export PYTHON_EXECUTABLE=$(which python)
-export PYTHON_PIP=$(which pip)
-# PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
-# PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-
-# TODO:
-# PYTHON_LIBRARY=$($PYTHON_EXECUTABLE -c 'from distutils import sysconfig; print(sysconfig.get_config_var("LIBDIR"))')
+PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
+PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 ####################################################################
 # Check write access to package dir
@@ -50,29 +47,24 @@ if [ ! -w $PYTHON_PACKAGE_DIR ]; then
 fi
 
 ####################################################################
-# Get python version and set CMAKE flags accordingly
+# Help cmake find the correct python
 ####################################################################
-PV=$(PYTHON_EXECUTABLE --version | cut -f2 -d\ ); PV=(${PV//./ })
-if (( PV[0] == 3 )); then
-    CMAKE_PY3_FLAGS="-DPYTHON_INCLUDE_DIR=\"$PYTHON_INCLUDE_DIR\" -DPYTHON_LIBRARY=\"$PYTHON_LIBRARY\" -DPYTHON_EXECUTABLE=\"$PYTHON_EXECUTABLE\""
-elif (( PV[0] == 2 )); then
-    CMAKE_PY3_FLAGS=""
-fi
+export CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
 
 ####################################################################
 # Start installation
 ####################################################################
 
 # Call installers
-$PYKALDI_DIR/extras/tools/install_protobuf.sh $PROTOBUF_DIR || exit 1
+$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
 
 # Optional: install ninja
-# $PYKALDI_DIR/extras/tools/install_ninja.sh $NINJA_DIR || exit 1
+# $TOOLS_DIR/install_ninja.sh $NINJA_DIR || exit 1
 # Add ninja to path
 # export PATH="$PATH:$NINJA_DIR"
 
-$PYKALDI_DIR/extras/tools/install_clif.sh $CLIFSRC_DIR $CMAKE_PY3_FLAGS || exit 1
-$PYKALDI_DIR/extras/tools/install_kaldi.sh || exit 1
+$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR || exit 1
+$TOOLS_DIR/install_kaldi.sh || exit 1
 
 
 
