@@ -63,11 +63,6 @@ fi
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/lib.py)
-if [[ -n "$1" ]]; then
-	PYTHON_LIBRARY="$1"
-	shift
-fi
 
 ####################################################################
 # Check write access to package dir
@@ -83,7 +78,6 @@ fi
 # Help cmake find the correct python
 ####################################################################
 CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
-
 
 ####################################################################
 # Start installation

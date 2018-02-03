@@ -23,26 +23,26 @@
 set -x -e
 
 if [[ "$1" =~ ^-?-h ]]; then
-  echo "Usage: $0 [CLIFSRC_DIR] [CMAKE_PY3_FLAGS]"
+  echo "Usage: $0 [CLIFSRC_DIR] [CMAKE_PY_FLAGS]"
   exit 1
 fi
 
+CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
+
 CLIFSRC_DIR="$PWD"
 if [[ -n "$1" ]]; then
-	CLIFSRC_DIR="$1"
+  CLIFSRC_DIR="$1"
 fi
 
 shift
-
-CMAKE_PY3_FLAGS="$@"
-CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
+CMAKE_PY_FLAGS="$@"
 
 # Install clif from dogan's fork
 git clone $CLIF_GIT $CLIFSRC_DIR
 cd "$CLIFSRC_DIR"
 
 # Start INSTALL.sh from clif
-INSTALL_DIR="$HOME/opt"
+INSTALL_DIR="$CLIFSRC_DIR/../opt"
 LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
 BUILD_DIR="$LLVM_DIR/build_matcher"
 
@@ -88,19 +88,6 @@ else
   echo "Using make.  Build will take a long time.  Consider installing ninja."
 fi
 
-# Create a virtual environment for the pyclif installation.
-
-CLIF_VIRTUALENV="$INSTALL_DIR"/clif
-CLIF_PIP="$CLIF_VIRTUALENV/bin/pip"
-virtualenv -p "$PYTHON_EXECUTABLE" "$CLIF_VIRTUALENV"
-# Older pip and setuptools can fail.
-# 
-# Regardless, *necessary* on systems with older pip and setuptools.  comment
-# these out if they cause you trouble.  if the final pip install fails, you
-# may need a more recent pip and setuptools.
-"$CLIF_PIP" install --upgrade pip
-"$CLIF_PIP" install --upgrade setuptools
-
 # Download, build and install LLVM and Clang (needs a specific revision).
 
 mkdir -p "$LLVM_DIR"
@@ -122,8 +109,8 @@ cmake -DCMAKE_INSTALL_PREFIX="$CLIF_VIRTUALENV/clang" \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLVM_BUILD_DOCS=false \
       -DLLVM_TARGETS_TO_BUILD=X86 \
-      "${CMAKE_PY3_FLAGS[@]}" \
-      "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
+      "$CMAKE_PY_FLAGS" \
+      "$LLVM_DIR/llvm"
 "$MAKE_OR_NINJA" "${MAKE_PARALLELISM[@]}" clif-matcher clif_python_utils_proto_util
 "$MAKE_OR_NINJA" "${MAKE_INSTALL_PARALLELISM[@]}" install
 
