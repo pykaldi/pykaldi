@@ -1,6 +1,4 @@
 #!/bin/bash
-
-################################################################################################
 # Pre-Installation checks
 #   * Check that Python executable exists
 #   * Check that Pip exists
@@ -8,18 +6,41 @@
 #   * Checks for libtool, zlib
 #   * Checks that the python environment has numpy, setuptools and pyparsing
 # Sets exit code accordingly
+# 
+# 
+# This codes takes mostly from Kaldi check_dependencies.sh,
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 ################################################################################################
+
 CXX=${CXX:-g++}
 status=0
 
 # Check if python is installed
-if ! command -v python >/dev/null 2>&1; then
+if ! command -v "$PYTHON_EXECUTABLE" >/dev/null 2>&1; then
     echo "$PYTHON_EXECUTABLE command not found!"
     status=1
 fi
 
+# For Kaldi
+# Check if python 2.7 is installed
+if ! command -v "python2.7" >/dev/null 2>&1; then
+    echo "Python2.7 command not found!"
+    status=1
+fi
+
 # Check if pip is installed
-if ! command -v pip >/dev/null 2>&1; then
+if ! command -v "$PYTHON_PIP" >/dev/null 2>&1; then
     echo "$PYTHON_PIP command not found!"
     status=1
 fi
@@ -31,7 +52,6 @@ do
 done
 
 command -v libtoolize >/dev/null 2>&1 || { echo "libtool is not installed"; }
-
 
 # Taken from Kaldi extras/check_dependencies.sh
 if ! echo "#include <zlib.h>" | $CXX -E - >&/dev/null; then
