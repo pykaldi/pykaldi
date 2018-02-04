@@ -11,7 +11,6 @@
 # 	python_library (optional) location of the libpython shared library. As default runs a script to find it.
 # 
 # 
-# 
 
 set -x -e 
 
@@ -24,7 +23,7 @@ INSTALL_NINJA=true
 PYKALDI_DIR="$PWD"
 TOOLS_DIR="$PYKALDI_DIR/tools/extras"
 PROTOBUF_DIR="$TOOLS_DIR/protobuf"
-# NINJA_DIR="$TOOLS_DIR/ninja"
+NINJA_DIR="$TOOLS_DIR/ninja"
 CLIFSRC_DIR="$TOOLS_DIR/clif"
 export KALDI_DIR="$TOOLS_DIR/kaldi"
 
@@ -62,7 +61,6 @@ fi
 ######################################################################################################
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-
 
 ####################################################################
 # Check write access to package dir
@@ -122,10 +120,20 @@ export DEBUG=1
 # cd $PYKALDI_DIR
 ############################################################################
 
-# This assumes clif was installed in $HOME/opt 
-export PATH="$PATH:$HOME/opt/clif/bin"
+# Set env variables
+export PATH="$PATH:$CLIF_VIRTUALENV/clif/bin"
 export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:${LD_LIBRARY_PATH}"
-export CLIF_CXX_FLAGS="-I$CLIFSRC_DIR/clang/lib/clang/5.0.0/include"
+CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | $CLIF_VIRTUALENV/clang/bin/clang -xc -v - 2>&1 | tr ' ' '\n' | grep -A1 resource-dir | tail -1)
+export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
+
+###########################################################################
+# If you ever get to this point and you have not downloaded pykaldi repo yet:
+# 1) How? Why?...
+# 2) Just uncomment the next two lines...
+###########################################################################
+# git clone $PYKALDI_GIT $PYKALDI_DIR
+# cd $PYKALDI_DIR
+############################################################################
 
 # Install pykaldi
 python setup.py install 
@@ -140,14 +148,26 @@ echo "For developers:"
 echo "=============================================================================="
 echo "It is highly recomended that you add the following variables to your .bashrc: "
 echo ""
-if NINJA_INSTALLED; then
+if ! INSTALL_NINJA; then
     # We did not install ninja
-    echo "export PATH=\$PATH:$HOME/opt/clif/bin"
+    echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin"
 else
     # We installed ninja
-    echo "export PATH=\$PATH:$HOME/opt/clif/bin:$NINJA_DIR"
+    echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin:$NINJA_DIR"
 echo ""
 echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
 echo "export CLIF_CXX_FLAGS=\"-I$CLIFSRC_DIR/clang/lib/clang/5.0.0/include\""
 echo ""
 echo ""
+echo ""
+if [ -z "$VIRTUAL_ENV" ]; then
+	echo "PyKaldi was installed to the virtualenv $VIRTUAL_ENV"
+else
+	echo "PyKaldi was installed!"
+fi
+echo "You can now test it using "
+echo "python -c 'import kaldi; print(kaldi.__version__)'"
+echo ""
+echo ""
+
+exit 0

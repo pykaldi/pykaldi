@@ -6,18 +6,7 @@
 # 
 
 
-if [[ "$1" =~ ^-?-h ]]; then
-  echo "Usage: $0 [KALDI_DIR]"
-  exit 1
-fi
-
 KALDI_DIR="$1"
-
-if [ -d "$KALDI_DIR" ]; then
-	echo "Directory $KALDI_DIR already exists! Skipping..."
-	exit 0
-fi
-
 KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
 
 # Install (our) kaldi fork
