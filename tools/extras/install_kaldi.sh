@@ -14,8 +14,15 @@ KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
 echo "Installing kaldi to $KALDI_DIR"
 git clone $KALDI_GIT $KALDI_DIR
 cd "$KALDI_DIR/tools"
-./extras/check_dependencies.sh
-make -j4
+
+# Prevent kaldi from switching default python versions
+touch "python/.use_default_python"
+
+# Skip dependency check (it is called by make anyways)
+# ./extras/check_dependencies.sh
+
+make -j4 
+
 cd ../src
 ./configure --shared
 make clean -j && make depend -j && make -j4
