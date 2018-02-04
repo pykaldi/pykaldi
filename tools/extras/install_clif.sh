@@ -21,10 +21,10 @@
 # 
 
 set -x -e
-DEBUG=true
+DEBUG=false
 
 if [[ "$1" =~ ^-?-h ]]; then
-  echo "Usage: $0 [CLIFSRC_DIR] [CLIF_VIRTUALENV]"
+  echo "Usage: $0 [CLIFSRC_DIR] [CLIF_VIRTUALENV] [CMAKE_PY_FLAGS]"
   exit 1
 fi
 
@@ -34,11 +34,19 @@ if [[ -n "$1" ]]; then
   shift
 fi
 
+if [ -d "$CLIFSRC_DIR" ]; then
+  echo "Destination $CLIFSRC_DIR already exists!, skipping."
+  exit 0
+fi
+
+
 CLIF_VIRTUALENV="$CLIFSRC_DIR/../opt"
 if [[ -n "$1" ]]; then
   CLIF_VIRTUALENV="$1"
   shift
 fi
+
+CMAKE_PY_FLAGS=( "$@" )
 
 CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
 LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
@@ -52,6 +60,7 @@ if $DEBUG; then
   echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
   echo "LLVM_DIR: $LLVM_DIR"
   echo "BUILD_DIR: $BUILD_DIR"
+  echo "CMAKE_PY_FLAGS: ${CMAKE_PY_FLAGS[@]}"
   echo ""
 fi
 
