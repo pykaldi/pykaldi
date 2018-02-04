@@ -24,7 +24,10 @@ fi
 
 # Install ninja
 echo "Installing ninja..."
-git clone $NINJA_GIT $NINJA_DIR
+
+if [ ! -d "$NINJA_DIR" ]; then
+	git clone $NINJA_GIT $NINJA_DIR
+fi
 cd "$NINJA_DIR"
 $PYTHON_EXECUTABLE configure.py --bootstrap
 
