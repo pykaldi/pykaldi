@@ -38,17 +38,19 @@ if which protoc; then
 
 fi
 
+if [ -d "$PROTOBUF_DIR" ]; then
+    echo "$PROTOBUF_DIR already exists! But protoc was not found in $PATH."
+    echo "May raise some issues later on..."
+    exit 0
+fi
+
 # Install protobuf
 echo "Installing protobuf..."
 git clone $PROTOBUF_GIT $PROTOBUF_DIR
 cd "$PROTOBUF_DIR"
 ./autogen.sh
-./configure
-
-
-# FIXME (VM):
-# This would require sudo...
-make -j && make install && ldconfig
+./configure --prefix $PROTOBUF_DIR
+make -j  && make install
 
 # Install protobuf python package
 cd "$PROTOBUF_DIR/python"
