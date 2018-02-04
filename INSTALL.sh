@@ -24,7 +24,7 @@ PYKALDI_DIR="$PWD"
 TOOLS_DIR="$PYKALDI_DIR/tools/extras"
 PROTOBUF_DIR="$TOOLS_DIR/protobuf"
 NINJA_DIR="$TOOLS_DIR/ninja"
-CLIFSRC_DIR="$TOOLS_DIR/clif"
+export CLIF_DIR="$TOOLS_DIR/clif"
 export KALDI_DIR="$TOOLS_DIR/kaldi"
 
 export PYTHON_EXECUTABLE=$(which python)
@@ -81,7 +81,7 @@ fi
 ####################################################################
 # Help cmake find the correct python
 ####################################################################
-export CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
+CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
 
 ####################################################################
 # Start installation
@@ -101,7 +101,7 @@ if $INSTALL_NINJA; then
 fi
 
 # Install clif
-$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR $CLIF_VIRTUALENV || exit 1
+$TOOLS_DIR/install_clif.sh $CLIF_DIR $CLIF_VIRTUALENV "${CMAKE_PY_FLAGS[@]}" || exit 1
 
 # Install kaldi
 $TOOLS_DIR/install_kaldi.sh $KALDI_DIR || exit 1
@@ -142,7 +142,7 @@ else
     echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin:$NINJA_DIR"
 echo ""
 echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
-echo "export CLIF_CXX_FLAGS=\"-I$CLIFSRC_DIR/clang/lib/clang/5.0.0/include\""
+echo "export CLIF_CXX_FLAGS=\"-I$CLIF_DIR/clang/lib/clang/5.0.0/include\""
 echo ""
 echo ""
 echo ""
