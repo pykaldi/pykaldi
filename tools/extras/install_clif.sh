@@ -48,27 +48,6 @@ fi
 
 CMAKE_PY_FLAGS=( "$@" )
 
-CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
-LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
-BUILD_DIR="$LLVM_DIR/build_matcher"
-
-if $DEBUG; then
-  echo ""
-  echo "Installing clif with the following params: "
-  echo "CLIF_GIT: $CLIF_GIT"
-  echo "CLIFSRC_DIR: $CLIFSRC_DIR"
-  echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
-  echo "LLVM_DIR: $LLVM_DIR"
-  echo "BUILD_DIR: $BUILD_DIR"
-  echo "CMAKE_PY_FLAGS: ${CMAKE_PY_FLAGS[@]}"
-  echo ""
-fi
-
-# Install clif from dogan's fork
-git clone $CLIF_GIT $CLIFSRC_DIR
-cd "$CLIFSRC_DIR"
-
-
 # Ensure CMake is installed (needs 3.5+)
 
 CV=$(cmake --version | head -1 | cut -f3 -d\ ); CV=(${CV//./ })
@@ -85,6 +64,38 @@ if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
   exit 1
 fi
 PROTOC_PREFIX_PATH="$(dirname "$(dirname "$(which protoc)")")"
+
+######################################################################
+# Protobuf might not be a global installation
+# Find the location for the includes and libs
+######################################################################
+
+PROTOBUF_INCLUDE="$(pkg-config --cflags protobuf)"
+PROTOBUF_LIBS="$(pkg-config --libs protobuf)"
+
+######################################################################
+
+CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
+LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
+BUILD_DIR="$LLVM_DIR/build_matcher"
+
+if $DEBUG; then
+  echo ""
+  echo "Installing clif with the following params: "
+  echo "CLIF_GIT: $CLIF_GIT"
+  echo "CLIFSRC_DIR: $CLIFSRC_DIR"
+  echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
+  echo "LLVM_DIR: $LLVM_DIR"
+  echo "BUILD_DIR: $BUILD_DIR"
+  echo "PROTOBUF_INCLUDE: $PROTOBUF_INCLUDE"
+  echo "PROTOBUF_LIBS: $PROTOBUF_LIBS"
+  echo "CMAKE_PY_FLAGS: ${CMAKE_PY_FLAGS[@]}"
+  echo ""
+fi
+
+# Install clif from dogan's fork
+git clone $CLIF_GIT $CLIFSRC_DIR
+cd "$CLIFSRC_DIR"
 
 # If Ninja is installed, use it instead of make.  MUCH faster.
 
@@ -146,7 +157,7 @@ cp "$BUILD_DIR/tools/clif/protos/ast_pb2.py" clif/protos/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.cc" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
-"$PYTHON_PIP" install .
+CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$$PROTOBUF_LIBS" $PYTHON_PIP" install .
 
 echo "$CLIF_VIRTUALENV"
 exit 0
