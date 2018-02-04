@@ -21,30 +21,44 @@
 # 
 
 set -x -e
+DEBUG=true
 
 if [[ "$1" =~ ^-?-h ]]; then
-  echo "Usage: $0 [CLIFSRC_DIR] [CMAKE_PY_FLAGS]"
+  echo "Usage: $0 [CLIFSRC_DIR] [CLIF_VIRTUALENV]"
   exit 1
 fi
-
-CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
 
 CLIFSRC_DIR="$PWD"
 if [[ -n "$1" ]]; then
   CLIFSRC_DIR="$1"
+  shift
 fi
 
-shift
-CMAKE_PY_FLAGS="$@"
+CLIF_VIRTUALENV="$CLIFSRC_DIR/../opt"
+if [[ -n "$1" ]]; then
+  CLIF_VIRTUALENV="$1"
+  shift
+fi
+
+CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
+LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
+BUILD_DIR="$LLVM_DIR/build_matcher"
+
+if $DEBUG; then
+  echo ""
+  echo "Installing clif with the following params: "
+  echo "CLIF_GIT: $CLIF_GIT"
+  echo "CLIFSRC_DIR: $CLIFSRC_DIR"
+  echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
+  echo "LLVM_DIR: $LLVM_DIR"
+  echo "BUILD_DIR: $BUILD_DIR"
+  echo ""
+fi
 
 # Install clif from dogan's fork
 git clone $CLIF_GIT $CLIFSRC_DIR
 cd "$CLIFSRC_DIR"
 
-# Start INSTALL.sh from clif
-INSTALL_DIR="$CLIFSRC_DIR/../opt"
-LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
-BUILD_DIR="$LLVM_DIR/build_matcher"
 
 # Ensure CMake is installed (needs 3.5+)
 
@@ -109,8 +123,8 @@ cmake -DCMAKE_INSTALL_PREFIX="$CLIF_VIRTUALENV/clang" \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLVM_BUILD_DOCS=false \
       -DLLVM_TARGETS_TO_BUILD=X86 \
-      "$CMAKE_PY_FLAGS" \
-      "$LLVM_DIR/llvm"
+      "${CMAKE_PY_FLAGS[@]}" \
+      "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
 "$MAKE_OR_NINJA" "${MAKE_PARALLELISM[@]}" clif-matcher clif_python_utils_proto_util
 "$MAKE_OR_NINJA" "${MAKE_INSTALL_PARALLELISM[@]}" install
 
@@ -123,6 +137,7 @@ cp "$BUILD_DIR/tools/clif/protos/ast_pb2.py" clif/protos/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.cc" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
-"$CLIF_PIP" install .
+"$PYTHON_PIP" install .
 
-echo "SUCCESS - To use pyclif, run $CLIF_VIRTUALENV/bin/pyclif."
+echo "$CLIF_VIRTUALENV"
+exit 0

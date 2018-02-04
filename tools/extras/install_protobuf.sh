@@ -44,6 +44,10 @@ git clone $PROTOBUF_GIT $PROTOBUF_DIR
 cd "$PROTOBUF_DIR"
 ./autogen.sh
 ./configure
+
+
+# FIXME (VM):
+# This would require sudo...
 make -j && make install && ldconfig
 
 # Install protobuf python package
