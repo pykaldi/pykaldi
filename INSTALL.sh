@@ -23,8 +23,8 @@ INSTALL_NINJA=true
 PYKALDI_DIR="$PWD"
 TOOLS_DIR="$PYKALDI_DIR/tools/extras"
 PROTOBUF_DIR="$TOOLS_DIR/protobuf"
-NINJA_DIR="$TOOLS_DIR/ninja"
-export CLIF_DIR="$TOOLS_DIR/clif"
+# NINJA_DIR="$TOOLS_DIR/ninja"
+CLIFSRC_DIR="$TOOLS_DIR/clif"
 export KALDI_DIR="$TOOLS_DIR/kaldi"
 
 export PYTHON_EXECUTABLE=$(which python)
@@ -110,21 +110,6 @@ export PATH="$PATH:$CLIF_DIR/clif/bin"
 CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | $CLIF_DIR/clang/bin/clang -xc -v - 2>&1 | tr ' ' '\n' | grep -A1 resource-dir | tail -1)
 export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
 export DEBUG=1
-
-###########################################################################
-# If you ever get to this point and you have not downloaded pykaldi repo yet:
-# 1) How? Why?...
-# 2) Just uncomment the next two lines...
-###########################################################################
-# git clone $PYKALDI_GIT $PYKALDI_DIR
-# cd $PYKALDI_DIR
-############################################################################
-
-# Set env variables
-export PATH="$PATH:$CLIF_VIRTUALENV/clif/bin"
-export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:${LD_LIBRARY_PATH}"
-CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | $CLIF_VIRTUALENV/clang/bin/clang -xc -v - 2>&1 | tr ' ' '\n' | grep -A1 resource-dir | tail -1)
-export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
 
 ###########################################################################
 # If you ever get to this point and you have not downloaded pykaldi repo yet:
