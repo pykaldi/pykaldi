@@ -55,6 +55,8 @@ def init_rand_diag_gmm(gmm):
     gmm.compute_gconsts()
 
 class TestFullGmm(unittest.TestCase):
+    def setUp(self):
+        np.random.seed(12345)
 
     def testFullGmmEst(self):
         fgmm = FullGmm()
