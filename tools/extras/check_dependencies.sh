@@ -61,7 +61,6 @@ if (( $PV == 3 )); then
     fi
 fi
 
-
 # Check (command) dependencies
 for c in git cmake autoconf automake curl make g++ unzip wget svn pkg-config
 do
