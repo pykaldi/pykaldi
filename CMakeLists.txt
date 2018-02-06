@@ -83,6 +83,7 @@ include_directories(
   ${ATLAS_INC_DIR}
   ${PYTHON_INCLUDE_DIRS}
   ${NUMPY_INC_DIR}
+  ${GOOGLE_PROTOBUF_INCLUDE_DIRS}
 )
 
 ####################################################################################################
@@ -91,6 +92,7 @@ include_directories(
 link_directories(
   ${KALDI_LIBRARIES_DIR}
   ${OPENFST_LIB_DIR}
+  ${GOOGLE_PROTOBUF_LIBRARY_DIRS}
 )
 
 ####################################################################################################
@@ -126,6 +128,10 @@ function(add_pyclif_library name pyclif_file)
     set(PYOUTPUT "--py2output")
   endif()
 
+  if(GOOGLE_PROTOBUF_INCLUDE_DIRS)
+    set(GOOGLE_PROTOBUF_CXX_FLAGS "-I${GOOGLE_PROTOBUF_INCLUDE_DIRS}")
+  endif(GOOGLE_PROTOBUF_INCLUDE_DIRS)
+
   # This defines the call to pyclif
   add_custom_command(
       OUTPUT ${gen_cc} ${gen_h} ${gen_init}
@@ -147,6 +153,7 @@ function(add_pyclif_library name pyclif_file)
              -I${KALDI_SRC_DIR} \
              -I${OPENFST_INC_DIR} \
              -I${ATLAS_INC_DIR} \
+             ${GOOGLE_PROTOBUF_CXX_FLAGS} \
              ${CLIF_CXX_FLAGS} \
              ${CMAKE_CXX_FLAGS}"
           ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
