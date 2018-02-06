@@ -144,12 +144,13 @@ echo "For developers:"
 echo "=============================================================================="
 echo "It is highly recomended that you add the following variables to your .bashrc: "
 echo ""
-if ! INSTALL_NINJA; then
+if ! $INSTALL_NINJA; then
     # We did not install ninja
     echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin"
 else
     # We installed ninja
     echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin:$NINJA_DIR"
+fi
 echo ""
 echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
 echo "export CLIF_CXX_FLAGS=\"-I$CLIF_DIR/clang/lib/clang/5.0.0/include\""
