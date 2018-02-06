@@ -32,18 +32,35 @@ if ! command -v "$PYTHON_EXECUTABLE" >/dev/null 2>&1; then
     status=1
 fi
 
-# For Kaldi
-# Check if python 2.7 is installed
-if ! command -v "python2.7" >/dev/null 2>&1; then
-    echo "Python2.7 command not found!"
-    status=1
-fi
-
 # Check if pip is installed
 if ! command -v "$PYTHON_PIP" >/dev/null 2>&1; then
     echo "$PYTHON_PIP command not found!"
     status=1
 fi
+
+# Check if python 3+ is installed
+PV=$($PYTHON_EXECUTABLE -c 'import sys; print(sys.version_info[0])')
+if (( $PV < 3 )); then
+    if ! command -v "python3" >/dev/null 2>&1; then
+        if ! command -v "python3.5" >/dev/null 2>&1; then
+            echo "Python3+ installation not found!"
+            echo "You might get away with this..."
+            status=1
+        fi
+    fi
+fi
+
+# For Kaldi
+# Check if python2 is installed
+if (( $PV == 3 )); then
+    if ! command -v "python2" >/dev/null 2>&1; then
+        if ! command -v "python2.7" >/dev/null 2>&1; then
+            echo "Python2 installation not found!"
+            status=1
+        fi
+    fi
+fi
+
 
 # Check (command) dependencies
 for c in git cmake autoconf automake curl make g++ unzip wget svn pkg-config

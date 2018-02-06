@@ -44,9 +44,10 @@ fi
 # currently running inside. 
 # If there is no virtualenv, defaults to "TOOLS_DIR/pykaldienv"
 ####################################################################
-export CLIF_DIR="$VIRTUAL_ENV"
+export CLIF_DIR=$($PYTHON_EXECUTABLE -c 'from distutils.sysconfig import get_config_var; print(get_config_var("prefix"))')
 if [ -z "$CLIF_DIR" ]; then
-	export CLIF_DIR="$TOOLS_DIR/pykaldienv"
+	echo "Python virtual environment $CLIF_DIR was not found!"
+	exit 1
 fi
 
 ####################################################################
@@ -84,7 +85,7 @@ CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="
 # Call installers
 $TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
 export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:${LD_LIBRARY_PATH}"
-export PATH=$PATH:"$PROTOBUF_DIR/src"
+export PATH="$PATH:$PROTOBUF_DIR/src"
 export PKG_CONFIG_PATH="$PROTOBUF_DIR"
 
 # Optional: install ninja
@@ -119,6 +120,10 @@ export DEBUG=1
 # git clone $PYKALDI_GIT $PYKALDI_DIR
 # cd $PYKALDI_DIR
 ############################################################################
+
+echo "PATH = $PATH"
+echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+echo ""
 
 # Install pykaldi
 python setup.py install 

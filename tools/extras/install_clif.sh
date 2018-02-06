@@ -49,7 +49,6 @@ fi
 CMAKE_PY_FLAGS=( "$@" )
 
 # Ensure CMake is installed (needs 3.5+)
-
 CV=$(cmake --version | head -1 | cut -f3 -d\ ); CV=(${CV//./ })
 if (( CV[0] < 3 || CV[0] == 3 && CV[1] < 5 )); then
   echo "Install CMake version 3.5+"
@@ -57,7 +56,6 @@ if (( CV[0] < 3 || CV[0] == 3 && CV[1] < 5 )); then
 fi
 
 # Ensure Google protobuf C++ source is installed (needs v3.2+).
-
 PV=$(protoc --version | cut -f2 -d\ ); PV=(${PV//./ })
 if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
   echo "Install Google protobuf version 3.2+"
@@ -157,7 +155,7 @@ cp "$BUILD_DIR/tools/clif/protos/ast_pb2.py" clif/protos/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.cc" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
-CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$$PROTOBUF_LIBS" $PYTHON_PIP" install .
+CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
 
-echo "$CLIF_VIRTUALENV"
+echo "Clif installed to $CLIF_VIRTUALENV"
 exit 0
