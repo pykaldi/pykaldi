@@ -19,8 +19,6 @@
 # Downloads from github
 # Includes modifications needed to install on Python 3.0
 # 
-
-set -x -e
 DEBUG=false
 
 if [[ "$1" =~ ^-?-h ]]; then
@@ -33,12 +31,6 @@ if [[ -n "$1" ]]; then
   CLIFSRC_DIR="$1"
   shift
 fi
-
-if [ -d "$CLIFSRC_DIR" ]; then
-  echo "Destination $CLIFSRC_DIR already exists!, skipping."
-  exit 0
-fi
-
 
 CLIF_VIRTUALENV="$CLIFSRC_DIR/../opt"
 if [[ -n "$1" ]]; then
@@ -89,7 +81,15 @@ if $DEBUG; then
   echo "PROTOBUF_LIBS: $PROTOBUF_LIBS"
   echo "CMAKE_PY_FLAGS: ${CMAKE_PY_FLAGS[@]}"
   echo ""
+  exit 1
 fi
+
+
+if [ -d "$CLIFSRC_DIR" ]; then
+  echo "Destination $CLIFSRC_DIR already exists!, skipping."
+  exit 0
+fi
+
 
 # Install clif from dogan's fork
 git clone $CLIF_GIT $CLIFSRC_DIR

@@ -53,6 +53,7 @@ if which protoc; then
         echo "Older version found, please install 3.2+"
         exit 1
     fi
+    exit 0
 else
     # Protoc might not be in the current path, check $PROTOBUF_DIR for binary and lib
     if [ -d "$PROTOBUF_DIR" ]; then

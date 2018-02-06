@@ -12,8 +12,7 @@
 # 
 # 
 
-set -x -e 
-
+set -e -x 
 INSTALL_NINJA=true
 
 #######################################################################################################
@@ -85,7 +84,7 @@ CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="
 # Call installers
 $TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
 export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:${LD_LIBRARY_PATH}"
-export PATH="$PATH:$PROTOBUF_DIR/src"
+export PATH="$PROTOBUF_DIR/bin:$PATH"
 export PKG_CONFIG_PATH="$PROTOBUF_DIR"
 
 # Optional: install ninja
