@@ -158,4 +158,5 @@ cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
 CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
 
 echo "Clif installed to $CLIF_VIRTUALENV"
+touch "$CLIFSRC_DIR/.DONE"
 exit 0
