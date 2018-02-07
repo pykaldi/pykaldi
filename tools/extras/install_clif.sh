@@ -73,6 +73,8 @@ BUILD_DIR="$LLVM_DIR/build_matcher"
 if $DEBUG; then
   echo ""
   echo "Installing clif with the following params: "
+  echo "PATH:$PATH"
+  echo "LD_LIBRARY_PATH:$LD_LIBRARY_PATH"
   echo "CLIF_GIT: $CLIF_GIT"
   echo "CLIFSRC_DIR: $CLIFSRC_DIR"
   echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
@@ -137,7 +139,7 @@ ln -s -f -n "$CLIFSRC_DIR/clif" clif
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 cmake -DCMAKE_INSTALL_PREFIX="$CLIF_VIRTUALENV/clang" \
-      -DCMAKE_PREFIX_PATH="$PROTOBUF_INCLUDE" \
+      -DCMAKE_PREFIX_PATH="$PROTOBUF_PREFIX_PATH" \
       -DLLVM_INSTALL_TOOLCHAIN_ONLY=true \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLVM_BUILD_DOCS=false \

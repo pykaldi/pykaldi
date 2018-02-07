@@ -23,6 +23,10 @@ fi
 cd "$KALDI_DIR/tools"
 
 # Prevent kaldi from switching default python versions
+if [ ! -d "python" ]; then
+    mkdir "python"
+fi
+
 touch "python/.use_default_python"
 
 # Skip dependency check (it is called by make anyways)
