@@ -19,6 +19,7 @@
 # Downloads from github
 # Includes modifications needed to install on Python 3.0
 # 
+set -e
 DEBUG=false
 
 if [[ "$1" =~ ^-?-h ]]; then
@@ -81,7 +82,7 @@ if $DEBUG; then
   echo "PROTOBUF_LIBS: $PROTOBUF_LIBS"
   echo "CMAKE_PY_FLAGS: ${CMAKE_PY_FLAGS[@]}"
   echo ""
-  exit 1
+#  exit 1
 fi
 
 

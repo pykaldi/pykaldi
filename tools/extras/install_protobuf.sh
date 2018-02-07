@@ -40,8 +40,8 @@ PROTOBUF_DIR="$1"
 PROTOBUF_GIT="https://github.com/google/protobuf.git"
 
 # Check for protoc in $PATH
-correctversion=0
-pymodule=0
+#correctversion=0
+#pymodule=0
 if command -v protoc &>/dev/null; then
     echo "Protoc found in PATH."
     echo "Checking for correct version"
@@ -52,16 +52,16 @@ if command -v protoc &>/dev/null; then
             echo "Correct pymodule found!"
             echo "Nothing to do"
             exit 0
-        else
-            pymodule=0
+#        else
+#            pymodule=0
         fi
     else
-        correctversion=0
+#        correctversion=0
         echo "Checking for pymodule"
         if check_pymodule; then
             echo "Correct pymodule found!"
-        else
-            pymodule=0
+#        else
+#            pymodule=0
         fi
     fi
 # else

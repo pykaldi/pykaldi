@@ -139,7 +139,7 @@ fi
 export PATH="$PATH:$CLIF_DIR/clif/bin"
 CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | $CLIF_DIR/clang/bin/clang -xc -v - 2>&1 | tr ' ' '\n' | grep -A1 resource-dir | tail -1)
 export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
-export DEBUG=1
+export DEBUG=0
 
 ###########################################################################
 # If you ever get to this point and you have not downloaded pykaldi repo yet:
