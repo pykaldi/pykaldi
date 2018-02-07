@@ -26,39 +26,12 @@
 CXX=${CXX:-g++}
 status=0
 
-# Check if python is installed
-if ! command -v "$PYTHON_EXECUTABLE" >/dev/null 2>&1; then
-    echo "$PYTHON_EXECUTABLE command not found!"
-    status=1
+if ! which python2.7 >&/dev/null; then
+  echo "$0: python2.7 is not installed"
 fi
 
-# Check if pip is installed
-if ! command -v "$PYTHON_PIP" >/dev/null 2>&1; then
-    echo "$PYTHON_PIP command not found!"
-    status=1
-fi
-
-# Check if python 3+ is installed
-PV=$($PYTHON_EXECUTABLE -c 'import sys; print(sys.version_info[0])')
-if (( $PV < 3 )); then
-    if ! command -v "python3" >/dev/null 2>&1; then
-        if ! command -v "python3.5" >/dev/null 2>&1; then
-            echo "Python3+ installation not found!"
-            echo "You might get away with this..."
-            status=1
-        fi
-    fi
-fi
-
-# For Kaldi
-# Check if python2 is installed
-if (( $PV == 3 )); then
-    if ! command -v "python2" >/dev/null 2>&1; then
-        if ! command -v "python2.7" >/dev/null 2>&1; then
-            echo "Python2 installation not found!"
-            status=1
-        fi
-    fi
+if ! which python3 >&/dev/null; then
+  echo "$0: python3 is not installed"
 fi
 
 
