@@ -83,6 +83,20 @@ CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="
 ####################################################################
 
 # Protobuf
+# Put these here so that which protoc and pkg-config look in $PROTOBUF_DIR too
+export PATH="$PROTOBUF_DIR/bin:$PATH"
+export PKG_CONFIG_PATH="$PROTOBUF_DIR"
+
+# NOTE (VM):
+# I hate it as much as you do but I could not get 
+# clif-matcher to find the .so any other way.
+# Having protoc in the $PATH only fixes the .h includes, not the .so files.
+#
+# If these is not set, clif's call ninja clif_python_utils_proto_util fails
+# beingh unable to find libprotobuf.so
+export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:$LD_LIBRARY_PATH"
+
+
 protobuf_installed=false
 if [ -d "$PROTOBUF_DIR" ] && [ -f "$PROTOBUF_DIR/.DONE" ]; then
 	protobuf_installed=true
@@ -91,11 +105,8 @@ elif [ -d "$PROTOBUF_DIR" ]; then
 fi
 
 if ! $protobuf_installed; then
-	export PATH="$PROTOBUF_DIR/bin:$PATH"
-	export PKG_CONFIG_PATH="$PROTOBUF_DIR"
 	$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
 fi
-
 
 # Optional: install ninja
 if $INSTALL_NINJA; then
@@ -115,6 +126,9 @@ if [ -d "$CLIFSRC_DIR" ] && [ -f "$CLIFSRC_DIR/.DONE" ]; then
 	clif_installed=true
 elif [ -d "$CLIFSRC_DIR" ]; then
 	rm -rf "$CLIFSRC_DIR"
+	if [ -d "$CLIFSRC_DIR/../clif_backend" ]; then
+		rm -rf "$CLIFSRC_DIR/../clif_backend"
+	fi
 fi
 
 if ! $clif_installed; then
