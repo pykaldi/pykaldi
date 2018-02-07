@@ -4,7 +4,7 @@
 # 
 # Installation script for Kaldi
 # 
-
+set -x -e
 
 if [[ "$1" =~ ^-?-h ]]; then
   echo "Usage: $0 [KALDI_DIR]"
@@ -12,18 +12,14 @@ if [[ "$1" =~ ^-?-h ]]; then
 fi
 
 KALDI_DIR="$1"
-
-if [ -d "$KALDI_DIR" ]; then
-	echo "Directory $KALDI_DIR already exists! Skipping..."
-	exit 0
-fi
-
 KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
 
-# Install (our) kaldi fork
-# This needs python 2.7 to run
-echo "Installing kaldi to $KALDI_DIR"
-git clone $KALDI_GIT $KALDI_DIR
+if [ ! -d "$KALDI_DIR" ]; then
+	git clone $KALDI_GIT $KALDI_DIR
+else
+	echo "$KALDI_DIR already existed!"
+fi
+
 cd "$KALDI_DIR/tools"
 
 # Prevent kaldi from switching default python versions
