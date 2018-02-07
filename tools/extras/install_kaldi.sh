@@ -37,4 +37,6 @@ make -j4
 cd ../src
 ./configure --shared
 make clean -j && make depend -j && make -j4
+
 echo "Done installing kaldi"
+touch "$KALDI_DIR/.DONE"

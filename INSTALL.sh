@@ -78,14 +78,24 @@ fi
 CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
 
 ####################################################################
-# Start installation
+# Dependencies
+# Call installers
 ####################################################################
 
-# Call installers
-$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
-export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:${LD_LIBRARY_PATH}"
-export PATH="$PROTOBUF_DIR/bin:$PATH"
-export PKG_CONFIG_PATH="$PROTOBUF_DIR"
+# Protobuf
+protobuf_installed=false
+if [ -d "$PROTOBUF_DIR" ] && [ -f "$PROTOBUF_DIR/.DONE" ]; then
+	protobuf_installed=true
+elif [ -d "$PROTOBUF_DIR" ]; then
+	rm -rf "$PROTOBUF_DIR"
+fi
+
+if ! $protobuf_installed; then
+	export PATH="$PROTOBUF_DIR/bin:$PATH"
+	export PKG_CONFIG_PATH="$PROTOBUF_DIR"
+	$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
+fi
+
 
 # Optional: install ninja
 if $INSTALL_NINJA; then
@@ -99,13 +109,33 @@ if $INSTALL_NINJA; then
 
 fi
 
-# Install clif
-$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR $CLIF_DIR "${CMAKE_PY_FLAGS[@]}" || exit 1
+# clif
+clif_installed=false
+if [ -d "$CLIFSRC_DIR" ] && [ -f "$CLIFSRC_DIR/.DONE" ]; then
+	clif_installed=true
+elif [ -d "$CLIFSRC_DIR" ]; then
+	rm -rf "$CLIFSRC_DIR"
+fi
 
-# Install kaldi
-$TOOLS_DIR/install_kaldi.sh $KALDI_DIR || exit 1
+if ! $clif_installed; then
+	$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR $CLIF_DIR "${CMAKE_PY_FLAGS[@]}" || exit 1
+fi
 
+# Kaldi
+kaldi_installed=false
+if [ -d "$KALDI_DIR" ] && [ -f "$KALDI_DIR/.DONE" ]; then
+	kaldi_installed=true
+elif [ -d "$KALDI_DIR" ]; then
+	rm -rf "$KALDI_DIR"
+fi
+
+if ! $kaldi_installed; then
+	$TOOLS_DIR/install_kaldi.sh $KALDI_DIR || exit 1
+fi
+
+####################################################################
 # Set env variables
+####################################################################
 export PATH="$PATH:$CLIF_DIR/clif/bin"
 CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | $CLIF_DIR/clang/bin/clang -xc -v - 2>&1 | tr ' ' '\n' | grep -A1 resource-dir | tail -1)
 export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
@@ -127,37 +157,18 @@ echo ""
 # Install pykaldi
 python setup.py install 
 
+cat <<EOF
 
-echo ""
-echo ""
-echo "Done installing PyKaldi"
-echo ""
-echo "=============================================================================="
-echo "For developers:"
-echo "=============================================================================="
-echo "It is highly recomended that you add the following variables to your .bashrc: "
-echo ""
-if ! $INSTALL_NINJA; then
-    # We did not install ninja
-    echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin"
-else
-    # We installed ninja
-    echo "export PATH=\$PATH:$CLIF_INSTALLDIR/clif/bin:$NINJA_DIR"
-fi
-echo ""
+Done installing PyKaldi!
+
+==============================================================================
+For developers:
+==============================================================================
+It is highly recomended that you add the following variables to your .bashrc:
+
+
+EOF
 echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
 echo "export CLIF_CXX_FLAGS=\"-I$CLIF_DIR/clang/lib/clang/5.0.0/include\""
-echo ""
-echo ""
-echo ""
-if [ -z "$VIRTUAL_ENV" ]; then
-	echo "PyKaldi was installed to the virtualenv $VIRTUAL_ENV"
-else
-	echo "PyKaldi was installed!"
-fi
-echo "You can now test it using "
-echo "python -c 'import kaldi; print(kaldi.__version__)'"
-echo ""
-echo ""
 
 exit 0
