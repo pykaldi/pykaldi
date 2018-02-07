@@ -29,68 +29,64 @@ check_version_protoc() {
     fi
 }
 
-PROTOBUF_DIR="$1"
-PROTOBUF_GIT="https://github.com/google/protobuf.git"
-
-# Check for the python module with the correct version
-if $PYTHON_EXECUTABLE -c 'import google.protobuf'; then
-    echo "Protobuf python package found"
+check_pymodule() {
     PV=$($PYTHON_EXECUTABLE -c 'from google.protobuf import __version__;print(__version__)'); PV=(${PV//./ })
     if (( PV[0] == 3 && PV[1] >= 2 )); then
         echo "Using version: ${PV[@]}"
-        exit 0
+        return 0
     else
         echo "Incorrect version found: ${PV[@]}"
-        echo "Please install version 3.2+"
-        exit 1
+        return 1
     fi
-fi
+}
 
-# Check if protoc is already installed
+PROTOBUF_DIR="$1"
+PROTOBUF_GIT="https://github.com/google/protobuf.git"
+
+# Check for protoc in $PATH
 if which protoc; then
-    echo "Protoc binary found in PATH!"
-    if ! check_version_protoc $(which protoc); then
-        echo "Older version found, please install 3.2+"
-        exit 1
-    fi
-    exit 0
-else
-    # Protoc might not be in the current path, check $PROTOBUF_DIR for binary and lib
-    if [ -d "$PROTOBUF_DIR" ]; then
-
-        # Check for protoc
-        if [ -z "$PROTOBUF_DIR/bin/protoc" ]; then
-
-            # Check version of protoc
-            if ! check_version_protoc $PROTOBUF_DIR/bin/protoc; then
-                echo "Older version found, please install 3.2+"
-                exit 1          
-            fi
-
-            # Check for the libprotobuf directory
-            # TODO (VM):
-            # Maybe check for the .so files?
-            if [ -d "$PROTOBUF_DIR/lib" ]; then
-               echo "Found a version of protoc and libprotobuf in $PROTOBUF_DIR"
-               echo "Skipping installation"
-               exit 0
-            fi
+    echo "Protoc found in PATH."
+    echo "Checking for correct version"
+    if check_version_protoc $(which protoc); then
+        echo "Correct version found!"
+        echo "Checking for pymodule"
+        if check_pymodule; then
+            echo "Correct pymodule found!"
+            echo "Nothing to do"
+            exit 0
+        else
+            pymodule=0
+        fi
+    else
+        correctversion=0
+        echo "Checking for pymodule"
+        if check_pymodule; then
+            echo "Correct pymodule found!"
+        else
+            pymodule=0
         fi
     fi
+# else
+    # Protoc is not be in the current path
+    # Lookup in $PROTOBUF_DIR
 fi
 
-# All checks failed,
-# Install protobuf from source
-echo "Installing protobuf..."
-git clone $PROTOBUF_GIT $PROTOBUF_DIR
-cd "$PROTOBUF_DIR"
-./autogen.sh
-./configure --prefix $PROTOBUF_DIR
-make -j  && make install
+# Which checks failed?
+if [ ! correctversion ] || [ ! pymodule ]; then
+    echo "Installing protobuf..."
+    git clone $PROTOBUF_GIT $PROTOBUF_DIR
+    cd "$PROTOBUF_DIR"
+    ./autogen.sh
+    ./configure --prefix $PROTOBUF_DIR
+    make -j  && make install
 
-# Install protobuf python package
-cd "$PROTOBUF_DIR/python"
-$PYTHON_EXECUTABLE setup.py build
-$PYTHON_EXECUTABLE setup.py install
+    # Install protobuf python package
+    cd "$PROTOBUF_DIR/python"
+    $PYTHON_EXECUTABLE setup.py build
+    $PYTHON_EXECUTABLE setup.py install
 
-echo "Done installing protobuf..."
+    echo "Done installing protobuf..."
+    exit 0
+fi
+
+
