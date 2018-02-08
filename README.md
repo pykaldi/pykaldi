@@ -200,7 +200,9 @@ install standard packages needed for installation.
 sudo apt-get install autoconf automake cmake curl g++ git libatlas3-base \
     libtool make pkg-config subversion unzip wget zlib1g-dev
 
-pip install setuptools pip numpy pyparsing
+pip install --upgrade pip
+pip install --upgrade setuptools
+pip install numpy pyparsing
 ```
 
 You can check if needed packages are installed on your system by running the
