@@ -26,27 +26,16 @@ PROTOBUF_DIR="$TOOLS_DIR/protobuf"
 CLIFSRC_DIR="$TOOLS_DIR/clif"
 export KALDI_DIR="$TOOLS_DIR/kaldi"
 
-export PYTHON_EXECUTABLE=$(which python)
+PYTHON_EXECUTABLE=$(which python)
 if [[ -n "$1" ]]; then
 	PYTHON_EXECUTABLE="$1"
 	shift
 fi
 
-export PYTHON_PIP=$(which pip)
+PYTHON_PIP=$(which pip)
 if [[ -n "$1" ]]; then
 	PYTHON_PIP="$1"
 	shift
-fi
-
-####################################################################
-# Sets CLIF_DIR to be the same as the virtualenv we're
-# currently running inside. 
-# If there is no virtualenv, defaults to "TOOLS_DIR/pykaldienv"
-####################################################################
-export CLIF_DIR=$($PYTHON_EXECUTABLE -c 'from distutils.sysconfig import get_config_var; print(get_config_var("prefix"))')
-if [ -z "$CLIF_DIR" ]; then
-	echo "Python virtual environment $CLIF_DIR was not found!"
-	exit 1
 fi
 
 ####################################################################
@@ -56,53 +45,13 @@ if ! $TOOLS_DIR/check_dependencies.sh; then
     exit 1
 fi
 
-#######################################################################################################
-# Python settings
-######################################################################################################
-PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
-PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-
-PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/lib.py)
-if [[ -n "$1" ]]; then
-	PYTHON_LIBRARY="$1"
-	shift
-fi
-
-####################################################################
-# Check write access to package dir
-####################################################################
-if [ ! -w $PYTHON_PACKAGE_DIR ]; then
-    echo "We cannot write to $PYTHON_PACKAGE_DIR."
-    echo "Did you forget runing this with sudo? "
-    echo "sudo $0"
-    exit 1
-fi
-
-####################################################################
-# Help cmake find the correct python
-####################################################################
-CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
-
 ####################################################################
 # Dependencies
 # Call installers
 ####################################################################
 
 # Protobuf
-# Put these here so that which protoc and pkg-config look in $PROTOBUF_DIR too
-export PATH="$PROTOBUF_DIR/bin:$PATH"
-export PKG_CONFIG_PATH="$PROTOBUF_DIR"
-
-# NOTE (VM):
-# I hate it as much as you do but I could not get 
-# clif-matcher to find the .so any other way.
-# Having protoc in the $PATH only fixes the .h includes, not the .so files.
-#
-# If these is not set, clif's call ninja clif_python_utils_proto_util fails
-# beingh unable to find libprotobuf.so
-export LD_LIBRARY_PATH="$PROTOBUF_DIR/lib:$LD_LIBRARY_PATH"
-
-
+# ---------
 protobuf_installed=false
 if [ -d "$PROTOBUF_DIR" ] && [ -f "$PROTOBUF_DIR/.DONE" ]; then
 	protobuf_installed=true
@@ -111,10 +60,11 @@ elif [ -d "$PROTOBUF_DIR" ]; then
 fi
 
 if ! $protobuf_installed; then
-	$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR || exit 1
+	$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR $PYTHON_EXECUTABLE || exit 1
 fi
 
 # Optional: install ninja
+# -----------------------
 if $INSTALL_NINJA; then
 	
 	$PYTHON_PIP install ninja
@@ -127,6 +77,7 @@ if $INSTALL_NINJA; then
 fi
 
 # clif
+# -----------------------
 clif_installed=false
 if [ -d "$CLIFSRC_DIR" ] && [ -f "$CLIFSRC_DIR/.DONE" ]; then
 	clif_installed=true
@@ -142,6 +93,7 @@ if ! $clif_installed; then
 fi
 
 # Kaldi
+# -----------------------
 kaldi_installed=false
 if [ -d "$KALDI_DIR" ] && [ -f "$KALDI_DIR/.DONE" ]; then
 	kaldi_installed=true
@@ -170,10 +122,6 @@ export DEBUG=0
 # cd $PYKALDI_DIR
 ############################################################################
 
-echo "PATH = $PATH"
-echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
-echo ""
-
 # Install pykaldi
 python setup.py install 
 
@@ -188,7 +136,6 @@ It is highly recomended that you add the following variables to your .bashrc:
 
 
 EOF
-echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
+# echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
 echo "export CLIF_CXX_FLAGS=\"-I$CLIF_DIR/clang/lib/clang/5.0.0/include\""
-
 exit 0

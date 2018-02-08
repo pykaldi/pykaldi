@@ -8,12 +8,32 @@
 #   If the correct version is found, then does nothing and exits
 #   If not, installs it from git
 # 
+#  Usage:
+#  ./install_protobuf [PROTOBUF_DIR] [PYTHON_EXECUTABLE]
+#
+#   PROTOBUF_DIR - location where to install protobuf (default: $PWD)
+#   PYTHON_EXECUTABLE - python binary to use (default: $(which python))
+#
+#   Modifies $PATH and $PKG_CONFIG_PATH
+# 
 set -x -e
+PROTOBUF_GIT="https://github.com/google/protobuf.git"
 
-if [[ "$1" =~ ^-?-h ]]; then
-    echo "Usage: $0 [PROTOBUF_DIR]"
-    exit 1
+PROTOBUF_DIR="$PWD"
+if [ -n "$1" ]; then
+    PROTOBUF_DIR="$1"
+    shift
 fi
+
+PYTHON_EXECUTABLE=$(which python)
+if [ -n "$1" ]; then
+    PYTHON_EXECUTABLE="$1"
+    shift
+fi
+
+# Put these here so that which protoc and pkg-config look in $PROTOBUF_DIR too
+export PATH="$PROTOBUF_DIR/bin:$PATH"
+export PKG_CONFIG_PATH="$PROTOBUF_DIR:$PKG_CONFIG_PATH"
 
 # Check protoc version 
 # This is copied from clif install script
@@ -36,13 +56,10 @@ check_pymodule() {
     fi
 }
 
-PROTOBUF_DIR="$1"
-PROTOBUF_GIT="https://github.com/google/protobuf.git"
-
 # Check for protoc in $PATH
 #correctversion=0
 #pymodule=0
-if command -v protoc &>/dev/null; then
+if which protoc; then
     echo "Protoc found in PATH."
     echo "Checking for correct version"
     if check_version_protoc $(which protoc); then
@@ -67,7 +84,6 @@ if command -v protoc &>/dev/null; then
 # else
 # Protoc is not be in the current path
 fi
-
 
 echo "Installing protobuf..."
 if [ ! -d "$PROTOBUF_DIR" ]; then

@@ -19,13 +19,20 @@
 # Downloads from github
 # Includes modifications needed to install on Python 3.0
 # 
-set -e
-DEBUG=false
+#
+# Usage:
+#   ./install_clif.sh [CLIFSRC_DIR] [CLIF_VIRTUALENV] [..CMAKE_PY_FLAGS..]
+#
+#   CLIFSRC_DIR - directory where clif will be installed (default: $PWD)
+#   CLIF_VIRTUALENV - directory of the virtualenv where to install pyclif (default to "$CLIFSRC_DIR/../opt")
+#   ..CMAKE_PY_FLAGS.. - Flags for CMAKE to find the correct python bin and libs
+#   
+#   Env vars:
+#      $PYTHON_EXECUTABLE - path to the python binaries
+#      $PYTHON_LIBRARY - path to the python libraries
 
-if [[ "$1" =~ ^-?-h ]]; then
-  echo "Usage: $0 [CLIFSRC_DIR] [CLIF_VIRTUALENV] [CMAKE_PY_FLAGS]"
-  exit 1
-fi
+set -e
+
 
 CLIFSRC_DIR="$PWD"
 if [[ -n "$1" ]]; then
@@ -39,16 +46,42 @@ if [[ -n "$1" ]]; then
   shift
 fi
 
-CMAKE_PY_FLAGS=( "$@" )
 
+#######################################################################################################
+# Python settings
+# Help cmake find the correct python
+#######################################################################################################
+if [ ! -z "$PYTHON_EXECUTABLE" ]; then
+  PYTHON_EXECUTABLE=$(which python)
+fi
+
+if [ ! -z "$PYTHON_LIBRARY" ]; then
+  PYTHON_LIBRARY=$($PYTHON_EXECUTABLE findPythonLib.py)
+fi
+
+PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
+PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+
+####################################################################
+# Fix cmake flags to find the correct python
+####################################################################
+CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
+if [[ -n "$@" ]]; then
+  CMAKE_PY_FLAGS=( "$@" )
+fi
+
+####################################################################
 # Ensure CMake is installed (needs 3.5+)
+####################################################################
 CV=$(cmake --version | head -1 | cut -f3 -d\ ); CV=(${CV//./ })
 if (( CV[0] < 3 || CV[0] == 3 && CV[1] < 5 )); then
   echo "Install CMake version 3.5+"
   exit 1
 fi
 
+####################################################################
 # Ensure Google protobuf C++ source is installed (needs v3.2+).
+####################################################################
 PV=$(protoc --version | cut -f2 -d\ ); PV=(${PV//./ })
 if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
   echo "Install Google protobuf version 3.2+"
@@ -60,12 +93,10 @@ PROTOC_PREFIX_PATH="$(dirname "$(dirname "$(which protoc)")")"
 # Protobuf might not be a global installation
 # Find the location for the includes and libs
 ######################################################################
-
 PROTOBUF_INCLUDE="$(pkg-config --cflags protobuf)"
 PROTOBUF_LIBS="$(pkg-config --libs protobuf)"
 
 ######################################################################
-
 CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
 LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
 BUILD_DIR="$LLVM_DIR/build_matcher"
@@ -74,7 +105,6 @@ if $DEBUG; then
   echo ""
   echo "Installing clif with the following params: "
   echo "PATH:$PATH"
-  echo "LD_LIBRARY_PATH:$LD_LIBRARY_PATH"
   echo "CLIF_GIT: $CLIF_GIT"
   echo "CLIFSRC_DIR: $CLIFSRC_DIR"
   echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
@@ -140,6 +170,7 @@ mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 cmake -DCMAKE_INSTALL_PREFIX="$CLIF_VIRTUALENV/clang" \
       -DCMAKE_PREFIX_PATH="$PROTOBUF_PREFIX_PATH" \
+      -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=true \
       -DLLVM_INSTALL_TOOLCHAIN_ONLY=true \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLVM_BUILD_DOCS=false \
