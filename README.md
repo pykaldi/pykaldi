@@ -238,13 +238,13 @@ Set the following environment variables.
 
 ```bash
 export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME"/kaldi>
-export CLIF_DIR=<directory where CLIF is installed, e.g. "$HOME"/opt/clif>
 
-# This is needed for finding a compatible limits.h on some systems.
-CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | \
-                     "$CLIF_DIR"/clang/bin/clang -xc -v - 2>&1 | \
-                     tr ' ' '\n' | grep -A1 resource-dir | tail -1)
-export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
+# [Optional] Set this if CLIF is installed under a different Python environment
+# or the directory containing pyclif executable is not on your PATH.
+export PYCLIF=<path to pyclif executable. e.g. "$HOME"/opt/clif/bin/pyclif>
+
+# [Optional] Set this if CLIF is installed under a different Python environment.
+export CLIF_MATCHER=<path to clif-matcher executable. e.g. "$HOME"/opt/clif/clang/bin/clif-matcher>
 ```
 
 Download and install [PyKaldi](https://github.com/pykaldi/pykaldi).
@@ -260,9 +260,11 @@ If you use PyKaldi for research, please cite our [ICASSP 2018 paper](https://git
 
 ```
 @inproceedings{pykaldi,
-  title = {PyKaldi: A python wrapper for Kaldi},
-  author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and Shrikanth S. Narayanan},
-  booktitle={Acoustics, Speech and Signal Processing (ICASSP), 2018 IEEE International Conference on},
+  title = {PyKaldi: A Python Wrapper for Kaldi},
+  author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and
+            Shrikanth S. Narayanan},
+  booktitle={Acoustics, Speech and Signal Processing (ICASSP),
+             2018 IEEE International Conference on},
   year = {2018},
   organization = {IEEE}
 }

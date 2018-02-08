@@ -20,28 +20,37 @@ from subprocess import check_output, check_call, CalledProcessError
 
 DEBUG = os.getenv('DEBUG', 'NO').upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
 PYCLIF = os.getenv("PYCLIF")
-CLIF_DIR = os.getenv('CLIF_DIR')
+CLIF_MATCHER = os.getenv('CLIF_MATCHER')
 KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
-CLIF_CXX_FLAGS = os.getenv("CLIF_CXX_FLAGS", "")
 NPROC = check_output(['getconf', '_NPROCESSORS_ONLN']).decode("utf-8").strip()
 MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS', NPROC)
 
-if CLIF_DIR and not PYCLIF:
-    PYCLIF = os.path.join(CLIF_DIR, 'bin/pyclif')
 
-if not (PYCLIF and os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
+if not PYCLIF:
+    PYCLIF = os.path.join(sys.prefix, 'bin/clif-matcher')
+
+if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
     try:
         PYCLIF = check_output(['which', 'pyclif']).decode("utf-8").strip()
     except OSError:
         raise RuntimeError("Could not find pyclif. Please add pyclif binary to"
                            " your PATH or set PYCLIF environment variable.")
 
-if not CLIF_DIR:
-    CLIF_DIR = os.path.dirname(os.path.dirname(PYCLIF))
-    print("CLIF_DIR environment variable is not set.")
-    print("Defaulting to {}".format(CLIF_DIR))
+if not CLIF_MATCHER:
+    CLIF_MATCHER = os.path.join(sys.prefix, 'clang/bin/clif-matcher')
+
+if not (os.path.isfile(CLIF_MATCHER) and os.access(CLIF_MATCHER, os.X_OK)):
+    raise RuntimeError("Could not find clif-matcher. Please make sure CLIF "
+                       "was installed under the current python environment "
+                       "or set CLIF_MATCHER environment variable.")
+
+CLANG = os.path.join(os.path.dirname(CLIF_MATCHER), "clang")
+RESOURCE_DIR = check_output("echo '#include <limits.h>' | {} -xc -v - 2>&1 "
+                            "| tr ' ' '\n' | grep -A1 resource-dir | tail -1"
+                            .format(CLANG), shell=True).decode("utf-8").strip()
+CLIF_CXX_FLAGS="-I{}/include".format(RESOURCE_DIR)
 
 if KALDI_DIR:
     KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
@@ -71,8 +80,6 @@ if KALDI_DIR:
         TFRNNLM_CXX_FLAGS = TFRNNLM_CXX_FLAGS.decode("utf-8").strip()
         TF_LIB_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow",
                                   "bazel-bin", "tensorflow")
-        # TFRNNLM_LDLIBS = check_output(['make', 'print-LDLIBS'])
-        # TFRNNLM_LDLIBS = TFRNNLM_LDLIBS.decode("utf-8").strip()
         check_call(["rm", "Makefile"])
 else:
   raise RuntimeError("KALDI_DIR environment variable is not set.")
@@ -94,8 +101,8 @@ if DEBUG:
     print("#"*50)
     print("CWD:", CWD)
     print("PYCLIF:", PYCLIF)
+    print("CLIF_MATCHER:", CLIF_MATCHER)
     print("KALDI_DIR:", KALDI_DIR)
-    print("CLIF_DIR:", CLIF_DIR)
     print("CXX_FLAGS:", CXX_FLAGS)
     print("CLIF_CXX_FLAGS:", CLIF_CXX_FLAGS)
     print("BUILD_DIR:", BUILD_DIR)
@@ -148,7 +155,7 @@ class build_ext(setuptools.command.build_ext.build_ext):
         import numpy as np
         CMAKE_ARGS = ['-DKALDI_DIR=' + KALDI_DIR,
                       '-DPYCLIF=' + PYCLIF,
-                      '-DCLIF_DIR=' + CLIF_DIR,
+                      '-DCLIF_MATCHER=' + CLIF_MATCHER,
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
                       '-DNUMPY_INC_DIR='+ np.get_include(),
