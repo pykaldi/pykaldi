@@ -89,7 +89,7 @@ elif [ -d "$CLIFSRC_DIR" ]; then
 fi
 
 if ! $clif_installed; then
-	$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR $CLIF_DIR "${CMAKE_PY_FLAGS[@]}" || exit 1
+	PATH="$PROTOBUF_DIR/bin:$PATH" PKG_CONFIG_PATH="$PROTOBUF_DIR" $TOOLS_DIR/install_clif.sh $CLIFSRC_DIR $CLIF_DIR "${CMAKE_PY_FLAGS[@]}" || exit 1
 fi
 
 # Kaldi
