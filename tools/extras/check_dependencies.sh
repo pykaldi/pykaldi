@@ -38,7 +38,6 @@ if ! which python3 >&/dev/null; then
   echo ""
 fi
 
-
 # Check (command) dependencies
 for c in git cmake autoconf automake curl make g++ unzip wget svn pkg-config
 do
