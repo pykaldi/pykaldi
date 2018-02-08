@@ -173,7 +173,7 @@ from "rnnlm/rnnlm-example-utils.h":
       In the explanation below, the index `i` encompasses both the time `t`
       and the member `n` within the minibatch.
       The objective function referred to here is of the form
-        `objf = \\\sum_i weight(i) * ( num_term(i) + den_term(i) )`
+        `objf = \\sum_i weight(i) * ( num_term(i) + den_term(i) )`
       where num_term(i) is the log-prob of the 'correct' word, which equals
       the dot product of the neural-network output with the word embedding,
       which we can write as follows
@@ -183,9 +183,9 @@ from "rnnlm/rnnlm-example-utils.h":
         `l(i, w) = vec_vec(nnet_output.Row(i), word_embedding.Row(w))`.
       Without importance sampling (if `len(minibatch.sampled_words) == 0`),
       we get
-        `den_term(i) = 1.0 - (\\\sum_w q(i,w))`
+        `den_term(i) = 1.0 - (\\sum_w q(i,w))`
       This is a lower bound on the 'natural' normalizer term which is of the
-      form `-log(\\\sum_w p(i,w))`, and its linearity in the p's allows
+      form `-log(\\sum_w p(i,w))`, and its linearity in the p's allows
       importance sampling). Here,
         `p(i, w) = exp(l(i, w))`
 
@@ -196,7 +196,7 @@ from "rnnlm/rnnlm-example-utils.h":
 
       With importance sampling (if minibatch.sampled_words.size() > 0),
       `den_term` equals
-        `den_term(i) =  1.0 - (\\\sum_w q(w,i) * sample_inv_prob(w,i))`
+        `den_term(i) =  1.0 - (\\sum_w q(w,i) * sample_inv_prob(w,i))`
       where `sample_inv_prob(w, i)` is zero if word w was not sampled
       for this `t`, and 1.0 / (the probability with which it was sampled)
       if it was sampled.
@@ -236,7 +236,7 @@ from "rnnlm/rnnlm-example-utils.h":
         * **objf_den_exact** -- If we're not doing sampling (i.e. if
           `len(minibatch.sampled_words) == 0`), the 'exact' denominator part of
           the objective function, i.e. the weighted sum of `exact_den_term(i) =
-          -log(\\\sum_w p(i,w))`. If we are sampling, then there is no exact
+          -log(\\sum_w p(i,w))`. If we are sampling, then there is no exact
           denominator part, and this will be set to zero. This is provided for
           diagnostic purposes. Derivatives will be computed w.r.t. the
           objective consisting of `objf_num + objf_den`, i.e. ignoring the
