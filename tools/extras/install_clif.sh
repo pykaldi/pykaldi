@@ -58,9 +58,14 @@ fi
   PYTHON_EXECUTABLE=$(which python)
 #fi
 
+  PYTHON_PIP=$(which pip)
+
 #if [ ! -z "$PYTHON_LIBRARY" ]; then
   PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
 #fi
+
+
+
 
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
