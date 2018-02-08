@@ -62,9 +62,9 @@ fi
 # Help cmake find the correct python
 #######################################################################################################
 PYTHON=$(which python)
-if [ -z "$PYTHON_EXECUTABLE" ]; then
-    PYTHON="$PYTHON_EXECUTABLE"
-fi
+#if [ -z "$PYTHON_EXECUTABLE" ]; then
+#    PYTHON="$PYTHON_EXECUTABLE"
+#fi
 
 ####################################################################
 # Sets CLIF_DIR to be the same as the virtualenv we're

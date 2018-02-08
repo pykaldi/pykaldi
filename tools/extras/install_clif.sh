@@ -31,8 +31,11 @@
 #      $PYTHON_EXECUTABLE - path to the python binaries
 #      $PYTHON_LIBRARY - path to the python libraries
 
-set -e
+set -e -x
 
+# From: https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
+# Gets the CWD regardless of where this script is called from
+TOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 CLIFSRC_DIR="$PWD"
 if [[ -n "$1" ]]; then
@@ -51,13 +54,13 @@ fi
 # Python settings
 # Help cmake find the correct python
 #######################################################################################################
-if [ ! -z "$PYTHON_EXECUTABLE" ]; then
+#if [ ! -z "$PYTHON_EXECUTABLE" ]; then
   PYTHON_EXECUTABLE=$(which python)
-fi
+#fi
 
-if [ ! -z "$PYTHON_LIBRARY" ]; then
-  PYTHON_LIBRARY=$($PYTHON_EXECUTABLE findPythonLib.py)
-fi
+#if [ ! -z "$PYTHON_LIBRARY" ]; then
+  PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
+#fi
 
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
