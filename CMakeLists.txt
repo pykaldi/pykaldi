@@ -17,6 +17,7 @@ find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 
 ####################################################################################################
+# Find CLIF
 if(NOT PYCLIF)
   set(PYCLIF $ENV{PYCLIF})
   if (NOT PYCLIF)
@@ -28,26 +29,25 @@ if(NOT PYCLIF)
 endif(NOT PYCLIF)
 message("Using PYCLIF: ${PYCLIF}")
 
-if(NOT CLIF_DIR)
-  set(CLIF_DIR $ENV{CLIF_DIR})
-  if(NOT CLIF_DIR)
-    string(REGEX REPLACE "/bin/pyclif$" "" CLIF_DIR ${PYCLIF})
-    message("Environment variable CLIF_DIR or option -DCLIF_DIR was not set. Defaulting to ${CLIF_DIR}.")
-  endif(NOT CLIF_DIR)
-endif(NOT CLIF_DIR)
-message("Using CLIF_DIR: ${CLIF_DIR}")
-
-# Find clif-matcher
-find_program(CLIF_MATCHER clif-matcher PATHS ${CLIF_DIR}, ${CLIF_DIR}/clang/bin)
 if(NOT CLIF_MATCHER)
-  message(FATAL_ERROR "Could not find 'clif-matcher' in ${CLIF_DIR}/clang/bin/.")
+  set(CLIF_MATCHER $ENV{CLIF_MATCHER})
+  if (NOT CLIF_MATCHER)
+    get_filename_component(_Python_PREFIX "${PYTHON_LIBRARIES}" PATH)
+    get_filename_component(_Python_PREFIX "${_Python_PREFIX}" PATH)
+    find_program(CLIF_MATCHER clif-matcher PATH ${_Python_PREFIX}/clang/bin)
+    unset(_Python_PREFIX)
+    if(NOT CLIF_MATCHER)
+      message(FATAL_ERROR "Could not find 'clif-matcher'. Set CLIF_MATCHER environment variable or -DCLIF_MATCHER option.")
+    endif(NOT CLIF_MATCHER)
+  endif(NOT CLIF_MATCHER)
 endif(NOT CLIF_MATCHER)
+message("Using CLIF_MATCHER: ${CLIF_MATCHER}")
 
 # Find Kaldi and its dependencies (Atlas, OpenFst, portaudio)
 if(NOT KALDI_DIR)
   set(KALDI_DIR $ENV{KALDI_DIR})
   if(NOT KALDI_DIR)
-    message(FATAL_ERROR "You need to specify Kaldi directory. Set KALDI_DIR environmen variable or -DKALDI_DIR option.")
+    message(FATAL_ERROR "You need to specify Kaldi directory. Set KALDI_DIR environment variable or -DKALDI_DIR option.")
   endif(NOT KALDI_DIR)
 endif(NOT KALDI_DIR)
 
@@ -64,7 +64,6 @@ if(NOT NUMPY_INC_DIR)
 endif(NOT NUMPY_INC_DIR)
 
 ####################################################################################################
-# From: https://github.com/usc-sail/barista/blob/master/CMakeLists.txt
 #  Set compiler and linker flags
 ####################################################################################################
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
