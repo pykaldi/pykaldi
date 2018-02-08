@@ -22,16 +22,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################################
-
+set -x -e 
 CXX=${CXX:-g++}
 status=0
 
 if ! which python2.7 >&/dev/null; then
+  echo ""
   echo "$0: python2.7 is not installed"
+  echo ""
 fi
 
 if ! which python3 >&/dev/null; then
+  echo ""
   echo "$0: python3 is not installed"
+  echo ""
 fi
 
 
@@ -45,43 +49,78 @@ command -v libtoolize >/dev/null 2>&1 || { echo "libtool is not installed"; }
 
 # Taken from Kaldi extras/check_dependencies.sh
 if ! echo "#include <zlib.h>" | $CXX -E - >&/dev/null; then
+    echo ""
     echo "zlib is not installed."
+    echo ""
     status=1
 fi
 
 # TODO: Check build-essential, libatlas3-base
 
-# Check python packages
-echo ""
-echo ""
 
-if ! $PYTHON_EXECUTABLE -c 'import numpy'; then
+#######################################################################################################
+# Python settings
+# Help cmake find the correct python
+#######################################################################################################
+PYTHON=$(which python)
+if [ -z "$PYTHON_EXECUTABLE" ]; then
+    PYTHON="$PYTHON_EXECUTABLE"
+fi
+
+####################################################################
+# Sets CLIF_DIR to be the same as the virtualenv we're
+# currently running inside. 
+####################################################################
+CLIF_DIR=$($PYTHON -c 'from distutils.sysconfig import get_config_var; print(get_config_var("prefix"))')
+if [ -z "$CLIF_DIR" ]; then
+    echo ""
+    echo "Python virtual environment $CLIF_DIR was not found!"
+    echo ""
+    status=1
+fi
+
+# Check python packages
+if ! $PYTHON -c 'import numpy'; then
+    echo ""
     echo "Python package numpy not found in environment."
     echo "Please install it with 'pip install \"numpy>=1.13.1\"'"
+    echo ""
     status=1
 else
-    NV=$($PYTHON_EXECUTABLE -c 'import numpy; print(numpy.__version__)' | cut -f2 -d\ ); NV=(${NV//./ })
+    NV=$($PYTHON -c 'import numpy; print(numpy.__version__)' | cut -f2 -d\ ); NV=(${NV//./ })
     if (( NV[0] < 1 || NV[0] == 1 && NV[1] < 13 || NV[0] == 1 && NV[1] == 13 && NV[2] < 1 )); then
+        echo ""
         echo "Numpy version ${NV[@]} found but >= 1.13.1 needed."
+        echo ""
         status=1
     fi
 fi
 
-echo ""
-echo ""
-
-if ! $PYTHON_EXECUTABLE -c 'import setuptools'; then
+if ! $PYTHON -c 'import setuptools'; then
+    echo ""
     echo "Python package setuptools not found in environment."
     echo "Please install it with 'pip install \"setuptools>=27.2.0\"'"
+    echo ""
     status=1
 fi
 
-echo ""
-echo ""
-
-if ! $PYTHON_EXECUTABLE -c 'import pyparsing'; then
+if ! $PYTHON -c 'import pyparsing'; then
+    echo ""
     echo "Python package pyparsing not found in environment."
     echo "Please install it with 'pip install \"pyparsing>=2.2.0\"'"
+    echo ""
+    status=1
+fi
+
+####################################################################
+# Check write access to package dir
+####################################################################
+PYTHON_PACKAGE_DIR=$($PYTHON -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+if [ ! -w $PYTHON_PACKAGE_DIR ]; then
+    echo ""
+    echo "We cannot write to $PYTHON_PACKAGE_DIR."
+    echo "Did you forget runing this with sudo? "
+    echo "sudo $0"
     status=1
 fi
 
