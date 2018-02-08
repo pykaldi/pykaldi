@@ -52,37 +52,42 @@ RESOURCE_DIR = check_output("echo '#include <limits.h>' | {} -xc -v - 2>&1 "
                             .format(CLANG), shell=True).decode("utf-8").strip()
 CLIF_CXX_FLAGS="-I{}/include".format(RESOURCE_DIR)
 
-if KALDI_DIR:
-    KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
-    with open("Makefile", "w") as makefile:
-        print("include {}".format(KALDI_MK_PATH), file=makefile)
-        print("print-% : ; @echo $($*)", file=makefile)
-    CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
-    CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip()
-    KALDI_CUDA = CUDA.upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
-    check_call(["rm", "Makefile"])
+if not KALDI_DIR:
+    KALDI_DIR = os.path.join(CWD, "tools/kaldi")
 
-    TFRNNLM_LIB_PATH = os.path.join(KALDI_DIR, "src", "lib",
-                                    "libkaldi-tensorflow-rnnlm.so")
-    KALDI_TFRNNLM = True if os.path.exists(TFRNNLM_LIB_PATH) else False
-    if KALDI_TFRNNLM:
-        with open("Makefile", "w") as makefile:
-            TF_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow")
-            print("TENSORFLOW = {}".format(TF_DIR), file=makefile)
-            TFRNNLM_MK_PATH = os.path.join(KALDI_DIR, "src", "tfrnnlm",
-                                           "Makefile")
-            for line in open(TFRNNLM_MK_PATH):
-                if line.startswith("include") or line.startswith("TENSORFLOW"):
-                    continue
-                print(line, file=makefile, end='')
-            print("print-% : ; @echo $($*)", file=makefile)
-        TFRNNLM_CXX_FLAGS = check_output(['make', 'print-EXTRA_CXXFLAGS'])
-        TFRNNLM_CXX_FLAGS = TFRNNLM_CXX_FLAGS.decode("utf-8").strip()
-        TF_LIB_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow",
-                                  "bazel-bin", "tensorflow")
-        check_call(["rm", "Makefile"])
-else:
-  raise RuntimeError("KALDI_DIR environment variable is not set.")
+KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
+if not os.path.isfile(KALDI_MK_PATH):
+  raise RuntimeError("Could not find Kaldi installation. Please install Kaldi "
+                     "under the tools directory or set KALDI_DIR environment "
+                     "variable to where Kaldi is installed.")
+
+with open("Makefile", "w") as makefile:
+    print("include {}".format(KALDI_MK_PATH), file=makefile)
+    print("print-% : ; @echo $($*)", file=makefile)
+CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
+CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip()
+KALDI_CUDA = CUDA.upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
+check_call(["rm", "Makefile"])
+
+TFRNNLM_LIB_PATH = os.path.join(KALDI_DIR, "src", "lib",
+                                "libkaldi-tensorflow-rnnlm.so")
+KALDI_TFRNNLM = True if os.path.exists(TFRNNLM_LIB_PATH) else False
+if KALDI_TFRNNLM:
+    with open("Makefile", "w") as makefile:
+        TF_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow")
+        print("TENSORFLOW = {}".format(TF_DIR), file=makefile)
+        TFRNNLM_MK_PATH = os.path.join(KALDI_DIR, "src", "tfrnnlm",
+                                       "Makefile")
+        for line in open(TFRNNLM_MK_PATH):
+            if line.startswith("include") or line.startswith("TENSORFLOW"):
+                continue
+            print(line, file=makefile, end='')
+        print("print-% : ; @echo $($*)", file=makefile)
+    TFRNNLM_CXX_FLAGS = check_output(['make', 'print-EXTRA_CXXFLAGS'])
+    TFRNNLM_CXX_FLAGS = TFRNNLM_CXX_FLAGS.decode("utf-8").strip()
+    TF_LIB_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow",
+                              "bazel-bin", "tensorflow")
+    check_call(["rm", "Makefile"])
 
 MAKE_ARGS = []
 try:

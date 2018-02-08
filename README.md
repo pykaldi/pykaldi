@@ -193,12 +193,14 @@ source env/bin/activate
 #### Dependencies
 
 To build PyKaldi from source, you need a number of standard packages to be
-installed on your system. On Ubuntu 16.04, running the following command will
+installed on your system. On Ubuntu 16.04, running the following commands will
 install standard packages needed for installation.
 
 ```
 sudo apt-get install autoconf automake cmake curl g++ git libatlas3-base \
     libtool make pkg-config subversion unzip wget zlib1g-dev
+
+pip install setuptools pip numpy pyparsing
 ```
 
 You can check if needed packages are installed on your system by running the
@@ -292,7 +294,7 @@ If you want to build against a different Kaldi installation, set the following
 environment variable before running the installation command.
 
 ```bash
-export KALDI_DIR=<directory where Kaldi is installed, e.g. "$PWD"/tools/kaldi>
+export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME/tools/kaldi">
 ```
 
 If `pyclif` package is installed in a Python environment different from active
@@ -300,8 +302,8 @@ Python environment, set the following environment variables before running the
 installation command.
 
 ```bash
-export PYCLIF=<path to pyclif executable, e.g. python-prefix/bin/pyclif>
-export CLIF_MATCHER=<path to clif-matcher executable, e.g. python-prefix/clang/bin/clif-matcher>
+export PYCLIF=<path to pyclif executable, e.g. "$HOME/anaconda3/envs/clif/bin/pyclif">
+export CLIF_MATCHER=<path to clif-matcher executable, e.g. "$HOME/anaconda3/envs/clif/clang/bin/clif-matcher">
 ```
 
 If active Python environment requires `sudo` for installing new packages, e.g.
