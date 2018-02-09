@@ -92,7 +92,7 @@ fi
 cd "$PROTOBUF_DIR"
 ./autogen.sh
 ./configure --prefix $PROTOBUF_DIR
-make -j  && make install
+make -j4  && make install
 
 # Install protobuf python package
 cd "$PROTOBUF_DIR/python"

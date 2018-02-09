@@ -36,6 +36,10 @@ headers are included.
 #include <type_traits>
 // 
 // CLIF use `::proto2::Message` as proto2_Message
+/** NOTE (DC):
+  Commented out because we don't need CLIF's protobuf wrapping functionality at the moment
+  and we don't want PyKaldi to depend on the availability of protobuf headers.
+**/
 // #include "clif/python/pyproto.h"
 #include "clif/python/postconv.h"
 #include "clif/python/runtime.h"

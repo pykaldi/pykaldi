@@ -5,36 +5,39 @@
 # Installation script for PyKaldi
 # 
 # Usage:
-# 	./INSTALL.sh [python] [pip] [python_library]
+# 	./INSTALL.sh [python]
 # 
-# 	python, pip (optional) point to the location of the executables. Defaults to $(which ..)
-# 	python_library (optional) location of the libpython shared library. As default runs a script to find it.
+# 	python - Python executable to use. Defaults to current python.
 # 
 # 
 
 set -e -x 
-INSTALL_NINJA=true
+
+#######################################################################################################
+# Check if we are in the pykaldi directory
+# Else error out
+#######################################################################################################
+# Gets absolute script directory regardless of where it was called from
+script_full_path=$(cd $(dirname "$0"); pwd)
+
+if [ ! "$script_full_path" = "$PWD" ]; then
+	echo "Change directory to PyKaldi directory before running this script."
+	exit 1
+fi
 
 #######################################################################################################
 # Installation configuration
-# This determine where things are going to get installed
+# These determine where things are going to get installed
 #######################################################################################################
 PYKALDI_DIR="$PWD"
-TOOLS_DIR="$PYKALDI_DIR/tools/extras"
+TOOLS_DIR="$PYKALDI_DIR/extras/tools"
 PROTOBUF_DIR="$TOOLS_DIR/protobuf"
-# NINJA_DIR="$TOOLS_DIR/ninja"
 CLIFSRC_DIR="$TOOLS_DIR/clif"
-export KALDI_DIR="$TOOLS_DIR/kaldi"
+KALDI_DIR="$TOOLS_DIR/kaldi"
 
 PYTHON_EXECUTABLE=$(which python)
 if [[ -n "$1" ]]; then
 	PYTHON_EXECUTABLE="$1"
-	shift
-fi
-
-PYTHON_PIP=$(which pip)
-if [[ -n "$1" ]]; then
-	PYTHON_PIP="$1"
 	shift
 fi
 
@@ -63,19 +66,6 @@ if ! $protobuf_installed; then
 	$TOOLS_DIR/install_protobuf.sh $PROTOBUF_DIR $PYTHON_EXECUTABLE || exit 1
 fi
 
-# Optional: install ninja
-# -----------------------
-if $INSTALL_NINJA; then
-	
-	$PYTHON_PIP install ninja
-
-	# Or from source...
-	# $TOOLS_DIR/install_ninja.sh $NINJA_DIR || exit 1
-	# Add ninja to path
-	# export PATH="$PATH:$NINJA_DIR"
-
-fi
-
 # clif
 # -----------------------
 clif_installed=false
@@ -89,7 +79,7 @@ elif [ -d "$CLIFSRC_DIR" ]; then
 fi
 
 if ! $clif_installed; then
-	PATH="$PROTOBUF_DIR/bin:$PATH" PKG_CONFIG_PATH="$PROTOBUF_DIR" $TOOLS_DIR/install_clif.sh $CLIFSRC_DIR $CLIF_DIR "${CMAKE_PY_FLAGS[@]}" || exit 1
+	$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR || exit 1
 fi
 
 # Kaldi
@@ -109,8 +99,6 @@ fi
 # Set env variables
 ####################################################################
 export PATH="$PATH:$CLIF_DIR/clif/bin"
-CLANG_RESOURCE_DIR=$(echo '#include <limits.h>' | $CLIF_DIR/clang/bin/clang -xc -v - 2>&1 | tr ' ' '\n' | grep -A1 resource-dir | tail -1)
-export CLIF_CXX_FLAGS="-I${CLANG_RESOURCE_DIR}/include"
 export DEBUG=0
 
 ###########################################################################
@@ -129,13 +117,10 @@ cat <<EOF
 
 Done installing PyKaldi!
 
-==============================================================================
-For developers:
-==============================================================================
-It is highly recomended that you add the following variables to your .bashrc:
+Remember to update your \$PATH:
+
+export PATH="\$PATH:$CLIF_DIR/clif/bin"
 
 
 EOF
-# echo "export LD_LIBRARY_PATH=\"$PROTOBUF_DIR/lib:\${LD_LIBRARY_PATH}\""
-echo "export CLIF_CXX_FLAGS=\"-I$CLIF_DIR/clang/lib/clang/5.0.0/include\""
 exit 0

@@ -21,52 +21,36 @@
 # 
 #
 # Usage:
-#   ./install_clif.sh [CLIFSRC_DIR] [CLIF_VIRTUALENV] [..CMAKE_PY_FLAGS..]
+#   ./install_clif.sh [CLIF_DIR] [PYTHON_EXECUTABLE]
 #
-#   CLIFSRC_DIR - directory where clif will be installed (default: $PWD)
-#   CLIF_VIRTUALENV - directory of the virtualenv where to install pyclif (default to "$CLIFSRC_DIR/../opt")
-#   ..CMAKE_PY_FLAGS.. - Flags for CMAKE to find the correct python bin and libs
-#   
-#   Env vars:
-#      $PYTHON_EXECUTABLE - path to the python binaries
-#      $PYTHON_LIBRARY - path to the python libraries
+#   CLIF_DIR - directory where clif will be installed (default: $PWD)
+#   PYTHON_EXECUTABLE - python executable to use (defaults to current python).
 
 set -e -x
 
-# From: https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 # Gets the CWD regardless of where this script is called from
 TOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 CLIFSRC_DIR="$PWD"
-if [[ -n "$1" ]]; then
+if [ -n "$1" ]; then
   CLIFSRC_DIR="$1"
   shift
 fi
 
-CLIF_VIRTUALENV="$CLIFSRC_DIR/../opt"
-if [[ -n "$1" ]]; then
-  CLIF_VIRTUALENV="$1"
+PYTHON_EXECUTABLE=$(which python)
+if [ -n "$1"]; then
+  PYTHON_EXECUTABLE="$1"
   shift
 fi
 
+PYTHON_PIP=$(which pip)
+
+PYTHON_ENV=$($PYTHON_EXECUTABLE -c "import sys; print(sys.prefix)")
 
 #######################################################################################################
-# Python settings
 # Help cmake find the correct python
 #######################################################################################################
-#if [ ! -z "$PYTHON_EXECUTABLE" ]; then
-  PYTHON_EXECUTABLE=$(which python)
-#fi
-
-  PYTHON_PIP=$(which pip)
-
-#if [ ! -z "$PYTHON_LIBRARY" ]; then
-  PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
-#fi
-
-
-
-
+PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
@@ -74,9 +58,6 @@ PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_
 # Fix cmake flags to find the correct python
 ####################################################################
 CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
-if [[ -n "$@" ]]; then
-  CMAKE_PY_FLAGS=( "$@" )
-fi
 
 ####################################################################
 # Ensure CMake is installed (needs 3.5+)
@@ -84,6 +65,19 @@ fi
 CV=$(cmake --version | head -1 | cut -f3 -d\ ); CV=(${CV//./ })
 if (( CV[0] < 3 || CV[0] == 3 && CV[1] < 5 )); then
   echo "Install CMake version 3.5+"
+  exit 1
+fi
+
+####################################################################
+# Add protobuf to PATH
+# Put these here so that which protoc and pkg-config look in $PROTOBUF_DIR too
+####################################################################
+
+if [ -d "$TOOLS_DIR/protobuf" ]; then
+  export PATH="$PROTOBUF_DIR/bin:$PATH"
+  export PKG_CONFIG_PATH="$PROTOBUF_DIR:$PKG_CONFIG_PATH"
+else
+  echo "Protobuf not found in $TOOLS_DIR/protobuf."
   exit 1
 fi
 
@@ -109,34 +103,13 @@ CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
 LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
 BUILD_DIR="$LLVM_DIR/build_matcher"
 
-if $DEBUG; then
-  echo ""
-  echo "Installing clif with the following params: "
-  echo "PATH:$PATH"
-  echo "CLIF_GIT: $CLIF_GIT"
-  echo "CLIFSRC_DIR: $CLIFSRC_DIR"
-  echo "CLIF_VIRTUALENV: $CLIF_VIRTUALENV"
-  echo "LLVM_DIR: $LLVM_DIR"
-  echo "BUILD_DIR: $BUILD_DIR"
-  echo "PROTOBUF_INCLUDE: $PROTOBUF_INCLUDE"
-  echo "PROTOBUF_LIBS: $PROTOBUF_LIBS"
-  echo "CMAKE_PY_FLAGS: ${CMAKE_PY_FLAGS[@]}"
-  echo ""
-#  exit 1
+if [ ! -d "$CLIFSRC_DIR" ]; then
+  git clone $CLIF_GIT $CLIFSRC_DIR
+else
+  echo "Destination $CLIFSRC_DIR already exists."
 fi
 
-
-if [ -d "$CLIFSRC_DIR" ]; then
-  echo "Destination $CLIFSRC_DIR already exists!, skipping."
-  exit 0
-fi
-
-
-# Install clif from dogan's fork
-git clone $CLIF_GIT $CLIFSRC_DIR
 cd "$CLIFSRC_DIR"
-
-# If Ninja is installed, use it instead of make.  MUCH faster.
 
 declare -a CMAKE_G_FLAG
 declare -a MAKE_PARALLELISM
@@ -176,7 +149,7 @@ ln -s -f -n "$CLIFSRC_DIR/clif" clif
 
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
-cmake -DCMAKE_INSTALL_PREFIX="$CLIF_VIRTUALENV/clang" \
+cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
       -DCMAKE_PREFIX_PATH="$PROTOBUF_PREFIX_PATH" \
       -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=true \
       -DLLVM_INSTALL_TOOLCHAIN_ONLY=true \
@@ -199,6 +172,6 @@ cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
 CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
 
-echo "Clif installed to $CLIF_VIRTUALENV"
+echo "Clif installed to $PYTHON_ENV"
 touch "$CLIFSRC_DIR/.DONE"
 exit 0

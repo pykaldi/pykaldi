@@ -106,6 +106,6 @@ def get_python_library(python_version):
     return python_library
 
 python_version = get_python_version()
-python_library = get_python_library(python_version)
+python_library = os.path.abspath(get_python_library(python_version))
 
 print(python_library)

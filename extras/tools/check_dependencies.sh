@@ -21,11 +21,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# 
+# 
+# Usage: ./check_dependencies.sh [PYTHON]
+# 
+#   PYTHON is the python executable to use (optional, defaults to current python)
+# 
+# TODO (VM):
+#   Check pip matches python 
 ################################################################################################
+
 set -x -e 
 CXX=${CXX:-g++}
 status=0
 
+# Which packages to check
+PKGS=( git cmake autoconf automake curl make g++ unzip wget svn pkg-config libtoolize )
+
+# Which python packages to check
+PY_PKGS=( numpy setuptools pyparsing ninja )
+
+################################################################################################
+# Checks python binaries in system installation
+################################################################################################
 if ! which python2.7 >&/dev/null; then
   echo ""
   echo "$0: python2.7 is not installed"
@@ -38,15 +56,18 @@ if ! which python3 >&/dev/null; then
   echo ""
 fi
 
+################################################################################################
 # Check (command) dependencies
-for c in git cmake autoconf automake curl make g++ unzip wget svn pkg-config
-do
+################################################################################################
+for c in ${PKGS[@]}; do
     command -v $c >/dev/null 2>&1 || { echo >&2 "$c is required but it was not found"; }
 done
 
-command -v libtoolize >/dev/null 2>&1 || { echo "libtool is not installed"; }
 
+################################################################################################
 # Taken from Kaldi extras/check_dependencies.sh
+# Check zlib is installed
+################################################################################################
 if ! echo "#include <zlib.h>" | $CXX -E - >&/dev/null; then
     echo ""
     echo "zlib is not installed."
@@ -56,36 +77,28 @@ fi
 
 # TODO: Check build-essential, libatlas3-base
 
-
 #######################################################################################################
-# Python settings
-# Help cmake find the correct python
+# Define python executable to use
 #######################################################################################################
 PYTHON=$(which python)
-#if [ -z "$PYTHON_EXECUTABLE" ]; then
-#    PYTHON="$PYTHON_EXECUTABLE"
-#fi
-
-####################################################################
-# Sets CLIF_DIR to be the same as the virtualenv we're
-# currently running inside. 
-####################################################################
-CLIF_DIR=$($PYTHON -c 'from distutils.sysconfig import get_config_var; print(get_config_var("prefix"))')
-if [ -z "$CLIF_DIR" ]; then
-    echo ""
-    echo "Python virtual environment $CLIF_DIR was not found!"
-    echo ""
-    status=1
+if [ -n "$1" ]; then
+    PYTHON="$1"
 fi
 
-# Check python packages
-if ! $PYTHON -c 'import numpy'; then
-    echo ""
-    echo "Python package numpy not found in environment."
-    echo "Please install it with 'pip install \"numpy>=1.13.1\"'"
-    echo ""
-    status=1
-else
+####################################################################
+# Checks python packages
+####################################################################
+for c in ${PY_PKGS[@]}; do
+    if [ ! $PYTHON -c "import $c" ]; then
+        echo ""
+        echo "Python package $c not found in environment."
+        echo ""
+        status=1
+    fi
+done
+
+# Checks numpy version
+if [ $PYTHON -c "import numpy" ]; then
     NV=$($PYTHON -c 'import numpy; print(numpy.__version__)' | cut -f2 -d\ ); NV=(${NV//./ })
     if (( NV[0] < 1 || NV[0] == 1 && NV[1] < 13 || NV[0] == 1 && NV[1] == 13 && NV[2] < 1 )); then
         echo ""
@@ -93,22 +106,6 @@ else
         echo ""
         status=1
     fi
-fi
-
-if ! $PYTHON -c 'import setuptools'; then
-    echo ""
-    echo "Python package setuptools not found in environment."
-    echo "Please install it with 'pip install \"setuptools>=27.2.0\"'"
-    echo ""
-    status=1
-fi
-
-if ! $PYTHON -c 'import pyparsing'; then
-    echo ""
-    echo "Python package pyparsing not found in environment."
-    echo "Please install it with 'pip install \"pyparsing>=2.2.0\"'"
-    echo ""
-    status=1
 fi
 
 ####################################################################
@@ -123,6 +120,9 @@ if [ ! -w $PYTHON_PACKAGE_DIR ]; then
     status=1
 fi
 
+####################################################################
+# Finalize
+####################################################################
 if [ $status -eq 0 ]; then
     echo "$0: all OK."
 fi

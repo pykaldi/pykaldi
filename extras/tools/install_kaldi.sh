@@ -6,12 +6,13 @@
 # 
 set -x -e
 
-if [[ "$1" =~ ^-?-h ]]; then
-  echo "Usage: $0 [KALDI_DIR]"
-  exit 1
+KALDI_DIR="$PWD"
+if [ -n "$1" ]; then
+	KALDI_DIR="$1"
+	shift
 fi
 
-KALDI_DIR="$1"
+
 KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
 
 if [ ! -d "$KALDI_DIR" ]; then
