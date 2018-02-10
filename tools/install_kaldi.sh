@@ -6,32 +6,27 @@
 # 
 set -x -e
 
+KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
+
 KALDI_DIR="$PWD"
 if [ -n "$1" ]; then
 	KALDI_DIR="$1"
 	shift
 fi
 
-
-KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
-
 if [ ! -d "$KALDI_DIR" ]; then
 	git clone $KALDI_GIT $KALDI_DIR
 else
-	echo "$KALDI_DIR already existed!"
+	echo "$KALDI_DIR already exists!"
 fi
 
 cd "$KALDI_DIR/tools"
 
 # Prevent kaldi from switching default python versions
-if [ ! -d "python" ]; then
-    mkdir "python"
-fi
-
+mkdir -p "python"
 touch "python/.use_default_python"
 
-# Skip dependency check (it is called by make anyways)
-# ./extras/check_dependencies.sh
+./extras/check_dependencies.sh
 
 make -j4 
 

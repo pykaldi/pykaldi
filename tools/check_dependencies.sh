@@ -31,7 +31,7 @@
 #   Check pip matches python 
 ################################################################################################
 
-set -x -e 
+set -e
 CXX=${CXX:-g++}
 status=0
 
@@ -39,7 +39,7 @@ status=0
 PKGS=( git cmake autoconf automake curl make g++ unzip wget svn pkg-config libtoolize )
 
 # Which python packages to check
-PY_PKGS=( numpy setuptools pyparsing ninja )
+PY_PKGS=( numpy setuptools pyparsing )
 
 ################################################################################################
 # Checks python binaries in system installation
@@ -89,7 +89,8 @@ fi
 # Checks python packages
 ####################################################################
 for c in ${PY_PKGS[@]}; do
-    if [ ! $PYTHON -c "import $c" ]; then
+    $PYTHON -c "import $c"
+    if [ ! $? ]; then
         echo ""
         echo "Python package $c not found in environment."
         echo ""
@@ -98,7 +99,8 @@ for c in ${PY_PKGS[@]}; do
 done
 
 # Checks numpy version
-if [ $PYTHON -c "import numpy" ]; then
+$PYTHON -c "import numpy"
+if [ ! $? ]; then
     NV=$($PYTHON -c 'import numpy; print(numpy.__version__)' | cut -f2 -d\ ); NV=(${NV//./ })
     if (( NV[0] < 1 || NV[0] == 1 && NV[1] < 13 || NV[0] == 1 && NV[1] == 13 && NV[2] < 1 )); then
         echo ""
@@ -106,18 +108,6 @@ if [ $PYTHON -c "import numpy" ]; then
         echo ""
         status=1
     fi
-fi
-
-####################################################################
-# Check write access to package dir
-####################################################################
-PYTHON_PACKAGE_DIR=$($PYTHON -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-if [ ! -w $PYTHON_PACKAGE_DIR ]; then
-    echo ""
-    echo "We cannot write to $PYTHON_PACKAGE_DIR."
-    echo "Did you forget runing this with sudo? "
-    echo "sudo $0"
-    status=1
 fi
 
 ####################################################################

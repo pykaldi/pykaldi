@@ -25,14 +25,20 @@ if [ ! "$script_full_path" = "$PWD" ]; then
 	exit 1
 fi
 
+# Check if this script is being called inside the pykaldi dir
+if [ ! -d "$PWD/kaldi" ] || [ ! -f "$PWD/kaldi/__version__.py" ]; then
+	echo "You should run this script inside the pykaldi repository."
+	exit 1
+fi
+
 #######################################################################################################
 # Installation configuration
 # These determine where things are going to get installed
 #######################################################################################################
 PYKALDI_DIR="$PWD"
-TOOLS_DIR="$PYKALDI_DIR/extras/tools"
+TOOLS_DIR="$PYKALDI_DIR/tools"
 PROTOBUF_DIR="$TOOLS_DIR/protobuf"
-CLIFSRC_DIR="$TOOLS_DIR/clif"
+CLIF_DIR="$TOOLS_DIR/clif"
 KALDI_DIR="$TOOLS_DIR/kaldi"
 
 PYTHON_EXECUTABLE=$(which python)
@@ -69,17 +75,17 @@ fi
 # clif
 # -----------------------
 clif_installed=false
-if [ -d "$CLIFSRC_DIR" ] && [ -f "$CLIFSRC_DIR/.DONE" ]; then
+if [ -d "$CLIF_DIR" ] && [ -f "$CLIF_DIR/.DONE" ]; then
 	clif_installed=true
-elif [ -d "$CLIFSRC_DIR" ]; then
-	rm -rf "$CLIFSRC_DIR"
-	if [ -d "$CLIFSRC_DIR/../clif_backend" ]; then
-		rm -rf "$CLIFSRC_DIR/../clif_backend"
+elif [ -d "$CLIF_DIR" ]; then
+	rm -rf "$CLIF_DIR"
+	if [ -d "$CLIF_DIR/../clif_backend" ]; then
+		rm -rf "$CLIF_DIR/../clif_backend"
 	fi
 fi
 
 if ! $clif_installed; then
-	$TOOLS_DIR/install_clif.sh $CLIFSRC_DIR || exit 1
+	$TOOLS_DIR/install_clif.sh $CLIF_DIR || exit 1
 fi
 
 # Kaldi
@@ -95,32 +101,23 @@ if ! $kaldi_installed; then
 	$TOOLS_DIR/install_kaldi.sh $KALDI_DIR || exit 1
 fi
 
-####################################################################
-# Set env variables
-####################################################################
-export PATH="$PATH:$CLIF_DIR/clif/bin"
-export DEBUG=0
-
-###########################################################################
-# If you ever get to this point and you have not downloaded pykaldi repo yet:
-# 1) How? Why?...
-# 2) Just uncomment the next two lines...
-###########################################################################
-# git clone $PYKALDI_GIT $PYKALDI_DIR
-# cd $PYKALDI_DIR
-############################################################################
-
 # Install pykaldi
-python setup.py install 
+
+####################################################################
+# Check write access to package dir
+####################################################################
+PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+if [ ! -w $PYTHON_PACKAGE_DIR ]; then
+    echo ""
+    echo "We cannot write to $PYTHON_PACKAGE_DIR."
+    echo "Running following command with administrator rights "
+	sudo python setup.py install 
+else
+	python setup.py install
+fi
 
 cat <<EOF
 
 Done installing PyKaldi!
 
-Remember to update your \$PATH:
-
-export PATH="\$PATH:$CLIF_DIR/clif/bin"
-
-
 EOF
-exit 0

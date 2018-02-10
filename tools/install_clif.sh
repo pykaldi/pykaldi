@@ -21,36 +21,45 @@
 # 
 #
 # Usage:
-#   ./install_clif.sh [CLIF_DIR] [PYTHON_EXECUTABLE]
+#   ./install_clif.sh [CLIF_DIR] [PYTHON_EXECUTABLE] [PYTHON_LIBRARY]
 #
 #   CLIF_DIR - directory where clif will be installed (default: $PWD)
 #   PYTHON_EXECUTABLE - python executable to use (defaults to current python).
+#   PYTHON_LIBRARY - overrides the python library to use
 
 set -e -x
 
 # Gets the CWD regardless of where this script is called from
 TOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-CLIFSRC_DIR="$PWD"
+CLIF_DIR="$PWD"
 if [ -n "$1" ]; then
-  CLIFSRC_DIR="$1"
-  shift
+  CLIF_DIR="$1"
 fi
 
 PYTHON_EXECUTABLE=$(which python)
-if [ -n "$1"]; then
-  PYTHON_EXECUTABLE="$1"
-  shift
+if [ -n "$2" ]; then
+  PYTHON_EXECUTABLE="$2"
 fi
 
-PYTHON_PIP=$(which pip)
+PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
+if [ -n "$3" ]; then
+  PYTHON_LIBRARY="$3"
+fi
 
+PYTHON_PIP=$(which pip) || exit 1
 PYTHON_ENV=$($PYTHON_EXECUTABLE -c "import sys; print(sys.prefix)")
 
 #######################################################################################################
 # Help cmake find the correct python
 #######################################################################################################
-PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
+
+if [ ! -f "$PYTHON_LIBRARY" ]; then
+  echo "Python library $PYTHON_LIBRARY not found."
+  echo "Please specify the python library as an argument to $0"
+  exit 1
+fi
+
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
@@ -74,11 +83,8 @@ fi
 ####################################################################
 
 if [ -d "$TOOLS_DIR/protobuf" ]; then
-  export PATH="$PROTOBUF_DIR/bin:$PATH"
-  export PKG_CONFIG_PATH="$PROTOBUF_DIR:$PKG_CONFIG_PATH"
-else
-  echo "Protobuf not found in $TOOLS_DIR/protobuf."
-  exit 1
+  export PATH="$TOOLS_DIR/protobuf/bin:$PATH"
+  export PKG_CONFIG_PATH="$TOOLS_DIR/protobuf:$PKG_CONFIG_PATH"
 fi
 
 ####################################################################
@@ -100,16 +106,16 @@ PROTOBUF_LIBS="$(pkg-config --libs protobuf)"
 
 ######################################################################
 CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
-LLVM_DIR="$CLIFSRC_DIR/../clif_backend"
+LLVM_DIR="$CLIF_DIR/../clif_backend"
 BUILD_DIR="$LLVM_DIR/build_matcher"
 
-if [ ! -d "$CLIFSRC_DIR" ]; then
-  git clone $CLIF_GIT $CLIFSRC_DIR
+if [ ! -d "$CLIF_DIR" ]; then
+  git clone $CLIF_GIT $CLIF_DIR
 else
-  echo "Destination $CLIFSRC_DIR already exists."
+  echo "Destination $CLIF_DIR already exists."
 fi
 
-cd "$CLIFSRC_DIR"
+cd "$CLIF_DIR"
 
 declare -a CMAKE_G_FLAG
 declare -a MAKE_PARALLELISM
@@ -141,7 +147,7 @@ cd "$LLVM_DIR"
 svn co https://llvm.org/svn/llvm-project/llvm/trunk@307315 llvm
 cd llvm/tools
 svn co https://llvm.org/svn/llvm-project/cfe/trunk@307315 clang
-ln -s -f -n "$CLIFSRC_DIR/clif" clif
+ln -s -f -n "$CLIF_DIR/clif" clif
 
 # Build and install the CLIF backend.  Our backend is part of the llvm build.
 # NOTE: To speed up, we build only for X86. If you need it for a different
@@ -163,15 +169,27 @@ cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
 
 # Get back to the CLIF Python directory and have pip run setup.py.
 
-cd "$CLIFSRC_DIR"
+cd "$CLIF_DIR"
 # Grab the python compiled .proto
 cp "$BUILD_DIR/tools/clif/protos/ast_pb2.py" clif/protos/
 # Grab CLIF generated wrapper implementation for proto_util.
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.cc" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
-CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
+
+####################################################################
+# Check write access to package dir
+####################################################################
+PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+if [ ! -w $PYTHON_PACKAGE_DIR ]; then
+    echo ""
+    echo "We cannot write to $PYTHON_PACKAGE_DIR."
+    echo "Running following command with administrator rights "
+    sudo CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
+else
+  CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
+fi
 
 echo "Clif installed to $PYTHON_ENV"
-touch "$CLIFSRC_DIR/.DONE"
-exit 0
+touch "$CLIF_DIR/.DONE"
+

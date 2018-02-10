@@ -22,13 +22,11 @@ PROTOBUF_GIT="https://github.com/google/protobuf.git"
 PROTOBUF_DIR="$PWD"
 if [ -n "$1" ]; then
     PROTOBUF_DIR="$1"
-    shift
 fi
 
 PYTHON_EXECUTABLE=$(which python)
-if [ -n "$1" ]; then
-    PYTHON_EXECUTABLE="$1"
-    shift
+if [ -n "$2" ]; then
+    PYTHON_EXECUTABLE="$2"
 fi
 
 # Put these here so that which protoc and pkg-config look in $PROTOBUF_DIR too
@@ -97,7 +95,20 @@ make -j4  && make install
 # Install protobuf python package
 cd "$PROTOBUF_DIR/python"
 $PYTHON_EXECUTABLE setup.py build
-$PYTHON_EXECUTABLE setup.py install
+
+
+####################################################################
+# Check write access to package dir
+####################################################################
+PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+if [ ! -w $PYTHON_PACKAGE_DIR ]; then
+    echo ""
+    echo "We cannot write to $PYTHON_PACKAGE_DIR."
+    echo "Running following command with administrator rights "
+    sudo $PYTHON_EXECUTABLE setup.py install
+else
+    $PYTHON_EXECUTABLE setup.py install
+fi
 
 echo "Done installing protobuf..."
 touch "$PROTOBUF_DIR/.DONE"
