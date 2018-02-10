@@ -5,10 +5,10 @@
 # Installation script for PyKaldi
 # 
 # Usage:
-# 	./INSTALL.sh [python]
+# 	./INSTALL.sh [python] [python_lib_dir]
 # 
 # 	python - Python executable to use. Defaults to current python.
-# 
+# 	python_lib_dir - Python library to use (defaults to empty)
 # 
 
 set -e -x 
@@ -17,15 +17,6 @@ set -e -x
 # Check if we are in the pykaldi directory
 # Else error out
 #######################################################################################################
-# Gets absolute script directory regardless of where it was called from
-script_full_path=$(cd $(dirname "$0"); pwd)
-
-if [ ! "$script_full_path" = "$PWD" ]; then
-	echo "Change directory to PyKaldi directory before running this script."
-	exit 1
-fi
-
-# Check if this script is being called inside the pykaldi dir
 if [ ! -d "$PWD/kaldi" ] || [ ! -f "$PWD/kaldi/__version__.py" ]; then
 	echo "You should run this script inside the pykaldi repository."
 	exit 1
@@ -44,7 +35,10 @@ KALDI_DIR="$TOOLS_DIR/kaldi"
 PYTHON_EXECUTABLE=$(which python)
 if [[ -n "$1" ]]; then
 	PYTHON_EXECUTABLE="$1"
-	shift
+fi
+
+if [[ -n "$2" ]]; then
+	PYTHON_LIB_DIR="$2"
 fi
 
 ####################################################################
@@ -85,7 +79,7 @@ elif [ -d "$CLIF_DIR" ]; then
 fi
 
 if ! $clif_installed; then
-	$TOOLS_DIR/install_clif.sh $CLIF_DIR || exit 1
+	$TOOLS_DIR/install_clif.sh $CLIF_DIR $PYTHON_EXECUTABLE $PYTHON_LIB_DIR || exit 1
 fi
 
 # Kaldi
@@ -101,8 +95,6 @@ if ! $kaldi_installed; then
 	$TOOLS_DIR/install_kaldi.sh $KALDI_DIR || exit 1
 fi
 
-# Install pykaldi
-
 ####################################################################
 # Check write access to package dir
 ####################################################################
@@ -110,10 +102,10 @@ PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
     echo ""
     echo "We cannot write to $PYTHON_PACKAGE_DIR."
-    echo "Running following command with administrator rights "
-	sudo python setup.py install 
+    echo "Running sudo python setup.py install"
+	sudo $PYTHON_EXECUTABLE setup.py install 
 else
-	python setup.py install
+	$PYTHON_EXECUTABLE setup.py install
 fi
 
 cat <<EOF

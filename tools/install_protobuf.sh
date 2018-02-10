@@ -104,7 +104,7 @@ PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
     echo ""
     echo "We cannot write to $PYTHON_PACKAGE_DIR."
-    echo "Running following command with administrator rights "
+    echo "Running sudo $PYTHON_EXECUTABLE setup.py install"
     sudo $PYTHON_EXECUTABLE setup.py install
 else
     $PYTHON_EXECUTABLE setup.py install

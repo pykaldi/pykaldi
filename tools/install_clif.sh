@@ -184,7 +184,7 @@ PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
     echo ""
     echo "We cannot write to $PYTHON_PACKAGE_DIR."
-    echo "Running following command with administrator rights "
+    echo "Running sudo $PYTHON_PIP setup.py install"
     sudo CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
 else
   CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
