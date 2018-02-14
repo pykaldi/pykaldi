@@ -209,14 +209,13 @@ You can check if needed packages are installed on your system by running the
 following. Please use your system package manager to install missing packages.
 
 ```bash
-cd tools
-./check_dependencies.sh
+./tools/check_dependencies.sh
 ```
 
 In addition to above listed standard packages, you need compatible installations
 of Protobuf, CLIF and Kaldi. We provide scripts inside the `tools` directory
-for installing these software locally. Make sure your working directory is the
-`tools` directory before running these scripts.
+for installing these software locally. In the following we are assuming that your working directory is set to the root of
+the repository.
 
 ##### Protobuf
 
@@ -228,7 +227,7 @@ inside the `tools` directory. The Python package is installed inside the active
 Python environment.
 
 ```bash
-./install_protobuf.sh
+./tools/install_protobuf.sh tools/protobuf
 ```
 
 If active Python environment requires `sudo` for installing new packages, e.g.
@@ -237,9 +236,7 @@ script will fail to install the `protobuf` Python package. In that scenario, you
 need to install the Python package manually as follows.
 
 ```bash
-cd protobuf/python
-sudo python setup.py install
-cd -
+sudo python tools/protobuf/setup.py install
 ```
 
 ##### CLIF
@@ -254,7 +251,7 @@ environment. This script builds CLIF using the Protobuf installation inside the
 `tools` directory if such an installation exists.
 
 ```bash
-./install_clif.sh
+./tools/install_clif.sh tools/clif
 ```
 
 If active Python environment requires `sudo` for installing new packages, e.g.
@@ -263,9 +260,7 @@ script will fail to install the `pyclif` Python package. In that scenario, you
 need to install the Python package manually as follows.
 
 ```bash
-cd clif
-sudo pip install .
-cd -
+sudo pip install tools/clif
 ```
 
 ##### Kaldi
@@ -278,17 +273,15 @@ Running the following downloads and installs a compatible version of Kaldi
 inside the `tools` directory.
 
 ```bash
-./install_kaldi.sh
+./tools/install_kaldi.sh tools/kaldi
 ```
 
 #### PyKaldi
 
 If you had followed the instructions given above and installed Kaldi inside the
-`tools` directory, you can simply change your working directory to the root of
-the repository and install PyKaldi with the following command.
+`tools` directory, you can simply install PyKaldi with the following command.
 
 ```bash
-cd ..
 python setup.py install
 ```
 
