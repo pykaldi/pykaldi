@@ -5,10 +5,10 @@
 # Installation script for PyKaldi
 # 
 # Usage:
-# 	./INSTALL.sh [python] [python_lib_dir]
+# 	./INSTALL.sh [python] [python_library]
 # 
 # 	python - Python executable to use. Defaults to current python.
-# 	python_lib_dir - Python library to use (defaults to empty)
+# 	python_library - Python library to use (defaults to empty)
 # 
 
 set -e -x 
@@ -38,7 +38,7 @@ if [[ -n "$1" ]]; then
 fi
 
 if [[ -n "$2" ]]; then
-	PYTHON_LIB_DIR="$2"
+	PYTHON_LIBRARY="$2"
 fi
 
 ####################################################################
@@ -79,7 +79,7 @@ elif [ -d "$CLIF_DIR" ]; then
 fi
 
 if ! $clif_installed; then
-	$TOOLS_DIR/install_clif.sh $CLIF_DIR $PYTHON_EXECUTABLE $PYTHON_LIB_DIR || exit 1
+	$TOOLS_DIR/install_clif.sh $CLIF_DIR $PYTHON_EXECUTABLE $PYTHON_LIBRARY || exit 1
 fi
 
 # Kaldi
