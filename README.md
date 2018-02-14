@@ -227,7 +227,7 @@ inside the `tools` directory. The Python package is installed inside the active
 Python environment.
 
 ```bash
-./tools/install_protobuf.sh tools/protobuf
+./tools/install_protobuf.sh $PWD/tools/protobuf
 ```
 
 If active Python environment requires `sudo` for installing new packages, e.g.
@@ -236,7 +236,7 @@ script will fail to install the `protobuf` Python package. In that scenario, you
 need to install the Python package manually as follows.
 
 ```bash
-sudo python tools/protobuf/setup.py install
+sudo python tools/protobuf/python/setup.py install
 ```
 
 ##### CLIF
@@ -251,7 +251,7 @@ environment. This script builds CLIF using the Protobuf installation inside the
 `tools` directory if such an installation exists.
 
 ```bash
-./tools/install_clif.sh tools/clif
+./tools/install_clif.sh $PWD/tools/clif
 ```
 
 If active Python environment requires `sudo` for installing new packages, e.g.
@@ -273,7 +273,7 @@ Running the following downloads and installs a compatible version of Kaldi
 inside the `tools` directory.
 
 ```bash
-./tools/install_kaldi.sh tools/kaldi
+./tools/install_kaldi.sh $PWD/tools/kaldi
 ```
 
 #### PyKaldi
