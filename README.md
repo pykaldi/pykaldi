@@ -230,15 +230,6 @@ Python environment.
 ./tools/install_protobuf.sh $PWD/tools/protobuf
 ```
 
-If active Python environment requires `sudo` for installing new packages, e.g.
-if active `python` executable is one of those provided by the system, above
-script will fail to install the `protobuf` Python package. In that scenario, you
-need to install the Python package manually as follows.
-
-```bash
-sudo python tools/protobuf/python/setup.py install
-```
-
 ##### CLIF
 
 To streamline PyKaldi development, we made some changes to CLIF codebase. We
@@ -252,15 +243,6 @@ environment. This script builds CLIF using the Protobuf installation inside the
 
 ```bash
 ./tools/install_clif.sh $PWD/tools/clif
-```
-
-If active Python environment requires `sudo` for installing new packages, e.g.
-if active `python` executable is one of those provided by the system, above
-script will fail to install the `pyclif` Python package. In that scenario, you
-need to install the Python package manually as follows.
-
-```bash
-sudo pip install tools/clif
 ```
 
 ##### Kaldi
@@ -305,6 +287,24 @@ If active Python environment requires `sudo` for installing new packages, e.g.
 if active `python` executable is one of those provided by the system, run the
 installation command with `sudo`.
 
+### Common Installation Problems
+Sometimes problems do occur, so don't fret too much about it. Here are some of the solutions we have found over time.
+
+#### Failing to install `X` python package
+If active Python environment requires `sudo` for installing new packages, e.g.
+if active `python` executable is one of those provided by the system, above
+script will fail to install the required Python packages. In that scenario, you
+need to install the Python package manually as follows.
+
+##### For protobuf
+```bash
+sudo python tools/protobuf/python/setup.py install
+```
+
+##### For pyclif
+```bash
+sudo pip install tools/clif
+```
 
 ## Citing
 If you use PyKaldi for research, please cite
