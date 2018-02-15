@@ -267,26 +267,6 @@ If you had followed the instructions given above and installed Kaldi inside the
 python setup.py install
 ```
 
-If you want to build against a different Kaldi installation, set the following
-environment variable before running the installation command.
-
-```bash
-export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME/tools/kaldi">
-```
-
-If `pyclif` package is installed in a Python environment different from active
-Python environment, set the following environment variables before running the
-installation command.
-
-```bash
-export PYCLIF=<path to pyclif executable, e.g. "$HOME/anaconda3/envs/clif/bin/pyclif">
-export CLIF_MATCHER=<path to clif-matcher executable, e.g. "$HOME/anaconda3/envs/clif/clang/bin/clif-matcher">
-```
-
-If active Python environment requires `sudo` for installing new packages, e.g.
-if active `python` executable is one of those provided by the system, run the
-installation command with `sudo`.
-
 ### Common Installation Problems
 Sometimes problems do occur, so don't fret too much about it. Here are some of the solutions we have found over time.
 
@@ -304,6 +284,29 @@ sudo python tools/protobuf/python/setup.py install
 ##### For pyclif
 ```bash
 sudo pip install tools/clif
+```
+
+##### For PyKaldi
+```bash
+sudo python setup.py install
+```
+
+#### I want to bring my own Kaldi
+If you want to build against a different Kaldi installation, set the following
+environment variable before running the installation command.
+
+```bash
+export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME/tools/kaldi">
+```
+
+#### I want to bring my own PyClif
+If `pyclif` package is installed in a Python environment different from active
+Python environment, set the following environment variables before running the
+installation command.
+
+```bash
+export PYCLIF=<path to pyclif executable, e.g. "$HOME/anaconda3/envs/clif/bin/pyclif">
+export CLIF_MATCHER=<path to clif-matcher executable, e.g. "$HOME/anaconda3/envs/clif/clang/bin/clif-matcher">
 ```
 
 ## Citing
