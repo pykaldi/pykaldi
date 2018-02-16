@@ -28,10 +28,11 @@ set -e -x
 TOOLS_DIR="$PWD"
 CLIF_DIR="$PWD/clif"
 
-PYTHON_EXECUTABLE="python"
+PYTHON="python"
 if [ -n "$1" ]; then
-  PYTHON_EXECUTABLE="$1"
+  PYTHON="$1"
 fi
+PYTHON_EXECUTABLE="$(which $PYTHON)"
 
 PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/find_python_library.py)
 if [ -n "$2" ]; then

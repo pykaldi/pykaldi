@@ -17,10 +17,11 @@ PROTOBUF_GIT="https://github.com/google/protobuf.git"
 
 PROTOBUF_DIR="$PWD/protobuf"
 
-PYTHON_EXECUTABLE="python"
+PYTHON="python"
 if [ -n "$1" ]; then
-    PYTHON_EXECUTABLE="$1"
+    PYTHON="$1"
 fi
+PYTHON_EXECUTABLE="$(which $PYTHON)"
 
 # We put this here so that `which` can search $PROTOBUF_DIR/bin too.
 export PATH="$PROTOBUF_DIR/bin:$PATH"
