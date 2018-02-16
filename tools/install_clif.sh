@@ -14,58 +14,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Install CLIF primer script.
-# NOTE (VM):
-# Downloads from github
-# Includes modifications needed to install on Python 3.0
-# 
+# Installation script for CLIF.
+# Adapted from https://github.com/google/clif/blob/master/INSTALL.sh
 #
 # Usage:
-#   ./install_clif.sh [CLIF_DIR] [PYTHON_EXECUTABLE] [PYTHON_LIBRARY]
+#   ./install_clif.sh [PYTHON_EXECUTABLE] [PYTHON_LIBRARY]
 #
-#   CLIF_DIR - directory where clif will be installed (default: $PWD)
-#   PYTHON_EXECUTABLE - python executable to use (defaults to current python).
+#   PYTHON_EXECUTABLE - python executable to use (default: python)
 #   PYTHON_LIBRARY - overrides the python library to use
 
 set -e -x
 
-# Gets the CWD regardless of where this script is called from
-TOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TOOLS_DIR="$PWD"
+CLIF_DIR="$PWD/clif"
 
-CLIF_DIR="$PWD"
+PYTHON_EXECUTABLE="python"
 if [ -n "$1" ]; then
-  CLIF_DIR="$1"
+  PYTHON_EXECUTABLE="$1"
 fi
 
-PYTHON_EXECUTABLE=$(which python)
+PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/find_python_library.py)
 if [ -n "$2" ]; then
-  PYTHON_EXECUTABLE="$2"
+  PYTHON_LIBRARY="$2"
 fi
-
-PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/findPythonLib.py)
-if [ -n "$3" ]; then
-  PYTHON_LIBRARY="$3"
-fi
-
-PYTHON_PIP=$(which pip) || exit 1
-PYTHON_ENV=$($PYTHON_EXECUTABLE -c "import sys; print(sys.prefix)")
-
-#######################################################################################################
-# Help cmake find the correct python
-#######################################################################################################
-
 if [ ! -f "$PYTHON_LIBRARY" ]; then
-  echo "Python library $PYTHON_LIBRARY not found."
+  echo "Python library $PYTHON_LIBRARY could not be found."
   echo "Please specify the python library as an argument to $0"
+  echo "e.g. $0 /usr/bin/python3 /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1"
   exit 1
 fi
 
+PYTHON_PIP="$PYTHON_EXECUTABLE -m pip"
+PYTHON_ENV=$($PYTHON_EXECUTABLE -c "import sys; print(sys.prefix)")
 PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
-PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-
-####################################################################
-# Fix cmake flags to find the correct python
-####################################################################
 CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
 
 ####################################################################
@@ -78,33 +59,23 @@ if (( CV[0] < 3 || CV[0] == 3 && CV[1] < 5 )); then
 fi
 
 ####################################################################
-# Add protobuf to PATH
-# Put these here so that which protoc and pkg-config look in $PROTOBUF_DIR too
+# Ensure Google protobuf C++ library is installed (needs v3.2+).
 ####################################################################
-
 if [ -d "$TOOLS_DIR/protobuf" ]; then
   export PATH="$TOOLS_DIR/protobuf/bin:$PATH"
   export PKG_CONFIG_PATH="$TOOLS_DIR/protobuf:$PKG_CONFIG_PATH"
 fi
-
-####################################################################
-# Ensure Google protobuf C++ source is installed (needs v3.2+).
-####################################################################
 PV=$(protoc --version | cut -f2 -d\ ); PV=(${PV//./ })
 if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
   echo "Install Google protobuf version 3.2+"
   exit 1
 fi
-PROTOC_PREFIX_PATH="$(dirname "$(dirname "$(which protoc)")")"
-
-######################################################################
-# Protobuf might not be a global installation
-# Find the location for the includes and libs
-######################################################################
+PROTOBUF_PREFIX_PATH="$(dirname "$(dirname "$(which protoc)")")"
 PROTOBUF_INCLUDE="$(pkg-config --cflags protobuf)"
 PROTOBUF_LIBS="$(pkg-config --libs protobuf)"
 
 ######################################################################
+
 CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
 LLVM_DIR="$CLIF_DIR/../clif_backend"
 BUILD_DIR="$LLVM_DIR/build_matcher"
@@ -131,7 +102,7 @@ if which ninja; then
 else
   CMAKE_G_FLAGS=()  # The default generates a Makefile.
   MAKE_OR_NINJA="make"
-  MAKE_PARALLELISM=(-j 2)
+  MAKE_PARALLELISM=(-j 4)
   if [[ -r /proc/cpuinfo ]]; then
     N_CPUS="$(cat /proc/cpuinfo | grep -c ^processor)"
     [[ "$N_CPUS" -gt 0 ]] && MAKE_PARALLELISM=(-j $N_CPUS)
@@ -178,18 +149,18 @@ cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
 
 ####################################################################
-# Check write access to package dir
+# Check write access to Python package dir
 ####################################################################
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
-    echo ""
-    echo "We cannot write to $PYTHON_PACKAGE_DIR."
-    echo "Running sudo $PYTHON_PIP setup.py install"
-    sudo CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
+  echo ""
+  echo "Writing to $PYTHON_PACKAGE_DIR requires sudo access."
+  echo "Please run the following command to complete the installation."
+  echo ""
+  echo "sudo CFLAGS=\"$PROTOBUF_INCLUDE\" LDFLAGS=\"$PROTOBUF_LIBS\" $PYTHON_PIP install $CLIF_DIR"
+  exit 1
 else
   CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" "$PYTHON_PIP" install .
 fi
 
 echo "Clif installed to $PYTHON_ENV"
-touch "$CLIF_DIR/.DONE"
-
