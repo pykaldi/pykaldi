@@ -1,5 +1,10 @@
+# tools dir
+tools/protobuf/
+tools/clif/
+tools/clif_backend/
+tools/kaldi/
 
-#Emacs backup files
+# Emacs backup files
 \#*#
 *~
 

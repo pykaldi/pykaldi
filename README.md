@@ -23,7 +23,10 @@ underlying memory buffers. PyKaldi FST types, including Kaldi style lattices,
 are first class citizens in Python. The API for the user facing FST types and
 operations is almost entirely defined in Python mimicking the API exposed by
 [pywrapfst](http://www.openfst.org/twiki/bin/view/FST/PythonExtension), the
-official Python wrapper for OpenFst. You can read more about the implementation of PyKaldi in our [ICASSP 2018 paper](https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf).
+official Python wrapper for OpenFst.
+
+You can read more about the design and technical details of PyKaldi in
+[our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf).
 
 ## Features
 
@@ -131,15 +134,90 @@ dimensions:
 Some places to help you get started:
 
 * [PyKaldi Documentation](https://pykaldi.github.io)
-* [Walkthrough Example](https://github.com/pykaldi/pykaldi/tree/master/examples/walkthrough.md)
-* [Kaldi binaries re-implemented using PyKaldi](https://github.com/pykaldi/pykaldi/tree/master/examples)
+* [PyKaldi Examples](https://github.com/pykaldi/pykaldi/tree/master/examples/)
 
 
-## Installation
+## Installing PyKaldi from Source
 
-### Docker Image
+To install PyKaldi from source, follow the steps given below.
 
-We provide a `Dockerfile` in the `docs` directory to build a new image.
+### Step 1: Clone PyKaldi Repository and Create a New Python Environment
+
+```bash
+git clone https://github.com/pykaldi/pykaldi.git
+cd pykaldi
+```
+
+Although it is not required, we recommend installing PyKaldi and all of its
+Python dependencies inside a new isolated Python environment. If you do not want
+to create a new Python environment, you can skip the rest of this step.
+
+You can use any tool you like for creating a new Python environment. Here we
+use `virtualenv`, but you can use another tool like `conda` if you prefer that.
+Make sure you activate the new Python environment before continuing with the
+rest of the installation.
+
+```bash
+virtualenv env
+source env/bin/activate
+```
+
+### Step 2: Install Dependencies
+
+On Ubuntu 16.04, running the following commands will install system packages
+needed for building PyKaldi from source.
+
+```bash
+sudo apt-get install autoconf automake cmake curl g++ git libatlas3-base \
+    libtool make pkg-config subversion unzip wget zlib1g-dev
+
+pip install --upgrade pip
+pip install --upgrade setuptools
+pip install numpy pyparsing
+pip install ninja  # not required but strongly recommended
+```
+
+In addition to above listed system packages, we also need PyKaldi compatible
+installations of the following software:
+
+* [Google Protobuf](https://github.com/google/protobuf.git) v3.2 or later. Both
+the C++ library and the Python package must be installed.
+
+* [PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif). To
+streamline PyKaldi development, we made some changes to CLIF codebase. We
+are hoping to upstream these changes over time.
+
+* [PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi). To
+comply with CLIF requirements we had to make some changes to Kaldi codebase. We
+are hoping to upstream these changes over time.
+
+You can use the scripts in the `tools` directory to install these software
+locally. Make sure you check the output of these scripts. If you do not see
+"Done installing {protobuf,CLIF,Kaldi}." printed at the very end, it means that
+installation has failed.
+
+```bash
+cd tools
+./check_dependencies.sh  # checks if system dependencies are installed
+./install_protobuf.sh    # installs both the C++ library and the Python package
+./install_clif.sh        # installs both the C++ library and the Python package
+./install_kaldi.sh       # installs the C++ library
+cd ..
+```
+
+### Step 3: Install PyKaldi
+
+If Kaldi is installed inside the `tools` directory and all Python dependencies
+(numpy, pyparsing, pyclif, protobuf) are installed in the active Python
+environment, you can install PyKaldi with the following command.
+
+```bash
+python setup.py install
+```
+
+## PyKaldi Docker Image
+
+We provide a `Dockerfile` in the `docker` directory for building a new image.
 
 ```bash
 cd pykaldi/docker
@@ -159,104 +237,54 @@ After building/downloading the image, you can run it in interactive mode.
 sudo docker run -it pykaldi
 ```
 
-### From Source
+## FAQ
 
-To install PyKaldi from CLIF source files, first we need to install all of its
-dependencies. In the following, we provide instructions for installing PyKaldi
-and all of its dependencies on Ubuntu 16.04.
+### How do I build PyKaldi on MacOS?
 
-#### Standard Dependencies
+At the moment, PyKaldi installation scripts do not work on non-Linux platforms.
+It should not be too hard to get them to work on MacOS but we haven't yet looked
+into it.
 
-```bash
-sudo apt-get install git autoconf automake libtool curl make cmake g++ unzip \
-  virtualenv libatlas3-base wget zlib1g-dev subversion pkg-config
-```
+### How do I build PyKaldi on Windows?
 
-#### Protobuf
+We have no idea what is needed to build PyKaldi on Windows. We have no intention
+of adding Windows support in the foreseeable future.
 
-CLIF depends on [Google Protobuf](https://github.com/google/protobuf.git) v3.2
-or later. Both the C++ library and the Python package must be installed.
+### How do I build PyKaldi using a different Kaldi installation?
 
-```bash
-git clone https://github.com/google/protobuf.git
-cd protobuf
-./autogen.sh
-./configure && make -j4
-sudo make install
-sudo ldconfig
-cd python
-python setup.py build
-sudo python setup.py install
-```
+At the moment, PyKaldi is not compatible with the upstream Kaldi repository.
+You need to build it against [our Kaldi fork](https://github.com/pykaldi/kaldi).
 
-#### CLIF
-
-To streamline PyKaldi development, we made some changes to CLIF codebase. We
-are hoping to upstream these changes over time. In the meantime we provide a
-[PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif/tree/pykaldi).
-Run the following for a compatible CLIF installation. Don't forget to check out
-the pykaldi branch.
+If you already have a compatible Kaldi installation on your system, you do not
+need to install a new one inside the `pykaldi/tools` directory. Instead, you
+can simply set the following environment variable before running the PyKaldi
+installation command.
 
 ```bash
-git clone -b pykaldi https://github.com/pykaldi/clif.git
-cd clif
-./INSTALL.sh  # This will install CLIF under $HOME/opt
+export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME/tools/kaldi">
 ```
 
-Note that if there is more than one Python version installed (e.g., Python 2.7
-and 3.6) cmake may not be able to find the correct python libraries. To help
-cmake use the correct Python, add the following options to the cmake command
-inside INSTALL.sh (make sure to substitute the correct paths for your system):
+### How do I build PyKaldi using a different CLIF installation?
+
+At the moment, PyKaldi is not compatible with the upstream CLIF repository.
+You need to build it using [our CLIF fork](https://github.com/pykaldi/clif).
+
+If you already have a compatible CLIF installation on your system, you do not
+need to install a new one inside the `pykaldi/tools` directory. Instead, you
+can simply set the following environment variables before running the PyKaldi
+installation command.
 
 ```bash
-cmake ... \
-        -DPYTHON_INCLUDE_DIR="/usr/include/python2.7" \
-        -DPYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython2.7.so" \
-        -DPYTHON_EXECUTABLE="/usr/bin/python2.7" \
-        "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
+export PYCLIF=<path to pyclif executable, e.g. "$HOME/anaconda3/envs/clif/bin/pyclif">
+export CLIF_MATCHER=<path to clif-matcher executable, e.g. "$HOME/anaconda3/envs/clif/clang/bin/clif-matcher">
 ```
 
-#### Kaldi
-
-To comply with CLIF requirements we had to make some changes to Kaldi codebase.
-We are hoping to upstream these changes over time. In the meantime we provide a
-[PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi/tree/pykaldi).
-Run the following commands for a compatible Kaldi installation. Don't forget to
-check out the pykaldi branch.
-
-```bash
-git clone -b pykaldi https://github.com/pykaldi/kaldi.git
-cd kaldi/tools
-./extras/check_dependencies.sh && make -j4
-cd ../src
-./configure --shared && make clean -j4 && make depend -j4 && make -j4
-```
-
-#### PyKaldi
-
-Set the following environment variables.
-
-```bash
-export KALDI_DIR=<directory where Kaldi is installed, e.g. "$HOME"/kaldi>
-
-# [Optional] Set this if CLIF is installed under a different Python environment
-# or the directory containing pyclif executable is not on your PATH.
-export PYCLIF=<path to pyclif executable. e.g. "$HOME"/opt/clif/bin/pyclif>
-
-# [Optional] Set this if CLIF is installed under a different Python environment.
-export CLIF_MATCHER=<path to clif-matcher executable. e.g. "$HOME"/opt/clif/clang/bin/clif-matcher>
-```
-
-Download and install [PyKaldi](https://github.com/pykaldi/pykaldi).
-
-```bash
-git clone https://github.com/pykaldi/pykaldi.git
-cd pykaldi
-sudo python setup.py install
-```
 
 ## Citing
-If you use PyKaldi for research, please cite our [ICASSP 2018 paper](https://github.com/pykaldi/pykaldi/blob/77758546da394fea2d8125f096babab04bdb081d/docs/pykaldi-python-wrapper.pdf), as follows:
+
+If you use PyKaldi for research, please cite
+[our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf)
+as follows:
 
 ```
 @inproceedings{pykaldi,
