@@ -12,7 +12,7 @@
 #
 #   Modifies $PATH and $PKG_CONFIG_PATH
 #
-set -x -e
+set -e
 PROTOBUF_GIT="https://github.com/google/protobuf.git"
 
 PROTOBUF_DIR="$PWD/protobuf"
@@ -27,43 +27,49 @@ PYTHON_EXECUTABLE="$(which $PYTHON)"
 export PATH="$PROTOBUF_DIR/bin:$PATH"
 
 check_protoc_version() {
+    echo "Checking Protobuf version..."
     PV=$($1 --version | cut -f2 -d\ ); PV=(${PV//./ })
+    PROTOBUF_VERSION=$(IFS=. ; echo "${PV[*]}")
+    echo "Protobuf version: $PROTOBUF_VERSION"
     if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
+        echo "Protobuf version is not compatible!"
         return 1
+    else
+        echo "Protobuf version is compatible."
+        return 0
     fi
 }
 
 check_protobuf_python_package() {
+    echo "Checking Protobuf Python package..."
     PV=$($PYTHON_EXECUTABLE -c 'from google.protobuf import __version__;print(__version__)'); PV=(${PV//./ })
-    if (( PV[0] == 3 && PV[1] >= 2 )); then
-        echo "Using version: ${PV[@]}"
-        return 0
-    else
-        echo "Incorrect version found: ${PV[@]}"
+    if [ -z "$PV" ]; then
+      echo "Protobuf Python package is not installed."
+      return 1
+    fi
+    PROTOBUF_VERSION=$(IFS=. ; echo "${PV[*]}")
+    echo "Protobuf Python package version: $PROTOBUF_VERSION"
+    if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
+        echo "Protobuf Python package version is not compatible."
         return 1
+    else
+        echo "Protobuf Python package version is compatible."
+        return 0
     fi
 }
 
 # Check if protobuf is already installed.
-if which protoc; then
-    echo "protoc found in PATH."
-    echo "Checking protobuf version..."
+if which protoc >/dev/null; then
+    echo "Protobuf found in PATH."
     if check_protoc_version $(which protoc); then
-        echo "Correct protobuf version found!"
-        echo "Checking protobuf Python package..."
         if check_protobuf_python_package; then
-            echo "Correct protobuf Python package found!"
-            echo "Nothing to do. Exiting."
-            exit 0
-        else
-            echo "Protobuf Python package is not compatible."
+            echo "Done installing Protobuf."
+            # exit 0
         fi
-    else
-        echo "Protobuf found in PATH is not compatible."
     fi
 fi
 
-echo "Installing protobuf C++ library..."
+echo "Installing Protobuf C++ library..."
 if [ ! -d "$PROTOBUF_DIR" ]; then
     git clone $PROTOBUF_GIT $PROTOBUF_DIR
 fi
@@ -72,7 +78,7 @@ cd "$PROTOBUF_DIR"
 ./configure --prefix $PROTOBUF_DIR
 make -j4  && make install
 
-echo "Installing protobuf Python package..."
+echo "Installing Protobuf Python package..."
 cd "$PROTOBUF_DIR/python"
 $PYTHON_EXECUTABLE setup.py clean
 $PYTHON_EXECUTABLE setup.py build
@@ -84,12 +90,13 @@ $PYTHON_EXECUTABLE setup.py build
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
     echo ""
-    echo "Writing to $PYTHON_PACKAGE_DIR requires sudo access."
-    echo "Please run the following command to complete the installation."
+    echo "*** PYTHON_PACKAGE_DIR=$PYTHON_PACKAGE_DIR"
+    echo "*** Writing to PYTHON_PACKAGE_DIR requires sudo access."
+    echo "*** Run the following command to install Protobuf Python package."
     echo ""
     echo "sudo $PYTHON_EXECUTABLE $PROTOBUF_DIR/python/setup.py install"
     exit 1
 fi
 
 $PYTHON_EXECUTABLE setup.py install
-echo "Done installing protobuf..."
+echo "Done installing Protobuf."

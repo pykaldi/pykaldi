@@ -23,7 +23,7 @@
 #   PYTHON_EXECUTABLE - python executable to use (default: python)
 #   PYTHON_LIBRARY - overrides the python library to use
 
-set -e -x
+set -e
 
 TOOLS_DIR="$PWD"
 CLIF_DIR="$PWD/clif"
@@ -155,8 +155,9 @@ cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
   echo ""
-  echo "Writing to $PYTHON_PACKAGE_DIR requires sudo access."
-  echo "Please run the following command to complete the installation."
+  echo "*** PYTHON_PACKAGE_DIR=$PYTHON_PACKAGE_DIR"
+  echo "*** Writing to PYTHON_PACKAGE_DIR requires sudo access."
+  echo "*** Run the following command to install pyclif Python package."
   echo ""
   echo "sudo CFLAGS=\"$PROTOBUF_INCLUDE\" LDFLAGS=\"$PROTOBUF_LIBS\" $PYTHON_PIP install $CLIF_DIR"
   exit 1
@@ -164,4 +165,4 @@ else
   CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" $PYTHON_PIP install .
 fi
 
-echo "Clif installed to $PYTHON_ENV"
+echo "Done installing CLIF."

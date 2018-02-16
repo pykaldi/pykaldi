@@ -192,7 +192,9 @@ comply with CLIF requirements we had to make some changes to Kaldi codebase. We
 are hoping to upstream these changes over time.
 
 You can use the scripts in the `tools` directory to install these software
-locally.
+locally. Make sure you check the output of these scripts. If you do not see
+"Done installing {protobuf,CLIF,Kaldi}." printed at the very end, it means that
+installation has failed.
 
 ```bash
 cd tools

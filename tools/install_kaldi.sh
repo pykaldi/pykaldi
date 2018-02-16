@@ -2,7 +2,7 @@
 
 # Installation script for Kaldi
 #
-set -x -e
+set -e
 
 KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
 
@@ -28,4 +28,4 @@ cd ../src
 ./configure --shared
 make clean -j && make depend -j && make -j4
 
-echo "Done installing kaldi"
+echo "Done installing Kaldi."
