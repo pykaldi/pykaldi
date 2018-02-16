@@ -178,20 +178,21 @@ pip install ninja  # not required but strongly recommended
 ```
 
 In addition to above listed system packages, we also need PyKaldi compatible
-installations of Protobuf, CLIF and Kaldi.
+installations of the following software:
 
-CLIF depends on [Google Protobuf](https://github.com/google/protobuf.git) v3.2
-or later. Both the C++ library and the Python package must be installed.
+* [Google Protobuf](https://github.com/google/protobuf.git) v3.2 or later. Both
+the C++ library and the Python package must be installed.
 
-To streamline PyKaldi development, we made some changes to CLIF codebase. We
+* To streamline PyKaldi development, we made some changes to CLIF codebase. We
 are hoping to upstream these changes over time. In the meantime we provide a
 [PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif).
 
-To comply with CLIF requirements we had to make some changes to Kaldi codebase.
-We are hoping to upstream these changes over time. In the meantime we provide a
-[PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi).
+* To comply with CLIF requirements we had to make some changes to Kaldi
+codebase. We are hoping to upstream these changes over time. In the meantime we
+provide a [PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi).
 
-You can use the scripts in `tools` directory to install these software locally.
+You can use the scripts in the `tools` directory to install these software
+locally.
 
 ```bash
 cd tools
