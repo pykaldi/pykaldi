@@ -141,7 +141,7 @@ Some places to help you get started:
 
 To install PyKaldi from source, follow the steps given below.
 
-### Step 1: Clone PyKaldi Repository and Create a new Python Environment
+### Step 1: Clone PyKaldi Repository and Create a New Python Environment
 
 ```bash
 git clone https://github.com/pykaldi/pykaldi.git
@@ -279,6 +279,7 @@ export CLIF_MATCHER=<path to clif-matcher executable, e.g. "$HOME/anaconda3/envs
 
 
 ## Citing
+
 If you use PyKaldi for research, please cite
 [our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf)
 as follows:
