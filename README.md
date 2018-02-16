@@ -183,13 +183,13 @@ installations of the following software:
 * [Google Protobuf](https://github.com/google/protobuf.git) v3.2 or later. Both
 the C++ library and the Python package must be installed.
 
-* To streamline PyKaldi development, we made some changes to CLIF codebase. We
-are hoping to upstream these changes over time. In the meantime we provide a
-[PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif).
+* [PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif). To
+streamline PyKaldi development, we made some changes to CLIF codebase. We
+are hoping to upstream these changes over time.
 
-* To comply with CLIF requirements we had to make some changes to Kaldi
-codebase. We are hoping to upstream these changes over time. In the meantime we
-provide a [PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi).
+* [PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi). To
+comply with CLIF requirements we had to make some changes to Kaldi codebase. We
+are hoping to upstream these changes over time.
 
 You can use the scripts in the `tools` directory to install these software
 locally.
