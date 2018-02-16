@@ -8,7 +8,7 @@
 # Usage:
 #   ./install_protobuf.sh [PYTHON_EXECUTABLE]
 #
-#   PYTHON_EXECUTABLE - python binary to use (default: $(which python))
+#   PYTHON_EXECUTABLE - python binary to use (default: python)
 #
 #   Modifies $PATH and $PKG_CONFIG_PATH
 #
@@ -22,13 +22,9 @@ if [ -n "$1" ]; then
     PYTHON_EXECUTABLE="$1"
 fi
 
-# Put these here so that `which` and `pkg-config` look in $PROTOBUF_DIR too.
+# We put this here so that `which` can search $PROTOBUF_DIR/bin too.
 export PATH="$PROTOBUF_DIR/bin:$PATH"
-export PKG_CONFIG_PATH="$PROTOBUF_DIR:$PKG_CONFIG_PATH"
 
-# Check protoc version.
-# This was copied from CLIF install script and put here
-# so that it fails earlier rather than later.
 check_protoc_version() {
     PV=$($1 --version | cut -f2 -d\ ); PV=(${PV//./ })
     if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
@@ -36,7 +32,7 @@ check_protoc_version() {
     fi
 }
 
-check_python_package() {
+check_protobuf_python_package() {
     PV=$($PYTHON_EXECUTABLE -c 'from google.protobuf import __version__;print(__version__)'); PV=(${PV//./ })
     if (( PV[0] == 3 && PV[1] >= 2 )); then
         echo "Using version: ${PV[@]}"
@@ -54,15 +50,19 @@ if which protoc; then
     if check_protoc_version $(which protoc); then
         echo "Correct protobuf version found!"
         echo "Checking protobuf Python package..."
-        if check_python_package; then
+        if check_protobuf_python_package; then
             echo "Correct protobuf Python package found!"
             echo "Nothing to do. Exiting."
             exit 0
+        else
+            echo "Protobuf Python package is not compatible."
         fi
+    else
+        echo "Protobuf found in PATH is not compatible."
     fi
 fi
 
-echo "Installing protobuf..."
+echo "Installing protobuf C++ library..."
 if [ ! -d "$PROTOBUF_DIR" ]; then
     git clone $PROTOBUF_GIT $PROTOBUF_DIR
 fi
@@ -71,22 +71,24 @@ cd "$PROTOBUF_DIR"
 ./configure --prefix $PROTOBUF_DIR
 make -j4  && make install
 
-# Install protobuf python package
+echo "Installing protobuf Python package..."
 cd "$PROTOBUF_DIR/python"
+$PYTHON_EXECUTABLE setup.py clean
 $PYTHON_EXECUTABLE setup.py build
 
 
 ####################################################################
-# Check write access to package dir
+# Check write access to Python package dir
 ####################################################################
 PYTHON_PACKAGE_DIR=$($PYTHON_EXECUTABLE -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 if [ ! -w $PYTHON_PACKAGE_DIR ]; then
     echo ""
     echo "Writing to $PYTHON_PACKAGE_DIR requires sudo access."
-    echo "Please run the following command manually."
-    echo "sudo $PYTHON_EXECUTABLE setup.py install"
-else
-    $PYTHON_EXECUTABLE setup.py install
+    echo "Please run the following command to complete the installation."
+    echo ""
+    echo "sudo $PYTHON_EXECUTABLE $PROTOBUF_DIR/python/setup.py install"
+    exit 1
 fi
 
+$PYTHON_EXECUTABLE setup.py install
 echo "Done installing protobuf..."
