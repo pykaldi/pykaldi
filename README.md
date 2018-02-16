@@ -177,62 +177,34 @@ pip install numpy pyparsing
 pip install ninja  # not required but strongly recommended
 ```
 
-You can check if needed packages are installed on your system by running the
-following.
-
-```bash
-./tools/check_dependencies.sh
-```
-
-In addition to above listed system packages, compatible installations of
-Protobuf, CLIF and Kaldi are needed for building PyKaldi from source. We provide
-scripts for installing these software locally. Make sure that you run these
-scripts inside the `tools` directory.
-
-```bash
-cd tools
-```
-
-#### Protobuf
+In addition to above listed system packages, we also need PyKaldi compatible
+installations of Protobuf, CLIF and Kaldi.
 
 CLIF depends on [Google Protobuf](https://github.com/google/protobuf.git) v3.2
 or later. Both the C++ library and the Python package must be installed.
-
-Running the following downloads and installs a compatible version of Protobuf.
-
-```bash
-./install_protobuf.sh
-```
-
-#### CLIF
 
 To streamline PyKaldi development, we made some changes to CLIF codebase. We
 are hoping to upstream these changes over time. In the meantime we provide a
 [PyKaldi compatible fork of CLIF](https://github.com/pykaldi/clif).
 
-Running the following downloads and installs a compatible version of CLIF.
-This script builds CLIF using the Protobuf installation inside the
-`tools` directory if such an installation exists.
-
-```bash
-./install_clif.sh
-```
-
-#### Kaldi
-
 To comply with CLIF requirements we had to make some changes to Kaldi codebase.
 We are hoping to upstream these changes over time. In the meantime we provide a
 [PyKaldi compatible fork of Kaldi](https://github.com/pykaldi/kaldi).
 
-Running the following downloads and installs a compatible version of Kaldi.
+You can use the scripts in `tools` directory to install these software locally.
 
 ```bash
-./install_kaldi.sh
+cd tools
+./check_dependencies.sh  # checks if system dependencies are installed
+./install_protobuf.sh    # installs both the C++ library and the Python package
+./install_clif.sh        # installs both the C++ library and the Python package
+./install_kaldi.sh       # installs the C++ library
+cd ..
 ```
 
 ### Step 3: Install PyKaldi
 
-If Kaldi is installed inside the `tools` directory and Python dependencies
+If Kaldi is installed inside the `tools` directory and all Python dependencies
 (numpy, pyparsing, pyclif, protobuf) are installed in the active Python
 environment, you can install PyKaldi with the following command.
 
