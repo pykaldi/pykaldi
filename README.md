@@ -50,11 +50,12 @@ You can read more about the design and technical details of PyKaldi in
 ## Overview
 
 - [About PyKaldi](#about-pykaldi)
-  - [Coverage Status](#coverage-status)
+- [Coverage Status](#coverage-status)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
-  - [Docker Image](#docker-image)
-  - [From Source](#from-source)
+- [Docker Image](#docker-image)
+- [FAQ](#faq)
+- [Citing](#citing)
 - [Contributing](#contributing)
 
 
@@ -87,7 +88,7 @@ written for the associated Kaldi library. The wrapper code consists of:
 * Python modules grouping together related extension modules generated with CLIF
   and extending the raw CLIF wrappers to provide a more "Pythonic" API.
 
-### Coverage Status
+## Coverage Status
 
 The following table shows the status of each PyKaldi package along the following
 dimensions:
@@ -137,7 +138,7 @@ Some places to help you get started:
 * [PyKaldi Examples](https://github.com/pykaldi/pykaldi/tree/master/examples/)
 
 
-## Installing PyKaldi from Source
+## Installation
 
 To install PyKaldi from source, follow the steps given below.
 
@@ -215,7 +216,7 @@ environment, you can install PyKaldi with the following command.
 python setup.py install
 ```
 
-## PyKaldi Docker Image
+## Docker Image
 
 We provide a `Dockerfile` in the `docker` directory for building a new image.
 
