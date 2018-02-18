@@ -119,6 +119,15 @@ from "matrix/kaldi-vector.h":
           The number of elements changed.
         """
 
+      def `ApplyFloor` as apply_floor_no_count_(self, floor: float):
+        """Applies the floor operation to each element.
+
+        Performs the operation `y[i] = max(y[i], floor)`.
+
+        Args:
+          floor (float): The floor value.
+        """
+
       def `ApplyCeiling` as apply_ceiling_(self, ceiling: float) -> int:
         """Applies the ceiling operation to each element.
 
@@ -129,6 +138,15 @@ from "matrix/kaldi-vector.h":
 
         Returns:
           The number of elements changed.
+        """
+
+      def `ApplyCeiling` as apply_ceiling_no_count_(self, ceiling: float):
+        """Applies the ceiling operation to each element.
+
+        Performs the operation `y[i] = min(y[i], ceiling)`.
+
+        Args:
+          ceiling (float): The ceiling value.
         """
 
       def `ApplyFloor` as apply_floor_vector_(self, floor: VectorBase) -> int:

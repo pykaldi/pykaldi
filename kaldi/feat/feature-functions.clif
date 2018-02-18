@@ -1,5 +1,6 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
+from "matrix/matrix-ext.h" import *
 
 from "feat/feature-functions.h":
   namespace `kaldi`:
@@ -26,7 +27,7 @@ from "feat/feature-functions.h":
       def __init__(self, opts: ShiftedDeltaFeaturesOptions)
 
       def `Process` as process(self, input_feats: MatrixBase, frame: int,
-                               output_frame: VectorBase)
+                               output_frame: SubVector)
 
     def `ComputeDeltas` as compute_deltas(delta_opts: DeltaFeaturesOptions,
                                           input_features: MatrixBase) -> Matrix

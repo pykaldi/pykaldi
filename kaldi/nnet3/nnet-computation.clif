@@ -76,6 +76,8 @@ from "nnet3/nnet-computation.h":
       `kAddRowsMulti` as ADD_ROWS_MULTI
       `kAddToRowsMulti` as ADD_TO_ROWS_MULTI
       `kAddRowRanges` as ADD_ROW_RANGES
+      `kCompressMatrix` as COMPRESS_MATRIX
+      `kDecompressMatrix` as DECOMPRESS_MATRIX
       `kAcceptInput` as ACCEPT_INPUT
       `kProvideOutput` as PROVIDE_OUTPUT
       `kNoOperation` as NO_OPERATION

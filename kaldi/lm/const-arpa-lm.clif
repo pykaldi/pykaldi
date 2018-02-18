@@ -1,9 +1,11 @@
+from "fstext/float-weight-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/arc-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "lm/arpa-file-parser-clifwrap.h" import *
 
 from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
+from kaldi.util import _value_error_on_false
 
 from "lm/const-arpa-lm.h":
   namespace `kaldi`:
@@ -37,11 +39,24 @@ from "lm/const-arpa-lm.h":
     class ConstArpaLmDeterministicFst(StdDeterministicOnDemandFst):
       def __init__(self, lm: ConstArpaLm)
 
-      def `Start` as start(self) -> int
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
 
-    #   def `Final` as final(self, s: int) -> float
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
 
-      # def `GetArc` as get_arc(self, s: int, ilabel: int, oarc: StdArc)
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
 
     def `BuildConstArpaLm` as build_const_arpa_lm(options: ArpaParseOptions, arpa_rxfilename: str, const_arpa_wxfilename: str) -> bool:
       """Reads in an Arpa format language model and converts it into ConstArpaLm"""

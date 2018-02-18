@@ -38,11 +38,6 @@ from "nnet3/nnet-simple-component.h":
       def `ElementwiseProductComponent` as new(self, input_dim: int,
                                                output_dim: int)
 
-    class NormalizeComponent(Component):
-      @add__init__
-      def `NormalizeComponent` as new_from_other(self,
-                                                 other: NormalizeComponent)
-
     class SigmoidComponent(NonlinearComponent):
       @add__init__
       def `SigmoidComponent` as new_from_other(self, other: SigmoidComponent)
@@ -68,6 +63,12 @@ from "nnet3/nnet-simple-component.h":
                param_stddev: float, bias_stddev: float)
 
       def `Resize` as resize(self, input_dim: int, output_dim: int)
+
+      def `OrthonormalConstraint` as orthonormal_constraint(self) -> float
+
+      def `BiasParams` as bias_params(self) -> CuVector
+
+      def `LinearParams` as linear_params(self) -> CuMatrix
 
     class RepeatedAffineComponent(UpdatableComponent):
       def `BiasParams` as bias_params(self) -> CuVector
@@ -116,6 +117,10 @@ from "nnet3/nnet-simple-component.h":
 
       @add__init__
       def `LinearComponent` as new_from_params(self, params: CuMatrix)
+
+      def `OrthonormalConstraint` as orthonormal_constraint(self) -> float
+
+      # def `Params` as params(self) -> CuMatrixBase
 
     class FixedAffineComponent(Component):
       @add__init__
@@ -221,16 +226,6 @@ from "nnet3/nnet-simple-component.h":
                sigmoid_self_repair_threshold: float, self_repair_scale: float)
 
     # MaxPoolingComponent
-
-    class BatchNormComponent(Component):
-      @add__init__
-      def `BatchNormComponent` as new_from_other(self,
-                                                 other: BatchNormComponent)
-
-      def `Offset` as offset(self) -> CuVector
-      def `Scale` as scale(self) -> CuVector
-
-      def `SetTestMode` as set_test_mode(self, test_mode: bool)
 
     class CompositeComponent(UpdatableComponent):
       def `Init` as init(self, components: list<Component>, max_rows_process: int)

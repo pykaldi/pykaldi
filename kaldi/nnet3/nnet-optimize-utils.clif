@@ -12,6 +12,8 @@ from "nnet3/nnet-optimize-utils.h":
 
       def `MergeVariables` as merge_variables(self) -> bool
 
+    def `ExtendMatrices` as extend_matrices(computation: NnetComputation)
+
     def `ConsolidateModelUpdate` as consolidate_model_update(nnet: Nnet, computation: NnetComputation)
 
     class DerivativeTimeLimiter:
@@ -61,7 +63,14 @@ from "nnet3/nnet-optimize-utils.h":
     #
     # def `IdentifyIndexesRangesArgs` as identify_indexes_ranges_args(commands: list<NnetComputation.Command>)
     #     -> list<int>
+    #
+    # def `InsertCommands` as insert_commands(
+    #   commands: list<tuple<int, NnetComputation.Command>>, computation: NnetComputation)
 
-    def `OptimizeLoopedComputation` as optimize_looped_computation(nnet: Nnet, computation: NnetComputation)
+    def `OptimizeMemoryCompression` as optimize_memory_compression(
+      nnet: Nnet, memory_compression_level: int, computation: NnetComputation)
+
+    def `OptimizeLoopedComputation` as optimize_looped_computation(
+      nnet: Nnet, computation: NnetComputation)
 
     def `FixGotoLabel` as fix_goto_label(computation: NnetComputation)

@@ -19,7 +19,7 @@ add_pyclif_library("_feature_window" feature-window.clif
   RPATH $ORIGIN/../matrix
 )
 add_pyclif_library("_feature_functions" feature-functions.clif
-  CLIF_DEPS _kaldi_matrix
+  CLIF_DEPS _kaldi_matrix _matrix_ext
   LIBRARIES kaldi-feat
   RPATH $ORIGIN/../matrix
 )

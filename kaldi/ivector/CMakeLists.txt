@@ -18,3 +18,8 @@ add_pyclif_library("_plda" plda.clif
 	LIBRARIES kaldi-ivector
 	RPATH ORIGIN/../matrix:$ORIGIN/../itf:$ORIGIN/../base
 )
+add_pyclif_library("_agglomerative_clustering" agglomerative-clustering.clif
+	CLIF_DEPS _kaldi_matrix
+	LIBRARIES kaldi-ivector
+	RPATH ORIGIN/../matrix
+)

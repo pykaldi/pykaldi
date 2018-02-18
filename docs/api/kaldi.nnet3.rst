@@ -16,6 +16,7 @@ kaldi\.nnet3
       apply_l2_regularization
       check_computation
       collapse_model
+      compile_looped
       component_dot_products
       compute_command_attributes
       compute_computation_phases
@@ -30,8 +31,11 @@ kaldi\.nnet3
       compute_variable_accesses
       consolidate_io_operations
       consolidate_model_update
+      constrain_orthonormal
       convert_addition_to_assignment
       convert_repeated_to_block_affine
+      create_looped_computation_request
+      create_looped_computation_request_simple
       descriptor_tokenize
       dot_product
       error_context
@@ -39,6 +43,7 @@ kaldi\.nnet3
       evaluate_computation_request
       example_approx_equal
       expand_computation
+      extend_matrices
       find_orphan_components
       find_orphan_nodes
       find_sccs
@@ -48,6 +53,7 @@ kaldi\.nnet3
       generate_config_sequence_composite_block
       generate_random_simple_component
       generate_simple_nnet_training_example
+      get_chunk_size
       get_commands_of_type
       get_computation_request
       get_max_memory_use
@@ -64,6 +70,7 @@ kaldi\.nnet3
       matrix_is_unused
       max_output_time_in_request
       merge_examples
+      modify_nnet_ivector_period
       move_sizing_commands
       nnet_info
       nnet_is_recurrent
@@ -75,6 +82,7 @@ kaldi\.nnet3
       num_updatable_components
       optimize
       optimize_looped_computation
+      optimize_memory_compression
       parse_config_lines
       perturb_params
       print_cindex
@@ -109,6 +117,8 @@ kaldi\.nnet3
       set_learning_rate
       set_nnet_as_gradient
       snip_row_ops
+      summarize_cu_vector
+      summarize_double_vector
       summarize_vector
       un_vectorize_nnet
       update_nnet_with_max_change

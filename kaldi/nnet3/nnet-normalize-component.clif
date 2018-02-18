@@ -1,0 +1,20 @@
+from "cudamatrix/cu-vector-clifwrap.h" import *
+
+from kaldi.nnet3._nnet_component_itf import Component
+
+from "nnet3/nnet-normalize-component.h":
+  namespace `kaldi::nnet3`:
+    class NormalizeComponent(Component):
+      @add__init__
+      def `NormalizeComponent` as new_from_other(self,
+                                                 other: NormalizeComponent)
+
+    class BatchNormComponent(Component):
+      @add__init__
+      def `BatchNormComponent` as new_from_other(self,
+                                                 other: BatchNormComponent)
+
+      def `Offset` as offset(self) -> CuVector
+      def `Scale` as scale(self) -> CuVector
+
+      def `SetTestMode` as set_test_mode(self, test_mode: bool)

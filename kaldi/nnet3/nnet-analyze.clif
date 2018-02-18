@@ -38,6 +38,8 @@ from "nnet3/nnet-analyze.h":
 
       def `DescribeVariable` as describe_variable(self, variable: int) -> str
 
+      def `VariableInfo` as variable_info(self, variable: int) -> NnetComputation.SubMatrixInfo
+
     class Access:
       command_index: int
       access_type: AccessType
@@ -77,6 +79,8 @@ from "nnet3/nnet-analyze.h":
       def __init__(self, computation: NnetComputation, analyzer: Analyzer)
 
       def `FirstNontrivialAccess` as first_nontrivial_access(self, s: int) -> int
+
+      def `FirstAccess` as first_access(self, s: int) -> int
 
       def `LastAccess` as last_access(self, s: int) -> int
 

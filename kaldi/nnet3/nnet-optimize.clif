@@ -11,6 +11,7 @@ from "nnet3/nnet-optimize.h":
       propagate_in_place: bool
       backprop_in_place: bool
       optimize_row_ops: bool
+      extend_matrices: bool
       convert_addition: bool
       remove_assignments: bool
       allow_left_merge: bool
@@ -22,6 +23,7 @@ from "nnet3/nnet-optimize.h":
       max_deriv_time: int
       max_deriv_time_relative: int
       snip_row_ops: bool
+      memory_compression_level: int
       optimize_looped_computation: bool
 
       def `Register` as register(self, opts: OptionsItf)

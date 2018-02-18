@@ -89,3 +89,18 @@ from "rnnlm/rnnlm-compute-state.h":
           The log-prob that the model predicts for the provided word-index,
           given the current history.
         """
+
+      def `GetLogProbOfWords` as get_log_prob_of_words(self, output: CuMatrixBase):
+        """Computes log probs of all words.
+
+        This function computes log probs of all words and outputs them as a
+        matrix.
+
+        Note:
+          output[0,0] corresponds to <eps> symbol and it should NEVER be
+          used in any computation by the caller. To avoid causing unexpected
+          issues, it is set to a very small number.
+        """
+
+      def `AddWord` as add_word(self, word_index: int):
+        """Updates the state of the RNNLM by appending a word."""

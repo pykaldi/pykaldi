@@ -10,7 +10,8 @@ from "tree/build-tree.h":
         phone2num_pdf_classes: list<int>,
         share_roots: list<bool>, do_split: list<bool>,
         stats: list<tuple<list<tuple<int, int>>, Clusterable>>,
-        thresh: float, max_leaves: int, cluster_thresh: float, P: int)
+        thresh: float, max_leaves: int, cluster_thresh: float, P: int,
+        round_num_leaves: bool = default)
       -> EventMap:
       """Builds a set of decision trees.
 
@@ -41,6 +42,10 @@ from "tree/build-tree.h":
             decision-tree splitting; leaves will be combined if
             log-likelihood change is less than this.
           P (int): The central position of the phone context window
+          round_num_leaves (bool): If true, then the number of leaves in the
+            final tree is made a multiple of 8. This is done by further
+            clustering the leaves after they are first clustered based on
+            log-likelihood change. (See cluster_thresh above) (default: True).
 
       Returns:
           EventMap object that is the tree.

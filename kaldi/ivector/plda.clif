@@ -12,11 +12,18 @@ from "ivector/plda.h":
       def `Register` as register(self, opts: OptionsItf)
 
     class Plda:
-      # def `TransformIvector` as transform_ivector(self, config: PldaConfig, ivector: DoubleVectorBase, num_examples: int, DoubleVectorBase transformed_ivector) -> float
+      @add__init__
+      def `Plda` as from_other(self, other: Plda)
+
+      def `TransformIvector` as transform_ivector(self, config: PldaConfig, ivector: DoubleVectorBase, num_examples: int, transformed_ivector: DoubleVectorBase) -> float
+
+      def `TransformIvector` as transform_ivector_single(self, config: PldaConfig, ivector: VectorBase, num_examples: int, transformed_ivector: VectorBase) -> `float` as float
 
       def `LogLikelihoodRatio` as log_likelihood_ratio(self, transformed_train_ivector:DoubleVectorBase, num_train_utts: int, transformed_test_ivector:DoubleVectorBase) -> float
 
       def `SmoothWithinClassCovariance` as smooth_within_class_covariance(self, smoothing_factor: float)
+
+      def `ApplyTransform` as apply_transform(self, in_transform: DoubleMatrix)
 
       def `Dim` as dim(self) -> int
 

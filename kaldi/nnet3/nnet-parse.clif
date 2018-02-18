@@ -40,7 +40,11 @@ from "nnet3/nnet-parse.h":
 
     def `ErrorContext` as error_context(str: str) -> str
 
-    def `SummarizeVector` as summarize_vector(vec: Vector) -> str
+    def `SummarizeVector` as summarize_vector(vec: VectorBase) -> str
+
+    def `SummarizeVector` as summarize_double_vector(vec: DoubleVectorBase) -> str
+
+    def `SummarizeVector` as summarize_cu_vector(vec: CuVectorBase) -> str
 
     def `PrintParameterStats` as print_parameter_vector_stats(
         os: ostringstream, name: str, params: CuVectorBase,
@@ -48,4 +52,5 @@ from "nnet3/nnet-parse.h":
 
     def `PrintParameterStats` as print_parameter_matrix_stats(
         os: ostringstream, name: str, params: CuMatrix,
-        include_mean: bool = default)
+        include_mean: bool = default, include_row_norms: bool = default,
+        include_column_norms: bool = default, include_singular_values: bool = default)

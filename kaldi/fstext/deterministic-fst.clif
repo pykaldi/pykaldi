@@ -17,13 +17,13 @@ from "fstext/deterministic-fst.h":
       def `Final` as final(self, state: int) -> TropicalWeight:
         """Returns the final weight of the given state."""
 
-      def `GetArc` as get_arc(self, s: int, i: int)
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
         -> (success: bool, oarc: StdArc):
         """Creates an on demand arc and returns it.
 
         Args:
           s (int): State index.
-          olabel (int): Output label of the arc.
+          ilabel (int): Arc label.
 
         Returns:
           The created arc.

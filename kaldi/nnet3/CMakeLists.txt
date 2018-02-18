@@ -39,6 +39,12 @@ add_pyclif_library("_nnet_simple_component" nnet-simple-component.clif
   RPATH $ORIGIN/../cudamatrix
 )
 
+add_pyclif_library("_nnet_normalize_component" nnet-normalize-component.clif
+  CLIF_DEPS _cu_vector
+  LIBRARIES kaldi-nnet3
+  RPATH $ORIGIN/../cudamatrix
+)
+
 add_pyclif_library("_nnet_convolutional_component" nnet-convolutional-component.clif
   LIBRARIES kaldi-nnet3
 )
@@ -84,6 +90,11 @@ add_pyclif_library("_nnet_graph" nnet-graph.clif
 
 add_pyclif_library("_nnet_compile" nnet-compile.clif
   CLIF_DEPS _nnet_nnet _nnet_computation
+  LIBRARIES kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_compile_looped" nnet-compile-looped.clif
+  CLIF_DEPS _nnet_nnet _nnet_computation _nnet_optimize
   LIBRARIES kaldi-nnet3
 )
 

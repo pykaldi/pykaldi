@@ -1,0 +1,20 @@
+from "matrix/kaldi-matrix-clifwrap.h" import *
+
+from "ivector/agglomerative-clustering.h":
+  namespace `kaldi`:
+    class AhcCluster:
+      id: int
+      parent1: int
+      parent2: int
+      size: int
+      utt_ids: list<int>
+
+      def __init__(self, id: int, p1: int, p2: int, utts: list<int>)
+
+    class AgglomerativeClusterer:
+      def __init__(self, costs: Matrix, thresh: float, min_clust: int)
+
+      def `Cluster` as cluster(self) -> list<int>
+
+    def `AgglomerativeCluster` as agglomerative_cluster(
+      costs: Matrix, thresh: float, min_clust: int) -> list<int>

@@ -5,6 +5,7 @@ from ._nnet_parse import *
 from ._nnet_misc_computation_info import *
 from ._nnet_component_itf import *
 from ._nnet_simple_component import *
+from ._nnet_normalize_component import *
 from ._nnet_convolutional_component import *
 from ._nnet_attention_component import *
 from ._nnet_general_component import *
@@ -14,6 +15,7 @@ from ._nnet_computation import *
 from ._nnet_test_utils import *
 from ._nnet_graph import *
 from ._nnet_compile import *
+from ._nnet_compile_looped import *
 from ._nnet_analyze import *
 from ._nnet_compute import *
 from ._nnet_optimize import *

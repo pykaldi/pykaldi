@@ -10,6 +10,7 @@ kaldi\.ivector
    .. autosummary::
       :nosignatures:
    
+      agglomerative_cluster
       compute_vad_energy
       estimate_ivectors_online
    
@@ -22,6 +23,8 @@ kaldi\.ivector
    .. autosummary::
       :nosignatures:
    
+      AgglomerativeClusterer
+      AhcCluster
       IvectorEstimationOptions
       IvectorExtractor
       IvectorExtractorEstimationOptions

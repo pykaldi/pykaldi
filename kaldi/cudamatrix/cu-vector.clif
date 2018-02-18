@@ -60,9 +60,23 @@ from "cudamatrix/cu-vector.h":
         """Applies log to this vector's elements"""
 
       def `ApplyFloor` as apply_floor(self, floor_val: float) -> int:
+        """Applies floor to this vector's elements
+
+        Returns:
+          The number of elements set to floor value.
+        """
+
+      def `ApplyFloor` as apply_floor_no_count(self, floor_val: float):
         """Applies floor to this vector's elements"""
 
       def `ApplyCeiling` as apply_ceiling(self, ceiling_val: float) -> int:
+        """Applies ceiling to this vector's elements
+
+        Returns:
+          The number of elements set to ceiling value.
+        """
+
+      def `ApplyCeiling` as apply_ceiling_no_count(self, ceiling_val: float):
         """Applies ceiling to this vector's elements"""
 
       def `ApplyPow` as apply_pow(self, power: float):
@@ -120,7 +134,7 @@ from "cudamatrix/cu-vector.h":
 
       def `ReplaceValue` as replace_value(self, orig: float, changed: float):
         """
-        Set each element to y = (x == orig ? changed : x). 
+        Set each element to y = (x == orig ? changed : x).
         """
 
       def `MulElements` as mul_elements(self, v: CuVectorBase):

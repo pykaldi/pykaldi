@@ -9,7 +9,7 @@ from kaldi.util import _value_error_on_false
 
 from "tree/build-tree-utils.h":
   namespace `kaldi`:
-    
+
     # No need in Python?
     # def `DeleteBuildTreeStats` as delete_build_tree_stats(self, stats: list<tuple<int, Clusterable>>)
 
@@ -82,6 +82,8 @@ from "tree/build-tree-utils.h":
     # def `ClusterEventMapRestrictedByKeys`
 
     # def ClusterEventMapRestrictedByMap
+
+    # def ClusterEventMapToNClustersRestrictedByMap
 
     # def `RenumberEventMap` as renumber_event_map
 

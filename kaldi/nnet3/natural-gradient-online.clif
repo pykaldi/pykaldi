@@ -26,8 +26,7 @@ from "nnet3/natural-gradient-online.h":
 
       def `Freeze` as freeze(self, frozen: bool)
 
-      def `PreconditionDirections` as precondition_directions(self, R: CuMatrixBase, row_prod: CuVectorBase)
-          -> float
+      def `PreconditionDirections` as precondition_directions(self, R: CuMatrixBase) -> float
 
       @add__init__
       def `OnlineNaturalGradient` as new_from_other(

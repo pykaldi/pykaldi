@@ -8,10 +8,10 @@ from "chain/chain-training-ext.h":
   namespace `kaldi::chain`:
     def `ComputeChainObjfAndDerivExt` as compute_chain_objf_and_deriv(opts: ChainTrainingOptions,
                                                                       den_graph: DenominatorGraph,
-                                                                      supervision: Supervision, 
-                                                                      nnet_output: CuMatrixBase, 
-                                                                      nnet_output_deriv: CuMatrixBase, 
-                                                                      xent_output_deriv: CuMatrixBase) -> (objf: float, l2_term: float, weight: float):
+                                                                      supervision: Supervision,
+                                                                      nnet_output: CuMatrixBase,
+                                                                      nnet_output_deriv: CuMatrixBase,
+                                                                      xent_output_deriv: CuMatrix) -> (objf: float, l2_term: float, weight: float):
       """Does both the numerator and denominator parts of the chain computation in one call.
 
       Args:
@@ -20,7 +20,7 @@ from "chain/chain-training-ext.h":
       	supervision (Supervision): The supervision object containing the supervision paths and constrains
       	nnet_output (CuMatrixBase): The output of the neural net; dimension must equal ((supervision.num_sequences * supervision.frames_per_sequence) by den_graph.num_pdfs)
       	nnet_output_deriv (CuMatrixBase): The derivative of the objective function w.r.t. the neural net output
-      	xent_output_deriv (CuMatrixBase): If non-NULL, then the numerator part of the derivative (equals the posterior from the numerator forward-backward, scaled by the supervision weight)
+      	xent_output_deriv (CuMatrix): If non-NULL, then the numerator part of the derivative (equals the posterior from the numerator forward-backward, scaled by the supervision weight)
 
       Returns:
       	objf (float): The [num -den] objective function computed for this example

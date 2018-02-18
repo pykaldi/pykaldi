@@ -4,6 +4,7 @@ from "fstext/arc-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 
 from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
+from kaldi.util import _value_error_on_false
 
 from "lm/kaldi-rnnlm.h":
   namespace `kaldi`:
@@ -25,8 +26,21 @@ from "lm/kaldi-rnnlm.h":
     class RnnlmDeterministicFst(StdDeterministicOnDemandFst):
       def __init__(self, max_ngram_order: int, rnnlm: KaldiRnnlmWrapper)
 
-      def `Start` as start(self) -> int
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
 
-      def `Final` as final(self, s: int) -> TropicalWeight
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
 
-      def `GetArc` as get_arc(self, s: int, ilabel: int, oarc: StdArc) -> bool
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)

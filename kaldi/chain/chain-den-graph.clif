@@ -13,7 +13,8 @@ from "chain/chain-den-graph.h":
 
         def `NumPdfs` as num_pdfs(self) -> int
 
-        def __init__(self, fst: StdVectorFst, num_pdfs: int)
+        @add__init__
+        def `DenominatorGraph` as from_fst(self, fst: StdVectorFst, num_pdfs: int)
 
         def `ForwardTransitions` as forward_transitions(self) -> IntPair
 

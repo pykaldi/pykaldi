@@ -1,0 +1,24 @@
+from "nnet3/nnet-computation-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-optimize-clifwrap.h" import *
+
+from "nnet3/nnet-compile-looped.h":
+  namespace `kaldi::nnet3`:
+    def `CompileLooped` as compile_looped(
+      nnet: Nnet, optimize_opts: NnetOptimizeOptions, request1: ComputationRequest,
+      request2: ComputationRequest, request3: ComputationRequest) -> NnetComputation
+
+    def `GetChunkSize` as get_chunk_size(
+      nnet: Nnet, frame_subsampling_factor: int, advised_chunk_size: int) -> int
+
+    def `ModifyNnetIvectorPeriod` as modify_nnet_ivector_period(ivector_period: int, nnet: Nnet)
+
+    def `CreateLoopedComputationRequest` as create_looped_computation_request(
+      nnet: Nnet, chunk_size: int, frame_subsampling_factor: int, ivector_period: int,
+      left_context_begin: int, right_context: int, num_sequences: int)
+      -> (request1: ComputationRequest, request2: ComputationRequest, request3: ComputationRequest)
+
+    def `CreateLoopedComputationRequestSimple` as create_looped_computation_request_simple(
+      nnet: Nnet, chunk_size: int, frame_subsampling_factor: int, ivector_period: int,
+      extra_left_context_begin: int, extra_right_context: int, num_sequences: int)
+      -> (request1: ComputationRequest, request2: ComputationRequest, request3: ComputationRequest)
