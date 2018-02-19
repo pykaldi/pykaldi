@@ -14,6 +14,8 @@ from distutils.file_util import copy_file
 from setuptools import setup, find_packages, Command
 from subprocess import check_output, check_call, CalledProcessError
 
+KALDI_MIN_REQUIRED = '938d17fe9b11ee43898ffb9331e53247d9a1a998'
+
 ################################################################################
 # Check variables / find programs
 ################################################################################
@@ -35,16 +37,18 @@ if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
     try:
         PYCLIF = check_output(['which', 'pyclif']).decode("utf-8").strip()
     except OSError:
-        raise RuntimeError("Could not find pyclif. Please add pyclif binary to"
-                           " your PATH or set PYCLIF environment variable.")
+        print("\nCould not find pyclif.\nPlease add pyclif binary to your PATH "
+             "or set PYCLIF environment variable.", file=sys.stderr)
+        sys.exit(1)
 
 if not CLIF_MATCHER:
     CLIF_MATCHER = os.path.join(sys.prefix, 'clang/bin/clif-matcher')
 
 if not (os.path.isfile(CLIF_MATCHER) and os.access(CLIF_MATCHER, os.X_OK)):
-    raise RuntimeError("Could not find clif-matcher. Please make sure CLIF "
-                       "was installed under the current python environment "
-                       "or set CLIF_MATCHER environment variable.")
+    print("\nCould not find clif-matcher.\nPlease make sure CLIF was installed "
+          "under the current python environment or set CLIF_MATCHER "
+          "environment variable.", file=sys.stderr)
+    sys.exit(1)
 
 CLANG = os.path.join(os.path.dirname(CLIF_MATCHER), "clang")
 RESOURCE_DIR = check_output("echo '#include <limits.h>' | {} -xc -v - 2>&1 "
@@ -57,9 +61,20 @@ if not KALDI_DIR:
 
 KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
 if not os.path.isfile(KALDI_MK_PATH):
-  raise RuntimeError("Could not find Kaldi installation. Please install Kaldi "
-                     "under the tools directory or set KALDI_DIR environment "
-                     "variable to where Kaldi is installed.")
+  print("\nCould not find Kaldi.\nPlease install Kaldi under the tools "
+        "directory or set KALDI_DIR environment variable.", file=sys.stderr)
+  sys.exit(1)
+
+try:
+    KALDI_HEAD = check_output(['git', '-C', KALDI_DIR,
+                               'rev-parse', 'HEAD']).decode("utf-8").strip()
+    check_call(['git', '-C', KALDI_DIR, 'merge-base', '--is-ancestor',
+                KALDI_MIN_REQUIRED, KALDI_HEAD])
+except CalledProcessError:
+    print("\nKaldi installation at {} is not supported.\nPlease update Kaldi "
+          "to match https://github.com/pykaldi/kaldi/tree/pykaldi."
+          .format(KALDI_DIR), file=sys.stderr)
+    sys.exit(1)
 
 with open("Makefile", "w") as makefile:
     print("include {}".format(KALDI_MK_PATH), file=makefile)
@@ -249,7 +264,9 @@ class build_sphinx(Command):
             import sphinx
             check_call([MAKE, 'docs'], cwd = BUILD_DIR)
         except ImportError:
-            print("Sphinx was not found. Install it using pip install sphinx.")
+            print("Sphinx was not found. Install it using pip install sphinx.",
+                  file=sys.stderr)
+            sys.exit(1)
 
 
 class install_lib(setuptools.command.install_lib.install_lib):
