@@ -192,10 +192,10 @@ are hoping to upstream these changes over time.
 comply with CLIF requirements we had to make some changes to Kaldi codebase. We
 are hoping to upstream these changes over time.
 
-You can use the scripts in the `tools` directory to install these software
-locally. Make sure you check the output of these scripts. If you do not see
-"Done installing {protobuf,CLIF,Kaldi}." printed at the very end, it means that
-installation has failed.
+You can use the scripts in the `tools` directory to install or update these
+software locally. Make sure you check the output of these scripts. If you do not
+see "Done installing {protobuf,CLIF,Kaldi}." printed at the very end, it means
+that installation has failed for some reason.
 
 ```bash
 cd tools
@@ -279,6 +279,13 @@ installation command.
 export PYCLIF=<path to pyclif executable, e.g. "$HOME/anaconda3/envs/clif/bin/pyclif">
 export CLIF_MATCHER=<path to clif-matcher executable, e.g. "$HOME/anaconda3/envs/clif/clang/bin/clif-matcher">
 ```
+
+### How do I update Protobuf, CLIF or Kaldi used by PyKaldi?
+
+While the need for updating Protobuf and CLIF should not come up very often, you
+might want or need to update Kaldi installation used for building PyKaldi.
+Rerunning the relevant install script in `tools` directory should update the
+existing installation. If this does not work, please open an issue.
 
 
 ## Citing

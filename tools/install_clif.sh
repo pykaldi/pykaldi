@@ -88,6 +88,7 @@ else
 fi
 
 cd "$CLIF_DIR"
+git pull
 
 declare -a CMAKE_G_FLAG
 declare -a MAKE_PARALLELISM

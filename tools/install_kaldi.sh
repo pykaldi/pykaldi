@@ -9,12 +9,13 @@ KALDI_GIT="-b pykaldi https://github.com/pykaldi/kaldi.git"
 KALDI_DIR="$PWD/kaldi"
 
 if [ ! -d "$KALDI_DIR" ]; then
-	git clone $KALDI_GIT $KALDI_DIR
+  git clone $KALDI_GIT $KALDI_DIR
 else
-	echo "$KALDI_DIR already exists!"
+  echo "$KALDI_DIR already exists!"
 fi
 
 cd "$KALDI_DIR/tools"
+git pull
 
 # Prevent kaldi from switching default python version
 mkdir -p "python"
