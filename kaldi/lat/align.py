@@ -15,10 +15,7 @@ def phone_align_lattice(lat, tmodel, opts):
 
     Outputs a lattice in which the arcs correspond exactly to sequences of
     phones, so the boundaries between the arcs correspond to the boundaries
-    between phones. If `opts.remove_epsilon == False` and
-    `opts.replace_output_symbols == False`, an arc may have >1 phone on it,
-    but the boundaries will still correspond with the boundaries between
-    phones.
+    between phones.
 
     Args:
         lat (CompactLatticeVectorFst): The input lattice.
@@ -28,13 +25,23 @@ def phone_align_lattice(lat, tmodel, opts):
     Returns:
         A tuple representing the return value and the output lattice. The return
         value is set to True if the operation was successful, False if some kind
-        of error was detected, e.g. the `opts.reorder` option was incorrectly
-        specified, or the lattice seems to have been "forced out" (did not reach
-        end state, resulting in partial words at the end).
+        of problem was detected, e.g. transition-id sequences in the lattice
+        were incompatible with the model.
 
     Note:
-        It is possible to have arcs with words on them but no transition-ids at
-        all.
+        If this function returns False, it doesn't mean the output lattice is
+        necessarily bad. It might just be that the input lattice was "forced
+        out" with partial words due to no final state being reached during
+        decoding, and in this case the output might still be usable.
+
+    Note:
+        If `opts.remove_epsilon == True` and `opts.replace_output_symbols ==
+        False`, an arc may have >1 phone on it, but the boundaries will still
+        correspond with the boundaries between phones.
+
+    Note:
+        If `opts.replace_output_symbols == False`, it is possible to have arcs
+        with words on them but no transition-ids at all.
 
     See Also:
         :meth:`kaldi.lat.functions.convert_lattice_to_phones`
@@ -63,9 +70,7 @@ def word_align_lattice(lat, tmodel, info, max_states):
         A tuple representing the return value and the output lattice. The
         return value is set to True if the operation was successful, False if
         some kind of problem was detected, e.g. transition-id sequences in the
-        lattice were incompatible with the word boundary information, or the
-        lattice seems to have been "forced out" (did not reach end state,
-        resulting in partial words at the end).
+        lattice were incompatible with the word boundary information.
 
     Note:
         We don't expect silence inside words, or empty words (words with no
@@ -74,10 +79,10 @@ def word_align_lattice(lat, tmodel, info, max_states):
         consist of just one wbegin_and_end_phone).
 
     Note:
-        If this function returns False, it doesn't mean the input lattice is
-        necessarily bad: it might just be that the lattice was "forced out" as
-        the end-state was not reached during decoding, and in this case the
-        output might still be usable.
+        If this function returns False, it doesn't mean the output lattice is
+        necessarily bad. It might just be that the input lattice was "forced
+        out" with partial words due to no final state being reached during
+        decoding, and in this case the output might still be usable.
     """
     success, lat_out = _wal._word_align_lattice(lat, tmodel, info, max_states)
     return success, _fst.CompactLatticeVectorFst(lat_out)
@@ -100,15 +105,13 @@ def word_align_lattice_lexicon(lat, tmodel, lexicon_info, opts):
         A tuple representing the return value and the output lattice. The
         return value is set to True if the operation was successful, False if
         some kind of problem was detected, e.g. transition-id sequences in the
-        lattice were incompatible with the word boundary information, or the
-        lattice seems to have been "forced out" (did not reach end state,
-        resulting in partial words at the end).
+        lattice were incompatible with the lexicon information.
 
     Note:
-        If this function returns False, it doesn't mean the input lattice is
-        necessarily bad: it might just be that the lattice was "forced out" as
-        the end-state was not reached during decoding, and in this case the
-        output might still be usable.
+        If this function returns False, it doesn't mean the output lattice is
+        necessarily bad. It might just be that the input lattice was "forced
+        out" with partial words due to no final state being reached during
+        decoding, and in this case the output might still be usable.
     """
     success, lat_out = _wall._word_align_lattice_lexicon(lat, tmodel,
                                                          lexicon_info, opts)

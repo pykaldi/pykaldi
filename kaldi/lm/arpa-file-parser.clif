@@ -6,7 +6,7 @@ from "itf/options-itf-clifwrap.h" import *
 from "lm/arpa-file-parser.h":
   namespace `kaldi`:
     class ArpaParseOptions:
-      """Options for `ArpaFileParser`."""
+      """Options for parsing ARPA files."""
       enum OovHandling with:
         `kRaiseError` as RAISE_ERROR
         `kAddToSymbols` as ADD_TO_SYMBOLS
@@ -32,24 +32,8 @@ from "lm/arpa-file-parser.h":
             Typically a command-line option parser.
         """
 
-    class NGram:
-      """A parsed n-gram from ARPA LM file."""
-      words: list<int>
-      """Symbols in left to right order."""
-      logprob: float
-      """Log-prob of the n-gram."""
-      backoff: float
-      """log-backoff weight of the n-gram. Defaults to zero if not specified."""
-
     class ArpaFileParser:
-      """Abstract base class for ARPA LM file conversion.
-
-      See ConstArpaLmBuilder and ArpaLmCompiler for usage examples.
-      """
-    # NOTE:
-    # CLIF cannot wrap this constructor since this is a base class with pure
-    # virtual methods.
-    # def `ArpaFileParser` as __init__(self, options: ArpaParseOptions, symbols: SymbolTable)
+      """Abstract base class for ARPA LM file conversion."""
 
       def `Read` as read(self, is:istream):
         """Reads ARPA LM file from input stream.

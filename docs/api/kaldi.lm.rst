@@ -21,14 +21,12 @@ kaldi\.lm
    .. autosummary::
       :nosignatures:
    
-      ArpaFileParser
       ArpaLmCompiler
       ArpaParseOptions
       ConstArpaLm
       ConstArpaLmDeterministicFst
       KaldiRnnlmWrapper
       KaldiRnnlmWrapperOpts
-      NGram
       RnnlmDeterministicFst
    
    

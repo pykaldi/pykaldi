@@ -9,21 +9,42 @@ from kaldi.util import _value_error_on_false
 from "lm/kaldi-rnnlm.h":
   namespace `kaldi`:
     class KaldiRnnlmWrapperOpts:
-      unk_symbol: str
-      eos_symbol: str
+      """Options for wrapping a Mikolov RNNLM."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      unk_symbol: str
+      """Unknown symbol, e.g. <unk>."""
+      eos_symbol: str
+      """EOS symbol, e.g. </s>."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class KaldiRnnlmWrapper:
+      """Mikolov RNNLM wrapper."""
       def __init__(self, opts: KaldiRnnlmWrapperOpts, unk_prob_rspecifier: str, word_symbol_table_rxfilename: str, rnnlm_rxfilename: str)
 
-      def `GetHiddenLayerSize` as get_hidden_layer_size(self) -> int
+      def `GetHiddenLayerSize` as get_hidden_layer_size(self) -> int:
+        """Returns the size of hidden layer."""
 
-      def `GetEos` as get_eos(self) -> int
+      def `GetEos` as get_eos(self) -> int:
+        """Returns the label for EOS symbol."""
 
-      def `GetLogProb` as get_log_prob(self, word: int, wseq: list<int>, context_in: list<float>) -> (logprob: float, context_out: list<float>)
+      def `GetLogProb` as get_log_prob(self, word: int, wseq: list<int>, context_in: list<float>)
+        -> (logprob: float, context_out: list<float>):
+        """Computes the log probability of the word given the history.
+
+        Computes the log probability of the word given the history and the
+        initial context vector. Returns the log probability and the final
+        context vector.
+        """
 
     class RnnlmDeterministicFst(StdDeterministicOnDemandFst):
+      """Deterministic on-demand Mikolov RNNLM FST."""
       def __init__(self, max_ngram_order: int, rnnlm: KaldiRnnlmWrapper)
 
       def `Start` as start(self) -> int:

@@ -10,9 +10,30 @@ from kaldi.lm._arpa_file_parser import ArpaFileParser
 from "lm/arpa-lm-compiler.h":
   namespace `kaldi`:
     class ArpaLmCompiler(ArpaFileParser):
+      """ARPA LM compiler.
 
+      Constructs the ARPA LM compiler with the given options and the optional
+      symbol table. If symbol table is provided, then the ARPA file that will
+      be read should contain text n-grams, and the words are mapped to labels
+      using the table. bos_symbol and eos_symbol in the options structure must
+      be valid labels in the table, and so must be unk_symbol if provided. The
+      table is not owned by the compiler, but may be augmented, if oov_handling
+      is set to `ArpaFileParser.OovHandling.ADD_TO_SYMBOLS`. If symbol table is
+      ``None``, the ARPA file that will be read should contain integer label
+      n-grams, and oov_handling has no effect. bos_symbol and eos_symbol must
+      be valid labels still.
+
+      Args:
+        options (ArpaParseOptions): The options for parsing ARPA files.
+        sub_eps (int): The disambigation symbol to substitute with epsilon.
+          If set to 0, bos_symbol and eos_symbol are treated as real symbols.
+          Otherwise they are treated as epsilons.
+        symbols (SymbolTable): The symbol table.
+      """
       def __init__(self, options: ArpaParseOptions, sub_eps: int, symbols: SymbolTable)
 
-      def `Fst` as fst(self) -> StdVectorFst
+      def `Fst` as fst(self) -> StdVectorFst:
+        """Returns a copy of the FST compiled from the ARPA LM file."""
 
-      def `MutableFst` as mutable_fst(self) -> StdVectorFst
+      def `MutableFst` as mutable_fst(self) -> StdVectorFst:
+        """Returns the internal FST compiled from the ARPA LM file."""

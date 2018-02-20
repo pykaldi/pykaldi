@@ -48,7 +48,7 @@ from "tfrnnlm/tensorflow-rnnlm.h":
 
 
     class TfRnnlmDeterministicFst(StdDeterministicOnDemandFst):
-      """Deterministic on demand RNNLM FST.
+      """Deterministic on demand Tensorflow RNNLM FST.
 
       Args:
         max_ngram_order (int): Maximum ngram order.

@@ -10,33 +10,53 @@ from kaldi.util import _value_error_on_false
 from "lm/const-arpa-lm.h":
   namespace `kaldi`:
     class ConstArpaLm:
-
+      """Constant ARPA language model."""
       # FIXME (VM):
-      # unigram_states: int**, lm_states_size: int64
+      # unigram_states: int**, overflow_buffer: int**, lm_states: int*
       # @add__init__
-      # def `ConstArpaLm` as new_with_params(self, bos_symbol: int, eos_symbol: int, unk_symbol: int, ngram_order: int, num_words: int, overflow_buffer_size: int, lm_states_size: int, unigram_states: int, overflow_buffer: int, lm_states: int)
+      # def `ConstArpaLm` as new_with_params(
+      #   self, bos_symbol: int, eos_symbol: int, unk_symbol: int, ngram_order: int,
+      #   num_words: int, overflow_buffer_size: int, lm_states_size: int,
+      #   unigram_states: int, overflow_buffer: int, lm_states: int)
 
-      def `Read` as read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads the model from an input stream."""
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes the model to an output stream."""
 
-      def `WriteArpa` as write_arpa(self, os: ostream)
+      def `WriteArpa` as write_arpa(self, os: ostream):
+        """Writes the model to an output stream as an ARPA file."""
 
       def `GetNgramLogprob` as get_ngram_log_prob(self, word: int, hist: list<int>) -> float:
-        """Wrapper of GetNgramLogprobRecurse. It first maps possible out-of-vocabulary words to <unk>, if <unk> is defined, and then calls GetNgramLogprobRecurse."""
+        """Gets the n-gram log probability for the word given the history.
+
+        It first maps possible out-of-vocabulary words to <unk>, if <unk> is
+        defined, and then computes the n-gram log probability.
+        """
 
       def `HistoryStateExists` as history_state_exists(self, hist:list<int>) -> bool:
-        """Returns true if the history word sequence <hist> has successor, which means <hist> will be a state in the FST format language model."""
+        """Checks if history states exists in the model.
 
-      def `BosSymbol` as get_bos_symbol(self) -> int
+        Returns:
+          True if history word sequence <hist> has a successor in the model,
+          which means <hist> will be a state in the FST format language model.
+        """
 
-      def `EosSymbol` as get_eos_symbol(self) -> int
+      def `BosSymbol` as get_bos_symbol(self) -> int:
+        """Returns the label for <s> symbol."""
 
-      def `UnkSymbol` as get_unk_symbol(self) -> int
+      def `EosSymbol` as get_eos_symbol(self) -> int:
+        """Returns the label for </s> symbol."""
 
-      def `NgramOrder` as get_ngram_order(self) -> int
+      def `UnkSymbol` as get_unk_symbol(self) -> int:
+        """Returns the label for <unk> symbol."""
+
+      def `NgramOrder` as get_ngram_order(self) -> int:
+        """Returns the n-gram order."""
 
     class ConstArpaLmDeterministicFst(StdDeterministicOnDemandFst):
+      """Deterministic on demand constant ARPA language model."""
       def __init__(self, lm: ConstArpaLm)
 
       def `Start` as start(self) -> int:
@@ -58,5 +78,10 @@ from "lm/const-arpa-lm.h":
         """
         return _value_error_on_false(...)
 
-    def `BuildConstArpaLm` as build_const_arpa_lm(options: ArpaParseOptions, arpa_rxfilename: str, const_arpa_wxfilename: str) -> bool:
-      """Reads in an Arpa format language model and converts it into ConstArpaLm"""
+    def `BuildConstArpaLm` as build_const_arpa_lm(
+      options: ArpaParseOptions, arpa_rxfilename: str, const_arpa_wxfilename: str) -> bool:
+      """Builds a constant ARPA language model from an ARPA language model.
+
+      Reads in an ARPA format language model, converts it into a constant ARPA
+      language model and writes it out in binary format.
+      """
