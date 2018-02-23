@@ -1,5 +1,6 @@
 .. toctree::
    :caption: API Guide
+   :hidden:
 
    api/kaldi
    api/kaldi.base

@@ -38,7 +38,7 @@ with open("api.rst", "w") as api, \
      open("packages.rst", "w") as packages, \
      open("modules.rst", "w") as modules:
 
-    print(".. toctree::\n   :caption: API Guide\n", file=api)
+    print(".. toctree::\n   :caption: API Guide\n   :hidden:\n", file=api)
     print("   {}/kaldi".format(args.out_dir), file=api)
     print(".. autosummary::\n   :toctree: {}\n".format(args.out_dir),
           file=packages)

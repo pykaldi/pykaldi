@@ -1,7 +1,9 @@
+.. PyKaldi documentation master file.
+
+:github_url: https://github.com/pykaldi/pykaldi
+
 PyKaldi
 =======
-
-.. warning:: PyKaldi is still at alpha stage. Some features might not work yet.
 
 `PyKaldi <https://github.com/pykaldi/pykaldi>`_ is a Python wrapper for `Kaldi
 <http://kaldi-asr.org>`_ exposing nearly all of Kaldi's C++ API to Python code.
@@ -106,6 +108,7 @@ as follows:
 .. toctree::
    :caption: User Guide
    :glob:
+   :hidden:
    :maxdepth: 2
 
    user/*
@@ -113,6 +116,7 @@ as follows:
 .. toctree::
    :caption: Developer Guide
    :glob:
+   :hidden:
    :maxdepth: 2
 
    dev/*

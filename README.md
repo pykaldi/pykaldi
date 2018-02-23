@@ -2,8 +2,6 @@
 
 --------------------------------------------------------------------------------
 
-# PyKaldi
-
 PyKaldi is a Python wrapper for [Kaldi](http://kaldi-asr.org) exposing nearly
 all of Kaldi's C++ API to Python code. It aims to bridge the gap between Kaldi
 and all the nice things Python has to offer including its mature ecosystem of
