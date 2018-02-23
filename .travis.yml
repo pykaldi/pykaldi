@@ -1,5 +1,5 @@
+dist: trusty
 sudo: required
-
 services:
   - docker
 
@@ -8,12 +8,16 @@ before_install:
 
 script:
   - |
-     docker run vrmpx/pykaldipreimg:latest /bin/sh \
-     		-c "git clone https://github.com/pykaldi/pykaldi.git \
-     			&& cd pykaldi/tools \
-     			&& ln -s ~/tools/protobuf protobuf \
-     			&& ln -s ~/tools/clif clif \
-     			&& ln -s ~/tools/clif_backend clif_backend \
-     			&& ln -s ~/tools/kaldi kaldi \
-     			&& cd .. \
-     			&& python setup.py install"
+     docker run --name "pykaldi" -it vrmpx/pykaldipreimg:latest /bin/sh \
+     				-v$TRAVIS_BUILD_DIR:/pykaldi -w/pykaldi
+     		        -c "cd tools \
+     		            && ln -s ~/tools/protobuf protobuf \
+     			        && ln -s ~/tools/clif clif \
+             			&& ln -s ~/tools/clif_backend clif_backend \
+             			&& ln -s ~/tools/kaldi kaldi \
+             			&& cd .. \
+             			&& python setup.py install"
+
+after_success:
+  - docker exec -it pykaldi /bin/sh -c "for f in $(find pykaldi/tests -type f -name \"*.py\"); do {python $f} done"
+
