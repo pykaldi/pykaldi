@@ -1,10 +1,6 @@
+<p align="center"><img src="docs/_static/pykaldi-logo-dark.png" width="40%"/></p>
 
----
-**NOTE**
-
-PyKaldi is still at alpha stage. Some features might not work yet.
-
----
+--------------------------------------------------------------------------------
 
 # PyKaldi
 
@@ -71,7 +67,7 @@ to provide a more "Pythonic" API. Below figure illustrates where PyKaldi fits in
 the Kaldi software architecture.
 
 <p align="center">
-<img src="docs/pykaldi.png" alt="Kaldi Software Architecture" width="400">
+<img src="docs/_static/pykaldi-architecture.png" alt="Architecture" width="400"/>
 </p>
 
 PyKaldi has a modular design which makes it easy to maintain and extend. Source
