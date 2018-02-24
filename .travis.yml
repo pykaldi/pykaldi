@@ -21,6 +21,6 @@ install:
 script:
   - echo "Test"
   - 'docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
-after_sucess:
+after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - docker push vrmpx/pykaldi:$TAG
