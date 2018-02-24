@@ -8,7 +8,7 @@ before_install:
 
 script:
   - |
-      docker run --name="pykaldi" -it -v$TRAVIS_BUILD_DIR:/pykaldi -w/pykaldi \
+     docker run --name="pykaldi" -it -v$TRAVIS_BUILD_DIR:/pykaldi -w/pykaldi \
                   vrmpx/pykaldipreimg:latest /bin/sh \
                   -c "cd tools \
      		              && ln -s ~/tools/protobuf protobuf \
