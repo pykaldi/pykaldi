@@ -22,6 +22,8 @@ official Python wrapper for OpenFst.
 You can read more about the design and technical details of PyKaldi in
 [our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf).
 
+[![Build Status](https://travis-ci.org/pykaldi/pykaldi.svg?branch=master)](https://travis-ci.org/pykaldi/pykaldi)
+
 ## Features
 
 * Near-complete coverage of Kaldi's C++ API
