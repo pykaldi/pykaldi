@@ -1,14 +1,14 @@
 FROM vrmpx/pykaldi-deps:latest
 
-COPY . /
+COPY . /pykaldi
 
 # Assume you already have pykaldi clone
-# RUN cd tools \
-    # && ln -s ~/tools/protobuf protobuf \
-    # && ln -s ~/tools/clif clif \
-    # && ln -s ~/tools/clif_backend clif_backend \
-    # && ln -s ~/tools/kaldi kaldi \
-    # && cd .. \
-RUN cd / \
+RUN cd /pykaldi/tools \
+	&& ls \
+    && ln -s ~/tools/protobuf protobuf \
+    && ln -s ~/tools/clif clif \
+    && ln -s ~/tools/clif_backend clif_backend \
+    && ln -s ~/tools/kaldi kaldi \
+    && cd .. \
 	&& ls \
 	&& python setup.py install
