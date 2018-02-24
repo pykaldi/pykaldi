@@ -4,20 +4,11 @@ services:
   - docker
 
 before_install:
-  - docker pull vrmpx/pykaldipreimg:latest
+  - docker pull vrmpx/pykaldi-deps:latest
+
+install:
+  - docker build -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis -t vrmpx/pykaldi:latest $TRAVIS_BUILD_DIR/..
 
 script:
-  - |
-     docker run --name="pykaldi" -it -v$TRAVIS_BUILD_DIR:/pykaldi -w/pykaldi \
-                  vrmpx/pykaldipreimg:latest /bin/sh \
-                  -c "cd tools \
-     		              && ln -s ~/tools/protobuf protobuf \
-         			        && ln -s ~/tools/clif clif \
-                 			&& ln -s ~/tools/clif_backend clif_backend \
-                 			&& ln -s ~/tools/kaldi kaldi \
-                 			&& cd .. \
-                 			&& python setup.py install"
-
-after_success:
-  - docker exec -it pykaldi /bin/sh -c "for f in $(find pykaldi/tests -type f -name \"*.py\"); do {python $f} done"
+  - docker run vrmpx/pykaldi:latest /bin/bash -c "cd pykaldi && for f in $(find ./tests -type f -name '*.py'); do {python $f} done"
 
