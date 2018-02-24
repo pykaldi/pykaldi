@@ -1,32 +1,26 @@
 dist: trusty
 sudo: required
 services:
-  - docker
-
-# env:
-#   global:
-#   - secure: Zh1rP+8mdcgmZU7uEsOHpzUIbqzXruklYvW+rK71M35EVbayl8TeATMnNnQRldRRdRG27DkIqOVqGmHn6jErcURs1OQXtHDiY/Ne1YosBlY3ca9hIpQ7mMowWR4c2bEOrCBUiNP/4u623gbvCN8Y+nreaAfy4Ej9eqaCgYa9RTfaFSWTThG+JYn3g8R20XH+/0PRwPO6PkDSGoTw9Tvao1dn32QRAiRY2hnh4Ncz9IacJVD2VMGPnokYSR/Actw7QKpb6dVp/ldA7ZKjWn4pGQCe3wCjwirLPBRus5wNGrzQZ2smkXabtUKHVmN/KQgeeNWBLuQRyqr45qJhAjZ/X2Ct+czFIRbmYdavfRO1mwYsdmcGj3jEM0AO3g+UKd2WE5RLwUcc+FHa1CtXRSFRwAzsWkyZ+cmEEenoIOWYoql2qJhRONyUwRgfGwXxMr/T2t5ALhhebyOOgsx7PilaivEVF7dhTxlZbNmHxdwB9kfYnHZnibdOHm36EKnbYJThJ1eMg5yXPcfcTsdyKkCeHp4xuPxsCWkkJHSxIhTJ52s9CW3aHlXxV2QP2VI/FqwbsJURsB9TGlkOrW0ESz/HfKwsT911KgzgSXr/yCy33EfpCDnYy+xfQSYf62RlK81yaQ3hPvEoP5KCJzSSFPUo6K8qZGOZpGnj2PA/wznA8yk=
-#   - secure: JxiLYRzjxnFgx9LFZSHaQHmicFu5RXPG8ATYR3PcQQ29HKd1cAjP98KXqt5FpwSrx5/UD5MG/WGvCvHkpq7UF/gzW1AC1yQt3dUtORY0LUOIDbbnitICSyy2vqu2e0pyoqN5fVel35TB+7XHe3Su5aHy5JMJt0h0Fwc7sSkxw733pd/tfgpYGo/2PPy0YEqMYfYfM3wd2RVyv/kN3mAgvn8ZJ6lR6epwZvgEoPwCPieE3AS3zFo3ME8QbNyzxzIeGjeDkPJiznLzEGXccpbUPHpzQ3OBTKkL+/ZBUeblJwMmGZ/vyKb5+K0HL1zq3D09QbQ2UMj5u/1Xni/lSsGIKvNLl5znL5l4rjF9JFO6Fh+fHH/PVxWQ2sdeKBLFGDbWHrHRJYuhOIk8ykkdLmlfu05dmrm4mV+NXamt0gyvbH+MYoeTrlQ6VX+5lKabrNGrCBxB2RGGDXnP1YDf9ArKFv68jJno3Jw+OpyZqa1+R5ulr51rEorsF7KXSlz+QVZWwL+Taa10yT83nih1DLOBarrz6r1Nfmv84JivPsY1c4D5frkPDXeDbiMGGJc3pnuCIiQdYJGak/CK0sCpRlh1cTAt+RLtGU0cvmVCqky/fs4Sqht+vhuVX3WUraJxC6ZTS8JJ6R9MJYhZDOOCZSrxg+aXhH2lyx/RRxBuEsn+9to=
-
-before_install:
-  - pwd
-  - docker pull vrmpx/pykaldi-deps:latest
-  # - 'export TAG=`if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then echo "latest"; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi`'
-  - export TAG=latest
-
-install:
-  - docker build -t vrmpx/pykaldi:$TAG -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .
-
-script:
-  - 'docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
-
-# after_success:
-#   - |
-#     if [[ $TRAVIS_PULL_REQUEST == "false" ]];
-#       docker login -u $DOCKER_USER -p $DOCKER_PASS
-#   	  docker push vrmpx/pykaldi:$TAG
-#   	fi
-
-# Don't notify when things fail
+- docker
 notifications:
   email: false
+env:
+  global:
+  - secure: etmztCwU1dQvpYiztB8zJMI7Vh8ctPvV8VqFWA3uv1fqkF8kUGj3qHYV7jWtBM2B3/hp6jSsOn9Eut6MJIXr/GwOfIcfijkF+96/QNAxgnpExgJFgY43L8deTIxkYlOE4KxtdrCTurKTLa+wPSEdp0egPYDmqmIZLFqeoAmkRLFVy+QrDghDuyZ9BAxY/yjibLQKYzP8ICiBnHxVYxbk98ptRkNzIkIfpnUeIJDBGrT23nwsLTn/0+PQRr2ptq4CByPZ2tIGZe8kYKZGvNy5j1Dl+jcXx0mc34q3V3m514T0eBiLffPwyrQriSNRyidf0NfJ3Nl/A+XGilSOy0lWPlDP/nGQISxMBBcw6iLoKtaSWJAsGvAbtqsM4C+M7UxN5cl58esuyKWeS9NcZXzygWxoDeohJV1vZT4NceklJo+Fg/MsQFsIE84ryDTX+e9Ah0IjkqAPTimSG11semiOfvTFvSrcS+zk5BVjvEnAUCXBLbPbXVOD/WuN2TiLKoBA4KZuq6aTvZcoyMpdFXqjsKT1OSBE7BQl0JqUGum1KA9u3B0P9MG3b187kMZW+ojwgLkHCeyfx5GlWUAT3pTWbIEr2rzcxBxbh41BA/4eL5/drIsNvLYiQ64kFQEMSariW1wn1my6zqncP8Xc+9jk1PeMEbrXgnpibZ26/0fSNzw=
+  - secure: WN44YMx0HKeEh4quijeMDfHFeKE9+U63bQ61a8lvEffm9qF8zi6Qv/hnZizejXi91O0uub+J7ZQBmy4LwLa/TCZ5IMU7DdzumrT8FLesd/dOyuhB8x4uCchYWr0Ss6E+J0FFIdGNPkMHOEWYVxw2v8ZyWCdy+8WRkro9CH/gsMGv8c/duGHJdS6Htetgz/Oj19t7aDhaLuNbHNdlKOKeeMEqS85daseURevkt8dPgeV6jxPRCPYau09bKGVrclNgHTIT8KoqKxTAenzpSdFlKEpHT8+pKs+esvUpAImlESTZ2ZRJNQIGE5XvV+jgJ6dH1weOu4K3Z2PHLD+hBTiHqxvnaYJCPsQouGrxz1SsG77RsaBlQzAEXORnu+qFzMblBeq2FMI2ABRo6Y7otbVR/KWjkYIyIu0fcbIyo2D7sXtvsdOVZ6DNSFdbDDmEMfoHbEt9mOy9LJy9CMxCiLXMfPKuoXxXmDIp5xwndUE7gUjouwGE8ag8p06TKD3240jgmdOd8B2zTN+RzyUTLkavA3pMP0fP1HrDGDaEy3MiLkz21jPmdqaozjtpr+Ed0YI4qLhUw9BWDJzmNHv8rZbP6CsLO2Od+sRALem3M+O7FfISl80Ceyo26Zxi37j2rIZqTi+rJuroyG/n7W0/63BIKEFHkGtkR/ENjfjJXiKtykU=
+before_install:
+  - echo "Before Install"
+  - pwd
+  - ls
+  - docker pull vrmpx/pykaldi-deps:latest
+  - export TAG=$(if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then echo "latest"; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo $TAG
+install:
+  - echo "Install"
+  - docker build -t vrmpx/pykaldi:$TAG -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .
+script:
+  - echo "Test"
+  - 'docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
+after_sucess:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - docker push vrmpx/pykaldi:$TAG
