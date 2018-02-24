@@ -5,21 +5,23 @@ services:
 
 env:
   global:
-    - secure: "Ex3DY6FhMnXdMIPaEVb0dd43gYzZv1Yrz4lHqPEk25pZpjwqJ/D0JYMUPTmLgxDN3bE+qPHS7w8h6u7h/643PQCuWYg1o5rwKqa8VSAlZuUmGCbl7Y7cOZpW1+NXofxrwu3ITq5Wah3KpAmWtdT7bBMtOYJAVE0HI4ltZ4+lDmSuwPD9q2f6dPmGxs5POpN9ZDnTJSLPuCRuJWmGRWgJG8z8d/QbdOaOyOT7pHJmjH/BD8wkI/rAAcUHsSj/aYsSweaKDIvfOe/DcKSBWicS5FaCe/IRZRtW68pojFl0VkJ7BTuZijyXZdJ/h5E8zMG+/OYh/yjIUPNGUgHfd4zm2skcPdHk4ENgaUHZtziSn8xuL1+oSu3z7wi9i9Mtb0ZeqYnWaMFrlCS3KHLDQLr3MSQOyhxe8A/rEOb/3xRPaHo1jf80qnmSwLCmWf2/RvwMryAyVvqfgSAq+qnKxvEMfTmZToZ2TAziJ8TQS7wZxNbSFmHI6x3SkzGFgX5k/Wit+5r9CL+jw2VjSTFeIE21mI60Jqw92iljVpI5eHyDeUVf4GpIAHThfrOp8Dqjg3CzU2bT1oyzZBAipPOPLhoeVwlpS1cFTV0+RM55tdWIMsQPPlowGU8VNLgWFmrWwKHxHyta6YZF/blNpcy4J2wuCvuMmyc8jVRTE4UBDrqrkfo="
-    - secure: "cp+EK+1bxgPX3aBue/4Vc38oF6HAc9hAkqNRca0toxHzP4z9SZZXFctYmb6gSP23L40We/LfIezEQgp+1Mfqh9aCP67cahSKH1sRTqGxnZ+KTLg0mMfJaEV2kS0A0J66YRUKJljdVeLl25hm0SL3x8K56z4AZ1pMsIADJGkAGK+uy2yBPzCvLILuzv06fKm8lBSAadj4nfis9IUOOrO/MyTjt65G5fZVF6Y1bv1meartNglBaMEHjBwzQMryjlem7vQ3Kumi6midoXXeXLgn2WoIPuGGZb03cPgr1jkepVmwBsSTTuXZ+44kWFcOrAn/rNHkh1EpwePWnENFs1Pl814LKHf7Gs/bh9DS3XyePTV8aMw1KyKu+FuCjKm66Q8Sk3omVbU1gFZsh30xxR2kTg6fZ+wcUw39uDRuP4Wm2O/qE9ng4WDer9FO+SmQ4LaU2g4OCeNYK2U+iEH9n+utscBkrshovUNBVaiXCXZ0rWLG00CZM+Yra8iK1/sL90hDYOOwK+TTBZUzdny0VeRM0ZIaefUXqh83S7VXK17LePuODeDDEN6gMmSAuvg8s33IFoujrvl+N8JDwqab8cDiFCMVpCsHjsp1HZO0KkjaGg18A27bHIFSwZB2CsJxpICLI1mZ+21zZKx34IUr1IS7RY9tn0N2wirOZXOnru5DiwI="
+  - secure: Zh1rP+8mdcgmZU7uEsOHpzUIbqzXruklYvW+rK71M35EVbayl8TeATMnNnQRldRRdRG27DkIqOVqGmHn6jErcURs1OQXtHDiY/Ne1YosBlY3ca9hIpQ7mMowWR4c2bEOrCBUiNP/4u623gbvCN8Y+nreaAfy4Ej9eqaCgYa9RTfaFSWTThG+JYn3g8R20XH+/0PRwPO6PkDSGoTw9Tvao1dn32QRAiRY2hnh4Ncz9IacJVD2VMGPnokYSR/Actw7QKpb6dVp/ldA7ZKjWn4pGQCe3wCjwirLPBRus5wNGrzQZ2smkXabtUKHVmN/KQgeeNWBLuQRyqr45qJhAjZ/X2Ct+czFIRbmYdavfRO1mwYsdmcGj3jEM0AO3g+UKd2WE5RLwUcc+FHa1CtXRSFRwAzsWkyZ+cmEEenoIOWYoql2qJhRONyUwRgfGwXxMr/T2t5ALhhebyOOgsx7PilaivEVF7dhTxlZbNmHxdwB9kfYnHZnibdOHm36EKnbYJThJ1eMg5yXPcfcTsdyKkCeHp4xuPxsCWkkJHSxIhTJ52s9CW3aHlXxV2QP2VI/FqwbsJURsB9TGlkOrW0ESz/HfKwsT911KgzgSXr/yCy33EfpCDnYy+xfQSYf62RlK81yaQ3hPvEoP5KCJzSSFPUo6K8qZGOZpGnj2PA/wznA8yk=
+  - secure: JxiLYRzjxnFgx9LFZSHaQHmicFu5RXPG8ATYR3PcQQ29HKd1cAjP98KXqt5FpwSrx5/UD5MG/WGvCvHkpq7UF/gzW1AC1yQt3dUtORY0LUOIDbbnitICSyy2vqu2e0pyoqN5fVel35TB+7XHe3Su5aHy5JMJt0h0Fwc7sSkxw733pd/tfgpYGo/2PPy0YEqMYfYfM3wd2RVyv/kN3mAgvn8ZJ6lR6epwZvgEoPwCPieE3AS3zFo3ME8QbNyzxzIeGjeDkPJiznLzEGXccpbUPHpzQ3OBTKkL+/ZBUeblJwMmGZ/vyKb5+K0HL1zq3D09QbQ2UMj5u/1Xni/lSsGIKvNLl5znL5l4rjF9JFO6Fh+fHH/PVxWQ2sdeKBLFGDbWHrHRJYuhOIk8ykkdLmlfu05dmrm4mV+NXamt0gyvbH+MYoeTrlQ6VX+5lKabrNGrCBxB2RGGDXnP1YDf9ArKFv68jJno3Jw+OpyZqa1+R5ulr51rEorsF7KXSlz+QVZWwL+Taa10yT83nih1DLOBarrz6r1Nfmv84JivPsY1c4D5frkPDXeDbiMGGJc3pnuCIiQdYJGak/CK0sCpRlh1cTAt+RLtGU0cvmVCqky/fs4Sqht+vhuVX3WUraJxC6ZTS8JJ6R9MJYhZDOOCZSrxg+aXhH2lyx/RRxBuEsn+9to=
 
 before_install:
-  - 'docker pull vrmpx/pykaldi-deps:latest'
+  - pwd
+  - docker pull vrmpx/pykaldi-deps:latest
   - 'export TAG=`if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then echo "latest"; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi`'
 
 install:
-  - 'docker build -t vrmpx/pykaldi:$TAG -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .'
+  - docker build -t vrmpx/pykaldi:$TAG -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .
 
 script:
   - 'docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
 
 after_success:
-  - if [[ $TRAVIS_PULL_REQUEST == "false" ]];
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == "false" ]];
       docker login -u $DOCKER_USER -p $DOCKER_PASS
   	  docker push vrmpx/pykaldi:$TAG
   	fi
