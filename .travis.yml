@@ -5,6 +5,8 @@ services:
 
 before_install:
   - docker pull vrmpx/pykaldi-deps:latest
+  - echo $PWD
+  - ls
 
 install:
   - docker build -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis -t vrmpx/pykaldi:latest $TRAVIS_BUILD_DIR

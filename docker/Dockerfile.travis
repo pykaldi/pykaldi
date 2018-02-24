@@ -1,6 +1,6 @@
 FROM vrmpx/pykaldi-deps:latest
 
-COPY pykaldi /pykaldi
+COPY . /pykaldi
 
 # Assume you already have pykaldi clone
 RUN cd pykaldi \
