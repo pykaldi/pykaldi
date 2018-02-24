@@ -1,6 +1,5 @@
 dist: trusty
 sudo: required
-language: python
 services:
   - docker
 
@@ -10,17 +9,21 @@ env:
     - secure: "cp+EK+1bxgPX3aBue/4Vc38oF6HAc9hAkqNRca0toxHzP4z9SZZXFctYmb6gSP23L40We/LfIezEQgp+1Mfqh9aCP67cahSKH1sRTqGxnZ+KTLg0mMfJaEV2kS0A0J66YRUKJljdVeLl25hm0SL3x8K56z4AZ1pMsIADJGkAGK+uy2yBPzCvLILuzv06fKm8lBSAadj4nfis9IUOOrO/MyTjt65G5fZVF6Y1bv1meartNglBaMEHjBwzQMryjlem7vQ3Kumi6midoXXeXLgn2WoIPuGGZb03cPgr1jkepVmwBsSTTuXZ+44kWFcOrAn/rNHkh1EpwePWnENFs1Pl814LKHf7Gs/bh9DS3XyePTV8aMw1KyKu+FuCjKm66Q8Sk3omVbU1gFZsh30xxR2kTg6fZ+wcUw39uDRuP4Wm2O/qE9ng4WDer9FO+SmQ4LaU2g4OCeNYK2U+iEH9n+utscBkrshovUNBVaiXCXZ0rWLG00CZM+Yra8iK1/sL90hDYOOwK+TTBZUzdny0VeRM0ZIaefUXqh83S7VXK17LePuODeDDEN6gMmSAuvg8s33IFoujrvl+N8JDwqab8cDiFCMVpCsHjsp1HZO0KkjaGg18A27bHIFSwZB2CsJxpICLI1mZ+21zZKx34IUr1IS7RY9tn0N2wirOZXOnru5DiwI="
 
 before_install:
-  - docker pull vrmpx/pykaldi-deps:latest
-  - export TAG=`if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then echo "latest"; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi`
+  - 'docker pull vrmpx/pykaldi-deps:latest'
+  - 'export TAG=`if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then echo "latest"; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi`'
 
 install:
-  - docker build -t vrmpx/pykaldi:$TAG -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .
+  - 'docker build -t vrmpx/pykaldi:$TAG -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .'
 
 script:
-  - docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"
+  - 'docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
 
 after_success:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS 
   - if [[ $TRAVIS_PULL_REQUEST == "false" ]];
+      docker login -u $DOCKER_USER -p $DOCKER_PASS
   	  docker push vrmpx/pykaldi:$TAG
   	fi
+
+# Don't notify when things fail
+notifications:
+  email: false
