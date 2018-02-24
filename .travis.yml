@@ -6,14 +6,14 @@ notifications:
   email: false
 env:
   global:
-  - secure: etmztCwU1dQvpYiztB8zJMI7Vh8ctPvV8VqFWA3uv1fqkF8kUGj3qHYV7jWtBM2B3/hp6jSsOn9Eut6MJIXr/GwOfIcfijkF+96/QNAxgnpExgJFgY43L8deTIxkYlOE4KxtdrCTurKTLa+wPSEdp0egPYDmqmIZLFqeoAmkRLFVy+QrDghDuyZ9BAxY/yjibLQKYzP8ICiBnHxVYxbk98ptRkNzIkIfpnUeIJDBGrT23nwsLTn/0+PQRr2ptq4CByPZ2tIGZe8kYKZGvNy5j1Dl+jcXx0mc34q3V3m514T0eBiLffPwyrQriSNRyidf0NfJ3Nl/A+XGilSOy0lWPlDP/nGQISxMBBcw6iLoKtaSWJAsGvAbtqsM4C+M7UxN5cl58esuyKWeS9NcZXzygWxoDeohJV1vZT4NceklJo+Fg/MsQFsIE84ryDTX+e9Ah0IjkqAPTimSG11semiOfvTFvSrcS+zk5BVjvEnAUCXBLbPbXVOD/WuN2TiLKoBA4KZuq6aTvZcoyMpdFXqjsKT1OSBE7BQl0JqUGum1KA9u3B0P9MG3b187kMZW+ojwgLkHCeyfx5GlWUAT3pTWbIEr2rzcxBxbh41BA/4eL5/drIsNvLYiQ64kFQEMSariW1wn1my6zqncP8Xc+9jk1PeMEbrXgnpibZ26/0fSNzw=
   - secure: WN44YMx0HKeEh4quijeMDfHFeKE9+U63bQ61a8lvEffm9qF8zi6Qv/hnZizejXi91O0uub+J7ZQBmy4LwLa/TCZ5IMU7DdzumrT8FLesd/dOyuhB8x4uCchYWr0Ss6E+J0FFIdGNPkMHOEWYVxw2v8ZyWCdy+8WRkro9CH/gsMGv8c/duGHJdS6Htetgz/Oj19t7aDhaLuNbHNdlKOKeeMEqS85daseURevkt8dPgeV6jxPRCPYau09bKGVrclNgHTIT8KoqKxTAenzpSdFlKEpHT8+pKs+esvUpAImlESTZ2ZRJNQIGE5XvV+jgJ6dH1weOu4K3Z2PHLD+hBTiHqxvnaYJCPsQouGrxz1SsG77RsaBlQzAEXORnu+qFzMblBeq2FMI2ABRo6Y7otbVR/KWjkYIyIu0fcbIyo2D7sXtvsdOVZ6DNSFdbDDmEMfoHbEt9mOy9LJy9CMxCiLXMfPKuoXxXmDIp5xwndUE7gUjouwGE8ag8p06TKD3240jgmdOd8B2zTN+RzyUTLkavA3pMP0fP1HrDGDaEy3MiLkz21jPmdqaozjtpr+Ed0YI4qLhUw9BWDJzmNHv8rZbP6CsLO2Od+sRALem3M+O7FfISl80Ceyo26Zxi37j2rIZqTi+rJuroyG/n7W0/63BIKEFHkGtkR/ENjfjJXiKtykU=
+  - secure: p2yOl0RVjjV5fVbexhfmoTn6qVsTQoG/A/FQ/X5HpdAXpNOZy44QFTPx9vsiEM/cQJ3sYPkafHcuMv4/LHEk6tHksoAIqtuhiTCCffm386NnnaBbT0vxlRZC0plxU523oe6Rkl7erZrVv0nBrj0iFyH5S8T6cyLfYiugLsL1KGgZVxN9T/KraogATVOnkPMDwwmjKdkZmiW0bUaNzYMP4S/r+CKFMdanVLvWblB0bonZHN5ZuPzG2zTTX+97syzU8hP7VF638duPJr8iLSOECgC8Wmfl5EOb/kIAzvMxGTKUx0P7YZchuO4gMwwUNZONBEDGR2Syz8lUDzxaGF6XumW2qVfK8uwUu4N1TDVkkMFJfZlYtSXRBf6iVRrhPfXzYlOq6/+IDFjwM7vJHCvPHEzGOVUMyrzHrI3DtQ/BRBtZonQsvbAhNNHLcijQYoLqLjp1w1IxknIUhaEQp4ltKxc71GhvxAWmjQWuikiA2oLWjFB0Jh3TYQOmnOlAJY75QAt/TlaGGYVix9F17DgmqYpfV8UnoSgbVYFx2SQaT27yTx2oVrW2RYkJ2Gj+j2dWHbS7YAg72fF36StEUNII1la0qECj0wduvbjakMpfyqI+IoO5p22Lc9/jFshMP//LU2DWAeYKuSLd//oUZBIKqZDolbY2dJouUPuZiMqogC8=
 before_install:
   - echo "Before Install"
   - pwd
   - ls
   - docker pull vrmpx/pykaldi-deps:latest
-  - export TAG=$(if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then echo "latest"; else echo $TRAVIS_BRANCH; fi)
+  - export TAG=latest
   - echo $TAG
 install:
   - echo "Install"
@@ -22,5 +22,8 @@ script:
   - echo "Test"
   - 'docker run vrmpx/pykaldi:$TAG /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
 after_success:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - docker push vrmpx/pykaldi:$TAG
+  - |
+  	if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]];
+  		docker login -u $DOCKER_USER -p $DOCKER_PASS
+  		docker push vrmpx/pykaldi:$TAG
+  	fi
