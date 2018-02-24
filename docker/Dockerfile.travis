@@ -9,4 +9,6 @@ COPY . /
     # && ln -s ~/tools/clif_backend clif_backend \
     # && ln -s ~/tools/kaldi kaldi \
     # && cd .. \
-RUN python setup.py install
+RUN cd / \
+	&& ls \
+	&& python setup.py install
