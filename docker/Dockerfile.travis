@@ -3,10 +3,10 @@ FROM vrmpx/pykaldi-deps:latest
 COPY . /
 
 # Assume you already have pykaldi clone
-RUN cd tools \
-    && ln -s ~/tools/protobuf protobuf \
-    && ln -s ~/tools/clif clif \
-    && ln -s ~/tools/clif_backend clif_backend \
-    && ln -s ~/tools/kaldi kaldi \
-    && cd .. \
-    && python setup.py install
+# RUN cd tools \
+    # && ln -s ~/tools/protobuf protobuf \
+    # && ln -s ~/tools/clif clif \
+    # && ln -s ~/tools/clif_backend clif_backend \
+    # && ln -s ~/tools/kaldi kaldi \
+    # && cd .. \
+RUN python setup.py install

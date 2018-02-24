@@ -9,7 +9,7 @@ before_install:
   - ls
 
 install:
-  - docker build -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis -t vrmpx/pykaldi:latest $TRAVIS_BUILD_DIR
+  - docker build -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis -t vrmpx/pykaldi:latest .
 
 script:
   - docker run vrmpx/pykaldi:latest /bin/bash -c "cd pykaldi && for f in $(find ./tests -type f -name '*.py'); do {python $f} done"
