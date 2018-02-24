@@ -10,5 +10,5 @@ install:
   - docker build -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis -t vrmpx/pykaldi:latest .
 
 script:
-  - docker run vrmpx/pykaldi:latest /bin/bash -c "cd pykaldi/tests && ./test_all.sh"
+  - docker run vrmpx/pykaldi:latest /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"
 
