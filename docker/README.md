@@ -33,3 +33,10 @@ docker run pykaldi /root/pykaldi/docker/update_pykaldi.sh
 ```
 docker run pykaldi /root/pykaldi/docker/update_kaldi.sh
 ```
+
+
+# Build pykaldi-deps
+
+```
+docker build --tag pykaldi-deps -f ./Dockerfile.deps .
+```

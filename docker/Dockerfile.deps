@@ -1,0 +1,48 @@
+# Creates docker container with pykaldi pre-req's
+FROM ubuntu:16.04
+
+# Update ubuntu and install essentials
+RUN apt-get update \
+    && apt-get install -y \
+    python3 \
+    python3-pip \
+    python2.7 \
+    autoconf \
+    automake \
+    cmake \
+    curl \
+    g++ \
+    git \
+    libatlas3-base \
+    libtool \
+    make \
+    pkg-config \
+    subversion \
+    unzip \
+    wget \
+    zlib1g-dev
+
+# Make python3 default & create tools dir
+RUN ln -s /usr/bin/python3 /usr/bin/python \
+    && ln -s /usr/bin/pip3 /usr/bin/pip
+
+# Install necessary python packages
+RUN pip install --upgrade pip \
+    numpy \
+    setuptools \
+    pyparsing \
+    jupyter \
+    ninja
+
+# Need to copy tools into dockerfile
+# FIX ME (VM):
+# Wont work unless tools is ln -s in current directory
+COPY tools tools
+
+# 
+RUN cd tools \
+    && ./check_dependencies.sh \
+    && ./install_protobuf.sh \
+    && ./install_clif.sh \
+    && ./install_kaldi.sh
+
