@@ -63,7 +63,7 @@ default_role = 'py:obj'
 
 # General information about the project.
 project = 'PyKaldi'
-copyright = '2017, Doğan Can, Victor Martinez'
+copyright = '2017-2018, Doğan Can, Victor Martinez'
 author = 'Doğan Can, Victor Martinez'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -249,3 +249,16 @@ def patched_make_field(self, types, domain, items, **kw):
     return nodes.field('', fieldname, fieldbody)
 
 TypedField.make_field = patched_make_field
+
+
+# -- A patch that prevents Sphinx from grouping index entries -------
+import re
+from sphinx.environment.adapters import indexentries
+
+class IndexEntries(indexentries.IndexEntries):
+    def create_index(self, builder, group_entries=False,
+                     _fixre=re.compile(r'(.*) ([(][^()]*[)])')):
+        return super(IndexEntries, self).create_index(builder, group_entries,
+                                                      _fixre)
+
+indexentries.IndexEntries = IndexEntries

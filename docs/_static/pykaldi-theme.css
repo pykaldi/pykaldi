@@ -11,7 +11,7 @@ h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend, p.capti
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
 }
 
-/* Use nav background for seach background */
+/* Use nav background for search background */
 .wy-side-nav-search {
     background-color: #343131;
 }
@@ -109,14 +109,26 @@ footer p {
 
 /* For hidden headers that appear in TOC tree */
 /* see http://stackoverflow.com/a/32363545/3343043 */
-/* .rst-content .hidden-section {
+.rst-content .hidden-section {
     display: none;
 }
 
 nav .hidden-section {
     display: inherit;
-} */
+}
 
 /* .wy-side-nav-search>div.version {
     color: #000;
 } */
+
+/* Fixes for index table */
+.genindex-jumpbox {
+  margin-bottom: 18px;
+}
+.genindextable {
+  margin-bottom: 18px;
+  border: 0;
+}
+.genindextable a {
+  font-size: 14px;
+}
