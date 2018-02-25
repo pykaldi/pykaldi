@@ -1,5 +1,6 @@
 dist: trusty
 sudo: required
+language: bash
 services:
 - docker
 env:
@@ -14,7 +15,7 @@ script:
 - 'docker run pykaldi/pykaldi:latest /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
 after_success:
 - |
-  if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
+  if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "CI" ]]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASS;
     docker push pykaldi/pykaldi:latest
   fi
