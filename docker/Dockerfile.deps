@@ -13,6 +13,7 @@ RUN apt-get update \
     curl \
     g++ \
     git \
+    graphviz \
     libatlas3-base \
     libtool \
     make \
