@@ -1,10 +1,9 @@
-FROM vrmpx/pykaldi-deps:latest
+FROM pykaldi/pykaldi-deps:latest
 
 COPY . /pykaldi
 
 # Assume you already have pykaldi clone
 RUN cd /pykaldi/tools \
-	&& ls \
     && ln -s ~/tools/protobuf protobuf \
     && ln -s ~/tools/clif clif \
     && ln -s ~/tools/clif_backend clif_backend \
