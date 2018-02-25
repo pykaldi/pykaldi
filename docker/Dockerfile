@@ -17,6 +17,7 @@ RUN apt-get update \
     curl \
     g++ \
     git \
+    graphviz \
     libatlas3-base \
     libtool \
     make \
@@ -38,10 +39,10 @@ RUN pip install --upgrade pip \
     jupyter \
     ninja
 
-# Download pykaldi from git and install
-RUN git clone "https://github.com/pykaldi/pykaldi.git" pykaldi \
-    && cd pykaldi \
-    && cd tools \
+# Assume this is run from a repo
+COPY . /pykaldi
+
+RUN cd /pykaldi/tools \
     && ./check_dependencies.sh \
     && ./install_protobuf.sh \
     && ./install_clif.sh \
@@ -50,10 +51,8 @@ RUN git clone "https://github.com/pykaldi/pykaldi.git" pykaldi \
     && python setup.py install
 
 # # Add run permission to startup script
-RUN chmod +x pykaldi/docker/start_jupyter_notebook.sh
-RUN chmod +x pykaldi/docker/update_kaldi.sh
-RUN chmod +x pykaldi/docker/update_pykaldi.sh
+# RUN chmod +x /pykaldi/docker/start_jupyter_notebook.sh
 
-# # Define the starting command for this container and expose its running port
-CMD sh -c '/root/pykaldi/docker/start_jupyter_notebook.sh 9000'
-EXPOSE 9000
+# # # Define the starting command for this container and expose its running port
+# CMD sh -c '/pykaldi/docker/start_jupyter_notebook.sh 9000'
+# EXPOSE 9000
