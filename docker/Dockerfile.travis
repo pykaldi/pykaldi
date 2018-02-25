@@ -10,5 +10,4 @@ RUN cd /pykaldi/tools \
     && ln -s ~/tools/clif_backend clif_backend \
     && ln -s ~/tools/kaldi kaldi \
     && cd .. \
-	&& ls \
 	&& python setup.py install

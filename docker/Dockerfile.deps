@@ -36,7 +36,7 @@ RUN pip install --upgrade pip \
 
 # Need to copy tools into dockerfile
 # FIX ME (VM):
-# Wont work unless tools is ln -s in current directory
+# Wont work unless tools is current context
 COPY tools tools
 
 # 

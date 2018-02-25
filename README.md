@@ -2,6 +2,8 @@
 
 --------------------------------------------------------------------------------
 
+[![Build Status](https://travis-ci.org/pykaldi/pykaldi.svg?branch=master)](https://travis-ci.org/pykaldi/pykaldi)
+
 PyKaldi is a Python wrapper for [Kaldi](http://kaldi-asr.org) exposing nearly
 all of Kaldi's C++ API to Python code. It aims to bridge the gap between Kaldi
 and all the nice things Python has to offer including its mature ecosystem of
@@ -21,8 +23,6 @@ official Python wrapper for OpenFst.
 
 You can read more about the design and technical details of PyKaldi in
 [our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf).
-
-[![Build Status](https://travis-ci.org/pykaldi/pykaldi.svg?branch=master)](https://travis-ci.org/pykaldi/pykaldi)
 
 ## Features
 
@@ -223,7 +223,7 @@ Alternatively, a pre-built image can be downloaded from dockerhub.
 
 ```bash
 docker login
-docker pull vrmpx/pykaldi
+docker pull pykaldi/pykaldi
 ```
 
 After building/downloading the image, you can run it in interactive mode.
