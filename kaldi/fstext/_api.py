@@ -232,14 +232,20 @@ class _FstBase(object):
         which exposes additional parameters.
 
         Raises:
-          OSError: Cannot locate the `dot` executable.
+          RuntimeError: Cannot locate the `dot` executable.
           subprocess.CalledProcessError: `dot` returned non-zero exit code.
 
         See also: `draw`, `text`.
         """
-        # Throws OSError if the dot executable is not found.
-        proc = subprocess.Popen(["dot", "-Tsvg"], stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            # Throws OSError if the dot executable is not found.
+            proc = subprocess.Popen(["dot", "-Tsvg"],
+                                    stdin=subprocess.PIPE,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+        except OSError:
+            raise RuntimeError("Failed to execute 'dot -Tsvg', make sure "
+                               "the Graphviz executable 'dot' is on your PATH.")
         sstrm = ostringstream()
         fstdrawer = self._drawer_type(
             self, self._input_symbols(), self._output_symbols(), None,
