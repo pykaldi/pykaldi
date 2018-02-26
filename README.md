@@ -221,7 +221,7 @@ Alternatively, you can build the docker image with the `Dockerfile` provided in 
 
 ```bash
 cd pykaldi/docker
-docker build --tag pykaldi/pykaldi:latest -f Dockerfile ..
+docker build --tag pykaldi/pykaldi -f Dockerfile ..
 ```
 
 After building/downloading the image, you can run it in interactive mode.
