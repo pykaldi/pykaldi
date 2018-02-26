@@ -1,7 +1,7 @@
-# Creates docker container with pykaldi pre-req's
+# Dockerfile for building PyKaldi dependencies image
 FROM ubuntu:16.04
 
-# Update ubuntu and install essentials
+# Install necessary system packages
 RUN apt-get update \
     && apt-get install -y \
     python3 \
@@ -23,11 +23,11 @@ RUN apt-get update \
     wget \
     zlib1g-dev
 
-# Make python3 default & create tools dir
+# Make python3 default
 RUN ln -s /usr/bin/python3 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip
 
-# Install necessary python packages
+# Install necessary Python packages
 RUN pip install --upgrade pip \
     numpy \
     setuptools \
@@ -35,14 +35,12 @@ RUN pip install --upgrade pip \
     jupyter \
     ninja
 
-# Need to copy tools into dockerfile
-# This needs a context of .. to run
+# Copy pykaldi/tools directory into the container
 COPY tools /tools
 
-# 
+# Install Protobuf, CLIF and Kaldi
 RUN cd /tools \
     && ./check_dependencies.sh \
     && ./install_protobuf.sh \
     && ./install_clif.sh \
     && ./install_kaldi.sh
-

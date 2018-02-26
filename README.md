@@ -49,7 +49,6 @@ You can read more about the design and technical details of PyKaldi in
 - [Coverage Status](#coverage-status)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
-- [Docker Image](#docker-image)
 - [FAQ](#faq)
 - [Citing](#citing)
 - [Contributing](#contributing)
@@ -83,6 +82,7 @@ written for the associated Kaldi library. The wrapper code consists of:
 
 * Python modules grouping together related extension modules generated with CLIF
   and extending the raw CLIF wrappers to provide a more "Pythonic" API.
+
 
 ## Coverage Status
 
@@ -124,6 +124,7 @@ dimensions:
 | tree       | &#10004; |           | &#10004;                   |          |
 | util       | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
 
+
 ## Getting Started
 
 Some places to help you get started:
@@ -134,7 +135,9 @@ Some places to help you get started:
 
 ## Installation
 
-To install PyKaldi from source, follow the steps given below.
+To install PyKaldi from source, follow the steps given below. If you would like
+to use PyKaldi inside a Docker container instead, follow the instructions in
+the `docker` folder.
 
 ### Step 1: Clone PyKaldi Repository and Create a New Python Environment
 
@@ -163,8 +166,8 @@ On Ubuntu 16.04, running the following commands will install system packages
 needed for building PyKaldi from source.
 
 ```bash
-sudo apt-get install autoconf automake cmake curl g++ git libatlas3-base \
-    libtool make pkg-config subversion unzip wget zlib1g-dev
+sudo apt-get install autoconf automake cmake curl g++ git graphviz \
+    libatlas3-base libtool make pkg-config subversion unzip wget zlib1g-dev
 
 pip install --upgrade pip
 pip install --upgrade setuptools
@@ -210,33 +213,6 @@ environment, you can install PyKaldi with the following command.
 python setup.py install
 ```
 
-## Docker Image
-Installing Pykaldi image is as simple as pulling the latest image from dockerhub
-
-```
-docker pull pykaldi/pykaldi
-```
-
-Alternatively, you can build the docker image with the `Dockerfile` provided in `docker` directory,
-
-```bash
-cd pykaldi/docker
-docker build --tag pykaldi/pykaldi -f Dockerfile ..
-```
-
-After building/downloading the image, you can run it in interactive mode.
-
-```bash
-docker run -it pykaldi/pykaldi /bin/bash
-```
-
-Or using the [jupyter](http://jupyter.org/) notebook built in.
-
-```
-docker run -it -p 9000:9000 pykaldi/pykaldi /bin/bash -c 'jupyter notebook --no-browser --ip=* --port=9000 --allow-root'
-```
-
-And then navigating with your favorite web browser to [http://localhost:9000](http://localhost:9000)
 
 ## FAQ
 

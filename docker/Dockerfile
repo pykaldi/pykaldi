@@ -1,9 +1,7 @@
-# Install pykaldi in a Docker container
+# Dockerfile for building PyKaldi image from Ubuntu 16.04 image
 FROM ubuntu:16.04
 
-WORKDIR /root
-
-# Update ubuntu and install essentials
+# Install necessary system packages
 RUN apt-get update \
     && apt-get install -y \
     python3 \
@@ -29,7 +27,7 @@ RUN apt-get update \
 RUN ln -s /usr/bin/python3 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip
 
-# Install necessary python packages
+# Install necessary Python packages
 RUN pip install --upgrade pip \
     numpy \
     setuptools \
@@ -37,9 +35,10 @@ RUN pip install --upgrade pip \
     jupyter \
     ninja
 
-# Assume this is run from a repo
+# Copy pykaldi directory into the container
 COPY . /pykaldi
 
+# Install Protobuf, CLIF, Kaldi and PyKaldi
 RUN cd /pykaldi/tools \
     && ./check_dependencies.sh \
     && ./install_protobuf.sh \
