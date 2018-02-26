@@ -11,7 +11,7 @@ Alternatively, you can build the docker image.
 Run the following command in this directory (docker). Please note the `..` sent as context. This is due to a limitation in which Docker does not allow copying items outside the current context. In order for us to copy the `tools` directory into the container, we send the parent directory as context.
 
 ```
-docker build --tag pykaldi/pykaldi:latest -f Dockerfile ..
+docker build --tag pykaldi/pykaldi -f Dockerfile ..
 ```
 
 # Running PyKaldi Docker image
