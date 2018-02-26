@@ -11,7 +11,7 @@ Alternatively, you can build the docker image.
 Run the following command in this directory (docker). Please note the `..` sent as context. This is due to a limitation in which Docker does not allow copying items outside the current context. In order for us to copy the `tools` directory into the container, we send the parent directory as context.
 
 ```
-docker build --tag pykaldi:latest -f Dockerfile ..
+docker build --tag pykaldi/pykaldi:latest -f Dockerfile ..
 ```
 
 # Running PyKaldi Docker image
@@ -20,14 +20,14 @@ docker build --tag pykaldi:latest -f Dockerfile ..
 You can bash into the container with the following command
 
 ```
-docker run -it pykaldi /bin/bash
+docker run -it pykaldi/pykaldi /bin/bash
 ```
 
 ## Jupyter
 The built image comes with [jupyter](http://jupyter.org/) notebook built in. To run it,
 
 ```
-docker run -it -p 9000:9000 pykaldi /bin/bash -c 'jupyter notebook --no-browser --ip=* --port=9000 --allow-root'
+docker run -it -p 9000:9000 pykaldi/pykaldi /bin/bash -c 'jupyter notebook --no-browser --ip=* --port=9000 --allow-root'
 ```
 
 And then navigating with your favorite web browser to  [http://localhost:9000](http://localhost:9000).
@@ -36,5 +36,5 @@ And then navigating with your favorite web browser to  [http://localhost:9000](h
 While it is not necessary for building the Docker image, pykaldi-deps allows faster testing on Travis CI. 
 
 ```
-docker build --tag pykaldi-deps -f ./Dockerfile.deps ..
+docker build --tag pykaldi/pykaldi-deps -f ./Dockerfile.deps ..
 ```
