@@ -1,35 +1,40 @@
-# Build pykaldi image
 
-Run the following command in this directory (docker):
-
-```
-docker build --tag pykaldi .
-```
-
-# Run ipython notebook with installed pykaldi
+Pykaldi image on dockerhub is automatically rebuilt with every commit to the master branch. Updating Pykaldi image is as simple as pulling the latest from dockerhub.
 
 ```
-docker run -p 9000:9000 pykaldi
+docker pull pykaldi/pykaldi
 ```
 
-# Run interactive bash mode
+Alternatively, you can build the docker image.
+
+# Building Pykaldi Docker image
+Run the following command in this directory (docker). Please note the `..` sent as context. This is due to a limitation in which Docker does not allow copying items outside the current context. In order for us to copy the `tools` directory into the container, we send the parent directory as context.
+
+```
+docker build --tag pykaldi:latest -f Dockerfile ..
+```
+
+# Running PyKaldi Docker image
+
+## Bash
+You can bash into the container with the following command
 
 ```
 docker run -it pykaldi /bin/bash
 ```
 
-# Updating pykaldi or kaldi
-
-For your convenience, we provide two commands to update pykaldi or kaldi to their most recent versions. 
-
-### For Pykaldi
+## Jupyter
+The built image comes with [jupyter](http://jupyter.org/) notebook built in. To run it,
 
 ```
-docker run pykaldi /root/pykaldi/docker/update_pykaldi.sh
+docker run -it -p 9000:9000 pykaldi /bin/bash -c 'jupyter notebook --no-browser --ip=* --port=9000 --allow-root'
 ```
 
-### For Kaldi
+And then navigating with your favorite web browser to  [http://localhost:9000](http://localhost:9000).
+
+# Build pykaldi-deps
+While it is not necessary for building the Docker image, pykaldi-deps allows faster testing on Travis CI. 
 
 ```
-docker run pykaldi /root/pykaldi/docker/update_kaldi.sh
+docker build --tag pykaldi-deps -f ./Dockerfile.deps ..
 ```
