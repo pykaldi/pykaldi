@@ -1,6 +1,4 @@
 # Install pykaldi in a Docker container
-# With code from
-# https://github.com/RaRe-Technologies/gensim/blob/develop/docker/Dockerfile
 FROM ubuntu:16.04
 
 WORKDIR /root
@@ -49,10 +47,3 @@ RUN cd /pykaldi/tools \
     && ./install_kaldi.sh \
     && cd .. \
     && python setup.py install
-
-# # Add run permission to startup script
-# RUN chmod +x /pykaldi/docker/start_jupyter_notebook.sh
-
-# # # Define the starting command for this container and expose its running port
-# CMD sh -c '/pykaldi/docker/start_jupyter_notebook.sh 9000'
-# EXPOSE 9000

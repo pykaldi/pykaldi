@@ -211,26 +211,32 @@ python setup.py install
 ```
 
 ## Docker Image
+Installing Pykaldi image is as simple as pulling the latest image from dockerhub
 
-We provide a `Dockerfile` in the `docker` directory for building a new image.
+```
+docker pull pykaldi/pykaldi
+```
+
+Alternatively, you can build the docker image with the `Dockerfile` provided in `docker` directory,
 
 ```bash
 cd pykaldi/docker
-docker build -t pykaldi .
-```
-
-Alternatively, a pre-built image can be downloaded from dockerhub.
-
-```bash
-docker login
-docker pull pykaldi/pykaldi
+docker build --tag pykaldi:latest -f Dockerfile ..
 ```
 
 After building/downloading the image, you can run it in interactive mode.
 
 ```bash
-sudo docker run -it pykaldi
+sudo docker run -it pykaldi /bin/bash
 ```
+
+Or using the [jupyter](http://jupyter.org/) notebook built in.
+
+```
+docker run -it -p 9000:9000 pykaldi /bin/bash -c 'jupyter notebook --no-browser --ip=* --port=9000 --allow-root'
+```
+
+And then navigating with your favorite web browser to [http://localhost:9000](http://localhost:9000)
 
 ## FAQ
 

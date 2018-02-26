@@ -1,5 +1,5 @@
 
-Pykaldi image on dockerhub is automatically rebuilt with every commit to the master branch. Udating Pykaldi image is as simple as pulling the latest from dockerhub.
+Pykaldi image on dockerhub is automatically rebuilt with every commit to the master branch. Updating Pykaldi image is as simple as pulling the latest from dockerhub.
 
 ```
 docker pull pykaldi/pykaldi
@@ -30,7 +30,7 @@ The built image comes with [jupyter](http://jupyter.org/) notebook built in. To 
 docker run -it -p 9000:9000 pykaldi /bin/bash -c 'jupyter notebook --no-browser --ip=* --port=9000 --allow-root'
 ```
 
-And then point your favorite web browser to `localhost:9000`.
+And then navigating with your favorite web browser to  [http://localhost:9000](http://localhost:9000).
 
 # Build pykaldi-deps
 While it is not necessary for building the Docker image, pykaldi-deps allows faster testing on Travis CI. 
