@@ -6,10 +6,8 @@ COPY . /pykaldi_travis
 
 # Install PyKaldi
 RUN cd /pykaldi \
-	# && git remote add travis /pykaldi_travis \
 	&& git fetch /pykaldi_travis \
-	&& git checkout temp \
+	&& git checkout FETCH_HEAD \
 	&& pip uninstall -y pykaldi \
 	&& python setup.py install \
-	# && git remote rm travis \
-	&& rm -rf /pykaldi_travis \
+	&& rm -rf /pykaldi_travis

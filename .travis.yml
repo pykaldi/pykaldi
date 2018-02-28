@@ -9,9 +9,13 @@ env:
   - secure: Mugr2Z23peIoB1cRN5VQpuOtCOkjpd9rLNrtN9yQ/fLoLam6YNJjfXg0QG/u5UZD0LTD18urTkv68ltNxYVzdHAaxs2Ml4tEbnEgSNk321P46JK9YUo5lJdvAIgIuZeymucdSpKQV5MN8R5dUmdNlXZSsqtZFWxE00C7vKivhleBCEEPUD5QDZU2BytDdyK7NF2paCYSDdCUViIRF+xQFLdPlAnrH9NaLtZ3bGYQOt9BIksnj4lIEs0h+h21u8IU+fzUVXP386V+zxmY7pwyIajOWteqoHHv+LnZc1WxwUntiBhxkyFdZiWduJf0K1aVbB6pPFXfuK29zAd2XEQ2VZXjv7odTTgEjUnGIfYTwxz9Vm7fencbZf9vi3SG8vSky6vZQhrBQRRIl95ZXwnKz49HIZxQ64jt6HECQdfkTmvCCUuUA3fqY5EfNgLF/Q8j1QsXeXII81vBTnJk7RYPtP49go1kmE/d9Av5kCqMgOQgis6DmW7KTHR2uqjfHNZOv2fA3GTwd5P68LVG4lxoVnSV4FkEN4ZRUF18s8BH6r4TCJ/4BogQOsBhb0nZxn0PSqK9Msec6+b4NGo1qIYlqNEF6n0dR+t6Lhsf979EpRQkk9ysfu3XWdjLzUjxhUvu8kTPOPcN8/hz1oOYTLh1g8HLf2XC7j8FuUIYCEPEpag=
 before_install:
 - docker pull pykaldi/pykaldi:latest
-- git checkout -b temp
 install:
-- docker build -t pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis .
+- |
+  if [[ $TRAVIS_BRANCH == "master" ]]; then
+  	docker build -t pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.master .
+  else
+  	docker build -t pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.other .
+  fi
 script:
 - 'docker run pykaldi/pykaldi:latest /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
 after_success:
