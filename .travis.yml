@@ -11,7 +11,7 @@ before_install:
 - docker pull pykaldi/pykaldi:latest
 install:
 - |
-  if [[ $TRAVIS_BRANCH == "master" ]]; then
+  if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
   	docker build -t pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.master .
   else
   	docker build -t pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.other .
