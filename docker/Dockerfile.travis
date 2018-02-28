@@ -11,4 +11,4 @@ RUN cd /pykaldi \
 	&& git checkout temp \
 	&& python setup.py install \
 	&& git remote rm travis \
-	&& rm /pykaldi_travis \
+	&& rm -rf /pykaldi_travis \
