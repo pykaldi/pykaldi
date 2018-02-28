@@ -1,14 +1,11 @@
 # Dockerfile for building PyKaldi image from PyKaldi dependencies image
-FROM pykaldi/pykaldi-deps:latest
+FROM pykaldi/pykaldi:latest
 
 # Copy pykaldi directory into the container
-COPY . /pykaldi
+COPY . /pykaldi_travis
 
 # Install PyKaldi
-RUN cd /pykaldi/tools \
-    && ln -s /tools/protobuf protobuf \
-    && ln -s /tools/clif clif \
-    && ln -s /tools/clif_backend clif_backend \
-    && ln -s /tools/kaldi kaldi \
-    && cd .. \
-    && python setup.py install
+RUN cd /pykaldi \
+	&& git remote travis /pykaldi_travis \
+	&& git checkout --track travis/temp \
+	&& python setup.py install
