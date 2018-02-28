@@ -7,5 +7,6 @@ COPY . /pykaldi_travis
 # Install PyKaldi
 RUN cd /pykaldi \
 	&& git remote travis /pykaldi_travis \
-	&& git checkout --track travis/temp \
+	&& git fetch travis/temp \
+	&& git checkout travis/temp \
 	&& python setup.py install
