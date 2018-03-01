@@ -488,7 +488,7 @@ class _FstBase(object):
         Returns:
           A 64-bit bitmask representing the requested properties.
         """
-        self._properties(mask, test)
+        return self._properties(mask, test)
 
     @classmethod
     def read(cls, filename):
