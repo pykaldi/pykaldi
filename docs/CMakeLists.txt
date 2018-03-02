@@ -26,8 +26,8 @@ set(SPHINX_HTML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/html")
 #   OUTPUT ${AUTOGEN_OUTDIR}
 #   COMMAND rm -rf ${AUTOGEN_OUTDIR}
 #   COMMAND sphinx-autogen ${AUTOGEN_IN}
-#   						 --imported-members
-#   						 -o ${AUTOGEN_OUTDIR}
+#                --imported-members
+#                -o ${AUTOGEN_OUTDIR}
 #   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 #   DEPENDS ${AUTOGEN_IN}
 #   COMMENT "Calling autogen"
@@ -35,11 +35,11 @@ set(SPHINX_HTML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/html")
 # )
 
 add_custom_target(docs
-	COMMAND	python -msphinx
-			-q -b html
-			"${CMAKE_CURRENT_SOURCE_DIR}"
-			"${SPHINX_HTML_DIR}"
-	VERBATIM
-	COMMENT "Building HTML documentation with Sphinx"
-	# DEPENDS ${AUTOGEN_OUTDIR}
+  COMMAND  python -msphinx
+      -q -b html
+      "${CMAKE_CURRENT_SOURCE_DIR}"
+      "${SPHINX_HTML_DIR}"
+  VERBATIM
+  COMMENT "Building HTML documentation with Sphinx"
+  # DEPENDS ${AUTOGEN_OUTDIR}
 )

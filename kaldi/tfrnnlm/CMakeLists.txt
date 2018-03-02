@@ -7,7 +7,6 @@ if(TFRNNLM)
   add_pyclif_library("_tensorflow_rnnlm" tensorflow-rnnlm.clif
     CLIF_DEPS _options_itf _arc _deterministic_fst
     LIBRARIES kaldi-tensorflow-rnnlm tensorflow_cc tensorflow_framework
-    RPATH $ORIGIN/../itf:$ORIGIN/../fstext
   )
 
 endif(TFRNNLM)

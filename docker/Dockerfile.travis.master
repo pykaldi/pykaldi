@@ -1,4 +1,4 @@
-# Dockerfile for building PyKaldi image from PyKaldi dependencies image
+# Dockerfile for rebuilding PyKaldi image on master branch
 FROM pykaldi/pykaldi:latest
 
 # Copy pykaldi directory into the container
@@ -6,7 +6,8 @@ COPY . /pykaldi_travis
 
 # Install PyKaldi
 RUN cd /pykaldi \
-	&& git pull /pykaldi_travis \
-	&& pip uninstall -y pykaldi \
-	&& python setup.py install \
-	&& rm -rf /pykaldi_travis
+    && git pull /pykaldi_travis \
+    && pip uninstall -y pykaldi \
+    && rm -rf build \
+    && python setup.py install \
+    && rm -rf dist pykaldi.egg-info /pykaldi_travis
