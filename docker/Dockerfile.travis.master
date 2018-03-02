@@ -8,6 +8,5 @@ COPY . /pykaldi_travis
 RUN cd /pykaldi \
     && git pull /pykaldi_travis \
     && pip uninstall -y pykaldi \
-    && rm -rf build \
     && python setup.py install \
     && rm -rf dist pykaldi.egg-info /pykaldi_travis
