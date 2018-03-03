@@ -1,0 +1,54 @@
+# Dockerfile for building PyKaldi min image
+FROM ubuntu:16.04
+
+# Copy pykaldi/tools directory into the container
+COPY tools /tools
+
+# Install necessary system packages
+# Make python3 default
+# Install necessary Python packages
+# Install Protobuf, CLIF and Kaldi
+# AND
+# Remove stuff 
+# Remove python 2.7
+# Do this in a single RUN so that it doesnt add weight by creating layers
+RUN apt-get update \
+    && apt-get install -y \
+    python3 \
+    python3-pip \
+    python2.7 \
+    autoconf \
+    automake \
+    cmake \
+    curl \
+    g++ \
+    git \
+    graphviz \
+    libatlas3-base \
+    libtool \
+    make \
+    pkg-config \
+    subversion \
+    unzip \
+    wget \
+    zlib1g-dev\
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && ln -s /usr/bin/pip3 /usr/bin/pip \
+    && pip install --upgrade pip numpy setuptools pyparsing ninja \
+    && cd /tools \
+    && ./check_dependencies.sh \
+    && ./install_protobuf.sh \
+    && ./install_clif.sh \
+    && ./install_kaldi.sh\
+    && apt-get remove -y python2.7 \
+    && rm -rf /tools/protobuf \
+    && rm -rf /tools/clif_backend \
+    && rm -rf /tools/clif \
+    && rm -rf /tools/check_dependencies.sh /tools/install_clif.sh /tools/find_python_library.py /tools/install_kaldi.sh /tools/install_protobuf.sh /tools/use_namespace.sh \
+    && cd /tools/kaldi \
+    && rm -rf egs misc scripts windows \
+    && cd /tools/kaldi/src \
+    && rm -rf bin chainbin featbin fgmmbin gmmbin ivectorbin kwsbin latbin lmbin nnet2bin nnet3bin nnetbin online2bin onlinebin rnnlmbin sgmm2bin tfrnnlmbin \
+    && cd /tools/kaldi/tools \
+    && rm -rf *.tar* \
+    && rm -rf *.sh 

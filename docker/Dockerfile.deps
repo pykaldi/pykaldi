@@ -32,7 +32,6 @@ RUN pip install --upgrade pip \
     numpy \
     setuptools \
     pyparsing \
-    jupyter \
     ninja
 
 # Copy pykaldi/tools directory into the container

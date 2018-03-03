@@ -1,5 +1,5 @@
 # Dockerfile for building PyKaldi image from PyKaldi dependencies image
-FROM pykaldi/pykaldi:latest
+FROM pykaldi/pykaldi-min:latest
 
 # Copy pykaldi directory into the container
 COPY . /pykaldi_travis
