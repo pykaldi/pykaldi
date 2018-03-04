@@ -1,11 +1,70 @@
+from "base/iostream-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+from "nnet3/nnet-parse-clifwrap.h" import *
+from "nnet3/nnet-computation-graph-ext-clifwrap.h" import *
+from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
+
 from kaldi.nnet3._nnet_component_itf import Component
 
 from "nnet3/nnet-attention-component.h":
   namespace `kaldi::nnet3`:
     class RestrictedAttentionComponent(Component):
       @add__init__
-      def `RestrictedAttentionComponent` as new_from_other(
-          self, other: RestrictedAttentionComponent)
+      def `RestrictedAttentionComponent` as from_other(self, other: RestrictedAttentionComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
+                                      out_value: CuMatrixBase, memo: Void)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `DeleteMemo` as delete_memo(self, memo: Void)
+
+      # FIXME: This won't work as it is since output_indexes is input/output.
+      # def ReorderIndexes(self, input_indexes: list<Index>,
+      #                    output_indexes: list<Index>)
+
+      def `GetInputIndexes` as get_input_indexes(self,
+          misc_info: MiscComputationInfo, output_index: Index) -> list<Index>
+
+      def `IsComputable` as is_computable(self, misc_info: MiscComputationInfo,
+                                          output_index: Index, input_index_set: IndexSet)
+          -> (ret: bool, used_inputs: list<Index>)
+
+      def `PrecomputeIndexes` as precompute_indexes(self,
+          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+          output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
       # PrecomputedIndexes
 

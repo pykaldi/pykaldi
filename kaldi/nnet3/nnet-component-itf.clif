@@ -1,9 +1,11 @@
 from "base/iostream-clifwrap.h" import *
+from "cudamatrix/cu-vector-clifwrap.h" import *
 from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "nnet3/nnet-common-clifwrap.h" import *
-from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
 from "nnet3/nnet-parse-clifwrap.h" import *
+from "nnet3/nnet-computation-graph-ext-clifwrap.h" import *
+from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
 
 from "nnet3/nnet-component-itf.h":
   capsule `void` as Void
@@ -27,14 +29,6 @@ from "nnet3/nnet-component-itf.h":
       `kRandomComponent` as RANDOM_COMPONENT
 
     class ComponentPrecomputedIndexes:
-      def `Copy` as copy(self) -> ComponentPrecomputedIndexes
-
-      def `Write` as write(self, os: ostream, binary: bool)
-
-      def `Read` as read(self, is: istream, binary: bool)
-
-      def `Type` as type(self) -> str
-
       @classmethod
       def `ReadNew` as read_new(cls, is: istream, binary: bool)
         -> ComponentPrecomputedIndexes
@@ -45,14 +39,6 @@ from "nnet3/nnet-component-itf.h":
         -> ComponentPrecomputedIndexes
 
     class Component:
-      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
-
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
-          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
-
       def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
                                       out_value: CuMatrixBase, memo: Void)
 
@@ -61,10 +47,9 @@ from "nnet3/nnet-component-itf.h":
       def `GetInputIndexes` as get_input_indexes(self,
           misc_info: MiscComputationInfo, output_index: Index) -> list<Index>
 
-      # FIXME: IndexSet is not defined.
-      # def IsComputable(self, misc_info: MiscComputationInfo,
-      #                  output_index: Index, input_index_set: IndexSet)
-      #     -> (ret: bool, used_inputs: list<Index>)
+      def `IsComputable` as is_computable(self, misc_info: MiscComputationInfo,
+                                          output_index: Index, input_index_set: IndexSet)
+          -> (ret: bool, used_inputs: list<Index>)
 
       # FIXME: This won't work as it is since output_indexes is input/output.
       # def ReorderIndexes(self, input_indexes: list<Index>,
@@ -74,27 +59,11 @@ from "nnet3/nnet-component-itf.h":
           misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
-      def `Type` as type(self) -> str
-
-      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
-
-      def `InputDim` as input_dim(self) -> int
-
-      def `OutputDim` as output_dim(self) -> int
-
-      def `Properties` as properties(self) -> int
-
       @classmethod
       def `ReadNew` as read_new(cls, is: istream, binary: bool) -> Component
 
-      def `Copy` as copy(self) -> Component
-
       @classmethod
       def `NewComponentOfType` as new_component_of_type(cls, type: str) -> Component
-
-      def `Read` as read(self, is: istream, binary: bool)
-
-      def `Write` as write(self, os: ostream, binary: bool)
 
       def `Info` as info(self) -> str
 
@@ -104,16 +73,14 @@ from "nnet3/nnet-component-itf.h":
 
       def `DeleteMemo` as delete_memo(self, memo: Void)
 
+
     class RandomComponent(Component):
       def `ResetGenerator` as reset_generator(self)
 
       def `SetTestMode` as set_test_mode(self, test_mode: bool)
 
+
     class UpdatableComponent(Component):
-      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
-
-      def `PerturbParams` as perturb_params(self, stddev: float)
-
       def `SetUnderlyingLearningRate` as set_underlying_learning_rate(self, lrate: float)
 
       def `SetActualLearningRate` as set_actual_learning_rate(self, lrate: float)
@@ -138,14 +105,36 @@ from "nnet3/nnet-component-itf.h":
 
       def `SetL2Regularization` as set_l2_regularization(self, a: float)
 
+      def `Info` as info(self) -> str
+
       def `NumParameters` as num_parameters(self) -> int
 
       def `Vectorize` as vectorize(self, params: VectorBase)
 
       def `UnVectorize` as unvectorize(self, params: VectorBase)
 
+
     class NonlinearComponent(Component):
-      # def ValueSum(self) -> CuDoubleVector
-      # def DerivSum(self) -> CuDoubleVector
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `Info` as info(self) -> str
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def ValueSum(self) -> CuDoubleVector
+
+      def DerivSum(self) -> CuDoubleVector
 
       def `Count` as count(self) -> float

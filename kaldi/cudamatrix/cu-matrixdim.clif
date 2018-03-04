@@ -5,6 +5,11 @@ from "cudamatrix/cu-matrixdim.h":
     column: int
     weight: float
 
+  class `MatrixElement<double>` as DoubleMatrixElement:
+    row: int
+    column: int
+    weight: float
+
   class `MatrixDim_` as MatrixDim:
     rows: int
     cols: int

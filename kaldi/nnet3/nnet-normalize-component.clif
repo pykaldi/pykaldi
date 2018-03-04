@@ -1,4 +1,8 @@
+from "base/iostream-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-parse-clifwrap.h" import *
+from "nnet3/nnet-component-itf-clifwrap.h" import *
 
 from kaldi.nnet3._nnet_component_itf import Component
 
@@ -6,15 +10,77 @@ from "nnet3/nnet-normalize-component.h":
   namespace `kaldi::nnet3`:
     class NormalizeComponent(Component):
       @add__init__
-      def `NormalizeComponent` as new_from_other(self,
-                                                 other: NormalizeComponent)
+      def `NormalizeComponent` as from_other(self, other: NormalizeComponent)
+
+      def `Properties` as properties(self) -> int
+
+      def `Type` as type(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
 
     class BatchNormComponent(Component):
       @add__init__
-      def `BatchNormComponent` as new_from_other(self,
-                                                 other: BatchNormComponent)
-
-      def `Offset` as offset(self) -> CuVector
-      def `Scale` as scale(self) -> CuVector
+      def `BatchNormComponent` as from_other(self, other: BatchNormComponent)
 
       def `SetTestMode` as set_test_mode(self, test_mode: bool)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `DeleteMemo` as delete_memo(self, memo: Void)
+
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
+                                      out_value: CuMatrixBase, memo: Void)
+
+      def `Offset` as get_offset(self) -> CuVector
+
+      def `Scale` as get_scale(self) -> CuVector

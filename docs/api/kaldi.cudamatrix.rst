@@ -10,12 +10,18 @@ kaldi\.cudamatrix
    .. autosummary::
       :nosignatures:
    
+      approx_equal_cu_double_matrix
+      approx_equal_cu_double_vector
       approx_equal_cu_matrix
       approx_equal_cu_vector
+      assert_equal_cu_double_matrix
+      assert_equal_cu_double_vector
       assert_equal_cu_matrix
       assert_equal_cu_vector
       cuda_available
+      same_dim_and_stride_cu_double_matrix
       same_dim_and_stride_cu_matrix
+      same_dim_cu_double_matrix
       same_dim_cu_matrix
       trace_mat_smat
    
@@ -31,6 +37,13 @@ kaldi\.cudamatrix
       CuArray
       CuBlockMatrixData
       CuDevice
+      CuDoubleMatrix
+      CuDoubleMatrixBase
+      CuDoublePtrArray
+      CuDoubleSubMatrix
+      CuDoubleSubVector
+      CuDoubleVector
+      CuDoubleVectorBase
       CuFloatPtrArray
       CuIntPairArray
       CuMatrix
@@ -41,6 +54,7 @@ kaldi\.cudamatrix
       CuTimer
       CuVector
       CuVectorBase
+      DoubleMatrixElement
       IntPair
       MatrixDim
       MatrixElement

@@ -41,14 +41,39 @@ from "tree/event-map.h":
 
       def `MaxResult` as max_result(self) -> int
 
-      @classmethod
-      def `Write` as write(cls, os: ostream, binary: bool, emap: EventMap)
+      def `Write` as write_to_stream(self, os: ostream, binary: bool)
 
       @classmethod
-      def `Read` as read(cls, is: istream, binary: bool) -> EventMap
+      def `Write` as write_event_map(cls, os: ostream, binary: bool, emap: EventMap)
+
+      @classmethod
+      def `Read` as read_event_map(cls, is: istream, binary: bool) -> EventMap
 
     class ConstantEventMap(EventMap):
       def __init__(self, answer: int)
+
+      def `Map` as map(self, event: list<tuple<int, int>>)
+        -> (success: bool, ans: int):
+        return _value_error_on_false(...)
+
+      def `MultiMap` as multi_map(self, event: list<tuple<int, int>>)
+        -> list<int>
+
+      def `GetChildren` as get_children(self) -> list<EventMap>
+
+      def `Copy` as copy_with_new_leaves(self, new_leaves: list<EventMap>)
+        -> EventMap
+
+      def `MapValues` as map_values(
+          self, keys_to_map: set<int>,
+          value_map: dict<int, int>) -> EventMap
+
+      def `Prune` as prune(self) -> EventMap
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      @classmethod
+      def `Read` as read(cls, is: istream, binary: bool) -> ConstantEventMap
 
     class TableEventMap(EventMap):
       def __init__(self, key: int, table: list<EventMap>)
@@ -61,9 +86,55 @@ from "tree/event-map.h":
       def `TableEventMap` as from_val_answer_table(self,
           key: int, map_in: `std::map` as dict<int, int>)
 
+      def `Map` as map(self, event: list<tuple<int, int>>)
+        -> (success: bool, ans: int):
+        return _value_error_on_false(...)
+
+      def `MultiMap` as multi_map(self, event: list<tuple<int, int>>)
+        -> list<int>
+
+      def `GetChildren` as get_children(self) -> list<EventMap>
+
+      def `Copy` as copy_with_new_leaves(self, new_leaves: list<EventMap>)
+        -> EventMap
+
+      def `MapValues` as map_values(
+          self, keys_to_map: set<int>,
+          value_map: dict<int, int>) -> EventMap
+
+      def `Prune` as prune(self) -> EventMap
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      @classmethod
+      def `Read` as read(cls, is: istream, binary: bool) -> TableEventMap
+
     class SplitEventMap(EventMap):
       def __init__(self, key: int, yes_set: list<int>,
                    yes: EventMap, no: EventMap)
+
+      def `Map` as map(self, event: list<tuple<int, int>>)
+        -> (success: bool, ans: int):
+        return _value_error_on_false(...)
+
+      def `MultiMap` as multi_map(self, event: list<tuple<int, int>>)
+        -> list<int>
+
+      def `GetChildren` as get_children(self) -> list<EventMap>
+
+      def `Copy` as copy_with_new_leaves(self, new_leaves: list<EventMap>)
+        -> EventMap
+
+      def `MapValues` as map_values(
+          self, keys_to_map: set<int>,
+          value_map: dict<int, int>) -> EventMap
+
+      def `Prune` as prune(self) -> EventMap
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      @classmethod
+      def `Read` as read(cls, is: istream, binary: bool) -> SplitEventMap
 
     def `GetTreeStructure` as get_tree_structure(map: EventMap)
       -> (has_tree_structure: bool, num_leaves: int, parents: list<int>)

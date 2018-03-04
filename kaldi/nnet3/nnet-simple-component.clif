@@ -1,5 +1,11 @@
+from "base/iostream-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
 from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+from "nnet3/nnet-parse-clifwrap.h" import *
+from "nnet3/nnet-computation-graph-ext-clifwrap.h" import *
+from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
 from "nnet3/nnet-component-itf-clifwrap.h" import *
 
 from kaldi.nnet3._nnet_component_itf import Component
@@ -13,23 +19,75 @@ from "nnet3/nnet-simple-component.h":
       def `Init` as init(self, input_dim: int, output_dim: int)
 
       @add__init__
-      def `PnormComponent` as new(self, input_dim: int, output_dim: int)
+      def `PnormComponent` as from_dims(self, input_dim: int, output_dim: int)
+
+      def `Properties` as properties(self) -> int
+
+      def `Type` as type(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
 
     class DropoutComponent(RandomComponent):
       def `Init` as init(self, dim: int, dropout_proportion: float = default,
-               dropout_per_frame: bool = default)
+                         dropout_per_frame: bool = default)
 
       @add__init__
-      def `DropoutComponent` as new(self, dim: int,
-                                    dropout_proportion: float = default,
-                                    dropout_per_frame: bool = default)
+      def `DropoutComponent` as from_args(self, dim: int,
+                                          dropout_proportion: float = default,
+                                          dropout_per_frame: bool = default)
 
       @add__init__
-      def `DropoutComponent` as new_from_other(self, other: DropoutComponent)
+      def `DropoutComponent` as from_other(self, other: DropoutComponent)
+
+      def `Properties` as properties(self) -> int
+
+      def `Type` as type(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Info` as info(self) -> str
 
       def `SetDropoutProportion` as set_dropout_proportion(self, dropout_proportion: float)
 
       def `DropoutProportion` as dropout_proportion(self) -> float
+
 
     class ElementwiseProductComponent(Component):
       def `Init` as init(self, input_dim: int, output_dim: int)
@@ -38,85 +96,385 @@ from "nnet3/nnet-simple-component.h":
       def `ElementwiseProductComponent` as new(self, input_dim: int,
                                                output_dim: int)
 
+      def `Properties` as properties(self) -> int
+
+      def `Type` as type(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+
     class SigmoidComponent(NonlinearComponent):
       @add__init__
-      def `SigmoidComponent` as new_from_other(self, other: SigmoidComponent)
+      def `SigmoidComponent` as from_other(self, other: SigmoidComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Copy` as copy(self) -> Component
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
+                                      out_value: CuMatrixBase, memo: Void)
+
 
     class TanhComponent(NonlinearComponent):
       @add__init__
-      def `TanhComponent` as new_from_other(self, other: TanhComponent)
+      def `TanhComponent` as from_other(self, other: TanhComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Copy` as copy(self) -> Component
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
+                                      out_value: CuMatrixBase, memo: Void)
+
 
     class RectifiedLinearComponent(NonlinearComponent):
       @add__init__
       def `RectifiedLinearComponent` as new_from_other(
           self, other: RectifiedLinearComponent)
 
+      def `Type` as type(self) -> str
+
+      def `Copy` as copy(self) -> Component
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
+                                      out_value: CuMatrixBase, memo: Void)
+
+
     class AffineComponent(UpdatableComponent):
       @add__init__
-      def `AffineComponent` as new_from_other(self, other: AffineComponent)
+      def `AffineComponent` as from_other(self, other: AffineComponent)
 
       @add__init__
-      def `AffineComponent` as new(self, linear_params: CuMatrixBase,
-                                   bias_params: CuVectorBase,
-                                   learning_rate: float)
-      def `Init` as init(self, input_dim: int, output_dim: int,
-               param_stddev: float, bias_stddev: float)
+      def `AffineComponent` as from_params(self, linear_params: CuMatrixBase,
+                                           bias_params: CuVectorBase,
+                                           learning_rate: float)
 
-      def `Resize` as resize(self, input_dim: int, output_dim: int)
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
 
       def `OrthonormalConstraint` as orthonormal_constraint(self) -> float
 
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
+      def `SetParams` as set_params(self, bias: CuVectorBase, linear: CuMatrixBase)
+
       def `BiasParams` as bias_params(self) -> CuVector
 
       def `LinearParams` as linear_params(self) -> CuMatrix
+
+      def `Resize` as resize(self, input_dim: int, output_dim: int)
+
+      def `Init` as init(self, input_dim: int, output_dim: int,
+                         param_stddev: float, bias_stddev: float)
+
 
     class RepeatedAffineComponent(UpdatableComponent):
+      @add__init__
+      def `RepeatedAffineComponent` as from_other(self, other: RepeatedAffineComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
       def `BiasParams` as bias_params(self) -> CuVector
 
       def `LinearParams` as linear_params(self) -> CuMatrix
 
-      @add__init__
-      def `RepeatedAffineComponent` as new_from_other(
-          self, other: RepeatedAffineComponent)
 
     class BlockAffineComponent(UpdatableComponent):
       @add__init__
-      def `BlockAffineComponent` as new_from_other(self,
-                                                   other: BlockAffineComponent)
+      def `BlockAffineComponent` as from_other(self, other: BlockAffineComponent)
 
       @add__init__
-      def `BlockAffineComponent` as new_from_rac(
-          self, other: RepeatedAffineComponent)
+      def `BlockAffineComponent` as from_rac(self, other: RepeatedAffineComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
 
     class NaturalGradientRepeatedAffineComponent(RepeatedAffineComponent):
       @add__init__
-      def `NaturalGradientRepeatedAffineComponent` as new_from_other(
+      def `NaturalGradientRepeatedAffineComponent` as from_other(
           self, other: NaturalGradientRepeatedAffineComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Copy` as copy(self) -> Component
+
 
     class SoftmaxComponent(NonlinearComponent):
       @add__init__
-      def `SoftmaxComponent` as new_from_other(self, other: SoftmaxComponent)
+      def `SoftmaxComponent` as from_other(self, other: SoftmaxComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
+                                      out_value: CuMatrixBase, memo: Void)
+
+      def `Copy` as copy(self) -> Component
+
 
     class LogSoftmaxComponent(NonlinearComponent):
       @add__init__
-      def `LogSoftmaxComponent` as new_from_other(self,
-                                                  other: LogSoftmaxComponent)
+      def `LogSoftmaxComponent` as from_other(self, other: LogSoftmaxComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
 
     class NaturalGradientAffineComponent(AffineComponent):
       @add__init__
-      def `NaturalGradientAffineComponent` as new_from_other(
+      def `NaturalGradientAffineComponent` as from_other(
           self, other: NaturalGradientAffineComponent)
 
       @add__init__
-      def `NaturalGradientAffineComponent` as new_from_params(
+      def `NaturalGradientAffineComponent` as from_params(
           self, linear_params: CuMatrixBase, bias_params: CuVectorBase)
+
+      def `Type` as type(self) -> str
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Info` as info(self) -> str
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
+
 
     class LinearComponent(UpdatableComponent):
       @add__init__
-      def `LinearComponent` as new_from_other(self, other: LinearComponent)
+      def `LinearComponent` as from_other(self, other: LinearComponent)
 
       @add__init__
-      def `LinearComponent` as new_from_params(self, params: CuMatrix)
+      def `LinearComponent` as from_params(self, params: CuMatrix)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Info` as info(self) -> str
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
+      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
 
       def `OrthonormalConstraint` as orthonormal_constraint(self) -> float
 
@@ -124,36 +482,184 @@ from "nnet3/nnet-simple-component.h":
 
     class FixedAffineComponent(Component):
       @add__init__
-      def `FixedAffineComponent` as new_from_affine(self, c: AffineComponent)
+      def `FixedAffineComponent` as from_affine(self, c: AffineComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Info` as info(self) -> str
 
       def `Init` as init(self, matrix: CuMatrixBase)
 
-      def `BiasParams` as bias_params(self) -> CuVector
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Properties` as properties(self) -> int
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
 
       def `LinearParams` as linear_params(self) -> CuMatrix
 
+      def `BiasParams` as bias_params(self) -> CuVector
+
+
     class SumGroupComponent(Component):
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
       def `Init` as init_from_sizes(self, sizes: list<int>)
 
       def `Init` as init(self, input_dim: int, output_dim: int)
 
       def `GetSizes` as get_sizes(self) -> list<int>
 
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+
     class FixedScaleComponent(Component):
+      def `Type` as type(self) -> str
+
+      def `Info` as info(self) -> str
+
+      def `Properties` as properties(self) -> int
+
       def `Init` as init(self, scales: CuVectorBase)
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
 
       def `Scales` as scales(self) -> CuVector
 
+
     class FixedBiasComponent(Component):
+      def `Type` as type(self) -> str
+
+      def `Info` as info(self) -> str
+
+      def `Properties` as properties(self) -> int
+
       def `Init` as init(self, scales: CuVectorBase)
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
 
     class NoOpComponent(NonlinearComponent):
       @add__init__
-      def `NoOpComponent` as new_from_other(self, other: NoOpComponent)
+      def `NoOpComponent` as from_other(self, other: NoOpComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Copy` as copy(self) -> Component
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
 
     class SumBlockComponent(Component):
       @add__init__
-      def `SumBlockComponent` as new_from_other(self, other: SumBlockComponent)
+      def `SumBlockComponent` as from_other(self, other: SumBlockComponent)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Info` as info(self) -> str
+
+      def `Copy` as copy(self) -> Component
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
 
     class ClipGradientComponent(Component):
       @add__init__
@@ -164,6 +670,12 @@ from "nnet3/nnet-simple-component.h":
           num_clipped: int, count: int, num_self_repaired: int,
           num_backpropped: int)
 
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
       def `Init` as init(self, dim: int, clipping_threshold: float,
                norm_based_clipping: bool,
                self_repair_clipped_proportion_threshold: float,
@@ -171,16 +683,115 @@ from "nnet3/nnet-simple-component.h":
                num_clipped: int, count: int, num_self_repaired: int,
                num_backpropped: int)
 
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Info` as info(self) -> str
+
+
     class PermuteComponent(Component):
       @add__init__
-      def `PermuteComponent` as new(self, column_map: list<int>)
+      def `PermuteComponent` as from_column_map(self, column_map: list<int>)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
 
       def `Init` as init(self, column_map: list<int>)
 
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Info` as info(self) -> str
+
+
     class PerElementScaleComponent(UpdatableComponent):
       @add__init__
-      def `PerElementScaleComponent` as new_from_other(
-          self, other: PerElementScaleComponent)
+      def `PerElementScaleComponent` as from_other(self, other: PerElementScaleComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
 
       def `Init` as init(self, dim: int, param_mean: float, param_stddev: float)
 
@@ -188,18 +799,112 @@ from "nnet3/nnet-simple-component.h":
 
     class PerElementOffsetComponent(UpdatableComponent):
       @add__init__
-      def `PerElementOffsetComponent` as new_from_other(
-          self, other: PerElementOffsetComponent)
+      def `PerElementOffsetComponent` as from_other(self, other: PerElementOffsetComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
 
     class ConstantFunctionComponent(UpdatableComponent):
       @add__init__
-      def `ConstantFunctionComponent` as new_from_other(
-          self, other: ConstantFunctionComponent)
+      def `ConstantFunctionComponent` as from_other(self, other: ConstantFunctionComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
 
     class NaturalGradientPerElementScaleComponent(PerElementScaleComponent):
       @add__init__
-      def `NaturalGradientPerElementScaleComponent` as new_from_other(
+      def `NaturalGradientPerElementScaleComponent` as from_other(
           self, other: NaturalGradientPerElementScaleComponent)
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
+
+      def `Copy` as copy(self) -> Component
 
       def `Init` as init(self, dim: int, param_mean: float, param_stddev: float,
                rank: int, update_period: int, num_samples_history: float,
@@ -211,29 +916,158 @@ from "nnet3/nnet-simple-component.h":
 
     class ScaleAndOffsetComponent(UpdatableComponent):
       @add__init__
-      def `ScaleAndOffsetComponent` as new_from_other(
-          self, other: ScaleAndOffsetComponent)
+      def `ScaleAndOffsetComponent` as from_other(self, other: ScaleAndOffsetComponent)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
 
     # ConvolutionComponent
 
     class LstmNonlinearityComponent(UpdatableComponent):
       @add__init__
-      def `LstmNonlinearityComponent` as new_from_other(
-          self, other: LstmNonlinearityComponent)
+      def `LstmNonlinearityComponent` as from_other(self, other: LstmNonlinearityComponent)
 
       def `Init` as init(self, cell_dim: int, use_dropout: bool, param_stddev: float,
-               tanh_self_repair_threshold: float,
-               sigmoid_self_repair_threshold: float, self_repair_scale: float)
+                         tanh_self_repair_threshold: float,
+                         sigmoid_self_repair_threshold: float, self_repair_scale: float)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Copy` as copy(self) -> Component
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
 
     # MaxPoolingComponent
 
     class CompositeComponent(UpdatableComponent):
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Info` as info(self) -> str
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
       def `Init` as init(self, components: list<Component>, max_rows_process: int)
+
+      def `Type` as type(self) -> str
+
+      def `Properties` as properties(self) -> int
+
+      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
+                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+
+      def `Backprop` as backprop(self,
+          debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+
+      def `ZeroStats` as zero_stats(self)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `SetUnderlyingLearningRate` as set_underlying_learning_rate(self, lrate: float)
+
+      def `SetActualLearningRate` as set_actual_learning_rate(self, lrate: float)
+
+      def `SetAsGradient` as set_as_gradient(self)
+
+      def `Scale` as scale(self, scale: float)
+
+      def `Add` as add(self, alpha: float, other: Component)
+
+      def `PerturbParams` as perturb_params(self, stddev: float)
+
+      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
+
+      def `NumParameters` as num_parameters(self) -> int
+
+      def `Vectorize` as vectorize(self, params: VectorBase)
+
+      def `UnVectorize` as unvectorize(self, params: VectorBase)
+
+      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
 
       def `NumComponents` as num_components(self) -> int
 
-      # NOTE:
-      # We cannot wrap this since it returns an abstract base class pointer.
-      # def `GetComponent` as get_component(self, i: int) -> Component
+      def `GetComponent` as get_component(self, i: int) -> Component
 
       def `SetComponent` as set_component(self, i: int, component: Component)

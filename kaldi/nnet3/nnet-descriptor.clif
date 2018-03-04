@@ -21,16 +21,70 @@ from "nnet3/nnet-descriptor.h":
     class SimpleForwardingDescriptor(ForwardingDescriptor):
       def __init__(self, src_node: int, scale: float = default)
 
+      def `MapToInput` as map_to_input(self, output: Index) -> tuple<int,Index>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> ForwardingDescriptor
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
     class OffsetForwardingDescriptor(ForwardingDescriptor):
       def __init__(self, src: ForwardingDescriptor, offset: Index)
+
+      def `MapToInput` as map_to_input(self, output: Index) -> tuple<int,Index>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> ForwardingDescriptor
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
+
+      def `Modulus` as modulus(self) -> int
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
 
       # def Src(self) -> ForwardingDescriptor
 
     class SwitchingForwardingDescriptor(ForwardingDescriptor):
       def __init__(self, src: list<ForwardingDescriptor>)
 
+      def `MapToInput` as map_to_input(self, output: Index) -> tuple<int,Index>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> ForwardingDescriptor
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
+
+      def `Modulus` as modulus(self) -> int
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
     class RoundingForwardingDescriptor(ForwardingDescriptor):
       def __init__(self, src: ForwardingDescriptor, t_modulus: int)
+
+      def `MapToInput` as map_to_input(self, output: Index) -> tuple<int,Index>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> ForwardingDescriptor
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
+
+      def `Modulus` as modulus(self) -> int
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
 
     class ReplaceIndexForwardingDescriptor(ForwardingDescriptor):
       enum VariableName with:
@@ -41,7 +95,26 @@ from "nnet3/nnet-descriptor.h":
       def __init__(self, src: ForwardingDescriptor,
                    variable_name: VariableName, value: int)
 
+      def `MapToInput` as map_to_input(self, output: Index) -> tuple<int,Index>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> ForwardingDescriptor
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
+
+      def `Modulus` as modulus(self) -> int
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
     class SumDescriptor:
+      def `GetDependencies` as get_dependencies(self, ind: Index) -> list<tuple<int,Index>>
+
+    class OptionalSumDescriptor(SumDescriptor):
+      def __init__(self, src: SumDescriptor)
+
       def `GetDependencies` as get_dependencies(self, ind: Index) -> list<tuple<int,Index>>
 
       # def IsComputable(self, ind: Index, cindex_set: CindexSet)
@@ -59,16 +132,47 @@ from "nnet3/nnet-descriptor.h":
 
       def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
-    class OptionalSumDescriptor(SumDescriptor):
-      def __init__(self, src: SumDescriptor)
-
     class SimpleSumDescriptor(SumDescriptor):
       def __init__(self, src: ForwardingDescriptor)
+
+      def `GetDependencies` as get_dependencies(self, ind: Index) -> list<tuple<int,Index>>
+
+      # def IsComputable(self, ind: Index, cindex_set: CindexSet)
+      #     -> list<tuple<int,Index>>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> SumDescriptor
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
+      def `Modulus` as modulus(self) -> int
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
       # def Src(self) -> ForwardingDescriptor
 
     class ConstantSumDescriptor(SumDescriptor):
       def __init__(self, value: `float` as float, dim: int)
+
+      def `GetDependencies` as get_dependencies(self, ind: Index) -> list<tuple<int,Index>>
+
+      # def IsComputable(self, ind: Index, cindex_set: CindexSet)
+      #     -> list<tuple<int,Index>>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> SumDescriptor
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
+      def `Modulus` as modulus(self) -> int
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
     class BinarySumDescriptor(SumDescriptor):
       enum Operation with:
@@ -77,6 +181,23 @@ from "nnet3/nnet-descriptor.h":
 
       def __init__(self, op: Operation, src1: SumDescriptor,
                    src2: SumDescriptor)
+
+      def `GetDependencies` as get_dependencies(self, ind: Index) -> list<tuple<int,Index>>
+
+      # def IsComputable(self, ind: Index, cindex_set: CindexSet)
+      #     -> list<tuple<int,Index>>
+
+      # def Dim(self, nnet: Nnet) -> int
+
+      def `Copy` as copy(self) -> SumDescriptor
+
+      def `GetNodeDependencies` as get_node_dependencies(self) -> list<int>
+
+      def `GetScaleForNode` as get_scale_for_node(self, node_index: int) -> float
+
+      def `Modulus` as modulus(self) -> int
+
+      def `WriteConfig` as write_config(self, os: ostream, node_names: list<str>)
 
     class Descriptor:
       # def Dim(self, nnet: Nnet) -> int
@@ -98,10 +219,10 @@ from "nnet3/nnet-descriptor.h":
       # def Part(self, n: int) -> SumDescriptor
 
       @add__init__
-      def `Descriptor` as new_from_other(self, other: Descriptor)
+      def `Descriptor` as from_other(self, other: Descriptor)
 
       @add__init__
-      def `Descriptor` as new_from_parts(self, parts: list<SumDescriptor>)
+      def `Descriptor` as from_parts(self, parts: list<SumDescriptor>)
 
     class GeneralDescriptor:
       enum DescriptorType with:

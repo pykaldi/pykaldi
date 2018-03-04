@@ -7,15 +7,32 @@ from kaldi.itf._decodable_itf import DecodableInterface
 from "gmm/decodable-am-diag-gmm.h":
   namespace `kaldi`:
     class DecodableAmDiagGmmUnmapped(DecodableInterface):
-      def __init__(self, am: AmDiagGmm, feats: Matrix,
-                  log_sum_exp_prune: float = default)
+      def __init__(self, am: AmDiagGmm, feats: Matrix, log_sum_exp_prune: float = default)
+
+      def `LogLikelihood` as log_likelihood(self, frame: int, index: int) -> float:
+        """Returns the log-likehood of the given index for the given frame."""
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Checks if given frame is the last frame."""
+
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready for decoding."""
+
+      def `NumIndices` as num_indices(self) -> int:
+        """Returns number of indices."""
 
     class DecodableAmDiagGmm(DecodableAmDiagGmmUnmapped):
       def __init__(self, am: AmDiagGmm, tm: TransitionModel, feats: Matrix,
                    log_sum_exp_prune: float = default)
 
-      # FIXME: Add a work around wrapper
-      # def TransModel(self) -> TransitionModel
+      def `LogLikelihood` as log_likelihood(self, frame: int, index: int) -> float:
+        """Returns the log-likehood of the given index for the given frame."""
+
+      def `NumIndices` as num_indices(self) -> int:
+        """Returns number of indices."""
+
+      def `TransModel` as trans_model(self) -> TransitionModel:
+        """Returns the transition model."""
 
     class DecodableAmDiagGmmScaled(DecodableAmDiagGmmUnmapped):
       def __init__(self, am: AmDiagGmm, tm: TransitionModel, feats: Matrix,
@@ -26,5 +43,11 @@ from "gmm/decodable-am-diag-gmm.h":
           self, am: AmDiagGmm, tm: TransitionModel, scale: float,
           log_sum_exp_prune: float, feats: Matrix)
 
-      # FIXME: Add a work around wrapper
-      # def TransModel(self) -> TransitionModel
+      def `LogLikelihood` as log_likelihood(self, frame: int, index: int) -> float:
+        """Returns the log-likehood of the given index for the given frame."""
+
+      def `NumIndices` as num_indices(self) -> int:
+        """Returns number of indices."""
+
+      def `TransModel` as trans_model(self) -> TransitionModel:
+        """Returns the transition model."""

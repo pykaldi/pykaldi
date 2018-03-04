@@ -21,7 +21,7 @@ def check_output(*args, **kwargs):
 # Set minimum version requirements for external dependencies
 ################################################################################
 
-KALDI_MIN_REQUIRED = '938d17fe9b11ee43898ffb9331e53247d9a1a998'
+KALDI_MIN_REQUIRED = 'e7cd362e950e704661200718353b2e3204fcdcc7'
 
 ################################################################################
 # Check variables / find programs

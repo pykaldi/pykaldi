@@ -13,24 +13,69 @@ from kaldi.itf._online_feature_itf import OnlineBaseFeature
 
 from "feat/online-feature.h":
   namespace `kaldi`:
-    class `OnlineGenericBaseFeature<MfccComputer>`
-        as OnlineMfcc(OnlineBaseFeature):
-
+    class `OnlineGenericBaseFeature<MfccComputer>` as OnlineMfcc(OnlineBaseFeature):
       def __init__(self, opts: MfccOptions)
 
-    class `OnlineGenericBaseFeature<PlpComputer>`
-        as OnlinePlp(OnlineBaseFeature):
+      def `Dim` as dim(self) -> int
 
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+
+      def `InputFinished` as input_finished(self)
+
+    class `OnlineGenericBaseFeature<PlpComputer>` as OnlinePlp(OnlineBaseFeature):
       def __init__(self, opts: PlpOptions)
 
-    class `OnlineGenericBaseFeature<FbankComputer>`
-        as OnlineFbank(OnlineBaseFeature):
+      def `Dim` as dim(self) -> int
 
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+
+      def `InputFinished` as input_finished(self)
+
+    class `OnlineGenericBaseFeature<FbankComputer>` as OnlineFbank(OnlineBaseFeature):
       def __init__(self, opts: FbankOptions)
 
-    class OnlineMatrixFeature(OnlineFeatureInterface):
+      def `Dim` as dim(self) -> int
 
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+
+      def `InputFinished` as input_finished(self)
+
+    class OnlineMatrixFeature(OnlineFeatureInterface):
       def __init__(self, mat: MatrixBase)
+
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
 
     class OnlineCmvnOptions:
       cmn_window: int
@@ -77,6 +122,16 @@ from "feat/online-feature.h":
 
       def `Freeze` as freeze(self, cur_frame: int)
 
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
     class OnlineSpliceOptions:
       left_context: int
       right_context: int
@@ -84,21 +139,68 @@ from "feat/online-feature.h":
       def `Register` as register(self, po: ParseOptions)
 
     class OnlineSpliceFrames(OnlineFeatureInterface):
-      def __init__(self, opts: OnlineSpliceOptions,
-                   src: OnlineFeatureInterface)
+      def __init__(self, opts: OnlineSpliceOptions, src: OnlineFeatureInterface)
+
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
 
     class OnlineTransform(OnlineFeatureInterface):
       def __init__(self, transform: MatrixBase, src: OnlineFeatureInterface)
 
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
     class OnlineDeltaFeature(OnlineFeatureInterface):
-      def __init__(self, opts: DeltaFeaturesOptions,
-                   src: OnlineFeatureInterface)
+      def __init__(self, opts: DeltaFeaturesOptions, src: OnlineFeatureInterface)
+
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
 
     class OnlineCacheFeature(OnlineFeatureInterface):
       def __init__(self, src: OnlineFeatureInterface)
 
       def `ClearCache` as clear_cache(self)
 
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+
     class OnlineAppendFeature(OnlineFeatureInterface):
-      def __init__(self, src1: OnlineFeatureInterface,
-                 src2: OnlineFeatureInterface)
+      def __init__(self, src1: OnlineFeatureInterface, src2: OnlineFeatureInterface)
+
+      def `Dim` as dim(self) -> int
+
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+
+      def `NumFramesReady` as num_frames_ready(self) -> int
+
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)

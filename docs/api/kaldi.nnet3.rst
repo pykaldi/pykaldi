@@ -197,6 +197,8 @@ kaldi\.nnet3
       FixedScaleComponent
       ForwardingDescriptor
       GeneralDescriptor
+      GeneralDropoutComponent
+      GeneralDropoutComponentPrecomputedIndexes
       Index
       IndexSet
       IoSpecification

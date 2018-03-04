@@ -80,6 +80,21 @@ bool Clif_PyObjAs(PyObject* py, short* c) {  //NOLINT: runtime/int
   return true;
 }
 
+// int8
+bool Clif_PyObjAs(PyObject* py, char* c) {
+  assert(c != nullptr);
+  long i;  // NOLINT: runtime/int
+  if (!Clif_PyObjAs(py, &i)) {
+    return false;
+  }
+  if (i > CHAR_MAX || i < CHAR_MIN) {
+    PyErr_SetString(PyExc_ValueError, "value too large for char");
+    return false;
+  }
+  *c = i;
+  return true;
+}
+
 // uint8
 bool Clif_PyObjAs(PyObject* py, unsigned char* c) {
   assert(c != nullptr);
@@ -88,7 +103,7 @@ bool Clif_PyObjAs(PyObject* py, unsigned char* c) {
     return false;
   }
   if (i > UCHAR_MAX) {
-    PyErr_SetString(PyExc_ValueError, "value too large for char");
+    PyErr_SetString(PyExc_ValueError, "value too large for unsigned char");
     return false;
   }
   *c = i;
