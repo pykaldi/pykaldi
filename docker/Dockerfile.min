@@ -37,7 +37,17 @@ RUN apt-get update \
     && pip install --upgrade pip numpy setuptools pyparsing ninja \
     && cd /tools \
     && ./check_dependencies.sh \
-    && ./install_protobuf.sh \
+    && git clone https://github.com/google/protobuf.git protobuf \
+    && cd protobuf \
+    && git pull \
+    && ./autogen.sh \
+    && ./configure --prefix /usr \
+    && make -j4 \
+    && make install \
+    && cd python \
+    && python setup.py build \
+    && python setup.py install \
+    && cd /tools \
     && ./install_clif.sh \
     && ./install_kaldi.sh\
     && apt-get remove -y python2.7 \
@@ -45,10 +55,13 @@ RUN apt-get update \
     && rm -rf /tools/clif_backend \
     && rm -rf /tools/clif \
     && rm -rf /tools/check_dependencies.sh /tools/install_clif.sh /tools/find_python_library.py /tools/install_kaldi.sh /tools/install_protobuf.sh /tools/use_namespace.sh \
-    && cd /tools/kaldi \
+    && cd kaldi \
     && rm -rf egs misc scripts windows \
     && cd /tools/kaldi/src \
     && rm -rf bin chainbin featbin fgmmbin gmmbin ivectorbin kwsbin latbin lmbin nnet2bin nnet3bin nnetbin online2bin onlinebin rnnlmbin sgmm2bin tfrnnlmbin \
     && cd /tools/kaldi/tools \
     && rm -rf *.tar* \
-    && rm -rf *.sh 
+    && rm -rf *.sh \
+    && cd /tools/kaldi \
+    && find . -name "*.a" -delete \
+    && find . -name "*.o" -delete
