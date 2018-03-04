@@ -64,4 +64,10 @@ RUN apt-get update \
     && rm -rf *.sh \
     && cd /tools/kaldi \
     && find . -name "*.a" -delete \
-    && find . -name "*.o" -delete
+    && find . -name "*.o" -delete \
+    && cd / \
+    && git clone https://github.com/pykaldi/pykaldi.git \
+    && cd /pykaldi/tools \
+    && ln -s /tools/kaldi \
+    && cd /pykaldi \
+    && python setup.py develop
