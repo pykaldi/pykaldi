@@ -39,6 +39,7 @@ MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS', NPROC)
 
 if not PYCLIF:
     PYCLIF = os.path.join(sys.prefix, 'bin/clif-matcher')
+PYCLIF = os.path.abspath(PYCLIF)
 
 if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
     try:
@@ -50,6 +51,7 @@ if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
 
 if not CLIF_MATCHER:
     CLIF_MATCHER = os.path.join(sys.prefix, 'clang/bin/clif-matcher')
+CLIF_MATCHER = os.path.abspath(CLIF_MATCHER)
 
 if not (os.path.isfile(CLIF_MATCHER) and os.access(CLIF_MATCHER, os.X_OK)):
     print("\nCould not find clif-matcher.\nPlease make sure CLIF was installed "
@@ -65,6 +67,7 @@ CLIF_CXX_FLAGS="-I{}/include".format(RESOURCE_DIR)
 
 if not KALDI_DIR:
     KALDI_DIR = os.path.join(CWD, "tools/kaldi")
+KALDI_DIR = os.path.abspath(KALDI_DIR)
 
 KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
 if not os.path.isfile(KALDI_MK_PATH):
