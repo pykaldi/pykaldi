@@ -232,16 +232,16 @@ from "cudamatrix/cu-matrix.h":
 
     class `CuMatrix<float>` as CuMatrix(CuMatrixBase):
       @add__init__
-      def `CuMatrix` as new_from_size(self, rows: int, cols: int,
+      def `CuMatrix` as from_size(self, rows: int, cols: int,
                                       resize_type: MatrixResizeType = default,
                                       stride_type: MatrixStrideType = default)
 
       @add__init__
-      def `CuMatrix` as new_from_other(self, other: CuMatrixBase,
+      def `CuMatrix` as from_other(self, other: CuMatrixBase,
                                        trans: MatrixTransposeType = default)
 
       @add__init__
-      def `CuMatrix` as new_from_matrix(self, other: MatrixBase,
+      def `CuMatrix` as from_matrix(self, other: MatrixBase,
                                         trans: MatrixTransposeType = default)
 
       # Copy constructors from CuBlockMatrix, CuSpMatrix, CuTpMatrix
@@ -268,7 +268,7 @@ from "cudamatrix/cu-matrix.h":
                    col_offset: int, num_cols: int)
 
       @add__init__
-      def `CuSubMatrix` as new_from_other(self, other: CuSubMatrix)
+      def `CuSubMatrix` as from_other(self, other: CuSubMatrix)
 
     def `ApproxEqual` as approx_equal_cu_matrix(A: CuMatrixBase, B: CuMatrixBase,
                                              tol: `float` as float = default)
@@ -506,16 +506,16 @@ from "cudamatrix/cu-matrix.h":
 
     class `CuMatrix<double>` as CuDoubleMatrix(CuDoubleMatrixBase):
       @add__init__
-      def `CuMatrix` as new_from_size(self, rows: int, cols: int,
+      def `CuMatrix` as from_size(self, rows: int, cols: int,
                                       resize_type: MatrixResizeType = default,
                                       stride_type: MatrixStrideType = default)
 
       @add__init__
-      def `CuMatrix` as new_from_other(self, other: CuDoubleMatrixBase,
+      def `CuMatrix` as from_other(self, other: CuDoubleMatrixBase,
                                        trans: MatrixTransposeType = default)
 
       @add__init__
-      def `CuMatrix` as new_from_matrix(self, other: DoubleMatrixBase,
+      def `CuMatrix` as from_matrix(self, other: DoubleMatrixBase,
                                         trans: MatrixTransposeType = default)
 
       # Copy constructors from CuBlockMatrix, CuSpMatrix, CuTpMatrix
@@ -542,7 +542,7 @@ from "cudamatrix/cu-matrix.h":
                    col_offset: int, num_cols: int)
 
       @add__init__
-      def `CuSubMatrix` as new_from_other(self, other: CuDoubleSubMatrix)
+      def `CuSubMatrix` as from_other(self, other: CuDoubleSubMatrix)
 
     def `ApproxEqual` as approx_equal_cu_double_matrix(
         A: CuDoubleMatrixBase, B: CuDoubleMatrixBase, tol: float = default) -> bool
