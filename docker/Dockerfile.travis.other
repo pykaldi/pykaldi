@@ -1,12 +1,14 @@
-# Dockerfile for rebuilding a PyKaldi image on a non-master branch
-FROM pykaldi/pykaldi:latest
+# Dockerfile for building pykaldi image from pykaldi-min image
+FROM pykaldi/pykaldi-min:latest
 
 # Copy pykaldi directory into the container
 COPY . /pykaldi_travis
 
 # Install PyKaldi
 RUN cd /pykaldi \
-    && git fetch /pykaldi_travis \
-    && git checkout FETCH_HEAD \
-    && pip uninstall -y pykaldi \
-    && python setup.py install
+	&& git fetch /pykaldi_travis \
+	&& git checkout FETCH_HEAD \
+	&& python setup.py develop --uninstall \
+	&& find kaldi -name "*.so" -delete \
+	&& python setup.py develop \
+	&& rm -rf /pykaldi_travis
