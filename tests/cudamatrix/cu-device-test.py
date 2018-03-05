@@ -39,7 +39,7 @@ def aux(size_multiple):
             matrices[matrix].resize(0, 0)
 
     gflops = num_floats_processed / (tim.elapsed() * 1.0e9)
-    print("For CuMatrix::Reize float, for size multiple {}, speed was {} gigaflops".format(size_multiple, gflops))
+    print("CuMatrix.resize: for size multiple {}, speed was {} gigaflops".format(size_multiple, gflops))
 
 def testCudaMatrixResize():
     sizes = [1, 2, 4, 8, 16, 32]

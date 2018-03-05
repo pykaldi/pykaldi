@@ -25,12 +25,8 @@ def showPerplexity(fst, data):
         linear_fst = StdVectorFst()
         make_linear_acceptor(i, linear_fst)
         composed_fst = compose(linear_fst, fst)
-         
-        # FIXME (VM):
-        # This returns a list, not a TropicalWeight
-        # Maybe that is not the correct function? (fst::ShortestDistance(fst))
-        # weigth = shortestdistance(composed_fst)
-        # tot_loglike -= weigth.value()       
+        weight = shortestdistance(composed_fst)[-1]
+        tot_loglike -= weight.value
 
     perplexity = kaldi_math.exp(-(tot_loglike / num_phones))
     print("Perplexity over {} phones (of training data) is {}".format(num_phones, perplexity))
@@ -47,7 +43,7 @@ class TestLanguageModel(unittest.TestCase):
 
         if opts.ngram_order < 2:
             opts.ngram_order = 2
-        
+
         if kaldi_math.rand_int(1, 2) == 1:
             opts.num_extra_lm_states *= 10
 
@@ -56,12 +52,14 @@ class TestLanguageModel(unittest.TestCase):
             estimator.add_counts(sentence)
 
         fst = estimator.estimate()
+
         self.assertTrue(is_stochastic_fst_in_log(fst))
         self.assertEqual(properties.ACCEPTOR, fst.properties(properties.ACCEPTOR, True))
         self.assertEqual(properties.I_DETERMINISTIC, fst.properties(properties.I_DETERMINISTIC, True))
         self.assertEqual(0, fst.properties(properties.I_EPSILONS, True))
 
         showPerplexity(fst, data)
+
 
 if __name__ == '__main__':
     unittest.main()

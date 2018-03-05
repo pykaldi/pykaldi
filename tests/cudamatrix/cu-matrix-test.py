@@ -19,7 +19,7 @@ class TestCuMatrix(unittest.TestCase):
         self.assertEqual(0, dim.rows)
         self.assertEqual(0, dim.cols)
 
-        A = CuMatrix.new_from_size(10, 10)
+        A = CuMatrix.from_size(10, 10)
         self.assertIsNotNone(A)
         self.assertEqual(10, A.num_rows())
         self.assertEqual(10, A.num_cols())
@@ -28,12 +28,12 @@ class TestCuMatrix(unittest.TestCase):
         self.assertEqual(10, dim.rows)
         self.assertEqual(10, dim.cols)
 
-        A = CuMatrix.new_from_matrix(Matrix([[2, 3], [5, 7]]))
+        A = CuMatrix.from_matrix(Matrix([[2, 3], [5, 7]]))
         self.assertIsNotNone(A)
         self.assertEqual(2, A.num_rows())
         self.assertEqual(2, A.num_cols())
 
-        B = CuMatrix.new_from_other(A)
+        B = CuMatrix.from_other(A)
         self.assertIsNotNone(B)
         self.assertEqual(2, B.num_rows())
         self.assertEqual(2, B.num_cols())
@@ -48,7 +48,7 @@ class TestCuMatrix(unittest.TestCase):
         A.resize(0, 0)
 
         # TODO:
-        # A = CuMatrix.new_from_matrix(Matrix.new([[1, 2], [3, 4], [5, 6]])) #A is 3x2
+        # A = CuMatrix.from_matrix(Matrix.new([[1, 2], [3, 4], [5, 6]])) #A is 3x2
         # with self.assertRaises(Exception):
         #     A.resize(2, 2) #Try to resize to something invalid
 
@@ -59,13 +59,13 @@ class TestCuMatrix(unittest.TestCase):
         for i in range(10):
             dim = (10 * i, 4 * i)
             M = Matrix(np.random.random(dim))
-            A = CuMatrix.new_from_matrix(M)
-            B = CuMatrix.new_from_size(A.num_rows(), A.num_cols())
+            A = CuMatrix.from_matrix(M)
+            B = CuMatrix.from_size(A.num_rows(), A.num_cols())
             B.Swap(A)
             self.assertAlmostEqual(A.sum(), B.sum(), places = 4) #Kaldi's precision is aweful
             self.assertAlmostEqual(M.sum(), B.sum(), places = 4) #Kaldi's precision is aweful
 
-            C = CuMatrix.new_from_size(M.shape[0], M.shape[1])
+            C = CuMatrix.from_size(M.shape[0], M.shape[1])
             C.SwapWithMatrix(M)
             self.assertAlmostEqual(B.sum(), C.sum(), places = 4) #Kaldi's precision is aweful
 
@@ -74,19 +74,19 @@ class TestCuMatrix(unittest.TestCase):
             rows, cols = 10*i, 5*i
             A = Matrix(rows, cols)
             A.set_randn_()
-            B = CuMatrix.new_from_size(*A.shape)
+            B = CuMatrix.from_size(*A.shape)
             B.copy_from_mat(A)
             self.assertAlmostEqual(A.sum(), B.sum(), places = 4)
 
-            A = CuMatrix.new_from_size(rows, cols)
+            A = CuMatrix.from_size(rows, cols)
             A.set_randn()
-            B = CuMatrix.new_from_size(rows, cols)
+            B = CuMatrix.from_size(rows, cols)
             B.copy_from_cu_mat(A)
             self.assertAlmostEqual(A.sum(), B.sum(), places = 4)
 
     @unittest.skip("hard-crashes")
     def test__getitem(self):
-        A = CuMatrix.new_from_matrix(Matrix.new(np.arange(10).reshape((5, 2))))
+        A = CuMatrix.from_matrix(Matrix.new(np.arange(10).reshape((5, 2))))
         self.assertEqual(0.0, A.__getitem(0, 0))
         self.assertEqual(1.0, A.__getitem(0, 1))
         self.assertEqual(2.0, A.__getitem(1, 0))
@@ -102,8 +102,8 @@ class TestCuMatrix(unittest.TestCase):
         B = CuMatrix()
         self.assertTrue(same_dim_cu_matrix(A, B))
 
-        A = CuMatrix.new_from_size(10, 10)
-        B = CuMatrix.new_from_size(10, 9)
+        A = CuMatrix.from_size(10, 10)
+        B = CuMatrix.from_size(10, 9)
         self.assertFalse(same_dim_cu_matrix(A, B))
 
     @unittest.skip("FIXME")

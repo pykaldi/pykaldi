@@ -18,8 +18,8 @@ class TestNnetCompute(unittest.TestCase):
         configs = generate_config_sequence(gen_config)
         nnet = Nnet()
         for j, config in enumerate(configs):
-            print("Input config[{}]:".format(j))
-            print(config)
+            # print("Input config[{}]:".format(j))
+            # print(config)
             istrm = istringstream.from_str(config)
             nnet.read_config(istrm)
 
@@ -33,7 +33,7 @@ class TestNnetCompute(unittest.TestCase):
         opts = CompilerOptions()
         computation = compiler.create_computation(opts)
 
-        nnet_collapsed = Nnet.new_from_other(nnet)
+        nnet_collapsed = Nnet.from_other(nnet)
         if test_collapse_model:
             collapse_config = CollapseModelConfig()
             collapse_model(collapse_config, nnet_collapsed)
@@ -43,8 +43,8 @@ class TestNnetCompute(unittest.TestCase):
 
         ostrm = ostringstream()
         computation.print_computation(ostrm, nnet)
-        print("Generated computation:")
-        print(ostrm.to_str())
+        # print("Generated computation:")
+        # print(ostrm.to_str())
 
         check_config = CheckComputationOptions()
         check_config.check_rewrite = True
@@ -57,8 +57,8 @@ class TestNnetCompute(unittest.TestCase):
                      computation)
             ostrm = ostringstream()
             computation.print_computation(ostrm, nnet)
-            print("Optimized computation:")
-            print(ostrm.to_str())
+            # print("Optimized computation:")
+            # print(ostrm.to_str())
 
         compute_opts = NnetComputeOptions()
         compute_opts.debug = random.choice([True, False])
@@ -66,7 +66,7 @@ class TestNnetCompute(unittest.TestCase):
         computer = NnetComputer(compute_opts, computation, nnet, nnet)
 
         for i, ispec in enumerate(request.inputs):
-            temp = CuMatrix.new_from_matrix(inputs[i])
+            temp = CuMatrix.from_matrix(inputs[i])
             print("Input sum:", temp.sum())
             computer.accept_input(ispec.name, temp)
         computer.run()
@@ -79,8 +79,7 @@ class TestNnetCompute(unittest.TestCase):
                                               computation_collapsed,
                                               nnet_collapsed, nnet_collapsed)
             for i, ispec in enumerate(request.inputs):
-                temp = CuMatrix.new_from_matrix(inputs[i])
-                print("Input sum:", temp.sum())
+                temp = CuMatrix.from_matrix(inputs[i])
                 computer_collapsed.accept_input(ispec.name, temp)
             computer_collapsed.run()
             output_collapsed = computer_collapsed.get_output_destructive("output")
@@ -88,8 +87,7 @@ class TestNnetCompute(unittest.TestCase):
             self.assertTrue(approx_equal_cu_matrix(output, output_collapsed),
                             "Regular and collapsed computation outputs differ.")
 
-        output_deriv = CuMatrix.new_from_size(output.num_rows(),
-                                              output.num_cols())
+        output_deriv = CuMatrix.from_size(output.num_rows(), output.num_cols())
         output_deriv.set_randn()
         if request.outputs[0].has_deriv:
             computer.accept_input("output", output_deriv)
@@ -105,8 +103,8 @@ class TestNnetCompute(unittest.TestCase):
         configs = generate_config_sequence(gen_config)
         nnet = Nnet()
         for j, config in enumerate(configs):
-            print("Input config[{}]:".format(j))
-            print(config)
+            # print("Input config[{}]:".format(j))
+            # print(config)
             istrm = istringstream.from_str(config)
             nnet.read_config(istrm)
 
@@ -140,7 +138,7 @@ class TestNnetCompute(unittest.TestCase):
             decodable.get_output_for_frame(t, output1[t])
 
         opts = NnetSimpleLoopedComputationOptions()
-        info = DecodableNnetSimpleLoopedInfo.new_from_priors(opts, priors, nnet)
+        info = DecodableNnetSimpleLoopedInfo.from_priors(opts, priors, nnet)
         decodable = DecodableNnetSimpleLooped(info, input,
                                               ivector if ivector_dim else None)
         for t in range(num_frames):

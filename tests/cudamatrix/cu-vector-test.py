@@ -15,7 +15,7 @@ class TestCuVector(unittest.TestCase):
 
         for i in range(10):
             dim = 10 * i
-            vec = CuVector.new_from_size(dim)
+            vec = CuVector.from_size(dim)
             self.assertIsNotNone(vec)
             self.assertEqual(dim, vec.dim())
 
@@ -37,13 +37,13 @@ class TestCuVector(unittest.TestCase):
     def testCuVectorSwap(self):
         N = [2, 3, 5, 7, 13]
         A = Vector(N).clone()
-        C = CuVector.new_from_size(5)
+        C = CuVector.from_size(5)
         C.swap(A) #Swap *is* destructive
 
         self.assertEqual(16.0, C.norm(2))
 
         A = Vector()
-        C = CuVector.new_from_size(0)
+        C = CuVector.from_size(0)
         C.swap(A)
         self.assertEqual(0.0, C.norm(2))
 
@@ -51,21 +51,21 @@ class TestCuVector(unittest.TestCase):
 
         # Shouldnt crash
         A = Vector()
-        C = CuVector.new_from_size(0)
+        C = CuVector.from_size(0)
         C.copy_from_vec(A)
 
         # What if dims not match?
         # HARD-CRASH
         # FIXME
         # A = Vector.random(10)
-        # C = CuVector.new_from_size(0)
+        # C = CuVector.from_size(0)
         # C.CopyFromVec(A)
 
         for i in range(10):
             dim = 10 * i
             A = Vector(dim)
             A.set_randn_()
-            D = CuVector.new_from_size(dim)
+            D = CuVector.from_size(dim)
             D.copy_from_vec(A)
             self.assertEqual(A.sum(), D.sum())
 
@@ -79,7 +79,7 @@ class TestCuVector(unittest.TestCase):
 
             m = kaldi_math.rand() % M2
 
-            vec = CuVector.new_from_size(M)
+            vec = CuVector.from_size(M)
             vec.set_randn()
 
             subvec1 = CuSubVector(vec, M1, M2)
@@ -91,16 +91,16 @@ class TestCuVector(unittest.TestCase):
 
     def testCuVectorInverElements(self):
         # Test that this doesnt crash
-        C = CuVector.new_from_size(0)
+        C = CuVector.from_size(0)
         C.invert_elements()
 
-        C = CuVector.new_from_size(10)
+        C = CuVector.from_size(10)
         C.set_randn()
         C.invert_elements()
 
         # Geometric series r = 1/2, a = 1/2
         A = Vector([2, 4, 8, 16, 32, 64])
-        C = CuVector.new_from_size(len(A))
+        C = CuVector.from_size(len(A))
         C.swap(A)
         C.invert_elements()
 
