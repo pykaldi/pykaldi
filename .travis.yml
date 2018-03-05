@@ -12,17 +12,17 @@ before_install:
 install:
 - |
   if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
-  	docker build --cache-from pykaldi/pykaldi-min:latest --tag pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.master .
+  	docker build --tag pykaldi/pykaldi-min:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.master .
   else
-  	docker build --cache-from pykaldi/pykaldi-min:latest --tag pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.other .
+  	docker build --tag pykaldi/pykaldi-min:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.other .
   fi
 script:
-- 'docker run pykaldi/pykaldi:latest /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
+- 'docker run pykaldi/pykaldi-min:latest /bin/bash -c "cd /pykaldi/tests && ./test_all.sh"'
 after_success:
 - |
   if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASS;
-    docker push pykaldi/pykaldi:latest
+    docker push pykaldi/pykaldi-min:latest
   fi
 notifications:
   slack:
