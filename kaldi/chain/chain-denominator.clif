@@ -7,7 +7,7 @@ from "chain/chain-denominator.h":
   namespace `kaldi::chain`:
     class DenominatorComputation:
       def __init__(self, opts: ChainTrainingOptions, den_graph: DenominatorGraph, num_sequences: int, nnet_output: CuMatrixBase):
-        """Constructor. 
+        """Constructor.
 
         Args:
           opts (ChainTrainingOptions): Options
@@ -18,7 +18,4 @@ from "chain/chain-denominator.h":
 
       def `Forward` as forward(self) -> float
 
-      # nnet_output_deriv is output and input
-      # def `Backward` as backward(self, deriv_weight: float, nnet_output_deriv: CuMatrixBase )-> bool
-
-
+      def `Backward` as backward(self, deriv_weight: float, nnet_output_deriv: CuMatrixBase )-> bool

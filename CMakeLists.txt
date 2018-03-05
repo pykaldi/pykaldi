@@ -7,16 +7,20 @@ if( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
   message( FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt." )
 endif()
 
-# Additional files used by cmake
-# TODO: Add scripts FindNumPy and FindKaldi
-# set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+####################################################################################################
+# Find dependencies
+####################################################################################################
 
-set(DOUBLE_PRECISION 0)
-
+# Find Python
 find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
+get_filename_component(PYTHON_LIB_DIR "${PYTHON_LIBRARIES}" PATH)
 
-####################################################################################################
+# Find Numpy
+if(NOT NUMPY_INC_DIR)
+  message(FATAL_ERROR "You need to specify Numpy include directory. Set -DNUMPY_INC_DIR option.")
+endif(NOT NUMPY_INC_DIR)
+
 # Find CLIF
 if(NOT PYCLIF)
   set(PYCLIF $ENV{PYCLIF})
@@ -32,8 +36,7 @@ message("Using PYCLIF: ${PYCLIF}")
 if(NOT CLIF_MATCHER)
   set(CLIF_MATCHER $ENV{CLIF_MATCHER})
   if (NOT CLIF_MATCHER)
-    get_filename_component(_Python_PREFIX "${PYTHON_LIBRARIES}" PATH)
-    get_filename_component(_Python_PREFIX "${_Python_PREFIX}" PATH)
+    get_filename_component(_Python_PREFIX "${PYTHON_LIB_DIR}" PATH)
     find_program(CLIF_MATCHER clif-matcher PATH ${_Python_PREFIX}/clang/bin)
     unset(_Python_PREFIX)
     if(NOT CLIF_MATCHER)
@@ -43,7 +46,7 @@ if(NOT CLIF_MATCHER)
 endif(NOT CLIF_MATCHER)
 message("Using CLIF_MATCHER: ${CLIF_MATCHER}")
 
-# Find Kaldi and its dependencies (Atlas, OpenFst, portaudio)
+# Find Kaldi
 if(NOT KALDI_DIR)
   set(KALDI_DIR $ENV{KALDI_DIR})
   if(NOT KALDI_DIR)
@@ -54,40 +57,38 @@ endif(NOT KALDI_DIR)
 set(KALDI_SRC_DIR "${KALDI_DIR}/src")
 set(KALDI_TOOLS_DIR "${KALDI_DIR}/tools")
 set(KALDI_LIBRARIES_DIR "${KALDI_SRC_DIR}/lib")
-set(ATLAS_INC_DIR "${KALDI_TOOLS_DIR}/ATLAS/include")
-set(OPENFST_INC_DIR "${KALDI_TOOLS_DIR}/openfst/include")
 set(OPENFST_LIB_DIR "${KALDI_TOOLS_DIR}/openfst/lib")
-
-# Find Numpy
-if(NOT NUMPY_INC_DIR)
-  message(FATAL_ERROR "You need to specify Numpy include directory. Set -DNUMPY_INC_DIR option.")
-endif(NOT NUMPY_INC_DIR)
 
 ####################################################################################################
 #  Set compiler and linker flags
 ####################################################################################################
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
 
-set(CMAKE_INSTALL_RPATH "${KALDI_LIBRARIES_DIR}:${OPENFST_LIB_DIR}:$ORIGIN/..:$ORIGIN")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined -Wl,--as-needed ${LD_FLAGS}")
+if(CUDA)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CUDA_LD_FLAGS}")
+  set(LD_LIBS "${LD_LIBS} ${CUDA_LD_LIBS}")
+endif(CUDA)
+separate_arguments(LD_LIBS)
+
+set(CMAKE_INSTALL_RPATH "${PYTHON_LIB_DIR};${KALDI_LIBRARIES_DIR};${OPENFST_LIB_DIR};$ORIGIN/..")
+file(GLOB children RELATIVE ${CMAKE_SOURCE_DIR}/kaldi ${CMAKE_SOURCE_DIR}/kaldi/*)
+foreach(child ${children})
+  if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/kaldi/${child})
+    LIST(APPEND CMAKE_INSTALL_RPATH "$ORIGIN/../${child}")
+  endif()
+endforeach()
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
-####################################################################################################
-# Add include directories
-####################################################################################################
 include_directories(
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/kaldi
   ${CMAKE_BINARY_DIR}/kaldi
   ${KALDI_SRC_DIR}
-  ${OPENFST_INC_DIR}
-  ${ATLAS_INC_DIR}
   ${PYTHON_INCLUDE_DIRS}
   ${NUMPY_INC_DIR}
 )
 
-####################################################################################################
-# Add libraries directories
-####################################################################################################
 link_directories(
   ${KALDI_LIBRARIES_DIR}
   ${OPENFST_LIB_DIR}
@@ -145,8 +146,6 @@ function(add_pyclif_library name pyclif_file)
              -I${CMAKE_SOURCE_DIR}/kaldi \
              -I${CMAKE_BINARY_DIR}/kaldi \
              -I${KALDI_SRC_DIR} \
-             -I${OPENFST_INC_DIR} \
-             -I${ATLAS_INC_DIR} \
              ${CLIF_CXX_FLAGS} \
              ${CMAKE_CXX_FLAGS}"
           ${CMAKE_CURRENT_SOURCE_DIR}/${pyclif_file}
@@ -169,9 +168,8 @@ function(add_pyclif_library name pyclif_file)
     add_dependencies(${module_name}_pyclif ${DEP})
   endforeach(DEP)
 
-  # Manage CC files through the correct function
+  # Call the custom function for building the extension module
   # PYCLIFDEP flag adds a dependency on ${module_name}_pyclif target
-  # Pass along any arguments sent to this
   add_CC_library(${module_name}
                  "${gen_cc};${gen_init}"
                  PYCLIFDEP
@@ -249,11 +247,16 @@ function(add_CC_library module_name SOURCES)
     target_link_libraries(${module_name} ${CLIF_LIBRARY})
   endif()
 
-  # Link with other libraries
+  # Link with kaldi libraries
   foreach(LIB ${PYCLIF_LIBRARY_LIBRARIES})
     if(DEBUG)
       message("    ${LIB}")
     endif(DEBUG)
+    target_link_libraries(${module_name} ${LIB})
+  endforeach(LIB)
+
+  # Link with other libraries
+  foreach(LIB ${LD_LIBS})
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 
@@ -265,8 +268,7 @@ function(add_CC_library module_name SOURCES)
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
     LIBRARY_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
-    RUNTIME_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR}
-    INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${PYCLIF_LIBRARY_RPATH}")
+    RUNTIME_OUTPUT_DIRECTORY ${PYCLIF_LIBRARY_OUTPUTDIR})
 
   if(DEBUG)
     message("- Runtime path: ${PYCLIF_LIBRARY_RPATH}")
@@ -276,16 +278,21 @@ function(add_CC_library module_name SOURCES)
 
 endfunction(add_CC_library)
 
-
 ####################################################################################################
 # Add target for clif library
 ####################################################################################################
+
 set(CLIF_LIBRARY "_clif")
 string(REPLACE "/build" "/build/lib/kaldi" CLIF_LIB_LOCATION ${CMAKE_CURRENT_BINARY_DIR})
 add_CC_library(${CLIF_LIBRARY}
   "${CMAKE_SOURCE_DIR}/clif/python/optional.cc;${CMAKE_SOURCE_DIR}/clif/python/runtime.cc;${CMAKE_SOURCE_DIR}/clif/python/slots.cc;${CMAKE_SOURCE_DIR}/clif/python/types.cc"
   OUTPUTDIR ${CLIF_LIB_LOCATION}
+  LIBRARIES ${PYTHON_LIBRARIES}
 )
+
+####################################################################################################
+# Add targets for pykaldi libraries
+####################################################################################################
 
 add_subdirectory("kaldi")
 add_subdirectory("docs")

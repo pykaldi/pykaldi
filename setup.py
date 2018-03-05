@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import os
+import subprocess
 import sys
 
 import distutils.command.build
@@ -12,9 +13,15 @@ import setuptools.extension
 
 from distutils.file_util import copy_file
 from setuptools import setup, find_packages, Command
-from subprocess import check_output, check_call, CalledProcessError
 
-KALDI_MIN_REQUIRED = '938d17fe9b11ee43898ffb9331e53247d9a1a998'
+def check_output(*args, **kwargs):
+    return subprocess.check_output(*args, **kwargs).decode("utf-8").strip()
+
+################################################################################
+# Set minimum version requirements for external dependencies
+################################################################################
+
+KALDI_MIN_REQUIRED = 'e7cd362e950e704661200718353b2e3204fcdcc7'
 
 ################################################################################
 # Check variables / find programs
@@ -26,16 +33,17 @@ CLIF_MATCHER = os.getenv('CLIF_MATCHER')
 KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
-NPROC = check_output(['getconf', '_NPROCESSORS_ONLN']).decode("utf-8").strip()
+NPROC = check_output(['getconf', '_NPROCESSORS_ONLN'])
 MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS', NPROC)
 
 
 if not PYCLIF:
     PYCLIF = os.path.join(sys.prefix, 'bin/clif-matcher')
+PYCLIF = os.path.abspath(PYCLIF)
 
 if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
     try:
-        PYCLIF = check_output(['which', 'pyclif']).decode("utf-8").strip()
+        PYCLIF = check_output(['which', 'pyclif'])
     except OSError:
         print("\nCould not find pyclif.\nPlease add pyclif binary to your PATH "
              "or set PYCLIF environment variable.", file=sys.stderr)
@@ -43,6 +51,7 @@ if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
 
 if not CLIF_MATCHER:
     CLIF_MATCHER = os.path.join(sys.prefix, 'clang/bin/clif-matcher')
+CLIF_MATCHER = os.path.abspath(CLIF_MATCHER)
 
 if not (os.path.isfile(CLIF_MATCHER) and os.access(CLIF_MATCHER, os.X_OK)):
     print("\nCould not find clif-matcher.\nPlease make sure CLIF was installed "
@@ -53,11 +62,12 @@ if not (os.path.isfile(CLIF_MATCHER) and os.access(CLIF_MATCHER, os.X_OK)):
 CLANG = os.path.join(os.path.dirname(CLIF_MATCHER), "clang")
 RESOURCE_DIR = check_output("echo '#include <limits.h>' | {} -xc -v - 2>&1 "
                             "| tr ' ' '\n' | grep -A1 resource-dir | tail -1"
-                            .format(CLANG), shell=True).decode("utf-8").strip()
+                            .format(CLANG), shell=True)
 CLIF_CXX_FLAGS="-I{}/include".format(RESOURCE_DIR)
 
 if not KALDI_DIR:
     KALDI_DIR = os.path.join(CWD, "tools/kaldi")
+KALDI_DIR = os.path.abspath(KALDI_DIR)
 
 KALDI_MK_PATH = os.path.join(KALDI_DIR, "src", "kaldi.mk")
 if not os.path.isfile(KALDI_MK_PATH):
@@ -66,11 +76,10 @@ if not os.path.isfile(KALDI_MK_PATH):
   sys.exit(1)
 
 try:
-    KALDI_HEAD = check_output(['git', '-C', KALDI_DIR,
-                               'rev-parse', 'HEAD']).decode("utf-8").strip()
-    check_call(['git', '-C', KALDI_DIR, 'merge-base', '--is-ancestor',
-                KALDI_MIN_REQUIRED, KALDI_HEAD])
-except CalledProcessError:
+    KALDI_HEAD = check_output(['git', '-C', KALDI_DIR, 'rev-parse', 'HEAD'])
+    subprocess.check_call(['git', '-C', KALDI_DIR, 'merge-base',
+                           '--is-ancestor', KALDI_MIN_REQUIRED, KALDI_HEAD])
+except subprocess.CalledProcessError:
     print("\nKaldi installation at {} is not supported.\nPlease update Kaldi "
           "to match https://github.com/pykaldi/kaldi/tree/pykaldi."
           .format(KALDI_DIR), file=sys.stderr)
@@ -79,10 +88,14 @@ except CalledProcessError:
 with open("Makefile", "w") as makefile:
     print("include {}".format(KALDI_MK_PATH), file=makefile)
     print("print-% : ; @echo $($*)", file=makefile)
-CXX_FLAGS = check_output(['make', 'print-CXXFLAGS']).decode("utf-8").strip()
-CUDA = check_output(['make', 'print-CUDA']).decode("utf-8").strip()
-KALDI_CUDA = CUDA.upper() in ['ON', '1', 'YES', 'TRUE', 'Y']
-check_call(["rm", "Makefile"])
+CXX_FLAGS = check_output(['make', 'print-CXXFLAGS'])
+LD_FLAGS = check_output(['make', 'print-LDFLAGS'])
+LD_LIBS = check_output(['make', 'print-LDLIBS'])
+CUDA = check_output(['make', 'print-CUDA']).upper() == 'TRUE'
+if CUDA:
+    CUDA_LD_FLAGS = check_output(['make', 'print-CUDA_LDFLAGS'])
+    CUDA_LD_LIBS = check_output(['make', 'print-CUDA_LDLIBS'])
+subprocess.check_call(["rm", "Makefile"])
 
 TFRNNLM_LIB_PATH = os.path.join(KALDI_DIR, "src", "lib",
                                 "libkaldi-tensorflow-rnnlm.so")
@@ -99,10 +112,9 @@ if KALDI_TFRNNLM:
             print(line, file=makefile, end='')
         print("print-% : ; @echo $($*)", file=makefile)
     TFRNNLM_CXX_FLAGS = check_output(['make', 'print-EXTRA_CXXFLAGS'])
-    TFRNNLM_CXX_FLAGS = TFRNNLM_CXX_FLAGS.decode("utf-8").strip()
     TF_LIB_DIR = os.path.join(KALDI_DIR, "tools", "tensorflow",
                               "bazel-bin", "tensorflow")
-    check_call(["rm", "Makefile"])
+    subprocess.check_call(["rm", "Makefile"])
 
 MAKE_ARGS = []
 try:
@@ -125,8 +137,13 @@ if DEBUG:
     print("KALDI_DIR:", KALDI_DIR)
     print("CXX_FLAGS:", CXX_FLAGS)
     print("CLIF_CXX_FLAGS:", CLIF_CXX_FLAGS)
+    print("LD_FLAGS:", LD_FLAGS)
+    print("LD_LIBS:", LD_LIBS)
     print("BUILD_DIR:", BUILD_DIR)
-    print("KALDI_CUDA:", KALDI_CUDA)
+    print("CUDA:", CUDA)
+    if CUDA:
+        print("CUDA_LD_FLAGS:", CUDA_LD_FLAGS)
+        print("CUDA_LD_LIBS:", CUDA_LD_LIBS)
     print("MAKE:", MAKE, *MAKE_ARGS)
     print("#"*50)
 
@@ -178,10 +195,16 @@ class build_ext(setuptools.command.build_ext.build_ext):
                       '-DCLIF_MATCHER=' + CLIF_MATCHER,
                       '-DCXX_FLAGS=' + CXX_FLAGS,
                       '-DCLIF_CXX_FLAGS=' + CLIF_CXX_FLAGS,
+                      '-DLD_FLAGS=' + LD_FLAGS,
+                      '-DLD_LIBS=' + LD_LIBS,
                       '-DNUMPY_INC_DIR='+ np.get_include(),
-                      '-DCUDA=TRUE' if KALDI_CUDA else '-DCUDA=FALSE',
+                      '-DCUDA=TRUE' if CUDA else '-DCUDA=FALSE',
                       '-DTFRNNLM=TRUE' if KALDI_TFRNNLM else '-DTFRNNLM=FALSE',
                       '-DDEBUG=TRUE' if DEBUG else '-DDEBUG=FALSE']
+
+        if CUDA:
+            CMAKE_ARGS +=['-DCUDA_LD_FLAGS=' + CUDA_LD_FLAGS,
+                          '-DCUDA_LD_LIBS=' + CUDA_LD_LIBS]
 
         if KALDI_TFRNNLM:
             CMAKE_ARGS +=['-DTFRNNLM_CXX_FLAGS=' + TFRNNLM_CXX_FLAGS,
@@ -197,9 +220,9 @@ class build_ext(setuptools.command.build_ext.build_ext):
             os.makedirs(BUILD_DIR)
 
         try:
-            check_call(['cmake', '..'] + CMAKE_ARGS, cwd = BUILD_DIR)
-            check_call([MAKE] + MAKE_ARGS, cwd = BUILD_DIR)
-        except CalledProcessError as err:
+            subprocess.check_call(['cmake', '..'] + CMAKE_ARGS, cwd = BUILD_DIR)
+            subprocess.check_call([MAKE] + MAKE_ARGS, cwd = BUILD_DIR)
+        except subprocess.CalledProcessError as err:
             # We catch this exception to disable stack trace.
             print(str(err), file=sys.stderr)
             sys.exit(1)
@@ -262,7 +285,7 @@ class build_sphinx(Command):
     def run(self):
         try:
             import sphinx
-            check_call([MAKE, 'docs'], cwd = BUILD_DIR)
+            subprocess.check_call([MAKE, 'docs'], cwd = BUILD_DIR)
         except ImportError:
             print("Sphinx was not found. Install it using pip install sphinx.",
                   file=sys.stderr)

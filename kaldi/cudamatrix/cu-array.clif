@@ -6,14 +6,14 @@ from "cudamatrix/cu-array.h":
   namespace `kaldi`:
     class `CuArray<int>` as CuArray:
       @add__init__
-      def `CuArray` as new_from_size(self, dim: int,
+      def `CuArray` as from_size(self, dim: int,
                                      resize_type: MatrixResizeType = default)
 
       @add__init__
-      def `CuArray` as new_from_vector(self, src: list<int>)
+      def `CuArray` as from_vector(self, src: list<int>)
 
       @add__init__
-      def `CuArray` as new_from_other(self, src: CuArray)
+      def `CuArray` as from_other(self, src: CuArray)
 
       def `Dim` as dim(self) -> int:
         """
@@ -48,7 +48,7 @@ from "cudamatrix/cu-array.h":
       def `Min` as min(self) -> int:
         """
         Returns:
-          Minimum value 
+          Minimum value
         """
 
       def `Max` as max(self) -> int:
@@ -66,14 +66,14 @@ from "cudamatrix/cu-array.h":
 
     class `CuArray<Int32Pair>` as CuIntPairArray:
       @add__init__
-      def `CuArray` as new_from_size(self, dim: int,
+      def `CuArray` as from_size(self, dim: int,
                                      resize_type: MatrixResizeType = default)
 
       @add__init__
-      def `CuArray` as new_from_vector(self, src: list<IntPair>)
+      def `CuArray` as from_vector(self, src: list<IntPair>)
 
       @add__init__
-      def `CuArray` as new_from_other(self, src: CuIntPairArray)
+      def `CuArray` as from_other(self, src: CuIntPairArray)
 
       def `Dim` as dim(self) -> int:
         """
@@ -107,14 +107,14 @@ from "cudamatrix/cu-array.h":
 
     class `CuArray<float*>` as CuFloatPtrArray:
       @add__init__
-      def `CuArray` as new_from_size(self, dim: int,
+      def `CuArray` as from_size(self, dim: int,
                                      resize_type: MatrixResizeType = default)
 
       # @add__init__
-      # def `CuArray` as new_from_vector(self, src: list<`float` as float>)
+      # def `CuArray` as from_vector(self, src: list<`float` as float>)
 
       @add__init__
-      def `CuArray` as new_from_other(self, src: CuFloatPtrArray)
+      def `CuArray` as from_other(self, src: CuFloatPtrArray)
 
       def `Dim` as dim(self) -> int:
         """
@@ -138,10 +138,6 @@ from "cudamatrix/cu-array.h":
       def `SetZero` as set_zero(self):
         """Sets the memory for the object to zero."""
 
-      # def Set(self, value: float)
-      #
-      # def Add(self, value: float)
-
       def `Min` as min(self) -> `float` as float:
         """
         Returns:
@@ -149,6 +145,51 @@ from "cudamatrix/cu-array.h":
         """
 
       def `Max` as max(self) -> `float` as float:
+        """
+        Returns:
+          Maximum value
+        """
+
+    class `CuArray<double*>` as CuDoublePtrArray:
+      @add__init__
+      def `CuArray` as from_size(self, dim: int,
+                                 resize_type: MatrixResizeType = default)
+
+      # @add__init__
+      # def `CuArray` as from_vector(self, src: list<float>)
+
+      @add__init__
+      def `CuArray` as from_other(self, src: CuDoublePtrArray)
+
+      def `Dim` as dim(self) -> int:
+        """
+        Returns:
+          This vector dimension
+        """
+
+      def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
+        """Allocate the memory."""
+
+      def `Destroy` as destroy(self):
+        """Deallocate the memory and set dim_ and data_ to zero."""
+
+      # def `CopyFromVec` as copy_from_vec(self, src: list<float>)
+
+      def `CopyFromArray` as copy_from_array(self, src: CuDoublePtrArray):
+        """This function resizes if needed."""
+
+      # def `CopyToVec` as copy_to_vec(self) -> list<float>
+
+      def `SetZero` as set_zero(self):
+        """Sets the memory for the object to zero."""
+
+      def `Min` as min(self) -> float:
+        """
+        Returns:
+          Minimum value
+        """
+
+      def `Max` as max(self) -> float:
         """
         Returns:
           Maximum value

@@ -6,10 +6,10 @@
 
 namespace kaldi {
 
-	// Fix methods refering to other types
-	void CopyFromDiagGmm(FullGmm *self, const DiagGmm &diaggmm){
-		self->CopyFromDiagGmm(diaggmm);
-	}
+// Fix methods refering to other types
+void CopyFromDiagGmm(FullGmm *self, const DiagGmm &diaggmm){
+  self->CopyFromDiagGmm(diaggmm);
+}
 
 }
 

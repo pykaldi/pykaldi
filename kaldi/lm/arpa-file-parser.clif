@@ -1,5 +1,3 @@
-from "fstext/lattice-weight-clifwrap.h" import *
-from "fstext/symbol-table-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 

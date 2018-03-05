@@ -2,6 +2,7 @@ from ._natural_gradient_online import *
 from ._nnet_common import *
 from ._nnet_example import *
 from ._nnet_parse import *
+from ._nnet_computation_graph_ext import *
 from ._nnet_misc_computation_info import *
 from ._nnet_component_itf import *
 from ._nnet_simple_component import *

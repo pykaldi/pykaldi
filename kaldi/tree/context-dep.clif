@@ -1,7 +1,9 @@
 from "base/iostream-clifwrap.h" import *
+from "itf/context-dep-itf-clifwrap.h" import *
 from "tree/event-map-clifwrap.h" import *
 
 from kaldi.itf._context_dep_itf import ContextDependencyInterface
+from kaldi.util import _value_error_on_false
 
 from "tree/context-dep.h":
   namespace `kaldi`:
@@ -17,6 +19,27 @@ from "tree/context-dep.h":
       def `Write` as write(self, os: ostream, binary: bool)
 
       def `ToPdfMapPtr` as to_pdf_map(self) -> EventMap
+
+      def `ContextWidth` as context_width(self) -> int
+
+      def `CentralPosition` as central_position(self) -> int
+
+      def `Compute` as compute(self, phoneseq: list<int>, pdf_class: int)
+        -> (success: bool, pdf_id: int):
+        return _value_error_on_false(...)
+
+      def `GetPdfInfo` as get_pdf_info(self, phones: list<int>,
+                                       num_pdf_classes: list<int>)
+        -> list<list<tuple<int, int>>>
+
+      def `GetPdfInfo` as get_pdf_pair_info(self,
+        phones: list<int>, pdf_class_pairs: list<list<tuple<int, int>>>)
+        -> list<list<list<tuple<int, int>>>>
+
+      def `NumPdfs` as num_pdfs(self) -> int
+
+      def `Copy` as copy(self) -> ContextDependencyInterface
+
 
     def `GenRandContextDependency` as _gen_rand_context_dependency(
         phones: list<int>, ensure_all_covered: bool)

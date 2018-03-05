@@ -142,18 +142,18 @@ from "cudamatrix/cu-vector.h":
 
     class `CuVector<float>` as CuVector(CuVectorBase):
       @add__init__
-      def `CuVector` as new_from_size(self, dim: int,
-                                      resize_type: MatrixResizeType = default)
+      def `CuVector` as from_size(self, dim: int,
+                                  resize_type: MatrixResizeType = default)
 
-      # FIXME: CLIF cannot disambiguate these
+      # FIXME: CLIF cannot disambiguate this constructor.
       # @add__init__
-      # def `CuVector` as new_from_other(self, v: CuVectorBase)
-      #
-      # @add__init__
-      # def `CuVector` as new_from_other(self, v: CuVector)
-      #
-      # @add__init__
-      # def `CuVector` as new_from_vector(self, v: VectorBase)
+      # def `CuVector` as from_other(self, v: CuVector)
+
+      @add__init__
+      def `CuVector` as from_base(self, v: CuVectorBase)
+
+      @add__init__
+      def `CuVector` as from_vector(self, v: VectorBase)
 
       def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
         """Resize this vector to dim"""
@@ -171,7 +171,7 @@ from "cudamatrix/cu-vector.h":
       def __init__(self, t: CuVectorBase, origin: int, length: int)
 
       @add__init__
-      def `CuSubVector` as new_from_other(self, other: CuSubVector)
+      def `CuSubVector` as from_other(self, other: CuSubVector)
 
       # CuSubVector(const CuMatrixBase<Real> &matrix, MatrixIndexT row)
 
@@ -181,3 +181,179 @@ from "cudamatrix/cu-vector.h":
 
     def `AssertEqual` as assert_equal_cu_vector(a: CuVectorBase, b: CuVectorBase,
                                              tol: `float` as float = default)
+
+    class `CuVectorBase<double>` as CuDoubleVectorBase:
+
+      def `Dim` as dim(self) -> int:
+        """Returns this vector dimension"""
+
+      def `CopyFromVec` as copy_from_cu_vec(self, src: CuDoubleVectorBase):
+        """Copies data from other CuVector"""
+
+      def `CopyFromVec` as copy_from_vec(self, src: DoubleVectorBase):
+        """Copies data from other `:class:kaldi.matrix.VectorBase`"""
+
+      def `CopyToVec` as copy_to_vec(self, dst: DoubleVectorBase):
+        """Copies data to `:class:kaldi.matrix.VectorBase`"""
+
+      # def `CopyRowsFromMat` as CopyRowsFromCuMat(self, M: CuDoubleMatrixBase)
+
+      def `CopyRowsFromMat` as copy_rows_from_mat(self, M: DoubleMatrixBase):
+        """Copies data from `:class:kaldi.matrix.MatrixBase`"""
+
+      def `SetZero` as set_zero(self):
+        """Sets this vector's data to zero"""
+
+      def `Set` as set(self, value: float):
+        """Sets this vector's data to a constant"""
+
+      def `Add` as add(self, value: float):
+        """Adds a constant to this vector"""
+
+      def `Scale` as scale(self, value: float):
+        """Multiplies this vector's data by a constant"""
+
+      def `AddVec` as add_vec(self, alpha: float, vec: CuDoubleVectorBase, beta: float = default):
+        """Computes this <-- beta * this + alpha * vec"""
+
+      # def AddRowSumMat
+      # def AddColSumMat
+      # def AddTpVec
+      # def MulTp
+
+      def `ApproxEqual` as approx_equal(self, other: CuDoubleVectorBase, tol: float = default) -> bool:
+        """Returns true if ||this - other|| <= tol"""
+
+      def `InvertElements` as invert_elements(self):
+        """Inverts this vector's elements"""
+
+      def `ApplySoftMax` as apply_softmax(self):
+        """Applies a softmax to this vector's elements"""
+
+      def `ApplyExp` as apply_exp(self):
+        """Applies exp to this vector's elements"""
+
+      def `ApplyLog` as apply_log(self):
+        """Applies log to this vector's elements"""
+
+      def `ApplyFloor` as apply_floor(self, floor_val: float) -> int:
+        """Applies floor to this vector's elements
+
+        Returns:
+          The number of elements set to floor value.
+        """
+
+      def `ApplyFloor` as apply_floor_no_count(self, floor_val: float):
+        """Applies floor to this vector's elements"""
+
+      def `ApplyCeiling` as apply_ceiling(self, ceiling_val: float) -> int:
+        """Applies ceiling to this vector's elements
+
+        Returns:
+          The number of elements set to ceiling value.
+        """
+
+      def `ApplyCeiling` as apply_ceiling_no_count(self, ceiling_val: float):
+        """Applies ceiling to this vector's elements"""
+
+      def `ApplyPow` as apply_pow(self, power: float):
+        """Applies pow to this vector's elements"""
+
+      def `Sum` as sum(self) -> float:
+        """Sum this vector's elements"""
+
+      def `SetRandn` as set_randn(self):
+        """Sets this vector's elements to random [0,1)"""
+
+      def `SetRandUniform` as set_rand_uniform(self):
+        """Sets this vector's elements to values from random uniform"""
+
+      # def Range
+
+      # def CopyColFromMat
+      # def AddMatVec
+
+      def `AddVecVec` as add_vec_vec(
+        self, alpha: float, v: CuDoubleVectorBase, r: CuDoubleVectorBase, beta: float):
+        """Computes this <-- alpha * v + beta * r"""
+
+      # def AddSpVec
+      # def AddDiagMat2
+      # def AddDiagMatMat
+
+      def `Norm` as norm(self, p: float) -> float:
+        """
+        Returns:
+          p-norm of this vector
+        """
+
+      @sequential
+      def `operator()` as __getitem__(self, index: int) -> float
+
+      # FIXME: Need to write a CUDA kernel for this
+      # @sequential
+      # def `Set` as __setitem__(self, index: int, value: float)
+
+      # def CopyDiagFromPacked
+      # def CopyDiagFromMat
+
+      def `Max` as max(self) -> float:
+        """
+        Returns:
+          Maximum value of this vector
+        """
+
+      def `Min` as min(self) -> float:
+        """
+        Returns:
+          Minimum value of this vector
+        """
+
+      def `ReplaceValue` as replace_value(self, orig: float, changed: float):
+        """
+        Set each element to y = (x == orig ? changed : x).
+        """
+
+      def `MulElements` as mul_elements(self, v: CuDoubleVectorBase):
+        """Multipy element-by-element by another vector. """
+
+    class `CuVector<double>` as CuDoubleVector(CuDoubleVectorBase):
+      @add__init__
+      def `CuVector` as from_size(self, dim: int,
+                                      resize_type: MatrixResizeType = default)
+
+      # FIXME: CLIF cannot disambiguate this constructor.
+      # @add__init__
+      # def `CuVector` as from_other(self, v: CuDoubleVector)
+
+      @add__init__
+      def `CuVector` as from_base(self, v: CuDoubleVectorBase)
+
+      @add__init__
+      def `CuVector` as from_vector(self, v: DoubleVectorBase)
+
+      def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
+        """Resize this vector to dim"""
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """I/O"""
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """I/O"""
+
+      def `Swap` as swap(self, vec: DoubleVector):
+        """Swaps the contents of this and vec. Shallow swap. """
+
+    class `CuSubVector<double>` as CuDoubleSubVector(CuDoubleVectorBase):
+      def __init__(self, t: CuDoubleVectorBase, origin: int, length: int)
+
+      @add__init__
+      def `CuSubVector` as from_other(self, other: CuDoubleSubVector)
+
+      # CuDoubleSubVector(const CuDoubleMatrixBase<Real> &matrix, MatrixIndexT row)
+
+    def `ApproxEqual` as approx_equal_cu_double_vector(
+        a: CuDoubleVectorBase, b: CuDoubleVectorBase, tol: float = default) -> bool
+
+    def `AssertEqual` as assert_equal_cu_double_vector(
+        a: CuDoubleVectorBase, b: CuDoubleVectorBase, tol: float = default)

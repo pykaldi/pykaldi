@@ -34,7 +34,7 @@ headers are included.
 #include <unordered_set>
 #include <vector>
 #include <type_traits>
-// 
+//
 // CLIF use `::proto2::Message` as proto2_Message
 /** NOTE (DC):
   Commented out because we don't need CLIF's protobuf wrapping functionality at the moment
@@ -113,6 +113,10 @@ inline PyObject* Clif_PyObjFrom(unsigned long long c, py::PostConv pc) {  //NOLI
 inline PyObject* Clif_PyObjFrom(unsigned char c, py::PostConv pc) {
   return pc.Apply(PyInt_FromLong(c));
 }
+// CLIF use `char` as int8
+inline PyObject* Clif_PyObjFrom(char c, py::PostConv pc) {
+  return pc.Apply(PyInt_FromLong(c));
+}
 
 // float (double)
 // CLIF use `float` as float
@@ -153,6 +157,7 @@ bool Clif_PyObjAs(PyObject*, unsigned long*);       //NOLINT runtime/int
 #ifdef HAVE_LONG_LONG
 bool Clif_PyObjAs(PyObject*, unsigned long long*);  //NOLINT runtime/int
 #endif
+bool Clif_PyObjAs(PyObject*, char*);
 bool Clif_PyObjAs(PyObject*, short*);               //NOLINT runtime/int
 bool Clif_PyObjAs(PyObject*, int*);
 bool Clif_PyObjAs(PyObject*, long*);                //NOLINT runtime/int // Py_ssize_t on x64

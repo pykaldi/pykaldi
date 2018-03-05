@@ -1,0 +1,36 @@
+from "base/iostream-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+
+from "nnet3/nnet-computation-graph.h":
+  namespace `kaldi::nnet3`:
+    class ComputationGraph:
+      cindexes: list<tuple<int, Index>>
+      is_input: list<bool>
+      dependencies: list<list<int>>
+      segment_ends: list<int>
+
+      def `GetCindexId` as get_cindex_id_or_add(self, cindex: tuple<int, Index>,
+                                                is_input: bool)
+          -> (id: int, is_new: bool)
+
+      def `GetCindexId` as get_cindex_id(self, cindex: tuple<int, Index>) -> int
+
+      def `Renumber` as renumber(self, start_cindex_id: int, keep: list<bool>)
+
+      def `Print` as print_graph(self, os: ostream, node_names: list<str>)
+
+    class CindexSet:
+      def `operator()` as __contains__(self, cindex: tuple<int, Index>) -> bool
+
+      def __init__(self, graph: ComputationGraph)
+
+      @add__init__
+      def `CindexSet` as new_from_computable(self, graph: ComputationGraph,
+                                             is_computable: list<int>,
+                                             treat_unknown_as_computable: bool)
+
+    class IndexSet:
+      def `operator()` as __contains__(self, index: Index) -> bool
+
+      def __init__(self, graph: ComputationGraph, computable_info: list<int>,
+                   node_id: int, treat_unknown_as_computable: bool)
