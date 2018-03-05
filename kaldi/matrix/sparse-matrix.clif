@@ -52,7 +52,7 @@ from "matrix/sparse-matrix.h":
         """
 
       @add__init__
-      def `SparseVector` as new_from_other(self, other: SparseVector):
+      def `SparseVector` as from_other(self, other: SparseVector):
         """Initialization by copying the elements of other."""
 
       def `Swap` as swap_(self, other: SparseVector) -> self:
@@ -79,7 +79,7 @@ from "matrix/sparse-matrix.h":
         """Sets elements to zero with probability zero_prob, else normally distributed."""
 
       @add__init__
-      def `SparseVector` as new_from_dim(self, dim: int):
+      def `SparseVector` as from_dim(self, dim: int):
         """Initialization by defining the size of the vector.
 
         Args:
@@ -87,7 +87,7 @@ from "matrix/sparse-matrix.h":
         """
 
       @add__init__
-      def `SparseVector` as new_from_pairs(self, dim: int,
+      def `SparseVector` as from_pairs(self, dim: int,
                                            pairs: list<tuple<int, float>>):
         """Initialization using a list of tuples(pairs).
 
@@ -187,7 +187,7 @@ from "matrix/sparse-matrix.h":
         """
 
       @add__init__
-      def `SparseMatrix` as new_from_other(self, other: SparseMatrix):
+      def `SparseMatrix` as from_other(self, other: SparseMatrix):
         """Initialization by copying the elements of another sparse matrix.
 
         Args:
@@ -198,7 +198,7 @@ from "matrix/sparse-matrix.h":
         """Swaps the contents of self and other. Shallow swap."""
 
       @add__init__
-      def `SparseMatrix` as new_from_pairs(
+      def `SparseMatrix` as from_pairs(
           self, dim: int, pairs: list<list<tuple<int, float>>>):
         """Initialization by a list of list of tuples. The tuples hold
            and index for the matrix and the corresponding value.
@@ -241,7 +241,7 @@ from "matrix/sparse-matrix.h":
       # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
 
       @add__init__
-      def `SparseMatrix` as new_from_dims(self, num_rows: int, num_cols: int):
+      def `SparseMatrix` as from_dims(self, num_rows: int, num_cols: int):
         """Initialization by defining the dimensions.
 
         Args:
@@ -397,19 +397,19 @@ from "matrix/sparse-matrix.h":
         """Return the number of columns."""
 
       @add__init__
-      def `GeneralMatrix` as new_from_matrix(self, other: MatrixBase):
+      def `GeneralMatrix` as from_matrix(self, other: MatrixBase):
         """Initialization of a General Matrix from matrix of class MatrixBase."""
 
       @add__init__
-      def `GeneralMatrix` as new_from_compressed(self, other: CompressedMatrix):
+      def `GeneralMatrix` as from_compressed(self, other: CompressedMatrix):
         """Initialization of a General Matrix from matrix of class CompressesMatrix."""
 
       @add__init__
-      def `GeneralMatrix` as new_from_sparse(self, other: SparseMatrix):
+      def `GeneralMatrix` as from_sparse(self, other: SparseMatrix):
         """Initialization of a General Matrix from matrix of class SparseMatrix."""
 
       @add__init__
-      def `GeneralMatrix` as new_from_other(self, other: GeneralMatrix):
+      def `GeneralMatrix` as from_other(self, other: GeneralMatrix):
         """Initialization of a General Matrix from matrix of class GeneralMatrix."""
 
       def `Clear` as clear(self):
@@ -548,7 +548,7 @@ from "matrix/sparse-matrix.h":
         """
 
       @add__init__
-      def `SparseVector` as new_from_other(self, other: DoubleSparseVector):
+      def `SparseVector` as from_other(self, other: DoubleSparseVector):
         """Initialization by copying the elements of other."""
 
       def `Swap` as swap_(self, other: DoubleSparseVector) -> self:
@@ -575,7 +575,7 @@ from "matrix/sparse-matrix.h":
         """Sets elements to zero with probability zero_prob, else normally distributed."""
 
       @add__init__
-      def `SparseVector` as new_from_dim(self, dim: int):
+      def `SparseVector` as from_dim(self, dim: int):
         """Initialization by defining the size of the vector.
 
         Args:
@@ -583,7 +583,7 @@ from "matrix/sparse-matrix.h":
         """
 
       @add__init__
-      def `SparseVector` as new_from_pairs(self, dim: int,
+      def `SparseVector` as from_pairs(self, dim: int,
                                            pairs: list<tuple<int, float>>):
         """Initialization using a list of tuples(pairs).
 
@@ -684,7 +684,7 @@ from "matrix/sparse-matrix.h":
         """
 
       @add__init__
-      def `SparseMatrix` as new_from_other(self, other: DoubleSparseMatrix):
+      def `SparseMatrix` as from_other(self, other: DoubleSparseMatrix):
         """Initialization by copying the elements of another sparse matrix.
 
         Args:
@@ -695,7 +695,7 @@ from "matrix/sparse-matrix.h":
         """Swaps the contents of self and other. Shallow swap."""
 
       @add__init__
-      def `SparseMatrix` as new_from_pairs(
+      def `SparseMatrix` as from_pairs(
           self, dim: int, pairs: list<list<tuple<int, float>>>):
         """Initialization by a list of list of tuples. The tuples hold
            and index for the matrix and the corresponding value.
@@ -738,7 +738,7 @@ from "matrix/sparse-matrix.h":
       # def AppendSparseMatrixRows(self, inputs: list<SparseMatrix>)
 
       @add__init__
-      def `SparseMatrix` as new_from_dims(self, num_rows: int, num_cols: int):
+      def `SparseMatrix` as from_dims(self, num_rows: int, num_cols: int):
         """Initialization by defining the dimensions.
 
         Args:

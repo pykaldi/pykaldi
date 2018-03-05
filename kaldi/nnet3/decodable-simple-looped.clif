@@ -32,11 +32,11 @@ from "nnet3/decodable-simple-looped.h":
       def __init__(self, opts: NnetSimpleLoopedComputationOptions, nnet: Nnet)
 
       @add__init__
-      def `DecodableNnetSimpleLoopedInfo` as new_from_am(
+      def `DecodableNnetSimpleLoopedInfo` as from_am(
           self, opts: NnetSimpleLoopedComputationOptions, nnet: AmNnetSimple)
 
       @add__init__
-      def `DecodableNnetSimpleLoopedInfo` as new_from_priors(
+      def `DecodableNnetSimpleLoopedInfo` as from_priors(
           self, opts: NnetSimpleLoopedComputationOptions, priors: Vector,
           nnet: Nnet)
 

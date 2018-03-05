@@ -11,20 +11,17 @@ from "nnet3/nnet-example.h":
       # features: GeneralMatrix
 
       @add__init__
-      def `NnetIo` as new_from_matrix(self, name: str, t_begin: int,
-                                      feats: MatrixBase,
-                                      t_stride: int = default)
+      def `NnetIo` as from_matrix(self, name: str, t_begin: int,
+                                  feats: MatrixBase, t_stride: int = default)
 
       @add__init__
-      def `NnetIo` as new_from_general_matrix(self, name: str, t_begin: int,
-                                              feats: GeneralMatrix,
-                                              t_stride: int = default)
+      def `NnetIo` as from_general_matrix(self, name: str, t_begin: int,
+                                          feats: GeneralMatrix, t_stride: int = default)
 
       @add__init__
-      def `NnetIo` as new_from_posterior(self, name: str, dim: int,
-                                         t_begin: int,
-                                         labels: list<list<tuple<int, float>>>,
-                                         t_stride: int = default)
+      def `NnetIo` as from_posterior(self, name: str, dim: int, t_begin: int,
+                                     labels: list<list<tuple<int, float>>>,
+                                     t_stride: int = default)
 
       def `Swap` as swap(self, other: NnetIo)
 
@@ -44,7 +41,7 @@ from "nnet3/nnet-example.h":
       def `Read` as read(self, is: istream, binary: bool)
 
       @add__init__
-      def `NnetExample` as new_from_other(self, other: NnetExample)
+      def `NnetExample` as from_other(self, other: NnetExample)
 
       def `Swap` as swap(self, other: NnetExample)
 

@@ -20,14 +20,14 @@ from "transform/fmllr-diag-gmm.h":
       def __init__(self, opts: FmllrOptions = default)
 
       @add__init__
-      def `FmllrDiagGmmAccs` as new_from_other(self, other: FmllrDiagGmmAccs)
+      def `FmllrDiagGmmAccs` as from_other(self, other: FmllrDiagGmmAccs)
 
       @add__init__
-      def `FmllrDiagGmmAccs` as new_from_dim(self, dim: int,
+      def `FmllrDiagGmmAccs` as from_dim(self, dim: int,
                                              opts: FmllrOptions = default)
 
       @add__init__
-      def `FmllrDiagGmmAccs` as new_from_gmm(self, gmm: DiagGmm,
+      def `FmllrDiagGmmAccs` as from_gmm(self, gmm: DiagGmm,
                                              fgmm_accs: AccumFullGmm)
 
       def `Init` as init(self, dim: int)

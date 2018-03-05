@@ -8,7 +8,7 @@ from "nnet3/nnet-computation-graph-ext-clifwrap.h" import *
 from "nnet3/nnet-misc-computation-info-clifwrap.h" import *
 
 from "nnet3/nnet-component-itf.h":
-  capsule `void` as Void
+  capsule `void` as Memo
 
   namespace `kaldi::nnet3`:
 
@@ -40,7 +40,7 @@ from "nnet3/nnet-component-itf.h":
 
     class Component:
       def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
-                                      out_value: CuMatrixBase, memo: Void)
+                                      out_value: CuMatrixBase, memo: Memo)
 
       def `ZeroStats` as zero_stats(self)
 
@@ -55,8 +55,8 @@ from "nnet3/nnet-component-itf.h":
       # def ReorderIndexes(self, input_indexes: list<Index>,
       #                    output_indexes: list<Index>)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
       @classmethod
@@ -71,7 +71,7 @@ from "nnet3/nnet-component-itf.h":
 
       def `Add` as add(self, alpha: float, other: Component)
 
-      def `DeleteMemo` as delete_memo(self, memo: Void)
+      def `DeleteMemo` as delete_memo(self, memo: Memo)
 
 
     class RandomComponent(Component):

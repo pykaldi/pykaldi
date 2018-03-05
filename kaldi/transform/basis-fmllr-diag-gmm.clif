@@ -18,7 +18,7 @@ from "transform/basis-fmllr-diag-gmm.h":
 
     class BasisFmllrAccus:
       @add__init__
-      def `BasisFmllrAccus` as new_from_dim(self, dim: int)
+      def `BasisFmllrAccus` as from_dim(self, dim: int)
 
       def `ResizeAccus` as resize_accus(self, dim: int)
 
@@ -35,7 +35,7 @@ from "transform/basis-fmllr-diag-gmm.h":
 
     class BasisFmllrEstimate:
       @add__init__
-      def `BasisFmllrEstimate` as new_from_dim(self, dim: int)
+      def `BasisFmllrEstimate` as from_dim(self, dim: int)
 
       def `Write` as write(self, os: ostream, binary: bool)
 

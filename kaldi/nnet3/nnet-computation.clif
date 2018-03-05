@@ -15,16 +15,16 @@ from "nnet3/nnet-computation.h":
       has_deriv: bool
 
       @add__init__
-      def `IoSpecification` as new_from_other(self, other: IoSpecification)
+      def `IoSpecification` as from_other(self, other: IoSpecification)
 
       @add__init__
-      def `IoSpecification` as new_from_indexes(self, name: str,
-                                                indexes: list<Index>,
-                                                has_deriv: bool = default)
+      def `IoSpecification` as from_indexes(self, name: str,
+                                            indexes: list<Index>,
+                                            has_deriv: bool = default)
 
       @add__init__
-      def `IoSpecification` as new_from_interval(self, name: str,
-                                                 t_start: int, t_end: int)
+      def `IoSpecification` as from_interval(self, name: str,
+                                             t_start: int, t_end: int)
 
       def `Print` as print_io_spec(self, os: ostream)
 
@@ -93,8 +93,8 @@ from "nnet3/nnet-computation.h":
         stride_type: MatrixStrideType
 
         @add__init__
-        def `MatrixInfo` as new(self, num_rows: int, num_cols: int,
-                                stride_type: MatrixStrideType)
+        def `MatrixInfo` as from_args(self, num_rows: int, num_cols: int,
+                                      stride_type: MatrixStrideType)
 
         def `Read` as read(self, is: istream, binary: bool)
 
@@ -118,9 +118,9 @@ from "nnet3/nnet-computation.h":
         num_cols: int
 
         @add__init__
-        def `SubMatrixInfo` as new(self, matrix_index: int, row_offset: int,
-                                   num_rows: int, col_offset: int,
-                                   num_cols: int)
+        def `SubMatrixInfo` as from_args(self, matrix_index: int,
+                                         row_offset: int, num_rows: int,
+                                         col_offset: int, num_cols: int)
 
         def `Read` as read(self, is: istream, binary: bool)
 
@@ -168,10 +168,11 @@ from "nnet3/nnet-computation.h":
       indexes_ranges_cuda: list<CuIntPairArray>
 
       def `NewMatrix` as new_matrix(self, num_rows: int, num_cols: int,
-                    stride_type: MatrixStrideType) -> int
+                                    stride_type: MatrixStrideType) -> int
 
-      def `NewSubMatrix` as new_sub_matrix(self, base_submatrix: int, row_offset: int,
-                       num_rows: int, col_offset: int, num_cols: int) -> int
+      def `NewSubMatrix` as new_sub_matrix(self, base_submatrix: int,
+                                           row_offset: int, num_rows: int,
+                                           col_offset: int, num_cols: int) -> int
 
       def `IsWholeMatrix` as is_whole_matrix(self, submatrix_index: int) -> bool
 
@@ -187,10 +188,10 @@ from "nnet3/nnet-computation.h":
 
       def `GetWholeSubmatrices` as get_whole_submatrices(self) -> list<int>
 
-      def `GetCommandStrings` as get_command_strings(self, nnet: Nnet) -> (preamble: str,
-                                                  command_strings: list<str>)
+      def `GetCommandStrings` as get_command_strings(self, nnet: Nnet)
+          -> (preamble: str, command_strings: list<str>)
 
       def `Clear` as clear(self)
 
       @add__init__
-      def `NnetComputation` as new_from_other(self, other: NnetComputation)
+      def `NnetComputation` as from_other(self, other: NnetComputation)

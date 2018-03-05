@@ -10,8 +10,6 @@ from "nnet3/nnet-compile.h":
       def __init__(self, request: ComputationRequest, nnet: Nnet)
 
       # @add__init__
-      # def `Compiler` as new_from_sequence(self,
-      #                                     request: list<ComputationRequest>,
-      #                                     nnet: Nnet)
+      # def `Compiler` as from_sequence(self, request: list<ComputationRequest>, nnet: Nnet)
 
       def `CreateComputation` as create_computation(self, opts: CompilerOptions) -> NnetComputation

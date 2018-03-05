@@ -25,7 +25,7 @@ from "nnet3/nnet-computation-graph.h":
       def __init__(self, graph: ComputationGraph)
 
       @add__init__
-      def `CindexSet` as new_from_computable(self, graph: ComputationGraph,
+      def `CindexSet` as from_computable(self, graph: ComputationGraph,
                                              is_computable: list<int>,
                                              treat_unknown_as_computable: bool)
 

@@ -27,10 +27,15 @@ from "nnet3/nnet-attention-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
+
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
+          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
-                                      out_value: CuMatrixBase, memo: Void)
+                                      out_value: CuMatrixBase, memo: Memo)
 
       def `Scale` as scale(self, scale: float)
 
@@ -38,32 +43,27 @@ from "nnet3/nnet-attention-component.h":
 
       def `ZeroStats` as zero_stats(self)
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
-          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
-
       def `Read` as read(self, is: istream, binary: bool)
 
       def `Write` as write(self, os: ostream, binary: bool)
 
       def `Copy` as copy(self) -> Component
 
-      def `DeleteMemo` as delete_memo(self, memo: Void)
+      def `DeleteMemo` as delete_memo(self, memo: Memo)
 
       # FIXME: This won't work as it is since output_indexes is input/output.
       # def ReorderIndexes(self, input_indexes: list<Index>,
       #                    output_indexes: list<Index>)
 
-      def `GetInputIndexes` as get_input_indexes(self,
-          misc_info: MiscComputationInfo, output_index: Index) -> list<Index>
+      def `GetInputIndexes` as get_input_indexes(
+          self, misc_info: MiscComputationInfo, output_index: Index) -> list<Index>
 
       def `IsComputable` as is_computable(self, misc_info: MiscComputationInfo,
                                           output_index: Index, input_index_set: IndexSet)
           -> (ret: bool, used_inputs: list<Index>)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
       # PrecomputedIndexes

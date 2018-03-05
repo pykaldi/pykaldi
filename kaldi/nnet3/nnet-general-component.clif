@@ -32,12 +32,12 @@ from "nnet3/nnet-general-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -52,8 +52,8 @@ from "nnet3/nnet-general-component.h":
                                           output_index: Index, input_index_set: IndexSet)
           -> (ret: bool, used_inputs: list<Index>)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
       def `Init` as init(self, input_dim: int, output_dim: int)
@@ -86,12 +86,12 @@ from "nnet3/nnet-general-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -110,8 +110,8 @@ from "nnet3/nnet-general-component.h":
       # def ReorderIndexes(self, input_indexes: list<Index>,
       #                    output_indexes: list<Index>)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
 
@@ -145,12 +145,12 @@ from "nnet3/nnet-general-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -169,8 +169,8 @@ from "nnet3/nnet-general-component.h":
       # def ReorderIndexes(self, input_indexes: list<Index>,
       #                    output_indexes: list<Index>)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
 
@@ -213,15 +213,15 @@ from "nnet3/nnet-general-component.h":
       def `Copy` as copy(self) -> Component
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
       def `Scale` as scale(self, scale: float)
@@ -265,12 +265,12 @@ from "nnet3/nnet-general-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -317,12 +317,12 @@ from "nnet3/nnet-general-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -342,7 +342,7 @@ from "nnet3/nnet-general-component.h":
 
     class GeneralDropoutComponent(RandomComponent):
       @add__init__
-      def `GeneralDropoutComponent` as new_from_other(self,
+      def `GeneralDropoutComponent` as from_other(self,
                                                       other: GeneralDropoutComponent)
 
       def `InputDim` as input_dim(self) -> int
@@ -358,17 +358,17 @@ from "nnet3/nnet-general-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
-      def `DeleteMemo` as delete_memo(self, memo: Void)
+      def `DeleteMemo` as delete_memo(self, memo: Memo)
 
-      def `PrecomputeIndexes` as precompute_indexes(self,
-          misc_info: MiscComputationInfo, input_indexes: list<Index>,
+      def `PrecomputeIndexes` as precompute_indexes(
+          self, misc_info: MiscComputationInfo, input_indexes: list<Index>,
           output_indexes: list<Index>, need_backprop: bool) -> ComponentPrecomputedIndexes
 
       def `Read` as read(self, is: istream, binary: bool)

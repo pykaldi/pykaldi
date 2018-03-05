@@ -30,7 +30,7 @@ from "transform/fmpe.h":
       # FIXME(Dogan):
       # Fmpe should be defined before use.
       # @add__init__
-      # def `FmpeStats` as new_from_other(self, fmpe: Fmpe)
+      # def `FmpeStats` as from_other(self, fmpe: Fmpe)
 
       # def `Init` as init(self, fmpe: Fmpe)
 

@@ -21,12 +21,12 @@ from "nnet3/nnet-normalize-component.h":
       def `Copy` as copy(self) -> Component
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -57,12 +57,12 @@ from "nnet3/nnet-normalize-component.h":
       def `Properties` as properties(self) -> int
 
       def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                    in: CuMatrixBase, out: CuMatrixBase) -> Void
+                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
 
-      def `Backprop` as backprop(self,
-          debug_info: str, indexes: ComponentPrecomputedIndexes,
+      def `Backprop` as backprop(
+          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
           in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Void, to_update: Component, in_deriv: CuMatrixBase)
+          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
 
       def `Read` as read(self, is: istream, binary: bool)
 
@@ -76,10 +76,10 @@ from "nnet3/nnet-normalize-component.h":
 
       def `ZeroStats` as zero_stats(self)
 
-      def `DeleteMemo` as delete_memo(self, memo: Void)
+      def `DeleteMemo` as delete_memo(self, memo: Memo)
 
       def `StoreStats` as store_stats(self, in_value: CuMatrixBase,
-                                      out_value: CuMatrixBase, memo: Void)
+                                      out_value: CuMatrixBase, memo: Memo)
 
       def `Offset` as get_offset(self) -> CuVector
 
