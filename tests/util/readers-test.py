@@ -1,12 +1,12 @@
 from __future__ import division
-import unittest
 import numpy as np
+import os
+import unittest
 
 from kaldi.matrix import *
 import kaldi.util
 
-from mixins import *
-import os
+from .mixins import *
 
 ################################################################################################################
 # Sequential Readers

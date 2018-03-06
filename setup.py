@@ -9,6 +9,7 @@ import sys
 import distutils.command.build
 import setuptools.command.build_ext
 import setuptools.command.install_lib
+import setuptools.command.test
 import setuptools.extension
 
 from distutils.file_util import copy_file
@@ -21,7 +22,7 @@ def check_output(*args, **kwargs):
 # Set minimum version requirements for external dependencies
 ################################################################################
 
-KALDI_MIN_REQUIRED = 'e7cd362e950e704661200718353b2e3204fcdcc7'
+KALDI_MIN_REQUIRED = '6e6396e406c155b89f54313e15138e01bc61c230'
 
 ################################################################################
 # Check variables / find programs
@@ -240,28 +241,6 @@ class build_ext(setuptools.command.build_ext.build_ext):
         if old_inplace:
             self.copy_extensions_to_source()
 
-    def copy_extensions_to_source(self):
-        build_py = self.get_finalized_command('build_py')
-        for ext in self.extensions:
-            fullname = self.get_ext_fullname(ext.name)
-            filename = self.get_ext_filename(fullname)
-            modpath = fullname.split('.')
-            package = '.'.join(modpath[:-1])
-            package_dir = build_py.get_package_dir(package)
-            dest_filename = os.path.join(package_dir,
-                                         os.path.basename(filename))
-            src_filename = os.path.join(self.build_lib, filename)
-
-            # Always copy, even if source is older than destination, to ensure
-            # that the right extensions for the current Python/platform are
-            # used.
-            copy_file(
-                src_filename, dest_filename, verbose=self.verbose,
-                dry_run=self.dry_run
-            )
-            if ext._needs_stub:
-                self.write_stub(package_dir or os.curdir, ext, True)
-
     def get_ext_filename(self, fullname):
         """Convert the name of an extension (eg. "foo.bar") into the name
         of the file from which it will be loaded (eg. "foo/bar.so"). This
@@ -297,6 +276,21 @@ class install_lib(setuptools.command.install_lib.install_lib):
         self.build_dir = 'build/lib'
         setuptools.command.install_lib.install_lib.install(self)
 
+
+class test_cuda(setuptools.command.test.test):
+    def run_tests(self):
+        from kaldi.cudamatrix import cuda_available
+        if cuda_available():
+            from kaldi.cudamatrix import CuDevice
+            CuDevice.instantiate().set_debug_stride_mode(True)
+            CuDevice.instantiate().select_gpu_id("yes")
+            super(test_cuda, self).run_tests()
+            CuDevice.instantiate().print_profile()
+        else:
+            print("CUDA not available. Running tests on CPU.")
+            super(test_cuda, self).run_tests()
+
+
 ################################################################################
 # Setup pykaldi
 ################################################################################
@@ -304,7 +298,7 @@ class install_lib(setuptools.command.install_lib.install_lib):
 # We add a 'dummy' extension so that setuptools runs the build_ext step.
 extensions = [Extension("kaldi")]
 
-packages = find_packages()
+packages = find_packages(exclude=["tests.*", "tests"])
 
 with open(os.path.join('kaldi', '__version__.py')) as f:
     exec(f.read())
@@ -319,8 +313,10 @@ setup(name = 'pykaldi',
           'build_ext': build_ext,
           'build_sphinx': build_sphinx,
           'install_lib': install_lib,
+          'test_cuda': test_cuda,
           },
       packages = packages,
       package_data = {},
       install_requires = ['enum34;python_version<"3.4"', 'numpy'],
-      zip_safe = False)
+      zip_safe = False,
+      test_suite='tests')

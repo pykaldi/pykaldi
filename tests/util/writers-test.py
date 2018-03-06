@@ -5,7 +5,7 @@ import unittest
 from kaldi.matrix import Vector, Matrix, SubMatrix, SubVector
 from kaldi.util import *
 
-from mixins import *
+from .mixins import *
 
 # TODO (VM):
 # This tests make use of the filesystem

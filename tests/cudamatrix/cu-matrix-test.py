@@ -2,7 +2,7 @@ from kaldi.base import math as kaldi_math
 from kaldi.matrix import Vector, Matrix
 
 from kaldi.cudamatrix import (CuMatrix, CuVector,
-                              approx_equal_cu_matrix, same_dim_cu_matrix, cuda_available)
+                              approx_equal_cu_matrix, same_dim_cu_matrix)
 
 import unittest
 import numpy as np
@@ -70,7 +70,7 @@ class TestCuMatrix(unittest.TestCase):
             self.assertAlmostEqual(B.sum(), C.sum(), places = 4) #Kaldi's precision is aweful
 
     def testcopy_from_mat(self):
-        for i in range(10):
+        for i in range(1, 10):
             rows, cols = 10*i, 5*i
             A = Matrix(rows, cols)
             A.set_randn_()
@@ -121,18 +121,4 @@ class TestCuMatrix(unittest.TestCase):
         self.assertFalse(approx_equal_cu_matrix(A, B))
 
 if __name__ == '__main__':
-    if cuda_available():
-        from kaldi.cudamatrix import CuDevice
-
-        for i in range(2):
-            CuDevice.instantiate().set_debug_stride_mode(True)
-            if i == 0:
-                CuDevice.instantiate().select_gpu_id("no")
-            else:
-                CuDevice.instantiate().select_gpu_id("yes")
-
-            unittest.main()
-
-            CuDevice.instantiate().print_profile()
-    else:
-        unittest.main()
+    unittest.main()
