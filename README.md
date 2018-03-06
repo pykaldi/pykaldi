@@ -213,6 +213,11 @@ environment, you can install PyKaldi with the following command.
 python setup.py install
 ```
 
+Once installed, you can run PyKaldi tests with the following command.
+
+```bash
+python setup.py test
+```
 
 ## FAQ
 
