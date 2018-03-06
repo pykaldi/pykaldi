@@ -10,6 +10,8 @@ from "cudamatrix/cu-vector.h":
       def `Dim` as dim(self) -> int:
         """Returns this vector dimension"""
 
+      def `Dim` as __len__(self) -> int
+
       def `CopyFromVec` as copy_from_cu_vec(self, src: CuVectorBase):
         """Copies data from other CuVector"""
 
@@ -186,6 +188,8 @@ from "cudamatrix/cu-vector.h":
 
       def `Dim` as dim(self) -> int:
         """Returns this vector dimension"""
+
+      def `Dim` as __len__(self) -> int
 
       def `CopyFromVec` as copy_from_cu_vec(self, src: CuDoubleVectorBase):
         """Copies data from other CuVector"""

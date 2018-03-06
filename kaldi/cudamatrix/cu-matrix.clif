@@ -35,6 +35,8 @@ from "cudamatrix/cu-matrix.h":
 
       def `NumRows` as num_rows(self) -> int
 
+      def `NumRows` as __len__(self) -> int
+
       def `NumCols` as num_cols(self) -> int
 
       def `Stride` as stride(self) -> int
@@ -308,6 +310,8 @@ from "cudamatrix/cu-matrix.h":
       def `AddToDiag` as add_to_diag(self, value: float)
 
       def `NumRows` as num_rows(self) -> int
+
+      def `NumRows` as __len__(self) -> int
 
       def `NumCols` as num_cols(self) -> int
 

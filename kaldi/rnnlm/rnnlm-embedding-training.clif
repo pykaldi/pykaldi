@@ -30,6 +30,16 @@ from "rnnlm/rnnlm-embedding-training.h":
       """
       learning_rate: float
       """The learning rate used in training the word-embedding matrix."""
+      backstitch_training_scale: float
+      """Backstitch training factor (alpha).
+
+      If 0 then in the normal training mode.
+      """
+      backstitch_training_interval: int
+      """Backstitch training interval (n).
+
+      Do backstitch training with the specified interval of minibatches.
+      """
       use_natural_gradient: bool
       """Whether to use natural gradient to update the embedding matrix."""
       natural_gradient_alpha: float
@@ -79,7 +89,7 @@ from "rnnlm/rnnlm-embedding-training.h":
       def __init__(self, config: RnnlmEmbeddingTrainerOptions, embedding_mat: CuMatrix)
 
       def `Train` as train(self, embedding_deriv: CuMatrixBase):
-        """Trains on one minibatch.
+        """Do training for one minibatch.
 
         This version is used either when there is no subsampling, or when there
         is subsampling but we are using a feature representation so the
@@ -90,9 +100,26 @@ from "rnnlm/rnnlm-embedding-training.h":
             function w.r.t. the word (or feature) embedding matrix.
         """
 
+      def `TrainBackstitch` as train_backstitch(
+          self, is_backstitch_step1: bool, embedding_deriv: CuMatrixBase):
+        """Do backstitch training for one minibatch.
+
+        This version is used either when there is no subsampling, or when there
+        is subsampling but we are using a feature representation so the
+        subsampling is handled outside of this code.
+
+        Depending on whether is_backstitch_step1 is true, It could be either
+        the first (backward) step, or the second (forward) step of backstitch.
+
+        Args:
+          is_backstitch_step1 (bool): If true update stats otherwise not.
+          embedding_deriv (CuMatrixBase): The derivative of the objective
+            function w.r.t. the word (or feature) embedding matrix.
+        """
+
       def `Train` as train_with_subsampling(
         self, active_words: CuArray, word_embedding_deriv: CuMatrixBase):
-        """Trains on one minibatch.
+        """Do training for one minibatch.
 
         This version is for when there is subsampling, and the user is
         providing the derivative w.r.t. just the word-indexes that were used in
@@ -102,6 +129,29 @@ from "rnnlm/rnnlm-embedding-training.h":
         list of words.
 
         Args:
+          active_words (CuArray): A sorted, unique list of the word indexes
+            used, with dimension equal to `word_embedding_deriv.num_rows`.
+          word_embedding_deriv (CuMatrixBase): The derivative of the objective
+            function w.r.t. the word embedding matrix.
+        """
+
+      def `TrainBackstitch` as train_backstitch_with_subsampling(
+        self, is_backstitch_step1: bool, active_words: CuArray,
+        word_embedding_deriv: CuMatrixBase):
+        """Do backstitch training for one minibatch.
+
+        This version is for when there is subsampling, and the user is
+        providing the derivative w.r.t. just the word-indexes that were used in
+        this minibatch. `active_words` is a sorted, unique list of the
+        word-indexes that were used in this minibatch, and
+        `word_embedding_deriv` is the derivative w.r.t. the embedding of that
+        list of words.
+
+        Depending on whether is_backstitch_step1 is true, It could be either
+        the first (backward) step, or the second (forward) step of backstitch.
+
+        Args:
+          is_backstitch_step1 (bool): If true update stats otherwise not.
           active_words (CuArray): A sorted, unique list of the word indexes
             used, with dimension equal to `word_embedding_deriv.num_rows`.
           word_embedding_deriv (CuMatrixBase): The derivative of the objective

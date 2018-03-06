@@ -34,6 +34,16 @@ from "rnnlm/rnnlm-core-training.h":
       be used to correct for effects related to parallelization by model
       averaging.
       """
+      backstitch_training_scale: float
+      """Backstitch training factor (alpha).
+
+      If 0 then in the normal training mode.
+      """
+      backstitch_training_interval: int
+      """Backstitch training interval (n).
+
+      Do backstitch training with the specified interval of minibatches.
+      """
 
       def `Register` as register(self, opts: OptionsItf):
         """Registers options with an object implementing the options interface.
@@ -62,7 +72,7 @@ from "rnnlm/rnnlm-core-training.h":
 
       def `Train` as train(self, minibatch: RnnlmExample, derived: RnnlmExampleDerived,
                            word_embedding: CuMatrixBase, word_embedding_deriv: CuMatrixBase):
-        """Trains on one minibatch.
+        """Do training for one minibatch.
 
         Args:
           minibatch (RnnlmExample): The RNNLM minibatch to train on, containing
@@ -83,6 +93,37 @@ from "rnnlm/rnnlm-core-training.h":
             the objective function w.r.t. the word embedding will be *added* to
             this location; it must have the same dimension as 'word_embedding'.
         """
+
+      def `TrainBackstitch` as train_backstitch(
+          self, is_backstitch_step1: bool,
+          minibatch: RnnlmExample, derived: RnnlmExampleDerived,
+          word_embedding: CuMatrixBase, word_embedding_deriv: CuMatrixBase):
+        """Do backstitch training for one minibatch.
+
+        Depending on whether is_backstitch_step1 is true, It could be either
+        the first (backward) step, or the second (forward) step of backstitch.
+
+        Args:
+          is_backstitch_step1 (bool): If true update stats otherwise not.
+          minibatch (RnnlmExample): The RNNLM minibatch to train on, containing
+            a number of parallel word sequences.  It will not necessarily
+            contain words with the 'original' numbering, it will in most
+            circumstances contain just the ones we used; see
+            :meth:`renumber_rnnlm_example`.
+          derived (RnnlmExampleDerived): Derived quantities of the minibatch,
+            pre-computed by calling :meth:`get_rnnlm_example_derived` with
+            suitable arguments.
+          word_embedding (CuMatrixBase): The matrix giving the embedding of
+            words, of dimension `minibatch.vocab_size` by the embedding
+            dimension. The numbering of the words does not have to be the
+            'real' numbering of words, it can consist of words renumbered by
+            :meth:`renumber_rnnlm_example`; it just has to be consistent with
+            the word-ids present in 'minibatch'.
+          word_embedding_deriv (CuMatrixBase): If not None, the derivative of
+            the objective function w.r.t. the word embedding will be *added* to
+            this location; it must have the same dimension as 'word_embedding'.
+        """
+
 
       def `PrintMaxChangeStats` as print_max_change_stats(self):
         """Prints out the max-change stats (if nonzero).

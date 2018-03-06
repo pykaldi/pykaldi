@@ -21,6 +21,8 @@ from "cudamatrix/cu-array.h":
           This vector dimension
         """
 
+      def `Dim` as __len__(self) -> int
+
       def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
         """Allocate the memory."""
 
@@ -81,6 +83,8 @@ from "cudamatrix/cu-array.h":
           This vector dimension
         """
 
+      def `Dim` as __len__(self) -> int
+
       def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
         """Allocate the memory."""
 
@@ -121,6 +125,8 @@ from "cudamatrix/cu-array.h":
         Returns:
           This vector dimension
         """
+
+      def `Dim` as __len__(self) -> int
 
       def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
         """Allocate the memory."""
@@ -166,6 +172,8 @@ from "cudamatrix/cu-array.h":
         Returns:
           This vector dimension
         """
+
+      def `Dim` as __len__(self) -> int
 
       def `Resize` as resize(self, dim: int, resize_type: MatrixResizeType = default):
         """Allocate the memory."""
