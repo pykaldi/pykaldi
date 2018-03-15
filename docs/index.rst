@@ -5,11 +5,9 @@
 PyKaldi Documentation
 ---------------------
 
-Welcome to `PyKaldi <https://github.com/pykaldi/pykaldi>`_ documentation.
-
-PyKaldi is a Python wrapper for `Kaldi <http://kaldi-asr.org>`_. It aims to
-bridge the gap between Kaldi and all the nice things Python has to offer. Its
-main features are:
+`PyKaldi <https://github.com/pykaldi/pykaldi>`_ is a Python wrapper for
+`Kaldi <http://kaldi-asr.org>`_. It aims to bridge the gap between Kaldi and
+all the nice things Python has to offer. Its main features are:
 
 * Near-complete coverage of Kaldi C++ API
 
