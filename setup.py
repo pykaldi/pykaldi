@@ -171,11 +171,11 @@ def populate_extension_list():
         if lib_path == ".":
             lib_path = "kaldi"
 
-        # append filenames
         for f in filenames:
-            f = os.path.splitext(f)[0] # remove extension
-            ext_name = "{}.{}".format(lib_path, f)
-            extensions.append(Extension(ext_name))
+            r, e = os.path.splitext(f)
+            if e == ".so":
+                ext_name = "{}.{}".format(lib_path, r)
+                extensions.append(Extension(ext_name))
     return extensions
 
 
@@ -229,7 +229,6 @@ class build_ext(setuptools.command.build_ext.build_ext):
             sys.exit(1)
         print() # Add an empty line for cleaner output
 
-        # Populates extension list
         self.extensions = populate_extension_list()
 
         if DEBUG:
