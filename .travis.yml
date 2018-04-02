@@ -12,8 +12,6 @@ before_install:
 install:
 - |
   docker build --tag pykaldi/pykaldi:latest -f $TRAVIS_BUILD_DIR/docker/Dockerfile.travis.master .
-# script:
-# - 'docker run pykaldi/pykaldi:latest /bin/bash -c "cd /pykaldi && python setup.py test"'
 after_success:
 - |
   if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then

@@ -8,6 +8,8 @@ COPY . /pykaldi
 RUN cd /pykaldi/tools \
 	&& ln -s /kaldi . \
 	&& cd /pykaldi \
+    && python setup.py build \
+    && python setup.py install \
     && python setup.py test \
     && find kaldi -name "*.so" -delete \
     && rm -rf build
