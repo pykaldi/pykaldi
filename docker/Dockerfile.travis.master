@@ -7,6 +7,7 @@ COPY . /pykaldi
 # Install PyKaldi
 RUN cd /pykaldi/tools \
 	&& ln -s /kaldi . \
+	&& cd /pykaldi \
     && python setup.py install \
     && find kaldi -name "*.so" -delete \
     && rm -rf build
