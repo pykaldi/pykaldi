@@ -25,8 +25,9 @@ RUN apt-get update \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
     && pip install --upgrade pip numpy setuptools pyparsing jupyter ninja \
+    && cd / \
     && git clone https://github.com/pykaldi/pykaldi.git \
-    && cd /pykaldi/tools \
+    # && cd /pykaldi/tools \
     && git clone -b pykaldi https://github.com/pykaldi/kaldi.git \
     && cd kaldi/tools \
     && mkdir -p python \
@@ -35,11 +36,13 @@ RUN apt-get update \
     && rm -rf openfst/src/script/.libs \
     && cd ../src \
     && ./configure --shared \
-    && make -j12 depend \
-    && make -j12 base matrix util feat tree gmm transform sgmm2 fstext hmm lm decoder lat cudamatrix nnet2 nnet3 rnnlm chain ivector online2 kws \
+    # && make -j12 depend \
+    # && make -j12 base matrix util feat tree gmm transform sgmm2 fstext hmm lm decoder lat cudamatrix nnet2 nnet3 rnnlm chain ivector online2 kws \
+    && make -j12 \
     && find . -name "*.a" -delete \
     && find . -name "*.o" -delete \
-    && cd /pykaldi/tools \
+    # && cd /pykaldi/tools \
+    && cd / \
     && git clone https://github.com/google/protobuf.git protobuf \
     && cd protobuf \
     && ./autogen.sh \
@@ -49,10 +52,13 @@ RUN apt-get update \
     && cd python \
     && python setup.py build \
     && python setup.py install \
-    && cd /pykaldi/tools \
+    # && cd /pykaldi/tools \
+    && cd / \
     && rm -rf protobuf \
+    && cd /pykaldi/tools/ \
     && ./install_clif.sh \
     && rm -rf clif_backend \
     && rm -rf clif \
-    && cd /pykaldi \
-    && python setup.py develop
+    && rm -rf /pykaldi
+    # && cd /pykaldi \
+    # && python setup.py develop
