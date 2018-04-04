@@ -724,12 +724,12 @@ class _WriterBase(object):
 class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
     """Table writer for single precision vectors."""
     def write(self, key, value):
-        """Overrides write to accept both Vector and SubVector.
-
-        Writes the `(key, value)` pair to the table.
+        """Writes the `(key, value)` pair to the table.
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
+        
+        Overrides write to accept both Vector and SubVector.
         
         Args:
             key (str): The key.
@@ -741,13 +741,13 @@ class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
 class DoubleVectorWriter(_WriterBase, _kaldi_table.DoubleVectorWriter):
     """Table writer for double precision vectors."""
     def write(self, key, value):
-        """Overrides write to accept both DoubleVector and DoubleSubVector.
-
-        Writes the `(key, value)` pair to the table.
+        """Writes the `(key, value)` pair to the table.
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
         
+        Overrides write to accept both DoubleVector and DoubleSubVector.
+
         Args:
             key (str): The key.
             value: The value.
@@ -758,13 +758,13 @@ class DoubleVectorWriter(_WriterBase, _kaldi_table.DoubleVectorWriter):
 class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
     """Table writer for single precision matrices."""
     def write(self, key, value):
-        """Overrides write to accept both Matrix and SubMatrix.
-
-        Writes the `(key, value)` pair to the table.
+        """Writes the `(key, value)` pair to the table.
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
         
+        Overrides write to accept both Matrix and SubMatrix.
+
         Args:
             key (str): The key.
             value: The value.
@@ -774,13 +774,13 @@ class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
 class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
     """Table writer for double precision matrices."""
     def write(self, key, value):
-        """Overrides write to accept both DoubleMatrix and DoubleSubMatrix.
-
-        Writes the `(key, value)` pair to the table.
+        """Writes the `(key, value)` pair to the table.
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
         
+        Overrides write to accept both DoubleMatrix and DoubleSubMatrix.
+
         Args:
             key (str): The key.
             value: The value.
