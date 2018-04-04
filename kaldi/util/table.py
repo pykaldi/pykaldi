@@ -735,7 +735,7 @@ class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
             key (str): The key.
             value: The value.
         """
-        super(_WriterBase, self).write(key, Vector(value))
+        super(VectorWriter, self).write(key, Vector(value))
 
 
 class DoubleVectorWriter(_WriterBase, _kaldi_table.DoubleVectorWriter):
@@ -752,7 +752,7 @@ class DoubleVectorWriter(_WriterBase, _kaldi_table.DoubleVectorWriter):
             key (str): The key.
             value: The value.
         """
-        super(_WriterBase, self).write(key, DoubleVector(value))
+        super(DoubleVectorWriter, self).write(key, DoubleVector(value))
 
 
 class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
@@ -769,7 +769,7 @@ class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
             key (str): The key.
             value: The value.
         """
-        super(_WriterBase, self).write(key, Matrix(value))
+        super(MatrixWriter, self).write(key, Matrix(value))
 
 class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
     """Table writer for double precision matrices."""
@@ -785,7 +785,7 @@ class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
             key (str): The key.
             value: The value.
         """
-        super(_WriterBase, self).write(key, DoubleMatrix(value))
+        super(DoubleMatrixWriter, self).write(key, DoubleMatrix(value))
 
 
 class WaveWriter(_WriterBase, _kaldi_table.WaveWriter):
