@@ -33,22 +33,26 @@ if [ -n "$1" ]; then
   PYTHON="$1"
 fi
 PYTHON_EXECUTABLE="$(which $PYTHON)"
-
-PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/find_python_library.py)
-if [ -n "$2" ]; then
-  PYTHON_LIBRARY="$2"
-fi
-if [ ! -f "$PYTHON_LIBRARY" ]; then
-  echo "Python library $PYTHON_LIBRARY could not be found."
-  echo "Please specify the python library as an argument to $0"
-  echo "e.g. $0 /usr/bin/python3 /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1"
-  exit 1
-fi
-
 PYTHON_PIP="$PYTHON_EXECUTABLE -m pip"
 PYTHON_ENV=$($PYTHON_EXECUTABLE -c "import sys; print(sys.prefix)")
-PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
-CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
+
+PV=$($PYTHON_EXECUTABLE -c "import sys; print(sys.version_info[0])")
+if [[ $PV == 3 ]]; then
+
+  PYTHON_LIBRARY=$($PYTHON_EXECUTABLE $TOOLS_DIR/find_python_library.py)
+  if [ -n "$2" ]; then
+    PYTHON_LIBRARY="$2"
+  fi
+  if [ ! -f "$PYTHON_LIBRARY" ]; then
+    echo "Python library $PYTHON_LIBRARY could not be found."
+    echo "Please specify the python library as an argument to $0"
+    echo "e.g. $0 /usr/bin/python3 /usr/lib/x86_64-linux-gnu/libpython3.5m.so.1"
+    exit 1
+  fi
+
+	PYTHON_INCLUDE_DIR=$($PYTHON_EXECUTABLE -c 'from sysconfig import get_paths; print(get_paths()["include"])')
+	CMAKE_PY_FLAGS=(-DPYTHON_INCLUDE_DIR="$PYTHON_INCLUDE_DIR" -DPYTHON_EXECUTABLE="$PYTHON_EXECUTABLE" -DPYTHON_LIBRARY="$PYTHON_LIBRARY")
+fi
 
 ####################################################################
 # Ensure CMake is installed (needs 3.5+)
