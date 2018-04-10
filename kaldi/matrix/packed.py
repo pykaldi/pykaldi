@@ -146,9 +146,9 @@ class _DoublePackedMatrixBase(object):
         if m != n:
             raise ValueError("other is not a square matrix.")
         if isinstance(other, _kaldi_matrix.DoubleMatrix):
-            self.swap_with_matrix_(other)
+            return self.swap_with_matrix_(other)
         elif isinstance(other, _packed_matrix.DoublePackedMatrix):
-            self.swap_with_packed_(other)
+            return self.swap_with_packed_(other)
         else:
             raise ValueError("other must be a DoubleMatrix or DoubleSpMatrix "
                              "or DoubleTpMatrix.")
