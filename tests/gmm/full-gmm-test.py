@@ -217,5 +217,11 @@ class TestFullGmm(unittest.TestCase):
         # loglike2 = gmm2.LogLikelihood(feat)
         # self.assertAlmostEqual(loglike1, loglike2, delta = 0.01)
 
+    def testCovars(self):
+        gmm = FullGmm()
+        init_rand_full(10, 4, gmm)
+        covars = gmm.get_covars()[0]
+        self.assertTupleEqual((10, 10), covars.size())
+
 if __name__ == '__main__':
     unittest.main()

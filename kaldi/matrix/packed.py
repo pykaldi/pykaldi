@@ -32,13 +32,16 @@ class _PackedMatrixBase(object):
         Raises:
             ValueError: If **other** is not a square matrix.
         """
-        m, n = other.size()
+        # Using the native code instead of size()
+        # prevents an exception for the case when 
+        # other is not a python object
+        m, n = other.num_rows, other.num_cols 
         if m != n:
             raise ValueError("other is not a square matrix.")
         if isinstance(other, _kaldi_matrix.Matrix):
-            self.swap_with_matrix_(self, other)
+            return self.swap_with_matrix_(other)
         elif isinstance(other, _packed_matrix.PackedMatrix):
-            self.swap_with_packed_(self, other)
+            return self.swap_with_packed_(other)
         else:
             raise ValueError("other must be a Matrix or SpMatrix or TpMatrix.")
 
@@ -139,13 +142,13 @@ class _DoublePackedMatrixBase(object):
         Raises:
             ValueError: If **other** is not a square matrix.
         """
-        m, n = other.size()
+        m, n = other.num_rows, other.num_cols
         if m != n:
             raise ValueError("other is not a square matrix.")
         if isinstance(other, _kaldi_matrix.DoubleMatrix):
-            self.swap_with_matrix_(self, other)
+            self.swap_with_matrix_(other)
         elif isinstance(other, _packed_matrix.DoublePackedMatrix):
-            self.swap_with_packed_(self, other)
+            self.swap_with_packed_(other)
         else:
             raise ValueError("other must be a DoubleMatrix or DoubleSpMatrix "
                              "or DoubleTpMatrix.")
@@ -217,6 +220,27 @@ class DoubleTpMatrix(_DoublePackedMatrixBase, _tp_matrix.DoubleTpMatrix):
             DoubleTpMatrix: A copy of the triangular matrix.
         """
         return DoubleTpMatrix(len(self)).copy_from_tp_(self)
+
+################################################################################
+
+def _sp_matrix_wrapper(matrix):
+    """Constructs a new matrix instance by swapping contents.
+    This function is used for converting `kaldi.matrix._sp_matrix.SpMatrix`
+    instances into `SpMatrix` instances without copying the contents.
+    This is a destructive operation. Contents of the input matrix are moved to
+    the newly contstructed matrix by swapping data pointers.
+    Args:
+        matrix (`Matrix`): The input matrix.
+    Returns:
+        SpMatrix: The new matrix instance.
+    """
+    if isinstance(matrix, _sp_matrix.SpMatrix):
+        return SpMatrix().swap_(matrix)
+    elif isinstance(matrix, _sp_matrix.DoubleSpMatrix):
+        return DoubleSpMatrix().swap_(matrix)
+    else:
+        raise TypeError("unrecognized input type")
+
 
 ################################################################################
 

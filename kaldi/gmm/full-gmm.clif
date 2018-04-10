@@ -145,7 +145,7 @@ from "gmm/full-gmm.h":
                 means_invcovars (:class:`kaldi.matrix.Matrix`): matrix of means and invcovars 
               """
 
-            def `GetCovars` as get_covars(self) -> list<SpMatrix>:
+            def `GetCovars` as get_covars_(self) -> list<SpMatrix>:
               """Accessor for covariances."""
 
             def `GetMeans` as get_means(self) -> Matrix:

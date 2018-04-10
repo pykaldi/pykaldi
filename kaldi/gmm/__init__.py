@@ -9,6 +9,8 @@ from ._mle_full_gmm import *
 from . import am
 
 from .. import matrix as _matrix
+from kaldi.matrix.packed import _sp_matrix_wrapper
+
 
 class DiagGmm(_diag_gmm.DiagGmm):
     """Python wrapper for Kaldi::DiagGmm<float>.
@@ -145,12 +147,19 @@ class FullGmm(_full_gmm.FullGmm):
         self._set_means(means)
 
     def covars(self):
+        """ Alias for `get_covars` """
+        return self.get_covars()
+
+    def get_covars(self):
         """
         Returns:
             Component Co-variances
         """
-        return self.get_covars()
-
+        covars = self.get_covars_()
+        res = []
+        for sp in covars:
+            res.append(_sp_matrix_wrapper(sp))
+        return res
 
 ################################################################################
 
