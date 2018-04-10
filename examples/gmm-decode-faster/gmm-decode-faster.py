@@ -5,7 +5,8 @@ import logging
 import sys
 import time
 
-from kaldi.asr import convert_indices_to_symbols, read_fst_kaldi
+from kaldi.asr import convert_indices_to_symbols
+from kaldi.fstext import read_fst_kaldi
 from kaldi.decoder import FasterDecoderOptions, FasterDecoder
 from kaldi.fstext import (SymbolTable, FstHeader, FstReadOptions,
                           StdArc, StdVectorFst, StdConstFst)
