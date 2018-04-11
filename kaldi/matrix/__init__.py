@@ -50,6 +50,7 @@ import _matrix_common  # FIXME: Relative/absolute import is buggy in Python 3.
 from . import _packed_matrix
 from . import _sp_matrix
 from . import _tp_matrix
+from . import _str
 from ._str import set_printoptions
 
 
