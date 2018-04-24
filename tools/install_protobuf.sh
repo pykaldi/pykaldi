@@ -74,7 +74,7 @@ if [ ! -d "$PROTOBUF_DIR" ]; then
     git clone $PROTOBUF_GIT $PROTOBUF_DIR
 fi
 cd "$PROTOBUF_DIR"
-git pull
+#git pull
 
 ./autogen.sh
 ./configure --prefix $PROTOBUF_DIR
