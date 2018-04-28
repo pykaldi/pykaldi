@@ -11,7 +11,7 @@ add_pyclif_library("_signal" signal.clif
   LIBRARIES kaldi-feat
 )
 add_pyclif_library("_feature_window" feature-window.clif
-  CLIF_DEPS _kaldi_vector
+  CLIF_DEPS _kaldi_vector _options_itf
   LIBRARIES kaldi-feat
 )
 add_pyclif_library("_feature_functions" feature-functions.clif
