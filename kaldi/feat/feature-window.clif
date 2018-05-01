@@ -1,4 +1,5 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
 
 from "feat/feature-window.h":
   namespace `kaldi`:
@@ -14,6 +15,8 @@ from "feat/feature-window.h":
       blackman_coeff: float
       snip_edges: bool
       allow_downsample: bool
+
+      def `Register` as register(self, opts:OptionsItf)
 
       def `WindowShift` as window_shift(self) -> int
 
