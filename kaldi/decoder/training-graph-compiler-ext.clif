@@ -1,12 +1,33 @@
+from "decoder/training-graph-compiler-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
-from "decoder/training-graph-compiler-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "tree/context-dep-clifwrap.h" import *
 
 from kaldi.util import _value_error_on_false
 
 from "decoder/training-graph-compiler-ext.h":
   namespace `kaldi`:
-    def `CompileGraphs` as compile_graphs(
-        training_graph_compiler: TrainingGraphCompiler, word_fsts: list<StdVectorFst>)
-      -> (success: bool, out_fsts: list<StdVectorFst>):
-      return _value_error_on_false(...)
+    class `_TrainingGraphCompiler` as TrainingGraphCompiler:
+      def __init__(self,
+                   trans_model: TransitionModel,
+                   ctx_dep: ContextDependency,
+                   lex_fst: StdVectorFst,
+                   disambig_syms: list<int>,
+                   opts: TrainingGraphCompilerOptions)
+
+      def `CompileGraph` as compile_graph(self, word_fst: StdVectorFst)
+        -> (success: bool, out_fst: StdVectorFst):
+        return _value_error_on_false(...)
+
+      def `_CompileGraphs` as compile_graphs(self, word_fsts: list<StdVectorFst>)
+        -> (success: bool, out_fsts: list<StdVectorFst>):
+        return _value_error_on_false(...)
+
+      def `CompileGraphFromText` as compile_graph_from_text(self, transcript: list<int>)
+        -> (success: bool, out_fst: StdVectorFst):
+        return _value_error_on_false(...)
+
+      def `CompileGraphsFromText` as compile_graphs_from_text(self, transcripts: list<list<int>>)
+        -> (success: bool, out_fsts: list<StdVectorFst>):
+        return _value_error_on_false(...)

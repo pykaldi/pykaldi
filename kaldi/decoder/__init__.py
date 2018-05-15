@@ -7,7 +7,7 @@ from ._lattice_faster_decoder import *
 from ._lattice_biglm_faster_decoder import *
 from ._lattice_faster_online_decoder import *
 from ._training_graph_compiler import *
-from . import _training_graph_compiler_ext
+from ._training_graph_compiler_ext import *
 from .. import fstext as _fst
 from .. import lat as _lat
 
@@ -221,7 +221,7 @@ class LatticeFasterOnlineDecoder(
         return ofst
 
 
-class TrainingGraphCompiler(_training_graph_compiler.TrainingGraphCompiler):
+class TrainingGraphCompiler(_training_graph_compiler_ext.TrainingGraphCompiler):
     """Training graph compiler."""
     def __init__(self, trans_model, ctx_dep, lex_fst, disambig_syms, opts):
         """
@@ -260,7 +260,7 @@ class TrainingGraphCompiler(_training_graph_compiler.TrainingGraphCompiler):
         Returns:
           List[StdVectorFst]: The training graphs.
         """
-        ofsts = _training_graph_compiler_ext.compile_graphs(self, word_fsts)
+        ofsts = super(TrainingGraphCompiler, self).compile_graphs(word_fsts)
         for i, fst in enumerate(ofsts):
             ofsts[i] = _fst.StdVectorFst(fst)
         return ofsts
