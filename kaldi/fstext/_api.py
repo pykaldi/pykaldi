@@ -1,8 +1,10 @@
 # The Python API was largely adapted from the official OpenFst Python wrapper.
 # See www.openfst.org for additional documentation.
 
-import subprocess
 import logging
+import os
+import subprocess
+import time
 
 from ..base.io import ofstream, ostringstream, stringstream
 
@@ -1901,7 +1903,7 @@ def randequivalent(ifst1, ifst2, npath=1, delta=DELTA, seed=None,
 
 
 def randgen(ifst, npath=1, seed=None, select="uniform",
-            max_length=INT32_MAX, weight=False, remove_total_weight=False):
+            max_length=INT32_MAX, weighted=False, remove_total_weight=False):
     """
     Randomly generate successful paths in an FST.
 
