@@ -221,6 +221,18 @@ python setup.py test
 
 ## FAQ
 
+### How do I prevent PyKaldi install command from exhausting the system memory?
+
+By default, PyKaldi install command uses all available (logical) processors to
+accelerate the build process. If the size of the system memory is relatively
+small compared to the number of processors, the parallel compilation/linking
+jobs might end up exhausting the system memory and result in swapping. You can
+limit the number of parallel jobs used for building PyKaldi as follows:
+
+```bash
+MAKE_NUM_JOBS=2 python setup.py install
+```
+
 ### How do I build PyKaldi on MacOS?
 
 At the moment, PyKaldi installation scripts do not work on non-Linux platforms.
