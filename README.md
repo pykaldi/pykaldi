@@ -174,6 +174,17 @@ pip install --upgrade setuptools
 pip install numpy pyparsing
 pip install ninja  # not required but strongly recommended
 ```
+Instructions for CentOS. Note: We will install cmake separately due to the default cmake version being 2.6 in the package manager.
+
+```bash
+yum install autoconf automake curl g++ git graphviz \
+    libatlas3-base libtool make pkg-config subversion unzip wget zlib1g-dev
+
+pip install --upgrade pip
+pip install --upgrade setuptools
+pip install numpy pyparsing
+pip install ninja  # not required but strongly recommended
+```
 
 In addition to above listed system packages, we also need PyKaldi compatible
 installations of the following software:
@@ -194,8 +205,20 @@ software locally. Make sure you check the output of these scripts. If you do not
 see "Done installing {protobuf,CLIF,Kaldi}." printed at the very end, it means
 that installation has failed for some reason.
 
+Ubuntu
 ```bash
 cd tools
+./check_dependencies.sh  # checks if system dependencies are installed
+./install_protobuf.sh    # installs both the C++ library and the Python package
+./install_clif.sh        # installs both the C++ library and the Python package
+./install_kaldi.sh       # installs the C++ library
+cd ..
+```
+
+CentOS
+```bash
+cd tools
+./install_cmake.sh       # installs the latest cmake instead of the 2.6 default package
 ./check_dependencies.sh  # checks if system dependencies are installed
 ./install_protobuf.sh    # installs both the C++ library and the Python package
 ./install_clif.sh        # installs both the C++ library and the Python package
