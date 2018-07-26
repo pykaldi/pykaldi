@@ -8,7 +8,7 @@ from "nnet3/nnet-example.h":
     class NnetIo:
       name: str
       indexes: list<Index>
-      # features: GeneralMatrix
+      features: GeneralMatrix
 
       @add__init__
       def `NnetIo` as from_matrix(self, name: str, t_begin: int,
