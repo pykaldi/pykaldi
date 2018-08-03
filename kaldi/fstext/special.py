@@ -108,7 +108,7 @@ def determinize_lattice(ifst, compact_output=True,
        http://kaldi-asr.org/doc/determinize-lattice_8h_source.html
     """
     opts = _determinize_lattice.DeterminizeLatticeOptions()
-    opts.delta, opst.max_mem, opts.max_loop = delta, max_mem, max_loop
+    opts.delta, opts.max_mem, opts.max_loop = delta, max_mem, max_loop
     if compact_output:
         ofst = _fst.CompactLatticeFst()
         success = _special_ops._determinize_lattice_to_compact(ifst, ofst, opts)
