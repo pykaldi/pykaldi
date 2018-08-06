@@ -110,7 +110,7 @@ def determinize_lattice(ifst, compact_output=True,
     opts = _determinize_lattice.DeterminizeLatticeOptions()
     opts.delta, opts.max_mem, opts.max_loop = delta, max_mem, max_loop
     if compact_output:
-        ofst = _fst.CompactLatticeFst()
+        ofst = _fst.CompactLatticeVectorFst()
         success = _special_ops._determinize_lattice_to_compact(ifst, ofst, opts)
     else:
         ofst = _fst.LatticeFst()
