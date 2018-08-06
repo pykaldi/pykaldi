@@ -530,7 +530,7 @@ class _FstBase(object):
         Returns:
           The start state if start state is set, -1 otherwise.
         """
-        return self._start
+        return self._start()
 
     def states(self):
         """
