@@ -17,7 +17,7 @@ def compose_context_fst(ifst1, ifst2, connect=True, compose_filter="auto"):
 
     Args:
         ifst1 (StdContextFst): The input context FST over the tropical semiring.
-        ifst2 (StdVectorFst): The input FST over the tropical semiring.
+        ifst2 (StdFst): The input FST over the tropical semiring.
         connect (bool): Should output be trimmed?
         compose_filter: A string matching a known composition filter; one of:
             "alt_sequence", "auto", "match", "null", "sequence", "trivial".
@@ -45,7 +45,7 @@ def compose_context(disambig_syms, N, P, ifst):
         disambig_syms (List[int]): Disambiguation symbols.
         N (int): Size of context window.
         P (int): Position of central phone in context window, from 0..N-1.
-        ifst (StdVectorFst): Input FST.
+        ifst (StdFst): Input FST.
 
     Returns:
         Tuple[StdVectorFst, List[List[int]]]: Output fst, label information tuple.
@@ -64,7 +64,7 @@ def compose_deterministic_on_demand_fst(fst1, fst2, inverse=False):
     This function does not trim its output.
 
     Args:
-        fst1 (StdVectorFst): The input FST.
+        fst1 (StdFst): The input FST.
         fst2 (StdDeterministicOnDemandFst):
             The input deterministic on demand FST.
         inverse (bool): Deterministic FST on the left?
@@ -90,7 +90,7 @@ def determinize_lattice(ifst, compact_output=True,
     See `kaldi/src/fstext/determinize-lattice.h`_ for details.
 
     Args:
-        ifst (LatticeVectorFst): Input lattice.
+        ifst (LatticeFst): Input lattice.
         compact_output (bool): Whether the output is a compact lattice.
         delta (float): Comparison/quantization delta.
         max_mem (int): If positive, determinization will fail when the
@@ -128,7 +128,7 @@ def determinize_star(ifst, delta=_weight.DELTA,
     See `kaldi/src/fstext/determinize-star.h`_ for details.
 
     Args:
-        ifst (StdVectorFst): Input fst over the tropical semiring.
+        ifst (StdFst): Input fst over the tropical semiring.
         delta (float): Comparison/quantization delta.
         max_states (int): If positive, determinization will fail when max states
             is reached.
@@ -146,7 +146,7 @@ def determinize_star(ifst, delta=_weight.DELTA,
        http://kaldi-asr.org/doc/determinize-star_8h_source.html
     """
     ofst = _fst.StdVectorFst()
-    success = _special_ops._determinize_star(fst1, ofst, delta, max_states,
+    success = _special_ops._determinize_star(ifst, ofst, delta, max_states,
                                              allow_partial)
     if success:
         return ofst
