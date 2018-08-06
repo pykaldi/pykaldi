@@ -29,7 +29,7 @@ def compose_context_fst(ifst1, ifst2, connect=True, compose_filter="auto"):
         compose_filter = _getters.GetComposeFilter(compose_filter)
     except ValueError:
         raise ValueError("Unknown compose filter: {!r}".format(compose_filter))
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     _special_ops._compose_context_fst(ifst1, ifst2, ofst, connect,
                                       compose_filter)
     return ofst
@@ -48,9 +48,9 @@ def compose_context(disambig_syms, N, P, ifst):
         ifst (StdFst): Input FST.
 
     Returns:
-        Tuple[StdFst, List[List[int]]]: Output fst, label information tuple.
+        Tuple[StdVectorFst, List[List[int]]]: Output fst, label information tuple.
     """
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     ilabels_out = _special_ops._compose_context(disambig_syms, N, P, ifst, ofst)
     return ofst, ilabels_out
 
@@ -72,7 +72,7 @@ def compose_deterministic_on_demand_fst(fst1, fst2, inverse=False):
     Returns:
         A composed FST.
     """
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     if inverse:
         _special_ops._compose_deterministic_on_demand_inverse(fst1, fst2, ofst)
     else:
@@ -110,10 +110,10 @@ def determinize_lattice(ifst, compact_output=True,
     opts = _determinize_lattice.DeterminizeLatticeOptions()
     opts.delta, opts.max_mem, opts.max_loop = delta, max_mem, max_loop
     if compact_output:
-        ofst = _fst.CompactLatticeFst()
+        ofst = _fst.CompactLatticeVectorFst()
         success = _special_ops._determinize_lattice_to_compact(ifst, ofst, opts)
     else:
-        ofst = _fst.LatticeFst()
+        ofst = _fst.LatticeVectorFst()
         success = _special_ops._determinize_lattice(ifst, ofst, opts)
     if success:
         return ofst
@@ -145,8 +145,8 @@ def determinize_star(ifst, delta=_weight.DELTA,
     .. _kaldi/src/fstext/determinize-star.h:
        http://kaldi-asr.org/doc/determinize-star_8h_source.html
     """
-    ofst = _fst.StdFst()
-    success = _special_ops._determinize_star(fst1, ofst, delta, max_states,
+    ofst = _fst.StdVectorFst()
+    success = _special_ops._determinize_star(ifst, ofst, delta, max_states,
                                              allow_partial)
     if success:
         return ofst
@@ -162,7 +162,7 @@ def push_in_log(ifst, push_weights=False, push_labels=False,
     Destructively pushes weights/labels towards initial or final states.
 
     Args:
-        fst (StdFst): Input fst over the tropical semiring.
+        fst (StdVectorFst): Input fst over the tropical semiring.
         push_weights: Should weights be pushed?
         push_labels: Should labels be pushed?
         remove_common_affix: If pushing labels, should common prefix/suffix be
@@ -186,7 +186,7 @@ def remove_eps_local(fst, special=False):
     See `kaldi/src/fstext/remove-eps-local.h`_ for details.
 
     Args:
-        fst (StdFst): Input fst over the tropical semiring.
+        fst (StdVectorFst): Input fst over the tropical semiring.
         special (bool): Preserve stochasticity when casting to log semiring.
 
     .. _kaldi/src/fstext/remove-eps-local.h:
