@@ -17,7 +17,7 @@ def compose_context_fst(ifst1, ifst2, connect=True, compose_filter="auto"):
 
     Args:
         ifst1 (StdContextFst): The input context FST over the tropical semiring.
-        ifst2 (StdFst): The input FST over the tropical semiring.
+        ifst2 (StdVectorFst): The input FST over the tropical semiring.
         connect (bool): Should output be trimmed?
         compose_filter: A string matching a known composition filter; one of:
             "alt_sequence", "auto", "match", "null", "sequence", "trivial".
@@ -29,7 +29,7 @@ def compose_context_fst(ifst1, ifst2, connect=True, compose_filter="auto"):
         compose_filter = _getters.GetComposeFilter(compose_filter)
     except ValueError:
         raise ValueError("Unknown compose filter: {!r}".format(compose_filter))
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     _special_ops._compose_context_fst(ifst1, ifst2, ofst, connect,
                                       compose_filter)
     return ofst
@@ -45,12 +45,12 @@ def compose_context(disambig_syms, N, P, ifst):
         disambig_syms (List[int]): Disambiguation symbols.
         N (int): Size of context window.
         P (int): Position of central phone in context window, from 0..N-1.
-        ifst (StdFst): Input FST.
+        ifst (StdVectorFst): Input FST.
 
     Returns:
-        Tuple[StdFst, List[List[int]]]: Output fst, label information tuple.
+        Tuple[StdVectorFst, List[List[int]]]: Output fst, label information tuple.
     """
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     ilabels_out = _special_ops._compose_context(disambig_syms, N, P, ifst, ofst)
     return ofst, ilabels_out
 
@@ -64,7 +64,7 @@ def compose_deterministic_on_demand_fst(fst1, fst2, inverse=False):
     This function does not trim its output.
 
     Args:
-        fst1 (StdFst): The input FST.
+        fst1 (StdVectorFst): The input FST.
         fst2 (StdDeterministicOnDemandFst):
             The input deterministic on demand FST.
         inverse (bool): Deterministic FST on the left?
@@ -72,7 +72,7 @@ def compose_deterministic_on_demand_fst(fst1, fst2, inverse=False):
     Returns:
         A composed FST.
     """
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     if inverse:
         _special_ops._compose_deterministic_on_demand_inverse(fst1, fst2, ofst)
     else:
@@ -90,7 +90,7 @@ def determinize_lattice(ifst, compact_output=True,
     See `kaldi/src/fstext/determinize-lattice.h`_ for details.
 
     Args:
-        ifst (LatticeFst): Input lattice.
+        ifst (LatticeVectorFst): Input lattice.
         compact_output (bool): Whether the output is a compact lattice.
         delta (float): Comparison/quantization delta.
         max_mem (int): If positive, determinization will fail when the
@@ -110,10 +110,10 @@ def determinize_lattice(ifst, compact_output=True,
     opts = _determinize_lattice.DeterminizeLatticeOptions()
     opts.delta, opts.max_mem, opts.max_loop = delta, max_mem, max_loop
     if compact_output:
-        ofst = _fst.CompactLatticeFst()
+        ofst = _fst.CompactLatticeVectorFst()
         success = _special_ops._determinize_lattice_to_compact(ifst, ofst, opts)
     else:
-        ofst = _fst.LatticeFst()
+        ofst = _fst.LatticeVectorFst()
         success = _special_ops._determinize_lattice(ifst, ofst, opts)
     if success:
         return ofst
@@ -128,7 +128,7 @@ def determinize_star(ifst, delta=_weight.DELTA,
     See `kaldi/src/fstext/determinize-star.h`_ for details.
 
     Args:
-        ifst (StdFst): Input fst over the tropical semiring.
+        ifst (StdVectorFst): Input fst over the tropical semiring.
         delta (float): Comparison/quantization delta.
         max_states (int): If positive, determinization will fail when max states
             is reached.
@@ -145,7 +145,7 @@ def determinize_star(ifst, delta=_weight.DELTA,
     .. _kaldi/src/fstext/determinize-star.h:
        http://kaldi-asr.org/doc/determinize-star_8h_source.html
     """
-    ofst = _fst.StdFst()
+    ofst = _fst.StdVectorFst()
     success = _special_ops._determinize_star(fst1, ofst, delta, max_states,
                                              allow_partial)
     if success:
@@ -162,7 +162,7 @@ def push_in_log(ifst, push_weights=False, push_labels=False,
     Destructively pushes weights/labels towards initial or final states.
 
     Args:
-        fst (StdFst): Input fst over the tropical semiring.
+        fst (StdVectorFst): Input fst over the tropical semiring.
         push_weights: Should weights be pushed?
         push_labels: Should labels be pushed?
         remove_common_affix: If pushing labels, should common prefix/suffix be
@@ -186,7 +186,7 @@ def remove_eps_local(fst, special=False):
     See `kaldi/src/fstext/remove-eps-local.h`_ for details.
 
     Args:
-        fst (StdFst): Input fst over the tropical semiring.
+        fst (StdVectorFst): Input fst over the tropical semiring.
         special (bool): Preserve stochasticity when casting to log semiring.
 
     .. _kaldi/src/fstext/remove-eps-local.h:
