@@ -18,6 +18,13 @@ typedef ArcTpl<LexicographicWeight<TropicalWeight,LexicographicWeight<TropicalWe
 typedef Fst<KwsIndexArc> KwsIndexFst;
 typedef MutableFst<KwsIndexArc> KwsIndexMutableFst;
 
+REGISTER_FST(VectorFst, LatticeArc);
+REGISTER_FST(VectorFst, CompactLatticeArc);
+REGISTER_FST(VectorFst, KwsIndexArc);
+REGISTER_FST(ConstFst, LatticeArc);
+REGISTER_FST(ConstFst, CompactLatticeArc);
+REGISTER_FST(ConstFst, KwsIndexArc);
+
 template<class Arc>
 void FstToBytes(const Fst<Arc> &fst, string *result) {
   FstToString<Arc>(fst, result);
