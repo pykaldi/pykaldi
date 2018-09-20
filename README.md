@@ -135,11 +135,34 @@ Some places to help you get started:
 
 ## Installation
 
-To install PyKaldi from source, follow the steps given below. If you would like
-to use PyKaldi inside a Docker container instead, follow the instructions in
-the `docker` folder.
+### Conda
 
-### Step 1: Clone PyKaldi Repository and Create a New Python Environment
+To install PyKaldi with CUDA support:
+
+```bash
+conda install -c pykaldi pykaldi
+```
+
+To install PyKaldi without CUDA support (CPU only):
+
+```bash
+conda install -c pykaldi pykaldi-cpu
+```
+
+Note that PyKaldi package does not provide Kaldi executables. If you would like
+to use Kaldi executables along with PyKaldi, e.g. as part of read/write specifiers,
+you need to install Kaldi separately.
+
+### Docker
+
+If you would like to use PyKaldi inside a Docker container, follow the
+instructions in the `docker` folder.
+
+### From Source
+
+To install PyKaldi from source, follow the steps given below. 
+
+#### Step 1: Clone PyKaldi Repository and Create a New Python Environment
 
 ```bash
 git clone https://github.com/pykaldi/pykaldi.git
@@ -160,7 +183,7 @@ virtualenv env
 source env/bin/activate
 ```
 
-### Step 2: Install Dependencies
+#### Step 2: Install Dependencies
 
 On Ubuntu 16.04, running the following commands will install system packages
 needed for building PyKaldi from source.
@@ -203,7 +226,7 @@ cd tools
 cd ..
 ```
 
-### Step 3: Install PyKaldi
+#### Step 3: Install PyKaldi
 
 If Kaldi is installed inside the `tools` directory and all Python dependencies
 (numpy, pyparsing, pyclif, protobuf) are installed in the active Python
