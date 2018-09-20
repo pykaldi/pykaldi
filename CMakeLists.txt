@@ -71,7 +71,7 @@ if(CUDA)
 endif(CUDA)
 separate_arguments(LD_LIBS)
 
-set(CMAKE_INSTALL_RPATH "${PYTHON_LIB_DIR};${KALDI_LIBRARIES_DIR};${OPENFST_LIB_DIR};$ORIGIN/..")
+set(CMAKE_INSTALL_RPATH "${PYTHON_LIB_DIR};${KALDI_LIBRARIES_DIR};${OPENFST_LIB_DIR}")
 file(GLOB children RELATIVE ${CMAKE_SOURCE_DIR}/kaldi ${CMAKE_SOURCE_DIR}/kaldi/*)
 foreach(child ${children})
   if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/kaldi/${child})
@@ -81,7 +81,7 @@ endforeach()
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/kaldi/lib
   ${CMAKE_SOURCE_DIR}/kaldi
   ${CMAKE_BINARY_DIR}/kaldi
   ${KALDI_SRC_DIR}
@@ -137,12 +137,12 @@ function(add_pyclif_library name pyclif_file)
           --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
           --modname=${module_name}
           --prepend=clif/python/types.h
-          -I${CMAKE_SOURCE_DIR}
+          -I${CMAKE_SOURCE_DIR}/kaldi/lib
           -I${CMAKE_SOURCE_DIR}/kaldi
           -I${CMAKE_BINARY_DIR}/kaldi
           -I${KALDI_SRC_DIR}
           "-f-I${PYTHON_INCLUDE_DIRS} \
-             -I${CMAKE_SOURCE_DIR} \
+             -I${CMAKE_SOURCE_DIR}/kaldi/lib \
              -I${CMAKE_SOURCE_DIR}/kaldi \
              -I${CMAKE_BINARY_DIR}/kaldi \
              -I${KALDI_SRC_DIR} \
@@ -283,10 +283,11 @@ endfunction(add_CC_library)
 ####################################################################################################
 
 set(CLIF_LIBRARY "_clif")
-string(REPLACE "/build" "/build/lib/kaldi" CLIF_LIB_LOCATION ${CMAKE_CURRENT_BINARY_DIR})
+string(REPLACE "/build" "/build/lib/kaldi/lib" CLIF_LIB_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
+set(CLIF_SRC_DIR "${CMAKE_SOURCE_DIR}/kaldi/lib")
 add_CC_library(${CLIF_LIBRARY}
-  "${CMAKE_SOURCE_DIR}/clif/python/optional.cc;${CMAKE_SOURCE_DIR}/clif/python/runtime.cc;${CMAKE_SOURCE_DIR}/clif/python/slots.cc;${CMAKE_SOURCE_DIR}/clif/python/types.cc"
-  OUTPUTDIR ${CLIF_LIB_LOCATION}
+  "${CLIF_SRC_DIR}/clif/python/optional.cc;${CLIF_SRC_DIR}/clif/python/runtime.cc;${CLIF_SRC_DIR}/clif/python/slots.cc;${CLIF_SRC_DIR}/clif/python/types.cc"
+  OUTPUTDIR ${CLIF_LIB_OUTPUTDIR}
   LIBRARIES ${PYTHON_LIBRARIES}
 )
 
