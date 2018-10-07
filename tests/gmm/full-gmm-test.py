@@ -41,10 +41,10 @@ def RandPosdefSpMatrix(dim):
 def init_rand_diag_gmm(gmm):
     num_comp, dim = gmm.num_gauss(), gmm.dim()
     weights = Vector([kaldi_math.rand_uniform() for _ in range(num_comp)])
-    tot_weigth = weights.sum()
+    tot_weight = weights.sum()
 
     for i, m in enumerate(weights):
-        weights[i] = m / tot_weigth
+        weights[i] = m / tot_weight
 
     means = Matrix([[kaldi_math.rand_gauss() for _ in range(dim)] for _ in range(num_comp)])
     vars_ = Matrix([[kaldi_math.exp(kaldi_math.rand_gauss()) for _ in range(dim)] for _ in range(num_comp)])
@@ -131,8 +131,8 @@ class TestFullGmm(unittest.TestCase):
         self.assertAlmostEqual(1.0, posterior1.sum(), delta = 0.01)
 
         weights_bak = gmm.weights()
-        means_bak = gmm.means()
-        invcovars_bak = gmm.covars()
+        means_bak = gmm.get_means()
+        invcovars_bak = gmm.get_covars()
         for i in range(nMix):
             invcovars_bak[i].invert_double_()
 
@@ -140,7 +140,7 @@ class TestFullGmm(unittest.TestCase):
         gmm2 = FullGmm(gmm.num_gauss(), gmm.dim())
         gmm2.set_weights(weights_bak)
         gmm2.set_means(means_bak)
-        gmm2.inv_covars_ = invcovars_bak
+        gmm2.set_inv_covars(invcovars_bak)
         gmm2.compute_gconsts()
 
         loglike_gmm2 = gmm2.log_likelihood(feat)
@@ -160,7 +160,7 @@ class TestFullGmm(unittest.TestCase):
         for i in range(nMix):
             gmm.get_component_mean(i, means_bak[i,:])
         gmm3.set_means(means_bak)
-        gmm3.inv_covars_ = invcovars_bak
+        gmm3.set_inv_covars(invcovars_bak)
         gmm3.compute_gconsts()
 
         loglike_gmm3 = gmm3.log_likelihood(feat)
@@ -201,21 +201,21 @@ class TestFullGmm(unittest.TestCase):
 
         # Split and merge test for 1 component
         # TODO: Implement split
-        # weights1 = Vector([1.0])
-        # means1 = Matrix(means[0,:])
-        # invcovars1 = [invcovars[0]]
-        # gmm1 = FullGmm(1, dim)
-        # gmm1.set_weights(weights1)
-        # gmm1.SetInvCovarsAndMeans(invcovars1, means1)
-        # gmm1.ComputeGconsts()
+        weights1 = Vector([1.0])
+        means1 = Matrix(means[0:1,:])
+        invcovars1 = [invcovars[0]]
+        gmm1 = FullGmm(1, dim)
+        gmm1.set_weights(weights1)
+        gmm1.set_inv_covars_and_means(invcovars1, means1)
+        gmm1.compute_gconsts()
 
-        # gmm2 = FullGmm()
-        # gmm2.CopyFromFullGmm(gmm1)
-        # gmm2.Split(2, 0.001)
-        # gmm2.Merge(1)
-        # loglike1 = gmm1.LogLikelihood(feat)
-        # loglike2 = gmm2.LogLikelihood(feat)
-        # self.assertAlmostEqual(loglike1, loglike2, delta = 0.01)
+        gmm2 = FullGmm()
+        gmm2.copy(gmm1)
+        gmm2.split(2, 0.001)
+        gmm2.merge(1)
+        loglike1 = gmm1.log_likelihood(feat)
+        loglike2 = gmm2.log_likelihood(feat)
+        self.assertAlmostEqual(loglike1, loglike2, delta = 0.01)
 
     def testCovars(self):
         gmm = FullGmm()
