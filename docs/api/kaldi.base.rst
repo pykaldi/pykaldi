@@ -122,7 +122,6 @@ kaldi\.base\.math
       double_sqr
       exp
       factorize
-      float_rand_prune
       gcd
       hypot
       isfinite
@@ -139,6 +138,7 @@ kaldi\.base\.math
       rand_gauss
       rand_int
       rand_poisson
+      rand_prune
       rand_uniform
       round_up_to_nearest_power_of_two
       sqr

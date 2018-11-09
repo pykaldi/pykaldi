@@ -7,18 +7,64 @@ from kaldi.fstext import StdVectorFst
 from "chain/language-model.h":
   namespace `kaldi::chain`:
     class LanguageModelOptions:
-      ngram_order: int
-      num_extra_lm_states: int
-      no_prune_ngram_order: int
+      """Options for language model estimation.
 
-      def `Register` as register(self, opts: OptionsItf)
+      These options are for an un-smoothed (phonetic) language model of a
+      certain order (e.g. triphone) used as the 'denominator graph' in acoustic
+      model estimation. The reason for avoiding smoothing is to reduce the
+      number of transitions in the language model, which will improve the
+      efficiency of training.
+      """
+
+      ngram_order: int
+      """n-gram order for the (phonetic) language model"""
+
+      num_extra_lm_states: int
+      """Desired number of extra LM states to keep for long n-grams"""
+
+      no_prune_ngram_order: int
+      """The n-gram order below which the language model is not pruned"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class LanguageModelEstimator:
+      """LanguageModelEstimator(opts:LanguageModelOptions)
+
+      Language model estimator.
+
+      This estimates an n-gram language model with a kind of 'hard' backoff
+      that is intended to reduce the number of arcs in the final compiled FST.
+      Basically, we never back off to the lower-order n-gram state, but we
+      sometimes just say, "this state's count is too small so we won't have
+      this state at all", and this LM state disappears and transitions to it go
+      to the lower-order n-gram's state.
+
+      This language model is implemented as a set of states, and transitions
+      between these states; there is no concept of a backoff transition here.
+      Because this maps very naturally to an FST, we output it as an FST.
+
+      Args:
+        opts (LanguageModelOptions): Options for Language model estimation.
+      """
       def __init__(self, opts: LanguageModelOptions)
 
-      def `AddCounts` as add_counts(self, sentence: list<int>)
+      def `AddCounts` as add_counts(self, sentence: list<int>):
+        """Adds counts for input sentence.
+
+        Args:
+          sentence (List[int]): Input sentence. It should not contain zeros.
+        """
 
       def `Estimate` as estimate(self) -> (fst:StdVectorFst):
-        return StdVectorFst(...)
+        """Estimates the LM.
 
-      
+        Returns:
+          StdVectorFst: Output LM as an FST.
+        """
+        return StdVectorFst(...)

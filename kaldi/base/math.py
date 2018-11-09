@@ -2,9 +2,8 @@ from ._kaldi_math import *
 from ._kaldi_math_ext import *
 
 # Must be imported explicitly
-from ._kaldi_math import _lcm, _factorize,\
-                         _with_prob, _round_up_to_nearest_power_of_two,\
-                         _rand_int
+from ._kaldi_math import (_lcm, _factorize, _with_prob,
+                          _round_up_to_nearest_power_of_two, _rand_int)
 
 DBL_EPSILON = 2.2204460492503131e-16
 
@@ -34,21 +33,24 @@ def lcm(x, y):
     """Returns the least common multiple for x and y.
 
     Args:
-        x (int), y (int): positive integers
+        x (int): first positive integer
+        y (int): second positive integer
 
     Raises:
         ValueError if x <= 0 or y <= 0
     """
     if x <= 0 or y <= 0:
-        raise ValueError("Lcm parameters must be positive integers.")
+        raise ValueError("lcm parameters must be positive integers.")
     return _lcm(x, y)
 
 def factorize(x):
-    """Splits a number into its prime factors, in sorted order from
-    least to greates, with duplication.
+    """Splits a positive integer into its prime factors.
 
     Args:
         x (int): positive integer
+
+    Returns:
+        List[int]: Prime factors in increasing order, with duplication.
 
     Raises:
         ValueError if x <= 0
@@ -58,47 +60,45 @@ def factorize(x):
     return _factorize(x)
 
 def with_prob(prob):
-    """
-    Returns a true with probability 'prob'.
+    """Returns `True` with probability `prob`.
 
     Args:
-            prob (int): probability of True, 0 <= prob <= 1
+        prob (float): probability of True, 0 <= prob <= 1
 
     Raises:
-        If prob is negative or greater than 1.0.
+        ValueError: If `prob` is negative or greater than 1.0.
     """
     if 0.0 <= prob <= 1.0:
         return _with_prob(prob)
 
-    raise ValueError("Probability prob should be positive and less than 1.0")
+    raise ValueError("prob should be in the interval [0.0, 1.0]")
 
 def round_up_to_nearest_power_of_two(n):
-    """
-    Does the obvious thing.
+    """Rounds input integer up to the nearest power of 2.
 
     Args:
         n (int): Positive integer
 
     Raises:
-        ValueError if n <= 0.0
+        ValueError if n <= 0
     """
-    if n <= 0.0:
+    if n <= 0:
         raise ValueError("n should be a positive integer")
     return _round_up_to_nearest_power_of_two(n)
 
 def rand_int(first, last, state = None):
-    """Returns a random integer between first and last inclusive.
-    
+    """Returns a random integer in the given interval.
+
     Args:
-        first (int): Lower bound 
+        first (int): Lower bound
         last (int): Upper bound (inclusive)
-        state (RandomState or None): randomizer seed class
+        state (RandomState or None): RNG state
 
     Raises:
-        ValueError if first >= last 
+        ValueError if first >= last
     """
     if first >= last:
-        raise ValueError("last must be >= than first.")
+        raise ValueError("first must be smaller than last.")
     return _rand_int(first, last, state)
 
 ################################################################################

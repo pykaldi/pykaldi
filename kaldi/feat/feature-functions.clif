@@ -15,25 +15,30 @@ from "feat/feature-functions.h":
       first (n/2) + 1 elements of it with the energies of the FFT bins from
       zero to the Nyquist frequency.  Contents of the remaining (n/2) - 1
       elements are undefined at output.
+
+      Args:
+        complex_fft (Vector): Complex FFT to be converted to a power spectrum.
       """
 
     class DeltaFeaturesOptions:
-        """Options for delta computation.
+      """DeltaFeaturesOptions(order:int=2, window:int=2)
 
-        Args:
-          order (int): Delta computation order (default: 2).
-          window (int): Delta computation window (default: 2).
-            Actual window size is 2 * window + 1.
+      Options for delta computation.
 
-        Note:
-          The behavior at the edges is to replicate the first or last frame.
-        """
+      Args:
+        order (int): Delta computation order (default=2).
+        window (int): Delta computation window (default=2).
+          Actual window size is 2 * window + 1.
+
+      Note:
+        The behavior at the edges is to replicate the first or last frame.
+      """
 
       order: int
-      """Delta computation order (default: 2)"""
+      """Delta computation order (default=2)"""
 
       window: int
-      """Delta computation window (default: 2)"""
+      """Delta computation window (default=2)"""
 
       def __init__(self, order: int = default, window: int = default)
 
@@ -46,7 +51,9 @@ from "feat/feature-functions.h":
         """
 
     class DeltaFeatures:
-      """Delta features computer.
+      """DeltaFeatures(opts:DeltaFeaturesOptions)
+
+      Delta features computer.
 
       This class provides a low-level function to compute delta features. The
       function takes as input a matrix of features and a frame index that it
@@ -71,16 +78,19 @@ from "feat/feature-functions.h":
         """
 
     class ShiftedDeltaFeaturesOptions:
-      """Options for shifted delta computation."""
+      """ShiftedDeltaFeaturesOptions()
+
+      Options for shifted delta computation.
+      """
 
       window: int
-      """Size of time delay and advance (default: 1)"""
+      """Size of time delay and advance (default=1)"""
 
       num_blocks: int
-      """Number of blocks in advance of each frame to be concatenated (default: 7)"""
+      """Number of blocks in advance of each frame to be concatenated (default=7)"""
 
       block_shift: int
-      """Distance between each block (default: 3)"""
+      """Distance between each block (default=3)"""
 
       def `Register` as register(self, opts: OptionsItf):
         """Registers options with an object implementing the options interface.
@@ -91,7 +101,9 @@ from "feat/feature-functions.h":
         """
 
     class ShiftedDeltaFeatures:
-      """Shifted delta features computer.
+      """ShiftedDeltaFeatures(opts:ShiftedDeltaFeaturesOptions)
+
+      Shifted delta features computer.
 
       This class provides a low-level function to compute shifted delta cesptra
       (SDC). The function takes as input a matrix of features and a frame index
@@ -201,22 +213,24 @@ from "feat/feature-functions.h":
       return _matrix_wrapper(...)
 
     class SlidingWindowCmnOptions:
-      """Options for sliding window CMN computation."""
+      """SlidingWindowCmnOptions()
+
+      Options for sliding window CMN computation."""
 
       cmn_window: int
-      """Window size for average CMN computation (default: 600)"""
+      """Window size for average CMN computation (default=600)"""
 
       min_window: int
-      """Minimum CMN window used at start of decoding (default: 100)"""
+      """Minimum CMN window used at start of decoding (default=100)"""
 
       max_warnings: int
-      """Maximum watning to report per utterance (default: 5)"""
+      """Maximum watning to report per utterance (default=5)"""
 
       normalize_variance: bool
-      """Whether to normalize variance to one (default: False)"""
+      """Whether to normalize variance to one (default=False)"""
 
       center: bool
-      """Whether to center the window on the current frame (default: False)"""
+      """Whether to center the window on the current frame (default=False)"""
 
       def `Register` as register(self, opts: OptionsItf):
         """Registers options with an object implementing the options interface.

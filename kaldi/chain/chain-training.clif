@@ -4,11 +4,24 @@ from "itf/options-itf-clifwrap.h" import *
 from "chain/chain-training.h":
   namespace `kaldi::chain`:
     class ChainTrainingOptions:
-      l2_regularize: float
-      leaky_hmm_coefficient: float
-      xent_regularize: float
+      """Options for chain training."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      l2_regularize: float
+      """L2 regularization constant on the 'chain' output (default=0.0)."""
+
+      leaky_hmm_coefficient: float
+      """Coefficient for 'Leaky HMM' (default=1.0e-05)."""
+
+      xent_regularize: float
+      """Cross-entropy regularization constant (default=0.0)."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     # FIXME (VM):
     # needs *float

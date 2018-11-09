@@ -36,7 +36,6 @@ from "fst/symbol-table.h":
             table.add_symbol(symbol)
         table.write_text("alphabet.syms")
 
-      .. autoconstant:: NO_SYMBOL
       """
 
       const `kNoSymbol` as NO_SYMBOL: int

@@ -6,30 +6,64 @@ from "hmm/transition-model-clifwrap.h" import *
 from "tree/context-dep-clifwrap.h" import *
 from "chain/chain-datastruct-clifwrap.h" import *
 
+from kaldi.fstext import StdVectorFst
+
 from "chain/chain-den-graph.h":
   namespace `kaldi::chain`:
       class DenominatorGraph:
-        def `NumStates` as num_states(self) -> int
+        """Denominator graph.
 
-        def `NumPdfs` as num_pdfs(self) -> int
+        This class is responsible for storing the FST that we use as the
+        'anti-model' or 'denominator-model', that models all possible phone
+        sequences (or most possible phone sequences, depending how we built
+        it). It stores the FST in a format where we can access both the
+        transitions out of each state, and the transitions into each state.
 
-        @add__init__
-        def `DenominatorGraph` as from_fst(self, fst: StdVectorFst, num_pdfs: int)
+        Args:
+          fst (StdVectorFst): The denominator model FST. It should be an
+            epsilon-free acceptor with labels representing pdf-ids + 1.
+          num_pds (int): The number of PDFs. Used only for checking.
 
-        def `ForwardTransitions` as forward_transitions(self) -> IntPair
+        Note:
+          Supports both GPU and non-GPU operation, but is optimized for GPU.
+        """
+        def __init__(self, fst: StdVectorFst, num_pdfs: int)
 
-        def `BackwardTransitions` as backward_transitions(self) -> IntPair
+        def `NumStates` as num_states(self) -> int:
+          """Returns number of states in the HMM."""
 
-        def `Transitions` as transitions(self) -> DenominatorGraphTransition
+        def `NumPdfs` as num_pdfs(self) -> int:
+          """Returns number of PDFs in the HMM."""
 
-        def `InitialProbs` as initial_probs(self) -> CuVector
+        # NOTE(Dogan): These return arrays, so they cannot be wrapped directly.
+        # def `ForwardTransitions` as forward_transitions(self) -> IntPair
+        # def `BackwardTransitions` as backward_transitions(self) -> IntPair
+        # def `Transitions` as transitions(self) -> DenominatorGraphTransition
 
-        def `GetNormalizationFst` as get_normalization_fst(self, ifst: StdVectorFst) -> (ofst: StdVectorFst)
+        def `InitialProbs` as initial_probs(self) -> CuVector:
+          """Returns the initial probabilities of HMM states."""
 
-        def `ScaleInitialProbs` as scale_initial_probs(self, s: float)
+        def `GetNormalizationFst` as get_normalization_fst(self, ifst: StdVectorFst) -> StdVectorFst:
+          """Outputs the normalization FST."""
+          return StdVectorFst(...)
 
-      def `MinimizeAcceptorNoPush` as minimize_acceptor_no_push(fst: StdVectorFst)
+        def `ScaleInitialProbs` as scale_initial_probs(self, s: float):
+          """Scales initial probabilities of HMM states."""
 
-      def `MapFstToPdfIdsPlusOne` as map_fst_to_pdf_ids_plus_one(trans_model: TransitionModel, fst: StdVectorFst)
+      def `MinimizeAcceptorNoPush` as minimize_acceptor_no_push(fst: StdVectorFst):
+        """Minimizes acceptor without without weight pushing.
 
-      def `CreateDenominatorFst` as create_denominator_fst(ctx_dep: ContextDependency, trans_model: TransitionModel, phone_lm: StdVectorFst) -> (den_graph: StdVectorFst)
+        This is useful for constructing denominator graph.
+        """
+
+      def `MapFstToPdfIdsPlusOne` as map_fst_to_pdf_ids_plus_one(trans_model: TransitionModel, fst: StdVectorFst):
+        """Converts transition-ids in input FST to pdf-ids plus one."""
+
+      def `CreateDenominatorFst` as create_denominator_fst(ctx_dep: ContextDependency, trans_model: TransitionModel, phone_lm: StdVectorFst) -> StdVectorFst:
+        """Creates denominator graph.
+
+        Starting from an acceptor on phones that represents some kind of compiled
+        language model (with no disambiguation symbols), this funtion creates the
+        denominator-graph.
+        """
+        return StdVectorFst(...)

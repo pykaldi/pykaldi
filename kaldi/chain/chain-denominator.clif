@@ -6,16 +6,34 @@ from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "chain/chain-denominator.h":
   namespace `kaldi::chain`:
     class DenominatorComputation:
-      def __init__(self, opts: ChainTrainingOptions, den_graph: DenominatorGraph, num_sequences: int, nnet_output: CuMatrixBase):
-        """Constructor.
+      """Denominator computer used in chain training.
 
-        Args:
-          opts (ChainTrainingOptions): Options
-          graph (DenominatorGraph): The HMM to use for denominator
-          num_sequences (int): Number of separate time sequences to work with
-          nnet_output (CuMatrix): The output of the neural network for this minibatch
+      This does forward-backward in parallel on a number of sequences, using a
+      single HMM.
+
+      Args:
+        opts (ChainTrainingOptions): Options for chain training
+        den_graph (DenominatorGraph): The HMM to use for denominator
+        num_sequences (int): Number of separate time sequences to work with
+        nnet_output (CuMatrix): The output of the neural network for this minibatch
+      """
+      def __init__(self, opts: ChainTrainingOptions, den_graph: DenominatorGraph, num_sequences: int, nnet_output: CuMatrixBase)
+
+      def `Forward` as forward(self) -> float:
+        """Does the forward computation.
+
+        Returns:
+          float: Total negated log-likelihood summed over all sequences.
         """
 
-      def `Forward` as forward(self) -> float
+      def `Backward` as backward(self, deriv_weight: float, nnet_output_deriv: CuMatrixBase )-> bool:
+        """Does the backward computation.
 
-      def `Backward` as backward(self, deriv_weight: float, nnet_output_deriv: CuMatrixBase )-> bool
+        Args:
+          deriv_weight (float): Weight for the derivative of the log-prob wrt
+            nnet output.
+          nnet_output_deriv (CuMatrix): Output matrix.
+
+        Returns:
+          bool: False if a failure is detected, True otherwise.
+        """

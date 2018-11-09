@@ -12,7 +12,7 @@ kaldi\.chain
    
       add_weight_to_supervision_fst
       alignment_to_proto_supervision
-      alignment_to_proto_supervision_with_phone_durs
+      alignment_to_proto_supervision_with_phones_durs
       compute_fst_state_times
       create_denominator_fst
       get_weights_for_ranges
