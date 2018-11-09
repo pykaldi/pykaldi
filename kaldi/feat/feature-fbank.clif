@@ -9,58 +9,127 @@ from kaldi.matrix import _matrix_wrapper
 from "feat/feature-fbank.h":
   namespace `kaldi`:
     class FbankOptions:
-      frame_opts: FrameExtractionOptions
-      mel_opts: MelBanksOptions
-      use_energy: bool
-      energy_floor: float
-      raw_energy: bool
-      htk_compat: bool
-      use_log_fbank: bool
-      use_power: bool
+      """FbankOptions()
 
-      def `Register` as register(self, opts: OptionsItf)
+      Options for computing filterbank features.
+      """
+
+      frame_opts: FrameExtractionOptions
+      """Options for frame extraction"""
+
+      mel_opts: MelBanksOptions
+      """Options for Mel banks (default #mel-banks is 23)"""
+
+      use_energy: bool
+      """Whether to add an extra energy dimension to filterbank output (default=False)"""
+
+      energy_floor: float
+      """Absolute energy floor used in filterbank computation (default=0.0)"""
+
+      raw_energy: bool
+      """Whether to compute energy before preemphasis and windowing (default=True)"""
+
+      htk_compat: bool
+      """Whether to put energy last (default=False)"""
+
+      use_log_fbank: bool
+      """Whether to compute log-filterbank (default) or linear-filterbank"""
+
+      use_power: bool
+      """Whether to use power (default) or magnitude"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class FbankComputer:
+      """Fiterbank computer.
+
+      This is the low-level interface for computing filterbank features.
+
+      Args:
+        opts (FbankOptions): Options for computing filterbank features.
+      """
       def __init__(self, opts: FbankOptions)
 
       @add__init__
-      def `FbankComputer` as from_other(self, other: FbankComputer)
+      def `FbankComputer` as from_other(self, other: FbankComputer):
+        """Constructs a new FbankComputer object from another."""
 
-      def `GetFrameOptions` as get_frame_options(self)
-          -> FrameExtractionOptions
+      def `GetFrameOptions` as get_frame_options(self) -> FrameExtractionOptions:
+        """Returns frame extraction options."""
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension."""
 
-      def `NeedRawLogEnergy` as need_raw_log_energy(self) -> bool
+      def `NeedRawLogEnergy` as need_raw_log_energy(self) -> bool:
+        """Whether raw log energy is added to features."""
 
-      def `Compute` as compute(self, signal_log_energy: float,
-                               vtln_warp: float, signal_frame: VectorBase,
-                               feature: VectorBase)
+      def `Compute` as compute(self, signal_log_energy: float, vtln_warp: float,
+                               signal_frame: VectorBase, feature: VectorBase):
+        """Computes one feature frame from one signal frame.
+
+        Args:
+          signal_log_energy (float): The log-energy of the signal frame prior
+            to windowing and pre-emphasis, or log(min-positive-float),
+            whichever is greater. Ignored if :meth:`need_raw_log_energy`
+            returns False.
+          vtln_warp (float): The VTLN warping factor. Normally 1.0, meaning no
+            warping is to be done. This value is ignored for feature types
+            that don't support VLTN, such as spectrogram features.
+          signal_frame (Vector): One frame of the signal. The frame vector is
+            overwritten with intermedite values during computation to avoid new
+            memory allocation.
+          feature (Vector): Output frame of features.
+         """
 
     class `OfflineFeatureTpl<FbankComputer>` as Fbank:
+      """Filterbank computer.
+
+      Args:
+        opts (FbankOptions): Options for computing filterbank features.
+      """
       def __init__(self, opts: FbankOptions)
 
       @add__init__
-      def `FbankOfflineFeatureTpl` as from_other(self, other: Fbank)
+      def `FbankOfflineFeatureTpl` as from_other(self, other: Fbank):
+        """Constructs a new Fbank object from another."""
 
-      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
-          -> Matrix:
+      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix:
+        """Computes the filterbank features from input waveform.
+
+        This interface for computing features requires that the user has
+        already checked that the sampling frequency of the waveform is equal to
+        the sampling frequency specified in the frame extraction options.
+
+        Args:
+          wave (Vector): The input waveform
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0).
+
+        Returns:
+          The matrix of features, where the row-index is the frame index.
+        """
         return _matrix_wrapper(...)
 
       def `ComputeFeatures` as compute_features(self,
           wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
-        """Computes the features for one file (one sequence of features).
+        """Computes the filterbank features from input waveform.
 
         Args:
-          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
+          wave (Vector): The input waveform
           sample_freq (float): The sampling frequency with which wave is
             sampled. If sample_freq is higher than the frequency specified in
-            the config, Kaldi will downsample the waveform
-          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+            the config, the waveform is downsampled.
+          vtnl_warp (float): The VTNL wrapping factor (normally 1.0).
 
         Returns:
-          The matrix of features, where the row-index is the frame index
+          The matrix of features, where the row-index is the frame index.
         """
         return _matrix_wrapper(...)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns the feature dimension."""
