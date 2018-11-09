@@ -102,7 +102,7 @@ dimensions:
 | Package    | Wrapped? | Pythonic? | Documentation?             | Tests?   |
 | :--------: | :------: | :-------: | :------------------------: | :------: |
 | base       | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
-| chain      | &#10004; |           | &#10004;                   |          |
+| chain      | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | cudamatrix | &#10004; |           | &#10004;                   | &#10004; |
 | decoder    | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | feat       | &#10004; | &#10004;  | &#10004;                   |          |
@@ -160,7 +160,7 @@ instructions in the `docker` folder.
 
 ### From Source
 
-To install PyKaldi from source, follow the steps given below. 
+To install PyKaldi from source, follow the steps given below.
 
 #### Step 1: Clone PyKaldi Repository and Create a New Python Environment
 
