@@ -99,7 +99,7 @@ from "feat/feature-mfcc.h":
       def `MfccOfflineFeatureTpl` as from_other(self, other: Mfcc):
         """Constructs a new Mfcc object from another."""
 
-      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float) -> Matrix:
+      def `Compute` as compute(self, wave: VectorBase, vtln_warp: float) -> Matrix:
         """Computes the MFCC features from input waveform.
 
         This interface for computing features requires that the user has
@@ -108,7 +108,7 @@ from "feat/feature-mfcc.h":
 
         Args:
           wave (Vector): The input waveform
-          vtnl_warp (float): The VTNL wrapping factor (normally 1.0).
+          vtln_warp (float): The VTLN wrapping factor (normally 1.0).
 
         Returns:
           The matrix of features, where the row-index is the frame index.
@@ -116,7 +116,7 @@ from "feat/feature-mfcc.h":
         return _matrix_wrapper(...)
 
       def `ComputeFeatures` as compute_features(self,
-          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
+          wave: VectorBase, sample_freq: float, vtln_warp: float) -> Matrix:
         """Computes the MFCC features from input waveform.
 
         Args:
@@ -124,7 +124,7 @@ from "feat/feature-mfcc.h":
           sample_freq (float): The sampling frequency with which wave is
             sampled. If sample_freq is higher than the frequency specified in
             the config, the waveform is downsampled.
-          vtnl_warp (float): The VTNL wrapping factor (normally 1.0).
+          vtln_warp (float): The VTLN wrapping factor (normally 1.0).
 
         Returns:
           The matrix of features, where the row-index is the frame index.

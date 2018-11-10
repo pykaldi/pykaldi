@@ -1,5 +1,8 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
+
+from kaldi.matrix import _vector_wrapper
 
 from "feat/mel-computations.h":
   namespace `kaldi`:
@@ -32,6 +35,13 @@ from "feat/mel-computations.h":
       htk_mode: bool
       """Enables more exact compatibility with HTK (default=False)"""
 
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class MelBanks:
       """Mel filterbanks.
@@ -81,6 +91,7 @@ from "feat/mel-computations.h":
 
       def `GetCenterFreqs` as get_center_freqs(self) -> Vector:
         """Returns vector of center frequencies of each Mel bin."""
+        return _vector_wrapper(...)
 
     def `ComputeLifterCoeffs` as compute_lifter_coeffs(Q: float, coeffs: VectorBase):
       """Computes liftering coefficients.
@@ -119,3 +130,4 @@ from "feat/mel-computations.h":
       Returns:
         Vector: Equal loudness vector.
       """
+      return _vector_wrapper(...)

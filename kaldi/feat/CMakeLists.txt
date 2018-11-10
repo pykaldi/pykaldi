@@ -19,7 +19,7 @@ add_pyclif_library("_feature_functions" feature-functions.clif
   LIBRARIES kaldi-feat
 )
 add_pyclif_library("_mel_computations" mel-computations.clif
-  CLIF_DEPS _feature_window
+  CLIF_DEPS _feature_window _options_itf
   LIBRARIES kaldi-feat
 )
 add_pyclif_library("_feature_spectrogram" feature-spectrogram.clif
