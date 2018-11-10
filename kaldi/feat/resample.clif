@@ -4,26 +4,89 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "feat/resample.h":
   namespace `kaldi`:
     class ArbitraryResample:
+      """Arbitrary resampler.
+
+      This allows you to resample a signal (assumed zero outside the sample
+      region, not periodic) at arbitrary specified time values, which don't
+      have to be linearly spaced.
+
+      The low-pass filter cutoff "filter_cutoff_hz" should be less than half
+      the sample rate; "num_zeros" should probably be at least two preferably
+      more; higher numbers give sharper filters but will be less efficient.
+      """
       def __init__(self, num_samples_in: int, samp_rate_hz: float,
-                   filter_cutoff_hz: float, sample_points_secs: Vector,
-                   num_zeros: int)
+                   filter_cutoff_hz: float, sample_points_secs: Vector, num_zeros: int)
 
-      def `NumSamplesIn` as num_samples_in(self) -> int
+      num_samples_in: int = property(`NumSamplesIn`)
+      """Number of samples at input"""
 
-      def `NumSamplesOut` as num_samples_out(self) -> int
+      num_samples_out: int = property(`NumSamplesOut`)
+      """Number of samples at output"""
 
-      def `Resample` as resample(self, input: MatrixBase, output: MatrixBase)
+      def `Resample` as resample(self, input: MatrixBase, output: MatrixBase):
+        """Resamples input signal.
 
-      def `Resample` as resample_vector(self, input: VectorBase,
-                                       output: VectorBase)
+        `input.num_rows` and `output.num_rows` should be equal and nonzero.
+        `input.num_cols` should be equal to `num_samples_in`.
+        `output.num_cols` should be equal to `num_samples_out`.
+
+        Args:
+          input (MatrixBase): Input signal.
+          output (MatrixBase): Output signal.
+        """
+
+      def `Resample` as resample_vector(self, input: VectorBase, output: VectorBase):
+        """Resamples input signal.
+
+        This version processes just one vector.
+        """
 
     class LinearResample:
+      """Linear resampler.
+
+      LinearResample is a special case of ArbitraryResample, where we want to
+      resample a signal at linearly spaced intervals (this means we want to
+      upsample or downsample the signal).  It is more efficient than
+      ArbitraryResample because we can construct it just once.
+
+      We require that the input and output sampling rate be specified as
+      integers, as this is an easy way to specify that their ratio be rational.
+      """
       def __init__(self, sample_rate_in_hz: int, samp_rate_out_hz: int,
                    filter_cutoff_hz: float, num_zeros: int)
 
-      def `Resample` as resample(self, input: VectorBase, flush: bool) -> Vector
+      def `Resample` as resample(self, input: VectorBase, flush: bool) -> Vector:
+        """Resamples input signal.
 
-      def `Reset` as reset(self)
+        If you call it with flush == True and you have never called it with
+        flush == False, it just resamples the input signal.
+
+        You can also use this to process a signal a piece at a time by calling
+        it with flush == False except for the last piece.
+
+        If you call it with flush == false, it won't output the last few
+        samples but will remember them, so that if you later give it a second
+        piece of the input signal it can process it correctly.
+
+        If your most recent call to the object was with flush == false, it will
+        have internal state; you can remove this by calling :meth:`reset`.
+
+        Empty input is acceptable.
+
+        Args:
+          input (MatrixBase): Input signal.
+          flush (bool): Whether to flush output.
+
+        Returns:
+          Vector: Output signal.
+        """
+
+      def `Reset` as reset(self):
+        """Resets the state of the resampler."""
 
     def `DownsampleWaveForm` as downsample_wave_form(orig_freq: float, wave: VectorBase,
-                           new_freq: float) -> Vector
+                                                     new_freq: float) -> Vector:
+      """Downsamples a waveform.
+
+      This is a convenience wrapper for `LinearResample`.
+      """

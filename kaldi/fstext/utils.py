@@ -74,7 +74,7 @@ def get_linear_symbol_sequence(fst):
         fst: The input FST.
 
     Returns:
-        A tuple of `(isymbols: List[int], osymbols: List[int], total_weight)`.
+        The tuple (isymbols, osymbols, total_weight).
     """
     if isinstance(fst, _fst.StdFst):
         return _fstext_utils_inl._get_linear_symbol_sequence_from_std(fst)

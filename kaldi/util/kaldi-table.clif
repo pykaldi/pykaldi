@@ -225,6 +225,28 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
 
+    class `SequentialTableReader<WaveInfoHolder>` as SequentialWaveInfoReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> WaveInfo
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `SequentialTableReader<LatticeHolder>` as SequentialLatticeReader:
 
       def `Open` as open(self, rspecifier: str) -> bool
@@ -532,6 +554,23 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
+    class `RandomAccessTableReader<WaveInfoHolder>` as RandomAccessWaveInfoReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> WaveInfo
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
     class `RandomAccessTableReader<LatticeHolder>`
         as RandomAccessLatticeReader:
 
@@ -548,6 +587,7 @@ from "util/kaldi-table.h":
 
       @__exit__
       def Close(self) -> bool
+
 
     class `RandomAccessTableReader<CompactLatticeHolder>`
         as RandomAccessCompactLatticeReader:
@@ -566,6 +606,7 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
     class `RandomAccessTableReader<BasicHolder<int32>>`
         as RandomAccessIntReader:
 
@@ -581,6 +622,7 @@ from "util/kaldi-table.h":
 
       @__exit__
       def Close(self) -> bool
+
 
     class `RandomAccessTableReader<BasicHolder<float>>`
         as RandomAccessFloatReader:
@@ -598,6 +640,7 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
     class `RandomAccessTableReader<BasicHolder<double>>`
         as RandomAccessDoubleReader:
 
@@ -613,6 +656,7 @@ from "util/kaldi-table.h":
 
       @__exit__
       def Close(self) -> bool
+
 
     class `RandomAccessTableReader<BasicHolder<bool>>`
         as RandomAccessBoolReader:
@@ -630,6 +674,7 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
     class `RandomAccessTableReader<BasicVectorHolder<int32>>`
         as RandomAccessIntVectorReader:
 
@@ -645,6 +690,7 @@ from "util/kaldi-table.h":
 
       @__exit__
       def Close(self) -> bool
+
 
     class `RandomAccessTableReader<BasicVectorVectorHolder<int32>>`
         as RandomAccessIntVectorVectorReader:
@@ -662,6 +708,7 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+
     class `RandomAccessTableReader<BasicPairVectorHolder<int32>>`
         as RandomAccessIntPairVectorReader:
 
@@ -677,6 +724,7 @@ from "util/kaldi-table.h":
 
       @__exit__
       def Close(self) -> bool
+
 
     class `RandomAccessTableReader<BasicPairVectorHolder<float>>`
         as RandomAccessFloatPairVectorReader:

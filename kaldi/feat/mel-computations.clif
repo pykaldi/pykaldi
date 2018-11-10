@@ -4,53 +4,118 @@ from "feat/feature-window-clifwrap.h" import *
 from "feat/mel-computations.h":
   namespace `kaldi`:
     class MelBanksOptions:
-      num_bins: int
-      low_freq: float
-      high_freq: float
-      vtln_low: float
-      vtln_high: float
-      debug_mel: bool
-      htk_mode: bool
+      """Options for Mel filterbanks.
 
+      Args:
+        num_bins (int): Number of triangular Mel-frequency bins (default=25).
+      """
       def __init__(self, num_bins: int = default)
 
+      num_bins: int
+      """Number of triangular Mel-frequency bins (default=25)"""
+
+      low_freq: float
+      """Low cutoff frequency for Mel bins (default=20)"""
+
+      high_freq: float
+      """High cutoff frequency for Mel bins, if 0 no cutoff, if < 0 offset from Nyquist (default=0)."""
+
+      vtln_low: float
+      """Low inflection point in piecewise linear VTLN warping function (default=100)"""
+
+      vtln_high: float
+      """High inflection point in piecewise linear VTLN warping function, if < 0 offset from high_freq (default=-500)"""
+
+      debug_mel: bool
+      """Print out debugging information for Mel bin computation (default=False)"""
+
+      htk_mode: bool
+      """Enables more exact compatibility with HTK (default=False)"""
+
+
     class MelBanks:
+      """Mel filterbanks.
+
+      Args:
+        opts (MelBanksOptions): Options for Mel filterbanks.
+        frame_opts (FrameExtractionOptions): Options for frame extraction.
+        vtln_warp_factor (float): VTLN warp factor.
+      """
       def __init__(self, opts: MelBanksOptions,
                    frame_opts: FrameExtractionOptions, vtln_warp_factor: float)
 
       @add__init__
-      def `MelBanks` as from_other(self, other: MelBanks)
+      def `MelBanks` as from_other(self, other: MelBanks):
+        """Creates a new MelBanks object from another."""
 
       @classmethod
-      def `InverseMelScale` as inverse_mel_scale(cls, mel_freq: float) -> float
+      def `InverseMelScale` as inverse_mel_scale(cls, mel_freq: float) -> float:
+        """Computes inverse Mel scale for the given Mel-frequency."""
 
       @classmethod
-      def `MelScale` as mel_scale(cls, freq: float) -> float
+      def `MelScale` as mel_scale(cls, freq: float) -> float:
+        """Computes Mel scale for the given frequency."""
 
       @classmethod
-      def `VtlnWarpFreq` as vtln_warp_freq(cls, vtln_low_cutoff: float, vtln_high_cutoff: float,
-                       low_freq: float, high_freq: float,
-                       vtln_warp_factor: float, freq: float) -> float
+      def `VtlnWarpFreq` as vtln_warp_freq(cls,
+        vtln_low_cutoff: float, vtln_high_cutoff: float, low_freq: float,
+        high_freq: float, vtln_warp_factor: float, freq: float) -> float:
+        """Computes VTLN warp frequency"""
 
       @classmethod
-      def `VtlnWarpMelFreq` as vtln_warp_mel_freq(cls, vtln_low_cutoff: float,
-                          vtln_high_cutoff: float,
-                          low_freq: float, high_freq: float,
-                          vtln_warp_factor: float, mel_freq: float) -> float
+      def `VtlnWarpMelFreq` as vtln_warp_mel_freq(cls,
+        vtln_low_cutoff: float, vtln_high_cutoff: float, low_freq: float,
+        high_freq: float, vtln_warp_factor: float, mel_freq: float) -> float:
+        """Computes VTLN warp Mel-frequency"""
 
-      def `Compute` as compute(self, fft_energies: VectorBase, mel_energies_out: VectorBase)
+      def `Compute` as compute(self, fft_energies: VectorBase, mel_energies_out: VectorBase):
+        """Computes Mel energies.
 
-      def `NumBins` as num_bins(self) -> int
+        Args:
+          fft_energies (Vector): The FFT energies (not log).
+          mel_energies_out (Vector): Output Mel energies (not log).
+        """
 
-      def `GetCenterFreqs` as get_center_freqs(self) -> Vector
+      def `NumBins` as num_bins(self) -> int:
+        """Returns number of Mel bins."""
 
-    def `ComputeLifterCoeffs` as compute_lifter_coeffs(Q: float, coeffs: VectorBase)
+      def `GetCenterFreqs` as get_center_freqs(self) -> Vector:
+        """Returns vector of center frequencies of each Mel bin."""
+
+    def `ComputeLifterCoeffs` as compute_lifter_coeffs(Q: float, coeffs: VectorBase):
+      """Computes liftering coefficients.
+
+      Coefficients are numbered slightly differently from HTK. The zeroth
+      index is C0, which is not affected.
+
+      Args:
+        Q (float): Liftering constant.
+        coeffs (Vector): Output liftering coefficients.
+      """
 
     # FIXME(Dogan): Write helper functions in C++ to wrap these.
     # def Durbin(n: int, pAC: float, pLP: float, pTmp: float) -> float
     #
     # def Lpc2Cepstrum(n: int, pLPC: float, pCepst: float)
 
-    def `ComputeLpc` as compute_lpc(autocorr_in: VectorBase, lpc_out: Vector) -> float
+    def `ComputeLpc` as compute_lpc(autocorr_in: VectorBase, lpc_out: Vector) -> float:
+      """Computes LP coefficients from autocorrelation coefficients.
 
-    def `GetEqualLoudnessVector` as get_equal_loudness_vector(mel_banks: MelBanks, ans: Vector)
+      Args:
+        autocorr_in (Vector): Input autocorrelation coefficients.
+        lpc_out (Vector): Output LP coefficients. Its size should match
+          len(autocorr_in) - 1.
+
+      Returns:
+        float: The log energy of residual.
+      """
+
+    def `GetEqualLoudnessVector` as get_equal_loudness_vector(mel_banks: MelBanks) -> Vector:
+      """Computes equal loudness vector.
+
+      Args:
+        mel_banks (MelBanks): Mel filterbanks.
+
+      Returns:
+        Vector: Equal loudness vector.
+      """

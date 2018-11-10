@@ -155,6 +155,7 @@ kaldi\.util\.table
       RandomAccessNnetExampleReader
       RandomAccessVectorReader
       RandomAccessVectorReaderMapped
+      RandomAccessWaveInfoReader
       RandomAccessWaveReader
       RnnlmExampleWriter
       RspecifierOptions
@@ -178,6 +179,7 @@ kaldi\.util\.table
       SequentialNnetExampleReader
       SequentialRnnlmExampleReader
       SequentialVectorReader
+      SequentialWaveInfoReader
       SequentialWaveReader
       VectorWriter
       WaveWriter

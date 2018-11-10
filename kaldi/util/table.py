@@ -163,8 +163,14 @@ class SequentialDoubleMatrixReader(_SequentialReaderBase,
 
 
 class SequentialWaveReader(_SequentialReaderBase,
-                          _kaldi_table.SequentialWaveReader):
+                           _kaldi_table.SequentialWaveReader):
     """Sequential table reader for wave files."""
+    pass
+
+
+class SequentialWaveInfoReader(_SequentialReaderBase,
+                               _kaldi_table.SequentialWaveInfoReader):
+    """Sequential table reader for wave file headers."""
     pass
 
 
@@ -394,6 +400,12 @@ class RandomAccessDoubleMatrixReader(
 class RandomAccessWaveReader(_RandomAccessReaderBase,
                              _kaldi_table.RandomAccessWaveReader):
     """Random access table reader for wave files."""
+    pass
+
+
+class RandomAccessWaveInfoReader(_RandomAccessReaderBase,
+                                 _kaldi_table.RandomAccessWaveInfoReader):
+    """Random access table reader for wave file headers."""
     pass
 
 
