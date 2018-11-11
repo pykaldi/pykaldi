@@ -93,8 +93,8 @@ class testKaldiMath(unittest.TestCase):
                 pass
 
     def testDefines(self):
-        self.assertAlmostEqual(0.0, kaldi_math.exp(kaldi_math.K_LOG_ZERO_FLOAT))
-        self.assertAlmostEqual(0.0, kaldi_math.exp(kaldi_math.K_LOG_ZERO_DOUBLE))
+        self.assertAlmostEqual(0.0, kaldi_math.exp(kaldi_math.LOG_ZERO_FLOAT))
+        self.assertAlmostEqual(0.0, kaldi_math.exp(kaldi_math.LOG_ZERO_DOUBLE))
 
         # TODO:
         # How to test these in Python?

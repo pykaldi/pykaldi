@@ -119,6 +119,7 @@ kaldi\.base\.math
       double_log1p
       double_log_add
       double_log_sub
+      double_rand_gauss2
       double_sqr
       exp
       factorize
@@ -132,10 +133,9 @@ kaldi\.base\.math
       log1p
       log_add
       log_sub
-      log_zero_double
-      log_zero_float
       rand
       rand_gauss
+      rand_gauss2
       rand_int
       rand_poisson
       rand_prune

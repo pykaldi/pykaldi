@@ -1,9 +1,26 @@
+"""
+.. autoconstant:: DBL_EPSILON
+.. autoconstant:: FLT_EPSILON
+.. autoconstant:: M_PI
+.. autoconstant:: M_SQRT2
+.. autoconstant:: M_2PI
+.. autoconstant:: M_SQRT1_2
+.. autoconstant:: M_LOG_2PI
+.. autoconstant:: M_LN2
+.. autoconstant:: M_LN10
+.. autoconstant:: LOG_ZERO_FLOAT
+.. autoconstant:: LOG_ZERO_DOUBLE
+.. autoconstant:: MIN_LOG_DIFF_DOUBLE
+.. autoconstant:: MIN_LOG_DIFF_FLOAT
+"""
+
 from ._kaldi_math import *
 from ._kaldi_math_ext import *
 
 # Must be imported explicitly
 from ._kaldi_math import (_lcm, _factorize, _with_prob,
                           _round_up_to_nearest_power_of_two, _rand_int)
+from ._kaldi_math_ext import _log_zero_float, _log_zero_double
 
 DBL_EPSILON = 2.2204460492503131e-16
 
@@ -23,11 +40,10 @@ M_LN2 = 0.693147180559945309417232121458
 
 M_LN10 = 2.302585092994045684017991454684
 
-# These constant let us call function without parenteses
-K_LOG_ZERO_FLOAT = log_zero_float()
-K_LOG_ZERO_DOUBLE = log_zero_double()
-K_MIN_LOG_DIFF_DOUBLE = log(DBL_EPSILON)
-K_MIN_LOG_DIFF_FLOAT = log(FLT_EPSILON)
+LOG_ZERO_FLOAT = _log_zero_float()
+LOG_ZERO_DOUBLE = _log_zero_double()
+MIN_LOG_DIFF_DOUBLE = log(DBL_EPSILON)
+MIN_LOG_DIFF_FLOAT = log(FLT_EPSILON)
 
 def lcm(x, y):
     """Returns the least common multiple for x and y.
