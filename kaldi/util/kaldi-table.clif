@@ -248,7 +248,7 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
 
-    class `SequentialTableReader<FramePosteriorHolder>` as SequentialFramePosteriorReader:
+    class `SequentialTableReader<PosteriorWrapperHolder>` as SequentialPosteriorReader:
 
       def `Open` as open(self, rspecifier: str) -> bool
 
@@ -258,7 +258,29 @@ from "util/kaldi-table.h":
 
       def `FreeCurrent` as free_current(self)
 
-      def `Value` as value(self) -> FramePosterior
+      def `Value` as value(self) -> Posterior
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
+    class `SequentialTableReader<GaussPostHolder>` as SequentialGaussPostReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> list<list<tuple<int, Vector>>>
 
       def `Next` as next(self)
 
@@ -594,13 +616,29 @@ from "util/kaldi-table.h":
       def Close(self) -> bool
 
 
-    class `RandomAccessTableReader<FramePosteriorHolder>` as RandomAccessFramePosteriorReader:
+    class `RandomAccessTableReader<PosteriorWrapperHolder>` as RandomAccessPosteriorReader:
 
       def `Open` as open(self, rspecifier: str) -> bool
 
       def `HasKey` as has_key(self, key: str) -> bool
 
-      def `Value` as value(self, key: str) -> FramePosterior
+      def `Value` as value(self, key: str) -> Posterior
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
+    class `RandomAccessTableReader<GaussPostHolder>` as RandomAccessGaussPostReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> list<list<tuple<int, Vector>>>
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -968,13 +1006,13 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
-    class `TableWriter<FramePosteriorHolder>` as FramePosteriorWriter:
+    class `TableWriter<PosteriorWrapperHolder>` as PosteriorWriter:
 
       def `Open` as open(self, wspecifier: str) -> bool
 
       def `IsOpen` as is_open(self) -> bool
 
-      def `Write` as write(self, key: str, value: FramePosterior)
+      def `Write` as write(self, key: str, value: Posterior)
 
       def `Flush` as flush(self)
 
@@ -982,6 +1020,23 @@ from "util/kaldi-table.h":
 
       @__exit__
       def Close(self) -> bool
+
+
+    class `TableWriter<GaussPostHolder>` as GaussPostWriter:
+
+      def `Open` as open(self, wspecifier: str) -> bool
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Write` as write(self, key: str, value: list<list<tuple<int, Vector>>>)
+
+      def `Flush` as flush(self)
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
 
     class `TableWriter<LatticeHolder>` as LatticeWriter:
 

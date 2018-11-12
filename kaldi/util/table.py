@@ -173,9 +173,16 @@ class SequentialWaveInfoReader(_SequentialReaderBase,
     """Sequential table reader for wave file headers."""
     pass
 
-class SequentialFramePosteriorReader(_SequentialReaderBase,
-                                     _kaldi_table.SequentialFramePosteriorReader):
+
+class SequentialPosteriorReader(_SequentialReaderBase,
+                                _kaldi_table.SequentialPosteriorReader):
     """Sequential table reader for frame posteriors."""
+    pass
+
+
+class SequentialGaussPostReader(_SequentialReaderBase,
+                                     _kaldi_table.SequentialGaussPostReader):
+    """Sequential table reader for Gaussian-level frame posteriors."""
     pass
 
 
@@ -414,9 +421,15 @@ class RandomAccessWaveInfoReader(_RandomAccessReaderBase,
     pass
 
 
-class RandomAccessFramePosteriorReader(_RandomAccessReaderBase,
-                                       _kaldi_table.RandomAccessFramePosteriorReader):
+class RandomAccessPosteriorReader(_RandomAccessReaderBase,
+                                  _kaldi_table.RandomAccessPosteriorReader):
     """Random access table reader for frame posteriors."""
+    pass
+
+
+class RandomAccessGaussPostReader(_RandomAccessReaderBase,
+                                       _kaldi_table.RandomAccessGaussPostReader):
+    """Random access table reader for Gaussian-level frame posteriors."""
     pass
 
 
@@ -818,8 +831,13 @@ class WaveWriter(_WriterBase, _kaldi_table.WaveWriter):
     pass
 
 
-class FramePosteriorWriter(_WriterBase, _kaldi_table.FramePosteriorWriter):
+class PosteriorWriter(_WriterBase, _kaldi_table.PosteriorWriter):
     """Table writer for frame posteriors."""
+    pass
+
+
+class GaussPostWriter(_WriterBase, _kaldi_table.GaussPostWriter):
+    """Table writer for Gaussian-level frame posteriors."""
     pass
 
 

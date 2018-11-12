@@ -13,7 +13,7 @@ kaldi\.hmm
       accumulate_tree_stats
       get_pdfs_for_phones
       get_phones_for_pdfs
-      merge_frame_posteriors
+      merge_posteriors
       posterior_entries_are_disjoint
       read_phone_map
       vector_to_posterior_entries
@@ -29,10 +29,10 @@ kaldi\.hmm
    
       AccumulateTreeStatsInfo
       AccumulateTreeStatsOptions
-      FramePosterior
       HmmTopology
       MapTransitionUpdateConfig
       MleTransitionUpdateConfig
+      Posterior
       TransitionModel
    
    

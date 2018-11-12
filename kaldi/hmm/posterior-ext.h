@@ -5,26 +5,21 @@
 
 namespace kaldi {
 
-class FramePosterior {
+class PosteriorWrapper {
  public:
-  FramePosterior() {}
+  PosteriorWrapper() {}
 
-  // FramePosterior(const FramePosterior &other) : post_(other.post_) {}
-  //
-  // FramePosterior(FramePosterior &&other)
-  //   : post_(std::move(other.post_)) {}
+  explicit PosteriorWrapper(Posterior post) : post_(std::move(post)) {}
 
-  explicit FramePosterior(const Posterior &post) : post_(post) {}
-
-  explicit FramePosterior(const std::vector<int32> &ali) : post_(ali.size()) {
+  explicit PosteriorWrapper(const std::vector<int32> &ali) : post_(ali.size()) {
     AlignmentToPosterior(ali, &post_);
   }
 
-  const Posterior & GetPosterior() const {
+  const Posterior & GetPosteriors() const {
     return post_;
   }
 
-  Posterior * GetMutablePosterior() {
+  Posterior * GetMutablePosteriors() {
     return &post_;
   }
 
@@ -71,34 +66,34 @@ class FramePosterior {
   }
 
   void ConvertTransitionsToPdfs(const TransitionModel &tmodel,
-                                FramePosterior *post_pdf) const {
-    ConvertPosteriorToPdfs(tmodel, post_, post_pdf->GetMutablePosterior());
+                                PosteriorWrapper *post_pdf) const {
+    ConvertPosteriorToPdfs(tmodel, post_, post_pdf->GetMutablePosteriors());
   }
 
   void ConvertTransitionsToPhones(const TransitionModel &tmodel,
-                                  FramePosterior *post_phone) const {
-    ConvertPosteriorToPhones(tmodel, post_, post_phone->GetMutablePosterior());
+                                  PosteriorWrapper *post_phone) const {
+    ConvertPosteriorToPhones(tmodel, post_, post_phone->GetMutablePosteriors());
   }
 
  private:
    Posterior post_;
 };
 
-int32 MergeFramePosteriors(const FramePosterior & post1,
-                           const FramePosterior & post2,
-                           bool merge,
-                           bool drop_frames,
-                           FramePosterior *post_out) {
-  return MergePosteriors(post1.GetPosterior(), post2.GetPosterior(),
-                         merge, drop_frames, post_out->GetMutablePosterior());
+int32 MergePosteriorWrappers(const PosteriorWrapper & post1,
+                             const PosteriorWrapper & post2,
+                             bool merge,
+                             bool drop_frames,
+                             PosteriorWrapper *post_out) {
+  return MergePosteriors(post1.GetPosteriors(), post2.GetPosteriors(),
+                         merge, drop_frames, post_out->GetMutablePosteriors());
 }
 
 
-class FramePosteriorHolder {
+class PosteriorWrapperHolder {
  public:
-  typedef FramePosterior T;
+  typedef PosteriorWrapper T;
 
-  FramePosteriorHolder() { }
+  PosteriorWrapperHolder() { }
 
   static bool Write(std::ostream &os, bool binary, const T &t) {
     InitKaldiOutputStream(os, binary);  // Puts binary header if binary mode.
@@ -111,7 +106,7 @@ class FramePosteriorHolder {
     }
   }
 
-  void Clear() { FramePosterior tmp; std::swap(tmp, t_); }
+  void Clear() { PosteriorWrapper tmp; std::swap(tmp, t_); }
 
   // Reads into the holder.
   bool Read(std::istream &is) {
@@ -138,16 +133,16 @@ class FramePosteriorHolder {
 
   T &Value() { return t_; }
 
-  void Swap(FramePosteriorHolder *other) {
+  void Swap(PosteriorWrapperHolder *other) {
     std::swap(t_, other->t_);
   }
 
-  bool ExtractRange(const FramePosteriorHolder &other, const std::string &range) {
+  bool ExtractRange(const PosteriorWrapperHolder &other, const std::string &range) {
     KALDI_ERR << "ExtractRange is not defined for this type of holder.";
     return false;
   }
  private:
-  KALDI_DISALLOW_COPY_AND_ASSIGN(FramePosteriorHolder);
+  KALDI_DISALLOW_COPY_AND_ASSIGN(PosteriorWrapperHolder);
   T t_;
 };
 
