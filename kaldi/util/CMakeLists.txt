@@ -15,8 +15,8 @@ add_pyclif_library("_kaldi_holder" kaldi-holder.clif
 
 add_pyclif_library("_kaldi_table" kaldi-table.clif
   NAMESPACES kaldi kaldi::nnet3 kaldi::rnnlm
-  CLIF_DEPS _compressed_matrix _wave_reader _nnet_example _rnnlm_example _vector_fst
-  LIBRARIES kaldi-lat kaldi-util
+  CLIF_DEPS _compressed_matrix _wave_reader _posterior_ext _nnet_example _rnnlm_example _vector_fst
+  LIBRARIES kaldi-hmm kaldi-lat kaldi-util
 )
 
 add_pyclif_library("_kaldi_table_ext" kaldi-table-ext.clif
@@ -27,4 +27,9 @@ add_pyclif_library("_kaldi_table_ext" kaldi-table-ext.clif
 
 add_pyclif_library("_kaldi_thread" kaldi-thread.clif
   CLIF_DEPS _options_itf
+)
+
+add_pyclif_library("_const_integer_set" const-integer-set.clif
+  CLIF_DEPS _iostream
+  LIBRARIES kaldi-base
 )

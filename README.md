@@ -108,7 +108,7 @@ dimensions:
 | feat       | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | fstext     | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | gmm        | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
-| hmm        | &#10004; | &#10004;  | &#10004;                   | &#10004; |
+| hmm        | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
 | itf        | &#10004; |           | &#10004;                   |          |
 | ivector    | &#10004; |           | &#10004;                   |          |
 | kws        | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
@@ -321,7 +321,7 @@ as follows:
 ```
 @inproceedings{pykaldi,
   title = {PyKaldi: A Python Wrapper for Kaldi},
-  author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and
+  author = {Dogan Can and Victor R. Martinez and Pavlos Papadopoulos and
             Shrikanth S. Narayanan},
   booktitle={Acoustics, Speech and Signal Processing (ICASSP),
              2018 IEEE International Conference on},

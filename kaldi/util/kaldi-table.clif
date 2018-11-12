@@ -2,6 +2,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/compressed-matrix-clifwrap.h" import *
 from "feat/wave-reader-clifwrap.h" import *
+from "hmm/posterior-ext-clifwrap.h" import *
 from "nnet3/nnet-example-clifwrap.h" import *
 from "rnnlm/rnnlm-example-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
@@ -236,6 +237,28 @@ from "util/kaldi-table.h":
       def `FreeCurrent` as free_current(self)
 
       def `Value` as value(self) -> WaveInfo
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
+    class `SequentialTableReader<FramePosteriorHolder>` as SequentialFramePosteriorReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> FramePosterior
 
       def `Next` as next(self)
 
@@ -562,6 +585,22 @@ from "util/kaldi-table.h":
       def `HasKey` as has_key(self, key: str) -> bool
 
       def `Value` as value(self, key: str) -> WaveInfo
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+
+    class `RandomAccessTableReader<FramePosteriorHolder>` as RandomAccessFramePosteriorReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> FramePosterior
 
       def `IsOpen` as is_open(self) -> bool
 
@@ -921,6 +960,21 @@ from "util/kaldi-table.h":
       def `IsOpen` as is_open(self) -> bool
 
       def `Write` as write(self, key: str, value: WaveData)
+
+      def `Flush` as flush(self)
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class `TableWriter<FramePosteriorHolder>` as FramePosteriorWriter:
+
+      def `Open` as open(self, wspecifier: str) -> bool
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Write` as write(self, key: str, value: FramePosterior)
 
       def `Flush` as flush(self)
 

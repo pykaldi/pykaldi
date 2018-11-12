@@ -173,6 +173,11 @@ class SequentialWaveInfoReader(_SequentialReaderBase,
     """Sequential table reader for wave file headers."""
     pass
 
+class SequentialFramePosteriorReader(_SequentialReaderBase,
+                                     _kaldi_table.SequentialFramePosteriorReader):
+    """Sequential table reader for frame posteriors."""
+    pass
+
 
 class SequentialFstReader(_SequentialReaderBase,
                           _kaldi_table_ext.SequentialFstReader):
@@ -406,6 +411,12 @@ class RandomAccessWaveReader(_RandomAccessReaderBase,
 class RandomAccessWaveInfoReader(_RandomAccessReaderBase,
                                  _kaldi_table.RandomAccessWaveInfoReader):
     """Random access table reader for wave file headers."""
+    pass
+
+
+class RandomAccessFramePosteriorReader(_RandomAccessReaderBase,
+                                       _kaldi_table.RandomAccessFramePosteriorReader):
+    """Random access table reader for frame posteriors."""
     pass
 
 
@@ -733,6 +744,7 @@ class _WriterBase(object):
         """
         return super(_WriterBase, self).close()
 
+
 class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
     """Table writer for single precision vectors."""
     def write(self, key, value):
@@ -783,6 +795,7 @@ class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
         """
         super(MatrixWriter, self).write(key, _matrix.Matrix(value))
 
+
 class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
     """Table writer for double precision matrices."""
     def write(self, key, value):
@@ -802,6 +815,11 @@ class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
 
 class WaveWriter(_WriterBase, _kaldi_table.WaveWriter):
     """Table writer for wave files."""
+    pass
+
+
+class FramePosteriorWriter(_WriterBase, _kaldi_table.FramePosteriorWriter):
+    """Table writer for frame posteriors."""
     pass
 
 

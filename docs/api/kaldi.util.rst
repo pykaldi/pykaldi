@@ -14,6 +14,7 @@ kaldi\.util
    .. autosummary::
       :nosignatures:
    
+      ConstIntegerSet
       TaskSequencerConfig
    
    
@@ -122,6 +123,7 @@ kaldi\.util\.table
       DoubleWriter
       FloatPairVectorWriter
       FloatWriter
+      FramePosteriorWriter
       FstWriter
       IntPairVectorWriter
       IntVectorVectorWriter
@@ -142,6 +144,7 @@ kaldi\.util\.table
       RandomAccessFloatPairVectorReader
       RandomAccessFloatReader
       RandomAccessFloatReaderMapped
+      RandomAccessFramePosteriorReader
       RandomAccessFstReader
       RandomAccessIntPairVectorReader
       RandomAccessIntReader
@@ -167,6 +170,7 @@ kaldi\.util\.table
       SequentialDoubleVectorReader
       SequentialFloatPairVectorReader
       SequentialFloatReader
+      SequentialFramePosteriorReader
       SequentialFstReader
       SequentialIntPairVectorReader
       SequentialIntReader
