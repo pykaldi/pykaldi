@@ -1,6 +1,3 @@
-add_pyclif_library("_online_timing" online-timing.clif
-  LIBRARIES kaldi-online2
-)
 add_pyclif_library("_online_endpoint" online-endpoint.clif
   CLIF_DEPS _options_itf _lattice_faster_online_decoder _transition_model
   LIBRARIES kaldi-util kaldi-online2

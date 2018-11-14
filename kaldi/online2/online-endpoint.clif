@@ -5,44 +5,118 @@ from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
 from "online2/online-endpoint.h":
   namespace `kaldi`:
     class OnlineEndpointRule:
-      must_contain_nonsilence: bool
-      min_trailing_silence: float
-      max_relative_cost: float
-      min_utterance_length: float
+      """Online endpointing rule.
 
-      # FIXME (VM):
-      # try to import limits.h
-      # def `OnlineEndpointRule` as __init__(self, must_contain_nonsilence: bool = default, min_trailing_silence: float = default, max_relative_cost: float = default, min_utterance_length: float = default)
-      def `OnlineEndpointRule` as __init__(self, must_contain_nonsilence: bool = default, min_trailing_silence: float = default)
-
-      def `Register` as register(self, opts: OptionsItf)
-
-    class OnlineEndpointConfig:
-      silence_phones: str
-        """colon separated list of phones to be considered as silence"""
-      rule1: OnlineEndpointRule
-        """Rule1 times out after 5 seconds of silence if decoded nothing"""
-      rule2: OnlineEndpointRule
-        """Rule2 times out after 0.5 seconds of silence if reached final-state"""
-      rule3: OnlineEndpointRule
-        """Rule3 times out after 1.0 seconds of silence if reached final-state"""
-      rule4: OnlineEndpointRule
-        """Rule4 times out after 2.0 seconds of silence after decoding something"""
-      rule5: OnlineEndpointRule
-        """Rule5 times out after the utterance is 20.0 seconds"""
-
-      def `Register` as register(self, opts: OptionsItf)
-    
-    def `EndpointDetected` as endpoint_detected(config: OnlineEndpointConfig, num_frames_decoded: int, trailing_silence_frames: int, frame_shift_in_seconds: float, final_relative_cost: float) -> bool:
-      """Returns true if this set of endpointing rules thinks we should terminate decoding"""
-
-    def `TrailingSilenceLength` as trailing_silence_length(tmodel: TransitionModel, silence_phones: str, decoder: LatticeFasterOnlineDecoder) -> int:
-      """Returns the number of frames of trailing silence in the best-path traceback
+      Endpointing rule applies if all of the conditions are satisfied.
 
       Args:
-        silence_phones (str): colon-separated list of integer ids of phones to be considered silence
+        must_contain_nonsilence (bool): If true, endpointing rule applies only
+          if best-path traceback contains non-silence.
+        min_trailing_silence (float): Endpointing rule applies only if duration
+          of trailing silence (in seconds) >= this value.
+        max_relative_cost (float): Endpointing rule applies only if
+          relative-cost of final-states <= this value.
+        min_utterance_length (float): Endpointing rule applies only if
+          utterance length (in seconds) >= this value.
       """
 
-    def `EndpointDetected` as endpoint_detected_with_transition_model(config: OnlineEndpointConfig, tmodel: TransitionModel, frame_shift_in_seconds: float, decoder: LatticeFasterOnlineDecoder) -> bool:
-      """This is a higher-level convenience function that works out the arguments to the :meth:`endpoint_detected` function"""
+      must_contain_nonsilence: bool
+      """If true, endpointing rule applies only if best-path traceback contains non-silence."""
 
+      min_trailing_silence: float
+      """Endpointing rule applies only if duration of trailing silence (in seconds) >= this value."""
+
+      max_relative_cost: float
+      """Endpointing rule applies only if relative-cost of final-states <= this value."""
+
+      min_utterance_length: float
+      """Endpointing rule applies only if utterance length (in seconds) >= this value."""
+
+      # FIXME (VM, Dogan):
+      # If we add default values for the arguments, wrapper does not compile.
+      # It appears this is a known CLIF issue so might be fixed in the future.
+      def `OnlineEndpointRule` as __init__(self, must_contain_nonsilence: bool,
+        min_trailing_silence: float, max_relative_cost: float, min_utterance_length: float)
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `RegisterWithPrefix` as register_with_prefix(self, prefix: str, opts: OptionsItf):
+        """Registers prefixed options with an object implementing the options interface.
+
+        Args:
+          prefix (str): String that will be prepended to option names.
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class OnlineEndpointConfig:
+      """Online endpointing configuration.
+
+      Decoding is terminated if any of the endpointing rules evaluates to True.
+      """
+
+      silence_phones: str
+        """Colon separated list of phones to be considered as silence."""
+      rule1: OnlineEndpointRule
+        """Default Rule1 times out after 5 seconds of silence even if decoded nothing."""
+      rule2: OnlineEndpointRule
+        """Default Rule2 times out after 0.5 seconds of silence if reached final-state with good probability."""
+      rule3: OnlineEndpointRule
+        """Default Rule3 times out after 1.0 seconds of silence if reached final-state with OK probability."""
+      rule4: OnlineEndpointRule
+        """Default Rule4 times out after 2.0 seconds of silence after decoding something even if final-state was not reached."""
+      rule5: OnlineEndpointRule
+        """Default Rule5 times out after the utterance is 20.0 seconds."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    def `EndpointDetected` as endpoint_detected(config: OnlineEndpointConfig,
+                                                num_frames_decoded: int,
+                                                trailing_silence_frames: int,
+                                                frame_shift_in_seconds: float,
+                                                final_relative_cost: float) -> bool:
+      """Determines if any of the endpointing rules is active for given arguments.
+
+      Args:
+        config (OnlineEndpointConfig): Online endpointing configuration.
+        num_frames_decoded (int): Number of frames decoded.
+        trailing_silence_frames (int): Number of trailing silence frames decoded.
+        frame_shift_in_seconds (float): Frame shift (in seconds).
+        final_relative_cost (float): Relative cost of final states.
+
+      Returns:
+        bool: True if endpointing rules thinks we should terminate decoding.
+      """
+
+    def `TrailingSilenceLength` as trailing_silence_length(tmodel: TransitionModel,
+                                                           silence_phones: str,
+                                                           decoder: LatticeFasterOnlineDecoder) -> int:
+      """Returns the number of trailing silence frames on the best-path traceback.
+
+      Args:
+        tmodel (TransitionModel): Transition model.
+        silence_phones (str): Colon-separated list of integer ids of silence phones.
+        decoder (LatticeFasterOnlineDecoder): Online decoder.
+      """
+
+    def `EndpointDetected` as endpoint_detected_decoder(config: OnlineEndpointConfig,
+                                                        tmodel: TransitionModel,
+                                                        frame_shift_in_seconds: float,
+                                                        decoder: LatticeFasterOnlineDecoder) -> bool:
+      """Determines if we should terminate decoding.
+
+      This is a higher-level convenience function that works out the arguments
+      to the :meth:`endpoint_detected` function.
+      """

@@ -11,7 +11,7 @@ kaldi\.online2
       :nosignatures:
    
       endpoint_detected
-      endpoint_detected_with_transition_model
+      endpoint_detected_decoder
       trailing_silence_length
    
    
@@ -42,8 +42,6 @@ kaldi\.online2
       OnlineNnet2FeaturePipelineInfo
       OnlineSilenceWeighting
       OnlineSilenceWeightingConfig
-      OnlineTimer
-      OnlineTimingStats
       SingleUtteranceGmmDecoder
       SingleUtteranceNnet3Decoder
    
