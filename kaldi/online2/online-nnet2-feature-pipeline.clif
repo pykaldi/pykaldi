@@ -1,5 +1,6 @@
 from "online2/online-ivector-feature-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
+from "itf/online-feature-itf-clifwrap.h" import *
 from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
@@ -10,72 +11,148 @@ from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 
 from "online2/online-nnet2-feature-pipeline.h":
   namespace `kaldi`:
-    class OnlineNnet2FeaturePipelineConfig:
+    class `OnlineNnet2FeaturePipelineConfig` as OnlineNnetFeaturePipelineConfig:
+      """Command-line configuration options for online neural network feature pipeline.
+
+      This configuration class is to set up `OnlineNnetFeaturePipelineInfo`,
+      which in turn is the configuration class for `OnlineNnetFeaturePipeline`.
+      Instead of taking the options for the parts of the feature pipeline
+      directly, it reads in the configuration files for each part.
+      """
       feature_type: str
+      """Base feature type [mfcc (default), plp, fbank]."""
       mfcc_config: str
+      """Configuration file for MFCC features (e.g. conf/mfcc.conf)"""
       plp_config: str
+      """Configuration file for PLP features (e.g. conf/plp.conf)"""
       fbank_config: str
+      """Configuration file for filterbank features (e.g. conf/fbank.conf)"""
       add_pitch: bool
+      """Append pitch features to raw MFCC/PLP features (default=False)"""
       online_pitch_config: str
+      """Configuration file for online pitch features (e.g. conf/online_pitch.conf)"""
       ivector_extraction_config:str
+      """Configuration file for online iVector extraction (e.g. conf/ivector.conf)"""
       silence_weighting_config: OnlineSilenceWeightingConfig
+      """Options for online silence weighting"""
 
-      def `Register` as register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
-    class OnlineNnet2FeaturePipelineInfo:
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class `OnlineNnet2FeaturePipelineInfo` as OnlineNnetFeaturePipelineInfo:
+      """Configuration options for online neural network feature pipeline.
+
+      This configuration class is responsible for storing the configuration
+      options for `OnlineNnetFeaturePipeline` (including the actual LDA and
+      CMVN-stats matrices, and the iVector extractor). The options can be set
+      either directly in code or indirectly by reading config files on disk via
+      `OnlineNnetFeaturePipelineConfig`.
+      """
 
       @add__init__
-      def `OnlineNnet2FeaturePipelineInfo` as new_with_config(self, config: OnlineNnet2FeaturePipelineConfig)
+      def `OnlineNnet2FeaturePipelineInfo` as from_config(self, config: OnlineNnetFeaturePipelineConfig):
+        """Creates a new OnlineNnetFeaturePipelineInfo from OnlineNnetFeaturePipelineConfig."""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds."""
 
       feature_type: str
-
+      """Base feature type [mfcc (default), plp, fbank]"""
       mfcc_opts: MfccOptions
-
+      """Options for MFCC features"""
       plp_opts: PlpOptions
-
+      """Options for PLP features"""
       fbank_opts: FbankOptions
-
+      """Options for filterbank features"""
       add_pitch: bool
-
+      """Append pitch features to raw MFCC/PLP features (default=False)"""
       pitch_opts: PitchExtractionOptions
-
+      """Options for pitch features"""
       pitch_process_opts: ProcessPitchOptions
-
+      """Options for post-processing pitch features"""
       use_ivectors: bool
+      """Use iVectors as an extra input to the neural net"""
 
+      # FIXME(Dogan):
+      # OnlineIvectorExtractionInfo has no copy constructor.
+      #
       # ivector_extractor_info: _OnlineIvectorExtractionInfo
+      # """Options for online iVector extraction."""
 
       silence_weighting_config: OnlineSilenceWeightingConfig
+      """Options for weighting silence in iVector adaptation."""
 
-      def `IvectorDim` as ivector_dim(self) -> int
+      def `IvectorDim` as ivector_dim(self) -> int:
+        """Returns iVector dimension."""
 
-    class OnlineNnet2FeaturePipeline(OnlineFeatureInterface):
+    class `OnlineNnet2FeaturePipeline` as OnlineNnetFeaturePipeline(OnlineFeatureInterface):
+      """Online feature pipeline for neural network decoding.
 
-      @add__init__
-      def `OnlineNnet2FeaturePipeline` as new_with_info(self, info: OnlineNnet2FeaturePipelineInfo)
+      This is a different version of the online feature pipeline specialized
+      for use in neural network decoding with iVectors. Our recipe is that we
+      extract iVectors that will be used as an additional input to the neural
+      network, in addition to a window of several frames of spliced raw
+      features (MFCC, PLP or filterbanks). The iVectors are extracted on top of
+      a (splice+LDA+MLLT) feature pipeline, with the added complication that
+      the GMM posteriors used for the iVector extraction are obtained with a
+      version of the features that has online cepstral mean (and optionally
+      variance) normalization, whereas the stats for iVector are accumulated
+      with a non-mean-normalized version of the features. The idea here is that
+      we want the iVector to learn the mean offset, but we want the posteriors
+      to be somewhat invariant to mean offsets.
 
-      def `Dim` as dim(self) -> int
+      Args:
+        config (OnlineNnetFeaturePipelineInfo): Configuration options for
+          online neural network feature pipeline.
+      """
+      def __init__(self, info: OnlineNnetFeaturePipelineInfo)
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `GetFrame` as get_frame(self, frame:int, feat: VectorBase)
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `SetAdaptationState` as set_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState)
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
-      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform:VectorBase)
+      def `SetAdaptationState` as set_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
+        """Sets online iVector adaptation state."""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
+        """Gets online iVector adaptation state."""
 
-      def `InputFinished` as input_finished(self)
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
+        """Accepts more data to process.
+
+        It won't actually process the data, it will just copy it.
+
+        Args:
+          sampling_rate (float): Sampling rate of the waveform. It is needed
+            to assert that it matches the sampling rate given in the config.
+          waveform (Vector): More data to process.
+        """
+
+      def `InputFinished` as input_finished(self):
+        """Tells the class that you wont be providing any more waveform.
+
+        This will help flush out the last few frames of delta or LDA features,
+        and finalize the pitch features (making them more accurate).
+        """
 
       def `IvectorFeature` as ivector_feature(self) -> OnlineIvectorFeature:
-        """Returns the ivector-extracting part of the feature pipeline (or NULL if iVectors are not being used)."""
+        """Returns the ivector-extraction part of the feature pipeline (or None if iVectors are not being used)."""
 
-      def `InputFeature` as input_feature(self) -> OnlineIvectorFeature:
-        """Returns a part of the feature pipeline that would be given as the primary (non-iVector) input to neural network in nnet3"""
+      def `InputFeature` as input_feature(self) -> OnlineFeatureInterface:
+        """Returns the part of the feature pipeline that would be given as the primary (non-iVector) input to neural network."""

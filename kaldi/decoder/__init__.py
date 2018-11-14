@@ -16,7 +16,7 @@ class _DecoderBase(object):
     """Base class defining the Python API for decoders."""
 
     def get_best_path(self, use_final_probs=True):
-        """Gets best path as an FST.
+        """Gets best path as a lattice.
 
         Args:
             use_final_probs (bool): If ``True`` and a final state of the graph

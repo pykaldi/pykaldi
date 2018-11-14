@@ -103,7 +103,7 @@ from "online2/online-feature-pipeline.h":
       """Extended filename for LDA or LDA+MLLT matrix, if using LDA (e.g. exp/foo/final.mat)"""
 
       @add__init__
-      def `OnlineFeaturePipelineConfig` as new_with_config(self,
+      def `OnlineFeaturePipelineConfig` as from_config(self,
         cmdline_config: OnlineFeaturePipelineCommandLineConfig):
         """Creates a new OnlineFeaturePipelineConfig from OnlineFeaturePipelineCommandLineConfig."""
 

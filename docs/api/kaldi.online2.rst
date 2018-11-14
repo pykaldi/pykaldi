@@ -37,13 +37,13 @@ kaldi\.online2
       OnlineIvectorExtractionInfo
       OnlineIvectorExtractorAdaptationState
       OnlineIvectorFeature
-      OnlineNnet2FeaturePipeline
-      OnlineNnet2FeaturePipelineConfig
-      OnlineNnet2FeaturePipelineInfo
+      OnlineNnetFeaturePipeline
+      OnlineNnetFeaturePipelineConfig
+      OnlineNnetFeaturePipelineInfo
       OnlineSilenceWeighting
       OnlineSilenceWeightingConfig
       SingleUtteranceGmmDecoder
-      SingleUtteranceNnet3Decoder
+      SingleUtteranceNnetDecoder
    
    
 

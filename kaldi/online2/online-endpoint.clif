@@ -90,14 +90,14 @@ from "online2/online-endpoint.h":
       """Determines if any of the endpointing rules is active for given arguments.
 
       Args:
-        config (OnlineEndpointConfig): Online endpointing configuration.
+        config (:obj:`OnlineEndpointConfig`): Online endpointing configuration.
         num_frames_decoded (int): Number of frames decoded.
         trailing_silence_frames (int): Number of trailing silence frames decoded.
         frame_shift_in_seconds (float): Frame shift (in seconds).
         final_relative_cost (float): Relative cost of final states.
 
       Returns:
-        bool: True if endpointing rules thinks we should terminate decoding.
+        bool: True if endpointing rules determines we should terminate decoding.
       """
 
     def `TrailingSilenceLength` as trailing_silence_length(tmodel: TransitionModel,
@@ -119,4 +119,13 @@ from "online2/online-endpoint.h":
 
       This is a higher-level convenience function that works out the arguments
       to the :meth:`endpoint_detected` function.
+
+      Args:
+        config (:obj:`OnlineEndpointConfig`): Online endpointing configuration.
+        tmodel (TransitionModel): Transition model.
+        frame_shift_in_seconds (float): Frame shift (in seconds).
+        decoder (LatticeFasterOnlineDecoder): Online lattice-generating decoder.
+
+      Returns:
+        bool: True if endpointing rules determines we should terminate decoding.
       """

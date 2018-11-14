@@ -7,23 +7,94 @@ from "fstext/vector-fst-clifwrap.h" import *
 from "online2/online-nnet2-feature-pipeline-clifwrap.h" import *
 from "online2/online-endpoint-clifwrap.h" import *
 
+from kaldi.fstext import LatticeVectorFst
+from kaldi.fstext import CompactLatticeVectorFst
 
 from "online2/online-nnet3-decoding.h":
   namespace `kaldi`:
-    class SingleUtteranceNnet3Decoder:
+    class `SingleUtteranceNnet3Decoder` as SingleUtteranceNnetDecoder:
+      """Online lattice-generating decoder for neural network models.
 
-      def `SingleUtteranceNnet3Decoder` as __init__(self, decoder_opts: LatticeFasterDecoderOptions, trans_model: TransitionModel, info: DecodableNnetSimpleLoopedInfo, fst: StdFst, features: OnlineNnet2FeaturePipeline)
+      This class is used for decoding a single utterance in an online fashion
+      using (nnet3) neural network models.
 
-      def `AdvanceDecoding` as advance_decoding(self)
+      Args:
+        decoder_opts (LatticeFasterDecoderOptions): Configuration options for
+          lattice-generating decoder.
+        trans_model (TransitionModel): Transition model.
+        info (DecodableNnetSimpleLoopedInfo): Static pre-computed information
+          needed for nnet3 computation (including a reference to the model).
+        fst (StdFst): Decoding graph.
+        features (OnlineNnetFeaturePipeline): Online feature pipeline.
+      """
+      def __init__(self, decoder_opts: LatticeFasterDecoderOptions, trans_model: TransitionModel,
+                   info: DecodableNnetSimpleLoopedInfo, fst: StdFst, features: OnlineNnetFeaturePipeline)
 
-      def `NumFramesDecoded` as num_frames_decoded(self) -> int
+      def `AdvanceDecoding` as advance_decoding(self):
+        """Advances decoding until there are no more frames to decode."""
 
-      def `GetLattice` as get_lattice(self, end_of_utterance: bool) -> (clat: CompactLatticeVectorFst)
+      def `FinalizeDecoding` as finalize_decoding(self):
+        """Finalizes decoding.
 
-      def `GetBestPath` as get_best_path(self, end_of_utterance: bool) -> (best_path: LatticeVectorFst)
+        This method may be optionally called after the last call to
+        :meth:`advance_decoding`. It does an extra pruning step to prune the
+        lattices output by :meth:`get_lattice()` more accurately.
+        """
 
-      def `EndpointDetected` as endpoint_detected(self, config: OnlineEndpointConfig) -> bool
+      def `NumFramesDecoded` as num_frames_decoded(self) -> int:
+        """Queries the number of frames already decoded.
 
-      # def `Decoder` as decoder(self) -> LatticeFasterOnlineDecoder
+        Returns:
+          int: The number of frames already decoded.
+        """
 
+      def `GetLattice` as get_lattice(self, end_of_utterance: bool) -> CompactLatticeVectorFst:
+        """Gets the lattice-determinized compact lattice.
 
+        The output is a deterministic compact lattice with a unique path for
+        each word sequence.
+
+        Args:
+            end_of_utterance (bool): If ``True`` and a final state of the graph
+                is reached, then the output will include final probabilities
+                given by the graph. Otherwise all final probabilities are
+                treated as one.
+
+        Returns:
+            CompactLatticeVectorFst: The lattice-determinized compact lattice.
+
+        Raises:
+            RuntimeError: In the unusual circumstances where no tokens survive.
+        """
+        return CompactLatticeVectorFst(...)
+
+      def `GetBestPath` as get_best_path(self, end_of_utterance: bool) -> LatticeVectorFst:
+        """Gets best path as a lattice.
+
+        Args:
+            end_of_utterance (bool): If ``True`` and a final state of the graph
+                is reached, then the output will include final probabilities
+                given by the graph. Otherwise all final probabilities are
+                treated as one.
+
+        Returns:
+            LatticeVectorFst: The best path.
+
+        Raises:
+            RuntimeError: In the unusual circumstances where no tokens survive.
+        """
+        return LatticeVectorFst(...)
+
+      def `EndpointDetected` as endpoint_detected(self, config: OnlineEndpointConfig) -> bool:
+        """Determines if we should terminate decoding current utterance.
+
+        Args:
+          config (:obj:`OnlineEndpointConfig`): Online endpointing configuration.
+
+        Returns:
+          bool: True if an endpointing rule is active.
+        """
+
+      # FIXME(Dogan):
+      # LatticeFasterOnlineDecoder is further wrapped in Python.
+      def `DecoderPtr` as decoder(self) -> LatticeFasterOnlineDecoder

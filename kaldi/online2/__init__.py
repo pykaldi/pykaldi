@@ -11,7 +11,7 @@ of dialog system where, as more speech data comes in, we decode more and
 more, and we have to decide when to stop decoding.
 
 The endpointing rule is a disjunction of conjunctions.  The way we have
-it configured, it's an OR of five rules, and each rule has the following form:
+it configured, it's an OR of five rules, and each rule has the following form::
 
   (<contains-nonsilence> || !rule.must_contain_nonsilence)
   && <length-of-trailing-silence> >= rule.min_trailing_silence
