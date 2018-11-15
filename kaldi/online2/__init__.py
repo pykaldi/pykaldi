@@ -3,12 +3,12 @@
 Online Endpointing
 ------------------
 
-This module contains a simple facility for endpointing, that should be used
-in conjunction with the "online2" online decoding code.  By endpointing in
-this context we mean "deciding when to stop decoding", and not generic
-speech/silence segmentation.  The use-case that we have in mind is some kind
-of dialog system where, as more speech data comes in, we decode more and
-more, and we have to decide when to stop decoding.
+This module contains a simple facility for endpointing, that should be used in
+conjunction with the online decoding code.  By endpointing in this context we
+mean "deciding when to stop decoding", and not generic speech/silence
+segmentation.  The use-case that we have in mind is some kind of dialog system
+where, as more speech data comes in, we decode more and more, and we have to
+decide when to stop decoding.
 
 The endpointing rule is a disjunction of conjunctions.  The way we have
 it configured, it's an OR of five rules, and each rule has the following form::
@@ -57,6 +57,7 @@ from ._online_nnet3_decoding import *
 from .. import matrix as _matrix
 
 class OnlineIvectorExtractionInfo(_OnlineIvectorExtractionInfo):
+    """Configuration options for online iVector extraction."""
     @property
     def lda_mat(self):
         return _matrix.SubMatrix(self._lda_mat)
