@@ -5,36 +5,97 @@ from kaldi.matrix import _matrix_wrapper
 
 from "feat/wave-reader.h":
   namespace `kaldi`:
+    const `kWaveSampleMax` as WAVE_SAMPLE_MAX: float
+
+    class WaveInfo:
+      """Wave file header information."""
+
+      is_streamed: bool = property(`IsStreamed`)
+      """Whether stream size is unknown."""
+
+      samp_freq: float = property(`SampFreq`)
+      """Sample frequency (in Hz)."""
+
+      sample_count: int = property(`SampleCount`)
+      """Number of samples in stream. Invalid if `is_streamed` is True."""
+
+      duration: float = property(`Duration`)
+      """Approximate duration (in seconds). Invalid if `is_streamed` is True."""
+
+      num_channels: int = property(`NumChannels`)
+      """Number of channels."""
+
+      block_align: int = property(`BlockAlign`)
+      """Number of data bytes per sample."""
+
+      data_bytes: int = property(`DataBytes`)
+      """Number of data bytes. Invalid if `is_streamed` is True."""
+
+      reverse_bytes: bool = property(`ReverseBytes`)
+      """Whether file byte order is different from machine byte order."""
+
+      def `Read` as read(self, is: istream) -> self:
+        """Reads wave file header from input stream.
+
+        After header is successfully read, input stream will be positioned at
+        the beginning of the wave data.
+
+        Args:
+          is (istream): Input stream. It should be opened in binary mode.
+
+        Throws:
+          RuntimeError: on error.
+        """
 
     class WaveData:
-      """This class represents a Wave file."""
+      """Wave file data."""
 
       @add__init__
-      def `WaveData` as new(self, samp_freq:float, data:MatrixBase)
+      def `WaveData` as from_data(self, samp_freq:float, data:MatrixBase):
+        """Creates a new WaveData object from a waveform matrix."""
 
-      def `Read` as read(self, is: istream) -> self
+      def `Read` as read(self, is: istream) -> self:
+        """Reads wave file from input stream.
 
-      def `Write` as write(self, os: ostream) -> self
+        Args:
+          is (istream): Input stream. It should be opened in binary mode.
+
+        Throws:
+          RuntimeError: on error.
+        """
+
+      def `Write` as write(self, os: ostream) -> self:
+        """Writes wave file to input stream.
+
+        Args:
+          os (ostream): Output stream. It should be opened in binary mode.
+
+        Throws:
+          RuntimeError: on error.
+        """
 
       def `Data` as data(self) -> Matrix:
-        """Returns the wave data.
+        """Returns wave data matrix.
 
-        Data is a matrix because there may be multiple channels.
-        If the wave data is mono, the returned matrix will have just one row.
+        Data is returned as a matrix because there may be multiple channels.
+        If wave file is mono, the returned matrix will have just one row.
 
         Returns:
-          :class:`kaldi.matrix.Matrix` with the wave data.
+          Matrix: the wave data matrix.
         """
         return _matrix_wrapper(...)
 
       samp_freq: float = property(`SampFreq`)
-      """Sampling frequency"""
+      """Sample frequency (in Hz)."""
 
       duration: float = property(`Duration`)
-      """Duration in seconds."""
+      """Approximate duration (in seconds)."""
 
-      def `CopyFrom` as copy_from(self, other:WaveData) -> self
+      def `CopyFrom` as copy_from(self, other:WaveData) -> self:
+        """Copies the contents of another WaveData object to this one."""
 
-      def `Clear` as clear(self) -> self
+      def `Clear` as clear(self) -> self:
+        """Clears the contents."""
 
-      def `Swap` as swap(self, other:WaveData) -> self
+      def `Swap` as swap(self, other:WaveData) -> self:
+        """Swaps the contents with another WaveData object."""

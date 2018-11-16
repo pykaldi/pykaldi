@@ -1,52 +1,24 @@
-from "base/iostream-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
-from "matrix/kaldi-matrix-clifwrap.h" import *
-from "hmm/transition-model-clifwrap.h" import *
 
 from "hmm/posterior.h":
   namespace `kaldi`:
 
-    def `WritePosterior` as write_posterior(
-      os: ostream, binary: bool, post: list<list<tuple<int, float>>>)
-
-    def `ReadPosterior` as read_posterior(is: istream, binary: bool)
-      -> list<list<tuple<int, float>>>
-
-    # ScalePosterior
-
-    def `TotalPosterior` as total_posterior(
-      post: list<list<tuple<int, float>>>) -> float
-
     def `PosteriorEntriesAreDisjoint` as posterior_entries_are_disjoint(
-      post_elem1: list<tuple<int, float>>, post_elem2: list<tuple<int, float>>)
-      -> bool
+      post_entries1: list<tuple<int, float>>, post_entries2: list<tuple<int, float>>) -> bool:
+      """Returns True if the lists have no common first element (transition-id)."""
 
-    def `MergePosteriors` as merge_posteriors(
-      post1: list<list<tuple<int, float>>>,
-      post2: list<list<tuple<int, float>>>, merge: bool, drop_frames: bool)
-      -> (num_frames: int, post: list<list<tuple<int, float>>>)
-
-    def `VectorToPosteriorEntry` as vector_to_posterior_entry(
+    def `VectorToPosteriorEntry` as vector_to_posterior_entries(
       log_likes: VectorBase, num_gselect: int, min_post: float)
-      -> (log_like: float, post_entry: list<tuple<int, float>>)
+      -> (log_like: float, post_entries: list<tuple<int, float>>):
+      """Converts log-likelihoods to a list of posterior entries.
 
-    def `AlignmentToPosterior` as alignment_to_posterior(ali: list<int>)
-      -> list<list<tuple<int, float>>>
+      Given a vector of log-likelihoods (typically of Gaussians in a GMM
+      but could be of pdf-ids), a number gselect >= 1 and a minimum posterior
+      0 <= min_post < 1, it gets the posterior for each element of log-likes
+      by applying softmax, then prunes the posteriors using "gselect" and
+      "min_post" (keeping at least one), and outputs the result into
+      "post_entries", sorted from greatest to least posterior.
 
-    # SortPosteriorByPdfs
-
-    def `ConvertPosteriorToPdfs` as convert_posterior_to_pdfs(
-      tmodel: TransitionModel, post_in: list<list<tuple<int, float>>>)
-      -> list<list<tuple<int, float>>>
-
-    def `ConvertPosteriorToPhones` as convert_posterior_to_phones(
-      tmodel: TransitionModel, post_in: list<list<tuple<int, float>>>)
-      -> list<list<tuple<int, float>>>
-
-    # WeightSilencePost, WeightSilencePostDistributed
-
-    def `PosteriorToMatrix` as posterior_to_matrix(
-      post: list<list<tuple<int, float>>>, post_dim: int) -> Matrix
-
-    def `PosteriorToPdfMatrix` as posterior_to_pdf_matrix(
-      post: list<list<tuple<int, float>>>, model: TransitionModel) -> Matrix
+      Returns:
+        The total log-likelihood (the softmax output) and the "post_entries".
+      """

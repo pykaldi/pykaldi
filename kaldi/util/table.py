@@ -15,7 +15,7 @@ from ._kaldi_table import (read_script_file, write_script_file,
                            WspecifierType, RspecifierType,
                            WspecifierOptions, RspecifierOptions)
 from . import _kaldi_table_ext
-from kaldi.matrix import Matrix, Vector, DoubleMatrix, DoubleVector
+import kaldi.matrix as _matrix
 
 ################################################################################
 # Sequential Readers
@@ -163,8 +163,26 @@ class SequentialDoubleMatrixReader(_SequentialReaderBase,
 
 
 class SequentialWaveReader(_SequentialReaderBase,
-                          _kaldi_table.SequentialWaveReader):
+                           _kaldi_table.SequentialWaveReader):
     """Sequential table reader for wave files."""
+    pass
+
+
+class SequentialWaveInfoReader(_SequentialReaderBase,
+                               _kaldi_table.SequentialWaveInfoReader):
+    """Sequential table reader for wave file headers."""
+    pass
+
+
+class SequentialPosteriorReader(_SequentialReaderBase,
+                                _kaldi_table.SequentialPosteriorReader):
+    """Sequential table reader for frame posteriors."""
+    pass
+
+
+class SequentialGaussPostReader(_SequentialReaderBase,
+                                     _kaldi_table.SequentialGaussPostReader):
+    """Sequential table reader for Gaussian-level frame posteriors."""
     pass
 
 
@@ -394,6 +412,24 @@ class RandomAccessDoubleMatrixReader(
 class RandomAccessWaveReader(_RandomAccessReaderBase,
                              _kaldi_table.RandomAccessWaveReader):
     """Random access table reader for wave files."""
+    pass
+
+
+class RandomAccessWaveInfoReader(_RandomAccessReaderBase,
+                                 _kaldi_table.RandomAccessWaveInfoReader):
+    """Random access table reader for wave file headers."""
+    pass
+
+
+class RandomAccessPosteriorReader(_RandomAccessReaderBase,
+                                  _kaldi_table.RandomAccessPosteriorReader):
+    """Random access table reader for frame posteriors."""
+    pass
+
+
+class RandomAccessGaussPostReader(_RandomAccessReaderBase,
+                                       _kaldi_table.RandomAccessGaussPostReader):
+    """Random access table reader for Gaussian-level frame posteriors."""
     pass
 
 
@@ -721,6 +757,7 @@ class _WriterBase(object):
         """
         return super(_WriterBase, self).close()
 
+
 class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
     """Table writer for single precision vectors."""
     def write(self, key, value):
@@ -728,14 +765,14 @@ class VectorWriter(_WriterBase, _kaldi_table.VectorWriter):
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
-        
+
         Overrides write to accept both Vector and SubVector.
-        
+
         Args:
             key (str): The key.
             value: The value.
         """
-        super(VectorWriter, self).write(key, Vector(value))
+        super(VectorWriter, self).write(key, _matrix.Vector(value))
 
 
 class DoubleVectorWriter(_WriterBase, _kaldi_table.DoubleVectorWriter):
@@ -745,14 +782,14 @@ class DoubleVectorWriter(_WriterBase, _kaldi_table.DoubleVectorWriter):
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
-        
+
         Overrides write to accept both DoubleVector and DoubleSubVector.
 
         Args:
             key (str): The key.
             value: The value.
         """
-        super(DoubleVectorWriter, self).write(key, DoubleVector(value))
+        super(DoubleVectorWriter, self).write(key, _matrix.DoubleVector(value))
 
 
 class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
@@ -762,14 +799,15 @@ class MatrixWriter(_WriterBase, _kaldi_table.MatrixWriter):
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
-        
+
         Overrides write to accept both Matrix and SubMatrix.
 
         Args:
             key (str): The key.
             value: The value.
         """
-        super(MatrixWriter, self).write(key, Matrix(value))
+        super(MatrixWriter, self).write(key, _matrix.Matrix(value))
+
 
 class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
     """Table writer for double precision matrices."""
@@ -778,18 +816,28 @@ class DoubleMatrixWriter(_WriterBase, _kaldi_table.DoubleMatrixWriter):
 
         This method is provided for compatibility with the C++ API only;
         most users should use the Pythonic API.
-        
+
         Overrides write to accept both DoubleMatrix and DoubleSubMatrix.
 
         Args:
             key (str): The key.
             value: The value.
         """
-        super(DoubleMatrixWriter, self).write(key, DoubleMatrix(value))
+        super(DoubleMatrixWriter, self).write(key, _matrix.DoubleMatrix(value))
 
 
 class WaveWriter(_WriterBase, _kaldi_table.WaveWriter):
     """Table writer for wave files."""
+    pass
+
+
+class PosteriorWriter(_WriterBase, _kaldi_table.PosteriorWriter):
+    """Table writer for frame posteriors."""
+    pass
+
+
+class GaussPostWriter(_WriterBase, _kaldi_table.GaussPostWriter):
+    """Table writer for Gaussian-level frame posteriors."""
     pass
 
 

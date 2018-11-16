@@ -4,167 +4,223 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/sp-matrix-clifwrap.h" import *
 from "gmm/model-common-clifwrap.h" import *
 
+from kaldi.matrix import _vector_wrapper
+from kaldi.matrix import _matrix_wrapper
+
 from "gmm/full-gmm.h":
-    namespace `kaldi`:
-        class FullGmm:
-            @add__init__
-            def `FullGmm` as from_other(self, gmm: FullGmm)
+  namespace `kaldi`:
+    class FullGmm:
+      @add__init__
+      def `FullGmm` as from_other(self, gmm: FullGmm)
 
-            @add__init__
-            def `FullGmm` as from_nmix_dim(self, nmix:int, dim: int)
+      @add__init__
+      def `FullGmm` as from_nmix_dim(self, nmix:int, dim: int)
 
-            def `Resize` as resize(self, nmix: int, dim: int):
-              """Resizes arrays to this dim. Does not init data."""
+      def `Resize` as resize(self, nmix: int, dim: int):
+        """Resizes arrays to this dim. Does not initialize data."""
 
-            def `NumGauss` as num_gauss(self) -> int:
-              """Returns the number of mixture components."""
+      def `NumGauss` as num_gauss(self) -> int:
+        """Returns the number of mixture components."""
 
-            def `Dim` as dim(self) -> int:
-              """Returns the dimensionality of the Gaussian mean vectors."""
+      def `Dim` as dim(self) -> int:
+        """Returns the dimensionality of the Gaussian mean vectors."""
 
-            def `CopyFromFullGmm` as copy_from_full(self, fullgmm: FullGmm):
-              """Copies from given :class:`FullGmm`"""
+      def `CopyFromFullGmm` as copy_from_full(self, fullgmm: FullGmm):
+        """Copies from given :class:`FullGmm`"""
 
-            # def CopyFromDiagGmm(self, diaggmm: DiagGmm)
+      # def CopyFromDiagGmm(self, diaggmm: DiagGmm)
 
-            def `LogLikelihood` as log_likelihood(self, data: VectorBase) -> float:
-              """Returns the log-likelihood of a data point given the GMM.
+      def `LogLikelihood` as log_likelihood(self, data: VectorBase) -> float:
+        """Computes the log-likelihood for a data point
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-              """
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+        """
 
-            def `LogLikelihoods` as log_likelihoods(self, data:VectorBase) -> Vector:
-              """Output the per-component distribution to the log-likelihood
+      def `LogLikelihoods` as log_likelihoods(self, data:VectorBase) -> Vector:
+        """Computes the per-component log-likelihoods for a data point
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-              """ 
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+        """
+        return _vector_wrapper(...)
 
-            def `LogLikelihoodsPreselect` as log_likelihoods_preselect(self, data:VectorBase, indices:list<int>) -> Vector:
-              """Outputs the per-component log-likelihoods of a subset of mixture components.
+      def `LogLikelihoodsPreselect` as log_likelihoods_preselect(self, data:VectorBase, indices:list<int>) -> Vector:
+        """Computes the per-component log-likelihoods of a subset of mixture components.
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-                indices - list of indices
-              """
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+          indices: list of indices
+        """
+        return _vector_wrapper(...)
 
-            def `GaussianSelection` as gaussian_selection(self, data: VectorBase, num_gselect: int) -> (log_like: float, output: list<int>):
-              """Get gaussian selection information for one frame. 
+      def `GaussianSelection` as gaussian_selection(self, data: VectorBase, num_gselect: int) -> (log_like: float, output: list<int>):
+        """Gets gaussian selection information for one frame.
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-                num_gselect (int) - Output is the best "num_gselect" indices, sorted from best to worst.
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+          num_gselect (int): number of gaussians to select
 
-              Returns:
-                log-likelihood for this frame.   
-              """
+        Returns:
+          Log-likelihood for the input frame and the best `num_gselect` indices
+          (sorted from best to worst likelihood).
+        """
 
-            def `GaussianSelectionPreselect` as gaussian_selection_preselect(self, data: VectorBase, preselect: list<int>, num_gselect: int) -> (log_like: float, posteriors: list<int>):
-              """Get gaussian selection information for one frame.
+      def `GaussianSelectionPreselect` as gaussian_selection_preselect(self, data: VectorBase, preselect: list<int>, num_gselect: int) -> (log_like: float, posteriors: list<int>):
+        """Get gaussian selection information for one frame.
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-                preselect (list) - subset of mixture components
-                num_gselect (int) - Output is the best "num_gselect" indices, sorted from best to worst.
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+          preselect (list): subset of mixture components
+          num_gselect (int): number of gaussians to select
 
-              Returns:
-                Log-like for this frame.
-              """
+        Returns:
+          Log-likelihood for the input frame and the best `num_gselect` indices
+          that were preselected (sorted from best to worst likelihood).
+        """
 
-            def `ComponentPosteriors` as _component_posteriors(self, data:VectorBase, posterior:VectorBase) -> float:
-              """Computes the posterior probabilities of all Gaussian components given a data point.
+      def `ComponentPosteriors` as _component_posteriors(self, data:VectorBase, posterior:VectorBase) -> float:
+        """Computes the posterior probabilities of all Gaussian components given a data point.
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-                posterior (:class:`kaldi.matrix.VectorBase`) - output vector
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+          posterior (:class:`kaldi.matrix.Vector`): output vector
 
-              Returns:
-                Log-likehood of the data given the GMM.
+        Returns:
+          Log-likehood of data given GMM.
+        """
 
-              """
+      def `ComponentLogLikelihood` as component_log_likelihood(self, data: VectorBase, comp_id: int) -> float:
+        """Computes the log-likelihood of a data point given a single Gaussian component.
 
-            def `ComponentLogLikelihood` as component_log_likelihood(self, data: VectorBase, comp_id: int) -> float:
-              """Computes the contribution log-likelihood of a data point from a single Gaussian component.
+        Args:
+          data (:class:`kaldi.matrix.Vector`): data point
+          comp_id: component id
 
-              Args:
-                data (:class:`kaldi.matrix.VectorBase`) - data point
-                comp_id - component id
+        Returns:
+          Log-likehood of input data point for a given component
+        """
 
-              Returns:
-                Log-likehood for a given component
-              """
+      def `ComputeGconsts` as compute_gconsts(self) -> int:
+        """Sets the gconsts.
 
-            def `ComputeGconsts` as compute_gconsts(self) -> int:
-              """Sets the gconsts.
+        Returns:
+          Number of gconsts that are invalid e.g. because of zero weights or variances.
+        """
 
-              Returns:
-                Number that are invalid e.g. because of zero weights or variances.
-              """ 
+      def `Split` as split(self, target_components: int, perturb_factor: float) -> list<int>:
+        """Splits components
 
-            # See note from diag-gmm
-            # def Split
+        Args:
+          target_components (int): number of target components
+          perturb_factor (float): perturbation factor
 
-            def `Perturb` as perturb(self, pertub_factor: float):
-              """Perturbs the component means with a random vector multiplied by the pertrub factor."""
+        Returns:
+          The order in which components were split.
+        """
 
-            # See note from diag-gmm
-            # def Merge
-            # def MergePreselect
+      def `Perturb` as perturb(self, perturb_factor: float):
+        """Perturbs components
 
-            def `Write` as write(self, os: ostream, binary: bool)
-            def `Read` as read(self, is: istream, binary: bool)
+        Component means are perturbed with a random vector multiplied by the
+        pertrubation factor.
 
-            def `Interpolate` as interpolate(self, rho: float, source: FullGmm, flags: int = default):
-              """
-                this <- rho * source + (1 - rho) * this
-              """
+        Args:
+          perturb_factor (float): perturbation factor
+        """
 
-            gconsts_: Vector = property(`gconsts`)
-            weights_: Vector = property(`weights`)
-            means_invcovars_: Matrix = property(`means_invcovars`)
-            inv_covars_: list<SpMatrix> = property(`inv_covars`, `SetInvCovars`)
+      def `Merge` as merge(self, target_components: int) -> list<int>:
+        """Merges components
 
-            def `SetWeights` as _set_weights(self, w: Vector)
+        Args:
+          target_components (int): number of target components
 
-            def `SetMeans` as _set_means(self, m: Matrix)
+        Returns:
+          The order in which components were merged.
+        """
 
-            def `SetInvCovarsAndMeans` as set_inv_covars_and_means(self, invcovars:list<SpMatrix>, means:Matrix):
-              """Updates both means and (inverse) covariances.
+      def `MergePreselect` as merge_preselect(self, target_components: int, preselect_pairs: list<tuple<int, int>>) -> float:
+        """Merges components
 
-              Args:
-                invcovars (list of :class:`SpMatrix`): List of inverse covariances
-                means (:class:`kaldi.matrix.Matrix`): matrix of means 
-              """
+        This version only considers merging pairs in `preselect_pairs`.
+        Args:
+          target_components (int): number of target components
+          preselect_pairs (List[Tuple[int, int]]): preselected pairs
 
-            def `SetInvCovarsAndMeansInvCovars` as set_inv_covars_and_means_inv_covars(self, invcovars:list<SpMatrix>, means_invcovars:Matrix):
-              """Use this if setting both, in the class's native format.
+        Returns:
+          Delta likelihood.
+        """
 
-              Args:
-                invcovars (list of :class:`SpMatrix`): List of inverse covariances
-                means_invcovars (:class:`kaldi.matrix.Matrix`): matrix of means and invcovars 
-              """
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes gaussian mixture model to output stream."""
 
-            def `GetCovars` as get_covars_(self) -> list<SpMatrix>:
-              """Accessor for covariances."""
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads gaussian mixture model from input stream."""
 
-            def `GetMeans` as get_means(self) -> Matrix:
-              """Accessor for means."""
+      def `Interpolate` as interpolate(self, rho: float, source: FullGmm, flags: int = default):
+        """Interpolates this model with other GMM
 
-            def `GetCovarsAndMeans` as get_covars_and_means(self) -> (covars:list<SpMatrix>, means: Matrix):
-              """Accessor for covariances and means."""
+        this <- rho * source + (1 - rho) * this
 
-            def `RemoveComponent` as remove_component(self, gauss: int, renorm_weights: bool):
-              """Mutators for single component, supports float or double Removes single component from model."""
+        Args:
+          rho (float): Interpolation weight
+          source (FullGmm): Source model
+          flags (int): Interpolation flags
+        """
 
-            def `RemoveComponents` as remove_components(self, gauss: list<int>, renorm_weights: bool):
-              """Removes multiple components from model; "gauss" must not have dups."""
+      def gconsts(self) -> Vector:
+        """Returns gconsts"""
+        return _vector_wrapper(...)
 
-            def `GetComponentMean` as get_component_mean(self, gauss: int, out: VectorBase):
-              """Accessor for component mean."""
+      def weights(self) -> Vector:
+        """Returns mixture weights"""
+        return _vector_wrapper(...)
 
+      def means_invcovars(self) -> Matrix:
+        """Returns means times inverse covariances"""
+        return _matrix_wrapper(...)
 
+      def `inv_covars` as _inv_covars(self) -> list<SpMatrix>:
+        """Returns inverse covariances"""
 
+      def `SetWeights` as _set_weights(self, w: Vector)
 
+      def `SetMeans` as _set_means(self, m: Matrix)
 
+      def `SetInvCovarsAndMeans` as set_inv_covars_and_means(self, invcovars:list<SpMatrix>, means:Matrix):
+        """Updates both means and (inverse) covariances.
 
+        Args:
+          invcovars (list of :class:`SpMatrix`): List of inverse covariances
+          means (:class:`kaldi.matrix.Matrix`): matrix of means
+        """
+
+      def `SetInvCovarsAndMeansInvCovars` as set_inv_covars_and_means_inv_covars(self, invcovars:list<SpMatrix>, means_invcovars:Matrix):
+        """Use this if setting both, in the class's native format.
+
+        Args:
+          invcovars (list of :class:`SpMatrix`): List of inverse covariances
+          means_invcovars (:class:`kaldi.matrix.Matrix`): matrix of means and invcovars
+        """
+
+      def `SetInvCovars` as set_inv_covars(self, v: list<SpMatrix>):
+        """Sets inverse covariances."""
+
+      def `GetCovars` as _get_covars(self) -> list<SpMatrix>:
+        """Returns component covariances."""
+
+      def `GetMeans` as get_means(self) -> Matrix:
+        """Returns component means."""
+        return _matrix_wrapper(...)
+
+      def `GetCovarsAndMeans` as _get_covars_and_means(self) -> (covars:list<SpMatrix>, means: Matrix):
+        """Returns covariances and means."""
+
+      def `RemoveComponent` as remove_component(self, gauss: int, renorm_weights: bool):
+        """Removes single component from model."""
+
+      def `RemoveComponents` as remove_components(self, gauss: list<int>, renorm_weights: bool):
+        """Removes multiple components from model."""
+
+      def `GetComponentMean` as get_component_mean(self, gauss: int, out: VectorBase):
+        """Gets component mean."""

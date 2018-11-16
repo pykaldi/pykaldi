@@ -5,39 +5,83 @@ from "hmm/hmm-topology.h":
     const `kNoPdf` as NO_PDF: int
 
     class HmmTopology:
+      """HMM topology information for phones."""
+
       class HmmState:
+        """HMM state."""
+
         forward_pdf_class: int
+        """Forward PDF class, typically 0, 1 or 2; -1 means non-emitting."""
+
         self_loop_pdf_class: int
+        """Self-loop PDF class."""
+
         # FIXME: unproperty
         transitions: list<tuple<int, float>>
+        """List of transitions in the form (next HMM-state index, initial-transition-prob)"""
 
         @add__init__
-        def `HmmState` as with_pdf(self, pdf_class: int)
+        def `HmmState` as from_pdf(self, pdf_class: int):
+          """Constructs a new HmmState object from given PDF class.
+
+          Both forward and self-loop PDFs are assigned to same class (usual case).
+          """
 
         @add__init__
-        def `HmmState` as with_forward_and_self_pdf(
-          self, forward_pdf_class: int, self_loop_pdf_class: int)
+        def `HmmState` as from_forward_and_self_pdf(self, forward_pdf_class: int,
+                                                    self_loop_pdf_class: int):
+          """Constructs a new HmmState object given PDF classes."""
 
         def __eq__(self, other: HmmState) -> bool
 
-      def `Read` as read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads HmmTopology object from input stream."""
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes HmmTopology object to output stream."""
 
-      def `Check` as check(self)
+      def `Check` as check(self):
+        """Checks if HmmTopology object is valid.
 
-      def `IsHmm` as is_hmm(self) -> bool
+        Throws:
+          RuntimeError: If object is invalid.
+        """
 
-      def `TopologyForPhone` as topology_for_phone(self, phone: int)
-        -> list<HmmState>
+      def `IsHmm` as is_hmm(self) -> bool:
+        """Checks if HmmTopology is 'hmm-like'.
 
-      def `NumPdfClasses` as num_pdf_classes(self, phone: int) -> int
+        A topology is 'hmm-like' if the pdf-classes on the self-loop and
+        forward transitions of any state are identical. [note: in HMMs, the
+        densities are associated with the states.] Topologies that are not
+        'hmm-like', where those pdf-classes are different, are also supported.
+        For instance, 'chain models' (AKA lattice-free MMI) use 1-state
+        topologies that have different pdf-classes for the self-loop and the
+        forward transition for more compact decoding graphs. Note that we
+        always use the 'reorder=true' option so the forward transition actually
+        comes before the self-loop.
+        """
 
-      def `GetPhones` as get_phones(self) -> list<int>
+      def `TopologyForPhone` as topology_for_phone(self, phone: int) -> list<HmmState>:
+        """Returns the topology entry (i.e. list of HMM states) for given phone.
 
-      def `GetPhoneToNumPdfClasses` as get_phone_to_num_pdf_classes(self)
-        -> list<int>
+        Throws:
+          RuntimeError: If the phone is not covered by the topology.
+        """
 
-      def `MinLength` as min_length(self, phone: int) -> int
+      def `NumPdfClasses` as num_pdf_classes(self, phone: int) -> int:
+        """Returns the number of PDF classes for given phone.
+
+        Throws:
+          RuntimeError: If the phone is not covered by the topology.
+        """
+
+      def `GetPhones` as get_phones(self) -> list<int>:
+        """Returns a sorted, unique list of phones covered by the topology."""
+
+      def `GetPhoneToNumPdfClasses` as get_phone_to_num_pdf_classes(self) -> list<int>:
+        """Returns the number of PDF classes for each phone."""
+
+      def `MinLength` as min_length(self, phone: int) -> int:
+        """Returns the minimum number of frames it takes to traverse the HMM for given phone."""
 
       def __eq__(self, other: HmmTopology) -> bool

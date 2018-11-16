@@ -2,7 +2,7 @@ from "itf/options-itf-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
-from "gmm/am-diag-gmm-clifwrap.h" import * 
+from "gmm/am-diag-gmm-clifwrap.h" import *
 from "transform/basis-fmllr-diag-gmm-clifwrap.h" import *
 from "transform/fmllr-diag-gmm-clifwrap.h" import *
 from "feat/online-feature-clifwrap.h" import *
@@ -49,7 +49,7 @@ from "online2/online-gmm-decoding.h":
       def `Register` as register(self, opts: OptionsItf)
 
     class OnlineGmmDecodingModels:
-      
+
       def __init__(self, config: OnlineGmmDecodingConfig)
 
       def `GetTransitionModel` as get_transition_model(self) -> TransitionModel
@@ -71,17 +71,17 @@ from "online2/online-gmm-decoding.h":
 
       # @setter
       # def `spk_stats` as set_spk_stats(self, val: FmllrDiagGmmAccs)
-      
-      `transform` as _transform: Matrix 
+
+      `transform` as _transform: Matrix
 
       def `Write` as write(self, out_stream: ostream, binary: bool)
 
       def `Read` as read(self, in_stream: istream, binary: bool)
 
-    class `SingleUtteranceGmmDecoder` as _SingleUtteranceGmmDecoder:
-      def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels, feature_prototype: _OnlineFeaturePipeline, fst: StdFst, adaptation_state: OnlineGmmAdaptationState)
+    class `SingleUtteranceGmmDecoder` as SingleUtteranceGmmDecoder:
+      def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels, feature_prototype: OnlineFeaturePipeline, fst: StdFst, adaptation_state: OnlineGmmAdaptationState)
 
-      def `FeaturePipeline` as _feature_pipeline(self) -> _OnlineFeaturePipeline
+      def `FeaturePipeline` as feature_pipeline(self) -> OnlineFeaturePipeline
 
       def `AdvanceDecoding` as advance_decoding(self):
         """Advance the decoding as far as we can."""

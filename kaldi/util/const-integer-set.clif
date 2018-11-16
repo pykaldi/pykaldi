@@ -1,0 +1,44 @@
+from "base/iostream-clifwrap.h" import *
+
+from "util/const-integer-set.h":
+  namespace `kaldi`:
+    class `ConstIntegerSet<int>` as ConstIntegerSet:
+      """Constant integer set.
+
+      This class provides an efficient way of testing whether an integer
+      is in a set of integers. It can be initialized with a list or set, but
+      cannot be mutated after that.
+      """
+
+      def `Init` as init_with_list(self, input: list<int>):
+        """Initializes with a list of integers."""
+
+      def `Init` as init_with_set(self, input: `std::set` as set<int>):
+        """Initializes with a set of integers."""
+
+      @add__init__
+      def `ConstIntegerSet` as from_list(self, input: list<int>):
+        """Creates a new ConstIntegerSet from a list of integers."""
+
+      @add__init__
+      def `ConstIntegerSet` as from_set(self, input: `std::set` as set<int>):
+        """Creates a new ConstIntegerSet from a set of integers."""
+
+      @add__init__
+      def `ConstIntegerSet` as from_other(self, other: ConstIntegerSet):
+        """Creates a new ConstIntegerSet from another."""
+
+      def count(self, i: int) -> int:
+        """Returns 1 if i is in the set, 0 otherwise."""
+
+      def size(self) -> int:
+        """Returns the size of the set."""
+
+      def empty(self) -> bool:
+        """Checks if set is empty."""
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes object to output stream."""
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads object from input stream."""

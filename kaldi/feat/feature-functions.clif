@@ -1,54 +1,255 @@
+from "itf/options-itf-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/matrix-ext.h" import *
 
+from kaldi.matrix import _matrix_wrapper
+
 from "feat/feature-functions.h":
   namespace `kaldi`:
-    def `ComputePowerSpectrum` as compute_power_spectrum(complex_fft: VectorBase)
+    def `ComputePowerSpectrum` as compute_power_spectrum(complex_fft: VectorBase):
+      """Converts a complex FFT to a power spectrum.
+
+      If the input complex FFT is a vector of size n (representing half the
+      complex FFT of a real signal of size n), this function overwrites the
+      first (n/2) + 1 elements of it with the energies of the FFT bins from
+      zero to the Nyquist frequency.  Contents of the remaining (n/2) - 1
+      elements are undefined at output.
+
+      Args:
+        complex_fft (Vector): Complex FFT to be converted to a power spectrum.
+      """
 
     class DeltaFeaturesOptions:
+      """DeltaFeaturesOptions(order:int=2, window:int=2)
+
+      Options for delta computation.
+
+      Args:
+        order (int): Delta computation order (default=2).
+        window (int): Delta computation window (default=2).
+          Actual window size is 2 * window + 1.
+
+      Note:
+        The behavior at the edges is to replicate the first or last frame.
+      """
+
       order: int
+      """Delta computation order (default=2)"""
+
       window: int
+      """Delta computation window (default=2)"""
 
       def __init__(self, order: int = default, window: int = default)
 
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
     class DeltaFeatures:
+      """DeltaFeatures(opts:DeltaFeaturesOptions)
+
+      Delta features computer.
+
+      This class provides a low-level function to compute delta features. The
+      function takes as input a matrix of features and a frame index that it
+      should compute the deltas on.  It puts its output in an object of type
+      VectorBase, of size (original-feature-dimension) * (opts.order+1). This
+      is not the most efficient way to do the computation, but it's state-free
+      and thus easier to understand.
+
+      Args:
+        opts (DeltaFeaturesOptions): Options for delta computation.
+      """
       def __init__(self, opts: DeltaFeaturesOptions)
 
       def `Process` as process(self, input_feats: MatrixBase, frame: int,
-                               output_frame: VectorBase)
+                               output_frame: VectorBase):
+        """Computes delta features for given frame.
+
+        Args:
+          input_feats (Matrix): Input feature matrix.
+          frame (int): Frame index.
+          output_frame (Vector): Output vector representing delta features.
+        """
 
     class ShiftedDeltaFeaturesOptions:
+      """ShiftedDeltaFeaturesOptions()
+
+      Options for shifted delta computation.
+      """
+
       window: int
+      """Size of time delay and advance (default=1)"""
+
       num_blocks: int
+      """Number of blocks in advance of each frame to be concatenated (default=7)"""
+
       block_shift: int
+      """Distance between each block (default=3)"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class ShiftedDeltaFeatures:
+      """ShiftedDeltaFeatures(opts:ShiftedDeltaFeaturesOptions)
+
+      Shifted delta features computer.
+
+      This class provides a low-level function to compute shifted delta cesptra
+      (SDC). The function takes as input a matrix of features and a frame index
+      that it should compute the deltas on.  It puts its output in an object of
+      type VectorBase, of size original-feature-dimension + (1  * num_blocks).
+
+      Args:
+        opts (ShiftedDeltaFeaturesOptions): Options for shifted delta
+          computation.
+      """
       def __init__(self, opts: ShiftedDeltaFeaturesOptions)
 
       def `Process` as process(self, input_feats: MatrixBase, frame: int,
-                               output_frame: SubVector)
+                               output_frame: SubVector):
+        """Computes shifted delta features for given frame.
+
+        Args:
+          input_feats (Matrix): Input feature matrix.
+          frame (int): Frame index.
+          output_frame (Vector): Output vector representing delta features.
+        """
 
     def `ComputeDeltas` as compute_deltas(delta_opts: DeltaFeaturesOptions,
-                                          input_features: MatrixBase) -> Matrix
+                                          input_features: MatrixBase) -> Matrix:
+      """Computes delta features.
+
+      Args:
+        delta_opts (DeltaFeaturesOptions): Options for delta computation.
+        input_features (Matrix): Input feature matrix.
+
+      Returns:
+        Matrix: A matrix representing output delta features.
+
+      Note:
+        This convenience function computes delta features for an entire feature
+        matrix. If you want to deal with features coming in frame by frame you
+        can use the DeltaFeatures class.
+      """
+      return _matrix_wrapper(...)
 
     def `ComputeShiftedDeltas` as compute_shift_deltas(
-        delta_opts: ShiftedDeltaFeaturesOptions, input_features: MatrixBase) -> Matrix
+        delta_opts: ShiftedDeltaFeaturesOptions, input_features: MatrixBase) -> Matrix:
+      """Computes shifted delta features.
+
+      Args:
+        delta_opts (ShiftedDeltaFeaturesOptions): Options for shifted delta
+          computation.
+        input_features (Matrix): Input feature matrix.
+
+      Returns:
+        Matrix: A matrix representing output delta features.
+
+      Note:
+        This convenience function computes delta features for an entire feature
+        matrix. If you want to deal with features coming in frame by frame you
+        can use the ShiftedDeltaFeatures class.
+      """
+      return _matrix_wrapper(...)
 
     def `SpliceFrames` as splice_frames(input_features: MatrixBase, left_context: int,
-                                        right_context: int) -> Matrix
+                                        right_context: int) -> Matrix:
+      """Splices feature frames.
 
-    def `ReverseFrames` as reverse_frames(input_features: MatrixBase) -> Matrix
+      This function is normally used together with LDA. It splices frames
+      together to make a window.
 
-    def `InitIdftBases` as init_idft_bases(n_bases: int, dimension: int) -> Matrix
+      Args:
+        input_features (Matrix): Input feature matrix.
+        left_context (int): Number of left context frames.
+        right_context (int): Number of right context frames.
+
+      Returns:
+        Matrix: A matrix representing output features.
+
+      Throws:
+        RuntimeError: If input feature matrix is empty.
+
+      Note:
+        At the start and end of an utterance, it duplicates the first and last
+        frames. Number of left and right context frames must be non-negative.
+      """
+      return _matrix_wrapper(...)
+
+    def `ReverseFrames` as reverse_frames(input_features: MatrixBase) -> Matrix:
+      """Reverses frames in time.
+
+      This function is used for backwards decoding.
+
+      Args:
+        input_features (Matrix): Input feature matrix.
+
+      Returns:
+        Matrix: A matrix representing output features.
+      """
+      return _matrix_wrapper(...)
+
+    def `InitIdftBases` as init_idft_bases(n_bases: int, dimension: int) -> Matrix:
+      """Initializes IDFT bases.
+
+      Args:
+        n_bases (int): Number of IDFT bases.
+        dimension (int): Dimension of each IDFT basis.
+
+      Returns:
+        Matrix: A matrix representing IDFT bases.
+      """
+      return _matrix_wrapper(...)
 
     class SlidingWindowCmnOptions:
-      cmn_window: int
-      min_window: int
-      normalize_variance: bool
-      center: bool
+      """SlidingWindowCmnOptions()
 
-      def `Check` as check(self)
+      Options for sliding window CMN computation."""
+
+      cmn_window: int
+      """Window size for average CMN computation (default=600)"""
+
+      min_window: int
+      """Minimum CMN window used at start of decoding (default=100)"""
+
+      max_warnings: int
+      """Maximum watning to report per utterance (default=5)"""
+
+      normalize_variance: bool
+      """Whether to normalize variance to one (default=False)"""
+
+      center: bool
+      """Whether to center the window on the current frame (default=False)"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `Check` as check(self):
+        """Checks if option values are valid.
+
+        Throws:
+          RuntimeError: If option values are not valid.
+        """
 
     def `SlidingWindowCmn` as sliding_window_cmn(opts: SlidingWindowCmnOptions,
-                                                 input: MatrixBase, output: MatrixBase)
+                                                 input: MatrixBase, output: MatrixBase):
+      """Applies sliding-window cepstral mean and/or variance normalization.
+
+      Input and output feature matrices must have the same dimension.
+      """

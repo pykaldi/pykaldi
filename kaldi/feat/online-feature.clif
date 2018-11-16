@@ -14,193 +14,360 @@ from kaldi.itf._online_feature_itf import OnlineBaseFeature
 from "feat/online-feature.h":
   namespace `kaldi`:
     class `OnlineGenericBaseFeature<MfccComputer>` as OnlineMfcc(OnlineBaseFeature):
+      """Online MFCC features extractor.
+
+      Args:
+        opts (MfccOptions): Options for extracting MFCC features.
+      """
       def __init__(self, opts: MfccOptions)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
-      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
+        """Accepts input waveform for feature extraction."""
 
-      def `InputFinished` as input_finished(self)
+      def `InputFinished` as input_finished(self):
+        """Marks input as finished."""
 
     class `OnlineGenericBaseFeature<PlpComputer>` as OnlinePlp(OnlineBaseFeature):
+      """Online PLP features extractor.
+
+      Args:
+        opts (PlpOptions): Options for extracting PLP features.
+      """
       def __init__(self, opts: PlpOptions)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
-      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
+        """Accepts input waveform for feature extraction."""
 
-      def `InputFinished` as input_finished(self)
+      def `InputFinished` as input_finished(self):
+        """Marks input as finished."""
 
     class `OnlineGenericBaseFeature<FbankComputer>` as OnlineFbank(OnlineBaseFeature):
+      """Online filterbank features extractor.
+
+      Args:
+        opts (FbankOptions): Options for extracting filterbank features.
+      """
       def __init__(self, opts: FbankOptions)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
-      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
+        """Accepts input waveform for feature extraction."""
 
-      def `InputFinished` as input_finished(self)
+      def `InputFinished` as input_finished(self):
+        """Marks input as finished."""
 
     class OnlineMatrixFeature(OnlineFeatureInterface):
+      """Online matrix features.
+
+      Args:
+        mat (Matrix): Source feature matrix.
+      """
       def __init__(self, mat: MatrixBase)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineCmvnOptions:
+      """OnlineCmvnOptions()
+
+      Options for online CMVN.
+      """
+
       cmn_window: int
+      """Number of frames of sliding context for CMN (default=600)"""
+
       speaker_frames: int
+      """Number of frames from this speaker to use in CMN (deafult=6000)"""
+
       global_frames: int
+      """Number of global frames to use in CMN for first utterance of a speaker (default=200)"""
+
       normalize_mean: bool
+      """If True, do cepstral mean normalization (default=True)"""
+
       normalize_variance: bool
+      """If True, do cepstral mean and variance normalization (default=False)"""
+
       modulus: int
+      """Relates to how CMVN is computed internally (deafult=20)"""
+
       ring_buffer_size: int
+      """Size of ring buffer used for caching CMVN stats (deafult=20)"""
+
       skip_dims: str
+      """Colon seperated list of dimensions to skip (default="")"""
 
-      # NOTE: It probably does not make sense to wrap this check method.
-      # It does nothing when compiled with the NDEBUG flag.
-      # It aborts if check fails when compiled without the NDEBUG flag.
-      # def Check(self)
+      def `Check` as check(self):
+        """Checks if options are valid.
 
-      def `Register` as register(self, opts: ParseOptions)
+        Throws:
+          RuntimeError: If options are not valid.
+        """
+
+      def `Register` as register(self, po: ParseOptions):
+        """Registers options with a command-line option parser.
+
+        Args:
+          po (ParseOptions): Command-line option parser.
+        """
 
     class OnlineCmvnState:
+      """Online CMVN state."""
       speaker_cmvn_stats: DoubleMatrix
+      """Total CMVN stats for this speaker"""
+
       global_cmvn_stats: DoubleMatrix
+      """Global CMVN stats"""
+
       frozen_state: DoubleMatrix
+      """If nonempty, CMVN stats representing the frozen state."""
 
       @add__init__
-      def `OnlineCmvnState` as from_stats(self, global_stats: DoubleMatrix)
+      def `OnlineCmvnState` as from_stats(self, global_stats: DoubleMatrix):
+        """Constructs a new OnlineCmvnState object from global stats matrix."""
 
       @add__init__
-      def `OnlineCmvnState` as from_other(self, other: OnlineCmvnState)
+      def `OnlineCmvnState` as from_other(self, other: OnlineCmvnState):
+        """Constructs a new OnlineCmvnState object from another."""
 
-      def `Write` as write(self, os: ostream, binary: bool)
-      def `Read` as read(self, is: istream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes online CMVN stats to output stream."""
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads online CMVN stats from input stream."""
 
     class OnlineCmvn(OnlineFeatureInterface):
+      """Online CMVN features.
+
+      Args:
+        opts (OnlineCmvnOptions): Options for online CMVN features.
+        cmvn_state (OnlineCmvnState): Online CMVN state.
+        src (OnlineFeatureInterface): Source online features.
+      """
       def __init__(self, opts: OnlineCmvnOptions, cmvn_state: OnlineCmvnState,
                    src: OnlineFeatureInterface)
 
       @add__init__
       def `OnlineCmvn` as without_state(self, opts: OnlineCmvnOptions,
-                                        src: OnlineFeatureInterface)
+                                        src: OnlineFeatureInterface):
+        """Creates a new OnlineCmvn object"""
 
-      def `GetState` as get_state(self, cur_frame: int) -> OnlineCmvnState
+      def `GetState` as get_state(self, cur_frame: int) -> OnlineCmvnState:
+        """Returns the online CMVN state for current frame"""
 
-      def `SetState` as set_state(self, cmvn_state: OnlineCmvnState)
+      def `SetState` as set_state(self, cmvn_state: OnlineCmvnState):
+        """Sets online CMVN state"""
 
-      def `Freeze` as freeze(self, cur_frame: int)
+      def `Freeze` as freeze(self, cur_frame: int):
+        """Freezes online CMVN state"""
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineSpliceOptions:
-      left_context: int
-      right_context: int
+      """OnlineSpliceOptions()
 
-      def `Register` as register(self, po: ParseOptions)
+      Options for online feature splicing.
+      """
+
+      left_context: int
+      """Left-context for frame splicing prior to LDA (default=4)"""
+      right_context: int
+      """Right-context for frame splicing prior to LDA (default=4)"""
+
+      def `Register` as register(self, po: ParseOptions):
+        """Registers options with a command-line option parser.
+
+        Args:
+          po (ParseOptions): Command-line option parser.
+        """
 
     class OnlineSpliceFrames(OnlineFeatureInterface):
+      """Online feature splicing.
+
+      Args:
+        opts (OnlineSpliceOptions): Options for online feature splicing.
+        src (OnlineFeatureInterface): Source online features.
+      """
       def __init__(self, opts: OnlineSpliceOptions, src: OnlineFeatureInterface)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineTransform(OnlineFeatureInterface):
+      """Online feature transformation.
+
+      Args:
+        transform (Matrix): Feature transformation matrix.
+        src (OnlineFeatureInterface): Source online features.
+      """
       def __init__(self, transform: MatrixBase, src: OnlineFeatureInterface)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineDeltaFeature(OnlineFeatureInterface):
+      """Online delta features.
+
+      Args:
+        opts (DeltaFeaturesOptions): Options for delta features.
+        src (OnlineFeatureInterface): Source online features.
+      """
       def __init__(self, opts: DeltaFeaturesOptions, src: OnlineFeatureInterface)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineCacheFeature(OnlineFeatureInterface):
+      """Online feature caching.
+
+      Args:
+        src (OnlineFeatureInterface): Source online features.
+      """
       def __init__(self, src: OnlineFeatureInterface)
 
-      def `ClearCache` as clear_cache(self)
+      def `ClearCache` as clear_cache(self):
+        """Clears feature cache."""
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineAppendFeature(OnlineFeatureInterface):
+      """Online feature concatenation.
+
+      Args:
+        src1 (OnlineFeatureInterface): First source of online features.
+        src2 (OnlineFeatureInterface): Second source of online features.
+      """
       def __init__(self, src1: OnlineFeatureInterface, src2: OnlineFeatureInterface)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""

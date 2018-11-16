@@ -4,18 +4,25 @@ from "itf/online-feature-itf.h":
   namespace `kaldi`:
     class OnlineFeatureInterface:
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
     class OnlineBaseFeature(OnlineFeatureInterface):
 
-      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
+        """Accepts input waveform for feature extraction."""
 
-      def `InputFinished` as input_finished(self)
+      def `InputFinished` as input_finished(self):
+        """Marks input as finished."""

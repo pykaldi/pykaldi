@@ -6,28 +6,78 @@ from "hmm/transition-model-clifwrap.h" import *
 from "hmm/tree-accu.h":
   namespace `kaldi`:
     class AccumulateTreeStatsOptions:
-      var_floor: float
-      ci_phones_str: str
-      phone_map_rxfilename: str
-      collapse_pdf_classes: bool
-      context_width: int
-      central_position: int
+      """Options for accumulating tree statistics."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      var_floor: float
+      """Variance floor for tree clustering (default=0.01)."""
+
+      ci_phones_str: str
+      """Colon-separated list of integer indices for context-independent phones."""
+
+      phone_map_rxfilename: str
+      """Extended filename for the old->now phone mappings."""
+
+      context_width: int
+      """Context window size (default=3)."""
+
+      central_position: int
+      """Central position of context-window, zero-based (default=1)."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class AccumulateTreeStatsInfo:
-      var_floor: float
-      ci_phones: list<int>
-      phone_map: list<int>
-      context_width: int
-      central_position: int
+      """Alternative options representation for accumulating tree statistics.
 
+      Args:
+        opts (AccumulateTreeStatsOptions): Options for accumulating tree
+          statistics.
+      """
       def __init__(self, opts: AccumulateTreeStatsOptions)
+
+      var_floor: float
+      """Variance floor for tree clustering (default=0.01)."""
+
+      ci_phones: list<int>
+      """List of integer indices for context-independent phones."""
+
+      phone_map: list<int>
+      """List of old->now phone mappings."""
+
+      context_width: int
+      """Context window size (default=3)."""
+
+      central_position: int
+      """Central position of context-window, zero-based (default=1)."""
 
     def `AccumulateTreeStats` as accumulate_tree_stats(
         trans_model: TransitionModel, info: AccumulateTreeStatsInfo,
         alignment: list<int>, features: Matrix)
-        -> `std::map` as dict<list<tuple<int, int>>, GaussClusterable>
+        -> `std::map` as dict<list<tuple<int, int>>, GaussClusterable>:
+      """Accumulates the stats needed for training context-dependency trees."""
 
-    def `ReadPhoneMap` as read_phone_map(phone_map_rxfilename: str)
-        -> list<int>
+    def `ReadPhoneMap` as read_phone_map(phone_map_rxfilename: str) -> list<int>:
+      """Reads a mapping from one phone set to another.
+
+      The phone map file has lines of the form <old-phone> <new-phone>, where
+      both entries are integers, usually nonzero (but this is not enforced).
+
+      The output vector "phone_map" will be indexed by old-phone and will
+      contain the corresponding new-phone, or -1 for any entry that was not
+      defined.
+
+      Args:
+        phone_map_rxfilename (str): Extended filename for the phone map.
+
+      Returns:
+        List[int]: Phone mapping.
+
+      Raises:
+        RuntimeError: if the input is invalid, e.g. there are multiple
+        inconsistent entries for the same old phone.
+      """

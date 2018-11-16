@@ -101,14 +101,14 @@ dimensions:
 
 | Package    | Wrapped? | Pythonic? | Documentation?             | Tests?   |
 | :--------: | :------: | :-------: | :------------------------: | :------: |
-| base       | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
-| chain      | &#10004; |           | &#10004;                   |          |
+| base       | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
+| chain      | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | cudamatrix | &#10004; |           | &#10004;                   | &#10004; |
 | decoder    | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
-| feat       | &#10004; | &#10004;  | &#10004;                   |          |
+| feat       | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | fstext     | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | gmm        | &#10004; | &#10004;  | &#10004; &#10004;          | &#10004; |
-| hmm        | &#10004; | &#10004;  | &#10004;                   | &#10004; |
+| hmm        | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
 | itf        | &#10004; |           | &#10004;                   |          |
 | ivector    | &#10004; |           | &#10004;                   |          |
 | kws        | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
@@ -116,7 +116,7 @@ dimensions:
 | lm         | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | matrix     | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
 | nnet3      | &#10004; |           | &#10004;                   | &#10004; |
-| online2    | &#10004; |           | &#10004;                   |          |
+| online2    | &#10004; |           | &#10004; &#10004;          |          |
 | rnnlm      | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
 | sgmm2      | &#10004; |           | &#10004;                   |          |
 | tfrnnlm    | &#10004; | &#10004;  | &#10004; &#10004; &#10004; |          |
@@ -135,11 +135,34 @@ Some places to help you get started:
 
 ## Installation
 
-To install PyKaldi from source, follow the steps given below. If you would like
-to use PyKaldi inside a Docker container instead, follow the instructions in
-the `docker` folder.
+### Conda
 
-### Step 1: Clone PyKaldi Repository and Create a New Python Environment
+To install PyKaldi with CUDA support:
+
+```bash
+conda install -c pykaldi pykaldi
+```
+
+To install PyKaldi without CUDA support (CPU only):
+
+```bash
+conda install -c pykaldi pykaldi-cpu
+```
+
+Note that PyKaldi package does not provide Kaldi executables. If you would like
+to use Kaldi executables along with PyKaldi, e.g. as part of read/write specifiers,
+you need to install Kaldi separately.
+
+### Docker
+
+If you would like to use PyKaldi inside a Docker container, follow the
+instructions in the `docker` folder.
+
+### From Source
+
+To install PyKaldi from source, follow the steps given below.
+
+#### Step 1: Clone PyKaldi Repository and Create a New Python Environment
 
 ```bash
 git clone https://github.com/pykaldi/pykaldi.git
@@ -160,7 +183,7 @@ virtualenv env
 source env/bin/activate
 ```
 
-### Step 2: Install Dependencies
+#### Step 2: Install Dependencies
 
 On Ubuntu 16.04, running the following commands will install system packages
 needed for building PyKaldi from source.
@@ -203,7 +226,7 @@ cd tools
 cd ..
 ```
 
-### Step 3: Install PyKaldi
+#### Step 3: Install PyKaldi
 
 If Kaldi is installed inside the `tools` directory and all Python dependencies
 (numpy, pyparsing, pyclif, protobuf) are installed in the active Python
@@ -220,6 +243,18 @@ python setup.py test
 ```
 
 ## FAQ
+
+### How do I prevent PyKaldi install command from exhausting the system memory?
+
+By default, PyKaldi install command uses all available (logical) processors to
+accelerate the build process. If the size of the system memory is relatively
+small compared to the number of processors, the parallel compilation/linking
+jobs might end up exhausting the system memory and result in swapping. You can
+limit the number of parallel jobs used for building PyKaldi as follows:
+
+```bash
+MAKE_NUM_JOBS=2 python setup.py install
+```
 
 ### How do I build PyKaldi on MacOS?
 
@@ -286,7 +321,7 @@ as follows:
 ```
 @inproceedings{pykaldi,
   title = {PyKaldi: A Python Wrapper for Kaldi},
-  author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and
+  author = {Dogan Can and Victor R. Martinez and Pavlos Papadopoulos and
             Shrikanth S. Narayanan},
   booktitle={Acoustics, Speech and Signal Processing (ICASSP),
              2018 IEEE International Conference on},

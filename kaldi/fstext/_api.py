@@ -1,8 +1,10 @@
 # The Python API was largely adapted from the official OpenFst Python wrapper.
 # See www.openfst.org for additional documentation.
 
-import subprocess
 import logging
+import os
+import subprocess
+import time
 
 from ..base.io import ofstream, ostringstream, stringstream
 
@@ -528,7 +530,7 @@ class _FstBase(object):
         Returns:
           The start state if start state is set, -1 otherwise.
         """
-        return self._start(state)
+        return self._start()
 
     def states(self):
         """
@@ -709,8 +711,8 @@ class _MutableFstBase(_FstBase):
 
         This operation destructively converts the FST to its concatenative
         closure. If A transduces string x to y with weight a, then the closure
-        transduces x to y with weight a, xx to yy with weight a \otimes a,
-        xxx to yyy with weight a \otimes a \otimes a, and so on. The empty
+        transduces x to y with weight a, xx to yy with weight a \\otimes a,
+        xxx to yyy with weight a \\otimes a \\otimes a, and so on. The empty
         string is also transduced to itself with semiring One if `closure_plus`
         is False.
 
@@ -731,7 +733,7 @@ class _MutableFstBase(_FstBase):
         This operation destructively concatenates the FST with a second FST. If
         A transduces string x to y with weight a and B transduces string w to v
         with weight b, then their concatenation transduces string xw to yv with
-        weight a \otimes b.
+        weight a \\otimes b.
 
         Args:
           ifst: The second input FST.
@@ -930,7 +932,7 @@ class _MutableFstBase(_FstBase):
 
         This operation deletes states and arcs in the input FST that do not
         belong to a successful path whose weight is no more (w.r.t the natural
-        semiring order) than the threshold \otimes the weight of the shortest
+        semiring order) than the threshold \\otimes the weight of the shortest
         path in the input FST. Weights must be commutative and have the path
         property.
 
@@ -1104,8 +1106,8 @@ class _MutableFstBase(_FstBase):
         This operation destructively reweights an FST according to the
         potentials and in the direction specified by the user. An arc of weight
         w, with an origin state of potential p and destination state of
-        potential q, is reweighted by p^{-1} \otimes (w \otimes q) when
-        reweighting towards the initial state, and by (p \otimes w) \otimes
+        potential q, is reweighted by p^{-1} \\otimes (w \\otimes q) when
+        reweighting towards the initial state, and by (p \\otimes w) \\otimes
         q^{-1} when reweighting towards the final states. The weights must be
         left distributive when reweighting towards the initial state and right
         distributive when reweighting towards the final states (e.g.,
@@ -1514,7 +1516,7 @@ def compose(ifst1, ifst2, connect=True, compose_filter="auto"):
 
     This operation computes the composition of two FSTs. If A transduces
     string x to y with weight a and B transduces y to z with weight b, then
-    their composition transduces string x to z with weight a \otimes b. The
+    their composition transduces string x to z with weight a \\otimes b. The
     output labels of the first transducer or the input labels of the second
     transducer must be sorted (or otherwise support appropriate matchers).
 
@@ -1788,7 +1790,7 @@ def prune(ifst, weight=None, nstate=NO_STATE_ID, delta=DELTA):
 
     This operation deletes states and arcs in the input FST that do not belong
     to a successful path whose weight is no more (w.r.t the natural semiring
-    order) than the threshold t \otimes-times the weight of the shortest path in
+    order) than the threshold t \\otimes the weight of the shortest path in
     the input FST. Weights must be commutative and have the path property.
 
     Args:
@@ -1901,7 +1903,7 @@ def randequivalent(ifst1, ifst2, npath=1, delta=DELTA, seed=None,
 
 
 def randgen(ifst, npath=1, seed=None, select="uniform",
-            max_length=INT32_MAX, weight=False, remove_total_weight=False):
+            max_length=INT32_MAX, weighted=False, remove_total_weight=False):
     """
     Randomly generate successful paths in an FST.
 
@@ -2063,11 +2065,11 @@ def shortestdistance(ifst, reverse=False, source=NO_STATE_ID,
 
     This operation computes the shortest distance from the initial state (when
     `reverse` is False) or from every state to the final state (when `reverse`
-    is True). The shortest distance from p to q is the \otimes-sum of the
+    is True). The shortest distance from p to q is the \\otimes-sum of the
     weights of all the paths between p and q. The weights must be right (if
     `reverse` is False) or left (if `reverse` is True) distributive, and
-    k-closed (i.e., 1 \otimes x \otimes x^2 \otimes ... \otimes x^{k + 1} = 1
-    \otimes x \otimes x^2 \otimes ... \otimes x^k; e.g., TropicalWeight).
+    k-closed (i.e., 1 \\otimes x \\otimes x^2 \\otimes ... \\otimes x^{k + 1} = 1
+    \\otimes x \\otimes x^2 \\otimes ... \\otimes x^k; e.g., TropicalWeight).
 
     Args:
         ifst: The input FST.

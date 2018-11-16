@@ -2,8 +2,35 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 
 from "feat/signal.h":
   namespace `kaldi`:
-    def `ConvolveSignals` as convolve_signals(filter: Vector, signal: Vector)
+    def `ConvolveSignals` as convolve_signals(filter: Vector, signal: Vector):
+      """Does simple non-FFT-based convolution of two signals.
 
-    def `FFTbasedConvolveSignals` as fft_based_convolve_signals(filter: Vector, signal: Vector)
+      It is suggested to use the FFT-based convolution function which is more
+      efficient.
 
-    def `FFTbasedBlockConvolveSignals` as fft_based_block_convolve_signals(filter: Vector, signal: Vector)
+      Args:
+        filter (Vector): The filter.
+        signal (Vector): The signal.
+      """
+
+    def `FFTbasedConvolveSignals` as fft_based_convolve_signals(filter: Vector, signal: Vector):
+      """Does FFT-based convolution of two signals.
+
+      This is less efficient than :meth:`fft_based_block_convolve_signals`
+      as it processes the entire signal with a single FFT.
+
+      Args:
+        filter (Vector): The filter.
+        signal (Vector): The signal.
+      """
+
+    def `FFTbasedBlockConvolveSignals` as fft_based_block_convolve_signals(filter: Vector, signal: Vector):
+      """Does FFT-based block convolution of two signals using overlap-add method.
+
+      This is an efficient way of computing the discrete convolution of a long
+      signal with a finite impulse response filter.
+
+      Args:
+        filter (Vector): The filter.
+        signal (Vector): The signal.
+      """

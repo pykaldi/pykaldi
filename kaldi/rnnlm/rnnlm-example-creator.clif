@@ -3,6 +3,7 @@ from "rnnlm/rnnlm-example-clifwrap.h" import *
 # To import kaldi table wrapper, we first need to import wave reader, kaldi
 # lattice and nnet3 example.
 from "feat/wave-reader-clifwrap.h" import *
+from "hmm/posterior-ext-clifwrap.h" import *
 from "lat/kaldi-lattice.h" import *
 from "nnet3/nnet-example-clifwrap.h" import *
 from "util/kaldi-table-clifwrap.h" import *

@@ -9,7 +9,12 @@ add_pyclif_library("_transition_model" transition-model.clif
 )
 
 add_pyclif_library("_posterior" posterior.clif
-  CLIF_DEPS _iostream _kaldi_matrix _transition_model
+  CLIF_DEPS _kaldi_vector
+  LIBRARIES kaldi-hmm
+)
+
+add_pyclif_library("_posterior_ext" posterior-ext.clif
+  CLIF_DEPS _iostream _kaldi_matrix _transition_model _const_integer_set
   LIBRARIES kaldi-hmm
 )
 

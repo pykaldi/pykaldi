@@ -7,91 +7,216 @@ from "hmm/hmm-topology-clifwrap.h" import *
 from "hmm/transition-model.h":
   namespace `kaldi`:
     class MleTransitionUpdateConfig:
-      floor: float
-      mincount: float
-      share_for_pdfs: bool
+      """Options for MLE estimation of transition probabilities.
 
+        Args:
+          floor (float): Floor for transition probabilities (default=0.01).
+          mincount (float): Minimum count required to update transitions from
+            a state (default=5.0).
+          share_for_pdfs (bool): Share all transition parameters where the
+            states have the same PDF (default=False).
+      """
       def __init__(self, floor: float = default, mincount: float = default,
                    share_for_pdfs: bool = default)
 
-      def `Register` as register(self, opts: OptionsItf)
+      floor: float
+      """Floor for transition probabilities"""
+
+      mincount: float
+      """Minimum count required to update transitions from a state"""
+
+      share_for_pdfs: bool
+      """Share all transition parameters where the states have the same PDF"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class MapTransitionUpdateConfig:
-      tau: float
-      share_for_pdfs: bool
+      """Options for MAP estimation of transition probabilities."""
 
-      def `Register` as register(self, opts: OptionsItf)
+      tau: float
+      """Tau value for MAP estimation of transition probabilities."""
+      share_for_pdfs: bool
+      """Share all transition parameters where the states have the same PDF"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class TransitionModel:
+      """Transition model."""
+
       @add__init__
-      def `TransitionModel` as from_topo(
-        self, ctx_dep: ContextDependencyInterface, hmm_topo: HmmTopology)
+      def `TransitionModel` as from_topo(self, ctx_dep: ContextDependencyInterface, hmm_topo: HmmTopology):
+        """Creates a new TransitionModel object.
 
-      def `Read` as read(self, is: istream, binary: bool) -> self
+        Args:
+          ctx_dep (ContextDependencyInterface): Context dependency decision
+            tree.
+          hmm_topo (HmmTopology): HMM topology.
+        """
 
-      def `Write` as write(self, os: ostream, binary: bool) -> self
+      def `Read` as read(self, is: istream, binary: bool) -> self:
+        """Reads TransitionModel object from input stream."""
 
-      def `GetTopo` as get_topo(self) -> HmmTopology
+      def `Write` as write(self, os: ostream, binary: bool) -> self:
+        """Writes TransitionModel object to output stream."""
 
-      def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int, self_loop_pdf: int) -> int
-      def `PairToTransitionId` as pair_to_transition_id(self, trans_state: int, trans_index: int) -> int
-      def `TransitionIdToTransitionState` as transition_id_to_transition_state(self, trans_id: int) -> int
-      def `TransitionIdToTransitionIndex` as transition_id_to_transition_index(self, trans_id: int) -> int
-      def `TransitionStateToPhone` as transition_state_to_phone(self, trans_state: int) -> int
-      def `TransitionStateToHmmState` as transition_state_to_hmm_state(self, trans_state: int) -> int
-      def `TransitionStateToForwardPdfClass` as transition_state_to_forward_pdf_class(self, trans_state: int) -> int
-      def `TransitionStateToSelfLoopPdfClass` as transition_state_to_self_loop_pdf_class(self, trans_state: int) -> int
-      def `TransitionStateToForwardPdf` as transition_state_to_forward_pdf(self, trans_state: int) -> int
-      def `TransitionStateToSelfLoopPdf` as transition_state_to_self_loop_pdf(self, trans_state: int) -> int
-      def `SelfLoopOf` as self_loop_of(self, trans_state: int) -> int
-      def `TransitionIdToPdf` as transition_id_to_pdf(self, trans_id: int) -> int
-      def `TransitionIdToPhone` as transition_id_to_phone(self, trans_id: int) -> int
-      def `TransitionIdToPdfClass` as transition_id_to_pdf_class(self, trans_id: int) -> int
-      def `TransitionIdToHmmState` as transition_id_to_hmm_state(self, trans_id: int) -> int
+      def `GetTopo` as get_topo(self) -> HmmTopology:
+        """Returns the HMM topology."""
 
-      def `IsFinal` as is_final(self, trans_id: int) -> bool
+      def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int, self_loop_pdf: int) -> int:
+        """Maps (phone, hmm-state, forward-pdf-id, selfloop-pdf-id) tuple to transition-state."""
 
-      def `IsSelfLoop` as is_self_loop(self, trans_id: int) -> bool
+      def `PairToTransitionId` as pair_to_transition_id(self, trans_state: int, trans_index: int) -> int:
+        """Maps (trans-state, trans-index) pair to transition-id."""
 
-      def `NumTransitionIds` as num_transition_ids(self) -> int
+      def `TransitionIdToTransitionState` as transition_id_to_transition_state(self, trans_id: int) -> int:
+        """Maps transition-id to transition-state."""
 
-      def `NumTransitionIndices` as num_transition_indices(self, trans_state: int) -> int
+      def `TransitionIdToTransitionIndex` as transition_id_to_transition_index(self, trans_id: int) -> int:
+        """Maps transition-id to transition-index."""
 
-      def `NumTransitionStates` as num_transition_states(self) -> int
+      def `TransitionStateToPhone` as transition_state_to_phone(self, trans_state: int) -> int:
+        """Maps transition-state to phone."""
 
-      def `NumPdfs` as num_pdfs(self) -> int
+      def `TransitionStateToHmmState` as transition_state_to_hmm_state(self, trans_state: int) -> int:
+        """Maps transition-state to hmm-state."""
 
-      def `NumPhones` as num_phones(self) -> int
+      def `TransitionStateToForwardPdfClass` as transition_state_to_forward_pdf_class(self, trans_state: int) -> int:
+        """Maps transition-state to forward-pdf-class."""
 
-      def `GetPhones` as get_phones(self) -> list<int>
+      def `TransitionStateToSelfLoopPdfClass` as transition_state_to_self_loop_pdf_class(self, trans_state: int) -> int:
+        """Maps transition-state to selfloop-pdf-class."""
 
-      def `GetTransitionProb` as get_transition_prob(self, trans_id: int) -> float
-      def `GetTransitionLogProb` as get_transition_log_prob(self, trans_id: int) -> float
-      def `GetTransitionLogProbIgnoringSelfLoops` as get_transition_log_prob_ignoring_self_loops(self, trans_id: int) -> float
-      def `GetNonSelfLoopLogProb` as get_non_self_loop_log_prob(self, trans_id: int) -> float
+      def `TransitionStateToForwardPdf` as transition_state_to_forward_pdf(self, trans_state: int) -> int:
+        """Maps transition-state to forward-pdf-id."""
 
-      def `MleUpdate` as mle_update(self, stats: DoubleVector,
-                                    cfg: MleTransitionUpdateConfig)
-        -> (objf_impr_out: float, count_out: float)
+      def `TransitionStateToSelfLoopPdf` as transition_state_to_self_loop_pdf(self, trans_state: int) -> int:
+        """Maps transition-state to selfloop-pdf-id."""
 
-      def `MapUpdate` as map_update(self, stats: DoubleVector,
-                                    cfg: MapTransitionUpdateConfig)
-        -> (objf_impr_out: float, count_out: float)
+      def `SelfLoopOf` as self_loop_of(self, trans_state: int) -> int:
+        """Returns the self-loop transition-id, or zero id this state does not have a self-loop."""
+
+      def `TransitionIdToPdf` as transition_id_to_pdf(self, trans_id: int) -> int:
+        """Maps transition-id to pdf-id."""
+
+      def `TransitionIdToPhone` as transition_id_to_phone(self, trans_id: int) -> int:
+        """Maps transition-id to phone."""
+
+      def `TransitionIdToPdfClass` as transition_id_to_pdf_class(self, trans_id: int) -> int:
+        """Maps transition-id to pdf-class."""
+
+      def `TransitionIdToHmmState` as transition_id_to_hmm_state(self, trans_id: int) -> int:
+        """Maps transition-id to hmm-state."""
+
+      def `IsFinal` as is_final(self, trans_id: int) -> bool:
+        """Returns True if this transition-id foes to the final state."""
+
+      def `IsSelfLoop` as is_self_loop(self, trans_id: int) -> bool:
+        """Returns True if this transition-id corresponds to a self-loop."""
+
+      def `NumTransitionIds` as num_transition_ids(self) -> int:
+        """Returns the total number of transition-ids."""
+
+      def `NumTransitionIndices` as num_transition_indices(self, trans_state: int) -> int:
+        """Returns the number of transition-indices for given transition-state."""
+
+      def `NumTransitionStates` as num_transition_states(self) -> int:
+        """Returns the total number of transition-states."""
+
+      def `NumPdfs` as num_pdfs(self) -> int:
+        """Returns the highest numbered PDF we ever saw plus one."""
+
+      def `NumPhones` as num_phones(self) -> int:
+        """Returns the highest phone index present."""
+
+      def `GetPhones` as get_phones(self) -> list<int>:
+        """Returns a sorted, unique list of phones."""
+
+      def `GetTransitionProb` as get_transition_prob(self, trans_id: int) -> float:
+        """Returns the probability associated with given transition-id."""
+
+      def `GetTransitionLogProb` as get_transition_log_prob(self, trans_id: int) -> float:
+        """Returns the log probability associated with given transition-id."""
+
+      def `GetTransitionLogProbIgnoringSelfLoops` as get_transition_log_prob_ignoring_self_loops(self, trans_id: int) -> float:
+        """Returns the log probability associated with given transition-id if selfloop is ignored.
+
+        Returns the log-probability of a particular non-self-loop transition
+        after subtracting the probability mass of the self-loop and
+        renormalizing.  Specifically: for non-self-loops it returns
+        log(prob-for-transition / (1 - prob-for-selfloop)).
+
+        Raises:
+          RuntimeError: if called on a self-loop.
+        """
+
+      def `GetNonSelfLoopLogProb` as get_non_self_loop_log_prob(self, trans_id: int) -> float:
+        """Returns the log of non-selfloop probability mass for given transition."""
+
+      def `MleUpdate` as mle_update(self, stats: DoubleVector, cfg: MleTransitionUpdateConfig)
+        -> (objf_impr_out: float, count_out: float):
+        """Does Maximum Likelihood estimation.
+
+        The stats are counts/weights, indexed by transition-id.
+        """
+
+      def `MapUpdate` as map_update(self, stats: DoubleVector, cfg: MapTransitionUpdateConfig)
+        -> (objf_impr_out: float, count_out: float):
+        """Does Maximum A Posteriori estimation.
+
+        The stats are counts/weights, indexed by transition-id.
+        """
 
       def `Print` as print_model(self, os: ostream, phone_names: list<str>,
-                                 occs: DoubleVector = default)
+                                 occs: DoubleVector = default):
+        """Prints a human-readable representation of transition model."""
 
-      def `InitStats` as init_stats(self, stats: DoubleVector)
+      def `InitStats` as init_stats(self, stats: DoubleVector):
+        """Initializes statistics."""
 
-      def `Accumulate` as accumulate(self, prob: float, trans_id: int,
-                                     stats: DoubleVector)
+      def `Accumulate` as accumulate(self, prob: float, trans_id: int, stats: DoubleVector):
+        """Accumulates statistics."""
 
-      def `Compatible` as compatible(self, other: TransitionModel) -> bool
+      def `Compatible` as compatible(self, other: TransitionModel) -> bool:
+        """Checks if this transition model is compatible with another."""
 
-    def `GetPdfsForPhones` as get_pdfs_for_phones(trans_model: TransitionModel,
-                                                  phones: list<int>)
-      -> (ret: bool, pdfs: list<int>)
+    def `GetPdfsForPhones` as get_pdfs_for_phones(trans_model: TransitionModel, phones: list<int>)
+      -> (ret: bool, pdfs: list<int>):
+      """Works out which pdfs might correspond to the given phones.
 
-    def `GetPhonesForPdfs` as get_phones_for_pdfs(trans_model: TransitionModel,
-                                                  pdfs: list<int>)
-      -> (ret: bool, phones: list<int>)
+      Args:
+        trans_model (TransitionModel): Transition-model used to work out this information
+        phones (List[int]): A sorted, unique vector that represents a set of phones
+
+      Returns:
+        Tuple[bool, List[int]]: First return value will be True if returned
+        pdf-ids correspond to just the given set of phones, False if they may
+        be shared with other phones. Second return value is a sorted, unique
+        list of pdf-ids that correspond to given set of phones.
+      """
+
+    def `GetPhonesForPdfs` as get_phones_for_pdfs(trans_model: TransitionModel, pdfs: list<int>)
+      -> (ret: bool, phones: list<int>):
+      """Works out which phones might correspond to the given pdfs.
+
+      Args:
+        trans_model (TransitionModel): Transition-model used to work out this information
+        pdfs (List[int]): A sorted, unique vector that represents a set of pdfs
+
+      Returns:
+        Tuple[bool, List[int]]: First return value will be True if returned
+        phones correspond to just the given set of pdfs, False if they may
+        be shared with other pdfs. Second return value is a sorted, unique
+        list of phones that correspond to given set of pdfs.
+      """

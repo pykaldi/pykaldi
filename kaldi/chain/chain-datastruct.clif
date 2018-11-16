@@ -1,6 +1,13 @@
 from "chain/chain-datastruct.h":
 
   class DenominatorGraphTransition:
+    """Denominator graph transition."""
+
     transition_prob: float
+    """Transition probability"""
+
     pdf_id: int
+    """PDF id"""
+
     hmm_state: int
+    """HMM state"""

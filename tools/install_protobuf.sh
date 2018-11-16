@@ -64,7 +64,7 @@ if which protoc >/dev/null; then
     if check_protoc_version $(which protoc); then
         if check_protobuf_python_package; then
             echo "Done installing Protobuf."
-            # exit 0
+            exit 0
         fi
     fi
 fi

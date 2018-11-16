@@ -22,7 +22,7 @@ def check_output(*args, **kwargs):
 # Set minimum version requirements for external dependencies
 ################################################################################
 
-KALDI_MIN_REQUIRED = '6e6396e406c155b89f54313e15138e01bc61c230'
+KALDI_MIN_REQUIRED = 'a06824affc054fc05f73dee040aa422e8f5a22cc'
 
 ################################################################################
 # Check variables / find programs
@@ -34,9 +34,6 @@ CLIF_MATCHER = os.getenv('CLIF_MATCHER')
 KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
-NPROC = check_output(['getconf', '_NPROCESSORS_ONLN'])
-MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS', NPROC)
-
 
 if not PYCLIF:
     PYCLIF = os.path.join(sys.prefix, 'bin/clif-matcher')
@@ -117,7 +114,17 @@ if KALDI_TFRNNLM:
                               "bazel-bin", "tensorflow")
     subprocess.check_call(["rm", "Makefile"])
 
-MAKE_ARGS = []
+MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS')
+if not MAKE_NUM_JOBS:
+    # This is the logic ninja uses to guess the number of parallel jobs.
+    NPROC = int(check_output(['getconf', '_NPROCESSORS_ONLN']))
+    if NPROC < 2:
+        MAKE_NUM_JOBS = '2'
+    elif NPROC == 2:
+        MAKE_NUM_JOBS = '3'
+    else:
+        MAKE_NUM_JOBS = str(NPROC + 2)
+MAKE_ARGS = ['-j', MAKE_NUM_JOBS]
 try:
     import ninja
     CMAKE_GENERATOR = '-GNinja'
@@ -127,8 +134,8 @@ try:
 except ImportError:
     CMAKE_GENERATOR = ''
     MAKE = 'make'
-    if MAKE_NUM_JOBS:
-        MAKE_ARGS += ['-j', MAKE_NUM_JOBS]
+    if DEBUG:
+        MAKE_ARGS += ['-d']
 
 if DEBUG:
     print("#"*50)

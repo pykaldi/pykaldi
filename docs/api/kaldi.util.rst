@@ -14,6 +14,7 @@ kaldi\.util
    .. autosummary::
       :nosignatures:
    
+      ConstIntegerSet
       TaskSequencerConfig
    
    
@@ -123,6 +124,7 @@ kaldi\.util\.table
       FloatPairVectorWriter
       FloatWriter
       FstWriter
+      GaussPostWriter
       IntPairVectorWriter
       IntVectorVectorWriter
       IntVectorWriter
@@ -132,6 +134,7 @@ kaldi\.util\.table
       LogFstWriter
       MatrixWriter
       NnetExampleWriter
+      PosteriorWriter
       RandomAccessBoolReader
       RandomAccessCompactLatticeReader
       RandomAccessDoubleMatrixReader
@@ -143,6 +146,7 @@ kaldi\.util\.table
       RandomAccessFloatReader
       RandomAccessFloatReaderMapped
       RandomAccessFstReader
+      RandomAccessGaussPostReader
       RandomAccessIntPairVectorReader
       RandomAccessIntReader
       RandomAccessIntVectorReader
@@ -153,8 +157,10 @@ kaldi\.util\.table
       RandomAccessMatrixReader
       RandomAccessMatrixReaderMapped
       RandomAccessNnetExampleReader
+      RandomAccessPosteriorReader
       RandomAccessVectorReader
       RandomAccessVectorReaderMapped
+      RandomAccessWaveInfoReader
       RandomAccessWaveReader
       RnnlmExampleWriter
       RspecifierOptions
@@ -167,6 +173,7 @@ kaldi\.util\.table
       SequentialFloatPairVectorReader
       SequentialFloatReader
       SequentialFstReader
+      SequentialGaussPostReader
       SequentialIntPairVectorReader
       SequentialIntReader
       SequentialIntVectorReader
@@ -176,8 +183,10 @@ kaldi\.util\.table
       SequentialLogFstReader
       SequentialMatrixReader
       SequentialNnetExampleReader
+      SequentialPosteriorReader
       SequentialRnnlmExampleReader
       SequentialVectorReader
+      SequentialWaveInfoReader
       SequentialWaveReader
       VectorWriter
       WaveWriter

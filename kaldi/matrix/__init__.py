@@ -2808,7 +2808,7 @@ def _vector_wrapper(vector):
     (or `DoubleVector`) instances without copying the contents.
 
     This is a destructive operation. Contents of the input vector are moved to
-    the newly contstructed vector by swapping data pointers.
+    the newly constructed vector by swapping data pointers.
 
     Args:
         vector (`Vector` or `DoubleVector`): The input vector.
@@ -2832,7 +2832,7 @@ def _matrix_wrapper(matrix):
     (or `DoubleMatrix`) instances without copying the contents.
 
     This is a destructive operation. Contents of the input matrix are moved to
-    the newly contstructed matrix by swapping data pointers.
+    the newly constructed matrix by swapping data pointers.
 
     Args:
         matrix (`Matrix` or `DoubleMatrix`): The input matrix.

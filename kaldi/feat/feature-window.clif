@@ -4,54 +4,167 @@ from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window.h":
   namespace `kaldi`:
     class FrameExtractionOptions:
+      """FrameExtractionOptions()
+
+      Options for extracting frames.
+      """
+
       samp_freq: float
+      """Sample frequency (default=16000)"""
+
       frame_shift_ms: float
+      """Frame shift in milliseconds (default=10)"""
+
       frame_length_ms: float
+      """Frame length in milliseconds (default=25)"""
+
       dither: float
+      """Dithering constant, 0.0 means no dithering (default=1.0)"""
+
       preemph_coeff: float
+      """Coefficient for use in signal preemphasis (default=0.97)"""
+
       remove_dc_offset: bool
+      """Subtract mean from waveform on each frame (default=True)"""
+
       window_type: str
+      """Type of window, one of hamming, hanning, povey (default), rectangular, blackman"""
+
       round_to_power_of_two: bool
+      """Round window size to power of two by zero-paddinf FFT input (default=True)"""
+
       blackman_coeff: float
+      """Constant coefficient for generalized Blackman window (default=0.42)"""
+
       snip_edges: bool
+      """Whether to output only frames that fit in the waveform (default=True)"""
+
       allow_downsample: bool
+      """Whether input waveform can have a higher sampling frequency than specified (default=False)"""
 
-      def `Register` as register(self, opts:OptionsItf)
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
-      def `WindowShift` as window_shift(self) -> int
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
-      def `WindowSize` as window_size(self) -> int
+      def `WindowShift` as window_shift(self) -> int:
+        """Returns window shift in terms of number of samples"""
 
-      def `PaddedWindowSize` as padded_window_size(self) -> int
+      def `WindowSize` as window_size(self) -> int:
+        """Returns window size in terms of number of samples"""
+
+      def `PaddedWindowSize` as padded_window_size(self) -> int:
+        """Returns padded window size in terms of number of samples"""
 
     class FeatureWindowFunction:
+      """Windowing function."""
+
       @add__init__
       def `FeatureWindowFunction` as from_options(self,
-                                                  opts: FrameExtractionOptions)
+                                                  opts: FrameExtractionOptions):
+        """Create a windowing function from a `FrameExtractionOptions` object"""
+
       @add__init__
       def `FeatureWindowFunction` as from_other(self,
-                                                other: FeatureWindowFunction)
+                                                other: FeatureWindowFunction):
+        """Create a windowing function from another"""
+
       window: Vector
+      """Window"""
 
     def `NumFrames` as num_frames(num_samples: int, opts: FrameExtractionOptions,
-                  flush: bool = default) -> int
+                  flush: bool = default) -> int:
+      """Computes the number of frames that we can extact from a waveform.
 
-    def `FirstSampleOfFrame` as first_sample_of_frame(frame: int, opts: FrameExtractionOptions) -> int
+      Assumes that the waveform has the sampling rate specified in frame
+      extraction options.
 
-    def `Dither` as dither(waveform: VectorBase, dither_value: float)
+      Args:
+        num_samples (int): The number of samples in the waveform.
+        opts (FrameExtractionOptions): Options for frame extraction.
+        flush (bool): True if we are asserting that this number of samples is
+          'all there is', False if we expecting more data to possibly come in.
+          This only makes a difference to the answer if opts.snips_edges ==
+          False.  For offline feature extraction you always want flush == True.
+          In an online-decoding context, once you know (or decide) that no more
+          data is coming in, you'd call it with flush == True at the end to
+          flush out any remaining data (default=True).
 
-    def `Preemphasize` as preemphasize(waveform: VectorBase, preemph_coeff: float)
+      Returns:
+        int: Number of frames that can be extracted.
+      """
+
+    def `FirstSampleOfFrame` as first_sample_of_frame(frame: int, opts: FrameExtractionOptions) -> int:
+      """Computes the index of the first sample of a given frame.
+
+      Args:
+        frame (int): The frame index.
+        opts (FrameExtractionOptions): Options for frame extraction.
+
+      Returns:
+        int: The index of the first sample.
+      """
+
+    def `Dither` as dither(waveform: VectorBase, dither_value: float):
+      """Dithers waveform.
+
+      Args:
+        waveform (Vector): Waveform to be dithered.
+        dither_value (float): Dithering constant.
+      """
+
+    def `Preemphasize` as preemphasize(waveform: VectorBase, preemph_coeff: float):
+      """Preemphasizes waveform.
+
+      Args:
+        waveform (Vector): Waveform to be preemphasized.
+        preemph_coeff (float): Preemphasis coefficient.
+      """
 
     # FIXME(Dogan): Write helper functions in C++ to wrap these.
-    # def ProcessWindow(opts: FrameExtractionOptions,
-    #                   window_function: FeatureWindowFunction,
-    #                   window: VectorBase) -> float
-    #
-    # def ExtractWindow(sample_offset: int, wave: VectorBase, f: int,
-    #                   opts: FrameExtractionOptions,
-    #                   window_function: FeatureWindowFunction) ->
-    #                   (window: Vector, log_energy_pre_window: float)
+    def `ProcessWindow` as process_window(opts: FrameExtractionOptions,
+                                          window_function: FeatureWindowFunction,
+                                          window: VectorBase):
+      """Does all the windowing steps after extracting the windowed signal.
+
+      Depending on the configuration, it does dithering, dc offset removal,
+      preemphasis, and multiplication by the windowing function.
+
+      Args:
+        opts (FrameExtractionOptions): Options for frame extraction.
+        window_function (FeatureWindowFunction): The windowing function. It
+          should have been initialized using 'opts'.
+        window (Vector): The signal window to be processed. Its size should
+          match 'opts.padded_window_size()'.
+      """
+
+    def `ExtractWindow` as extract_window(sample_offset: int, wave: VectorBase,
+                                          f: int, opts: FrameExtractionOptions,
+                                          window_function: FeatureWindowFunction,
+                                          window: Vector):
+      """Extracts a windowed frame of waveform.
+
+      It does everything done by :meth:`process_window`.
+
+      Args:
+        sample_offset (int):  If 'wave' is not the entire waveform, but part of
+          it to the left has been discarded, then the number of samples prior
+          to 'wave' that we have already discarded.  Set this to zero if you
+          are processing the entire waveform in one piece, or if you get 'no
+          matching function' compilation errors when updating the code.
+        wave (Vector): The input waveform
+        f (int): The frame index to be extracted.
+        opts (FrameExtractionOptions): Options for frame extraction.
+        window_function (FeatureWindowFunction): The windowing function. It
+          should have been initialized using 'opts'.
+        window (Vector): The output windowed waveform (possibly-padded). It
+          will be resized as needed.
+      """
 
     def `ExtractWaveformRemainder` as extract_waveform_remainder(wave: VectorBase,
                                  opts: FrameExtractionOptions,
-                                 wave_remainder: Vector)
+                                 wave_remainder: Vector):
+      """Extracts waveform reaminder."""

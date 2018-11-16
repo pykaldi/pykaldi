@@ -9,13 +9,12 @@ from ._mle_full_gmm import *
 from . import am
 
 from .. import matrix as _matrix
+from kaldi.matrix import _matrix_wrapper
 from kaldi.matrix.packed import _sp_matrix_wrapper
 
 
 class DiagGmm(_diag_gmm.DiagGmm):
-    """Python wrapper for Kaldi::DiagGmm<float>.
-
-    Provides a more pythonic access to C++ methods.
+    """Gaussian Mixture Model with diagonal covariances.
 
     Args:
         nmix (int): Number of Gaussians to mix
@@ -51,6 +50,32 @@ class DiagGmm(_diag_gmm.DiagGmm):
         else:
             raise ValueError("src must be either FullGmm or DiagGmm")
         return self
+
+    def component_posteriors(self, data):
+        """Computes the posterior probabilities of all Gaussian components given
+         a data point.
+
+        Args:
+            data (VectorBase): Data point with the same dimension as each
+                component.
+
+        Returns:
+            2-element tuple containing
+
+            - **loglike** (:class:`float`): Log-likelihood
+            - **posteriors** (:class:`~kaldi.matrix.Vector`): Vector with the
+              posterior probabilities
+
+        Raises:
+            ValueError if data is not consistent with gmm dimension.
+        """
+        if data.dim != self.dim():
+            raise ValueError("data dimension {} does not match gmm dimension {}"
+                             .format(data.dim, self.dim()))
+        posteriors = _matrix.Vector(self.num_gauss())
+        loglike = self._component_posteriors(data, posteriors)
+        return loglike, posteriors
+
 
 class FullGmm(_full_gmm.FullGmm):
     """Python wrapper for Kaldi::FullGmm<Float>
@@ -111,7 +136,7 @@ class FullGmm(_full_gmm.FullGmm):
               posterior probabilities
 
         Raises:
-            ValueError if data is not consistent with this components dimension.
+            ValueError if data is not consistent with gmm dimension.
         """
         if data.dim != self.dim():
             raise ValueError("data dimension {} does not match gmm dimension {}"
@@ -120,25 +145,11 @@ class FullGmm(_full_gmm.FullGmm):
         loglike = self._component_posteriors(data, posteriors)
         return loglike, posteriors
 
-    def weights(self):
-        """
-        Returns:
-            A new :class:`~kaldi.matrix.SubVector` containing mixture weights.
-        """
-        return _matrix.SubVector(self.weights_)
-
     def set_weights(self, weights):
         """Sets gmm mixture weights."""
         if not isinstance(weights, _matrix.Vector):
             weights = _matrix.Vector(weights)
         self._set_weights(weights)
-
-    def means(self):
-        """
-        Returns:
-            A new :class:`~kaldi.matrix.SubMatrix` containing component means.
-        """
-        return _matrix.SubMatrix(self.get_means())
 
     def set_means(self, means):
         """Sets gmm component means."""
@@ -146,20 +157,29 @@ class FullGmm(_full_gmm.FullGmm):
             means = _matrix.Matrix(means)
         self._set_means(means)
 
-    def covars(self):
-        """ Alias for `get_covars` """
-        return self.get_covars()
+    def inv_covars(self):
+        """
+        Returns:
+            Component inverse covariances
+        """
+        return [_sp_matrix_wrapper(sp) for sp in self._inv_covars()]
 
     def get_covars(self):
         """
         Returns:
-            Component Co-variances
+            Component Covariances
         """
-        covars = self.get_covars_()
-        res = []
-        for sp in covars:
-            res.append(_sp_matrix_wrapper(sp))
-        return res
+        return [_sp_matrix_wrapper(sp) for sp in self._get_covars()]
+
+    def get_covars_and_means(self):
+        """
+        Returns:
+            Component Covariances
+        """
+        covars, means = self._get_covars_and_means()
+        covars = [_sp_matrix_wrapper(sp) for sp in covars]
+        means = _matrix_wrapper(means)
+        return covars, means
 
 ################################################################################
 

@@ -15,79 +15,177 @@ from "online2/online-feature-pipeline.h":
   namespace `kaldi`:
 
     class OnlineFeaturePipelineCommandLineConfig:
-      feature_type: str
-      mfcc_config: str
-      plp_config: str
-      fbank_config: str
-      add_pitch: bool
-      pitch_config: str
-      pitch_process_config: str
-      cmvn_config: str
-      global_cmvn_stats_rxfilename: str
-      add_deltas: bool
-      delta_config: str
-      splice_feats: bool
-      splice_config: str
-      lda_rxfilename:str
+      """Command-line configuration options for online feature pipeline.
 
-      def `Register` as register(self, opts: OptionsItf)
+      This configuration class is to set up `OnlineFeaturePipelineConfig`,
+      which in turn is the configuration class for `OnlineFeaturePipeline`.
+      Instead of taking the options for the parts of the feature pipeline
+      directly, it reads in the configuration files for each part.
+      """
+
+      feature_type: str
+      """Base feature type [mfcc (default), plp, fbank]."""
+      mfcc_config: str
+      """Configuration file for MFCC features (e.g. conf/mfcc.conf)"""
+      plp_config: str
+      """Configuration file for PLP features (e.g. conf/plp.conf)"""
+      fbank_config: str
+      """Configuration file for filterbank features (e.g. conf/fbank.conf)"""
+      add_pitch: bool
+      """Append pitch features to raw MFCC/PLP features (default=False)"""
+      pitch_config: str
+      """Configuration file for pitch features (e.g. conf/pitch.conf)"""
+      pitch_process_config: str
+      """Configuration file for post-processing pitch features (e.g. conf/pitch_process.conf)"""
+      cmvn_config: str
+      """Configuration file for online CMVN features (e.g. conf/online_cmvn.conf)"""
+      global_cmvn_stats_rxfilename: str
+      """Extended filename for global CMVN stats (e.g. 'ark:matrix-sum scp:data/train/cmvn.scp')"""
+      add_deltas: bool
+      """Append delta features (default=False)"""
+      delta_config: str
+      """Configuration file for delta features (e.g. conf/delta.conf)
+
+      If not supplied, will not compute delta features; supply empty config to
+      use defaults.
+      """
+      splice_feats: bool
+      """Splice features with left and right context (default=False)"""
+      splice_config: str
+      """Configuration file for feature splicing, if done (e.g. prior to LDA)"""
+      lda_rxfilename:str
+      """Extended filename for LDA or LDA+MLLT matrix, if using LDA (e.g. exp/foo/final.mat)"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class OnlineFeaturePipelineConfig:
+      """Configuration options for online feature pipeline.
+
+      This configuration class is responsible for storing the configuration
+      options for `OnlineFeaturePipeline`. The options can be set either
+      directly in code or indirectly by reading config files on disk via
+      `OnlineFeaturePipelineCommandLineConfig`.
+      """
+
       feature_type: str
+      """Base feature type [mfcc (default), plp, fbank]"""
       mfcc_opts: MfccOptions
+      """Options for MFCC features"""
       plp_opts: PlpOptions
+      """Options for PLP features"""
       fbank_opts: FbankOptions
+      """Options for filterbank features"""
       add_pitch: bool
+      """Append pitch features to raw MFCC/PLP features (default=False)"""
       pitch_opts: PitchExtractionOptions
+      """Options for pitch features"""
       pitch_process_opts: ProcessPitchOptions
+      """Options for post-processing pitch features"""
       cmvn_opts: OnlineCmvnOptions
-      add_deltas: bool
-      delta_opts: DeltaFeaturesOptions
-      splice_feats: bool
-      splice_opts: OnlineSpliceOptions
-      lda_rxfilename: str
+      """Options for online CMVN features"""
       global_cmvn_stats_rxfilename: str
+      """Extended filename for global CMVN stats (e.g. 'ark:matrix-sum scp:data/train/cmvn.scp')"""
+      add_deltas: bool
+      """Append delta features (default=True)"""
+      delta_opts: DeltaFeaturesOptions
+      """Options for delta features"""
+      splice_feats: bool
+      """Splice features with left and right context (default=False)"""
+      splice_opts: OnlineSpliceOptions
+      """Options for feature splicing, if done"""
+      lda_rxfilename:str
+      """Extended filename for LDA or LDA+MLLT matrix, if using LDA (e.g. exp/foo/final.mat)"""
 
       @add__init__
-      def `OnlineFeaturePipelineConfig` as new_with_config(self, cmdline_config: OnlineFeaturePipelineCommandLineConfig)
+      def `OnlineFeaturePipelineConfig` as from_config(self,
+        cmdline_config: OnlineFeaturePipelineCommandLineConfig):
+        """Creates a new OnlineFeaturePipelineConfig from OnlineFeaturePipelineCommandLineConfig."""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds."""
 
-    class `OnlineFeaturePipeline` as _OnlineFeaturePipeline(OnlineFeatureInterface):
+    class `OnlineFeaturePipeline` as OnlineFeaturePipeline(OnlineFeatureInterface):
+      """Online feature pipeline.
 
+      This class is responsible for putting together the various stages of the
+      feature-processing pipeline, in an online setting. This does not attempt
+      to be fully generic, we just try to handle the common case.  Since the
+      online-decoding code needs to "know about" things like CMN and fMLLR in
+      order to do adaptation, it's hard to make this completely generic.
+
+      Args:
+        config (OnlineFeaturePipelineConfig): Configuration options for online
+          feature pipeline.
+      """
       def __init__(self, config: OnlineFeaturePipelineConfig)
 
-      def `Dim` as dim(self) -> int
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `NumFramesReady` as num_frames_ready(self) -> int
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      # Method for debugging purposes
-      def `GetAsMatrix` as _get_as_matrix(self) -> (feats: Matrix)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
-      def `FreezeCmvn` as freeze_cmvn(self)
+      def `FreezeCmvn` as freeze_cmvn(self):
+        """Freezes CMVN.
 
-      # # FIXME (VM):
-      # # Maybe add a property?
-      def `SetCmvnState` as set_cmvn_state(self, cmvn_state: OnlineCmvnState)
+        Throws:
+          RuntimeError: If :meth:`num_frames_ready` == 0.
+        """
 
-      def `GetCmvnState` as get_cmvn_state(self) -> OnlineCmvnState
+      def `SetCmvnState` as set_cmvn_state(self, cmvn_state: OnlineCmvnState):
+        """Sets the CMVN state."""
 
-      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase)
+      def `GetCmvnState` as get_cmvn_state(self) -> OnlineCmvnState:
+        """Returns the CMVN state."""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
+        """Accepts more data to process.
+
+        It won't actually process the data, it will just copy it.
+
+        Args:
+          sampling_rate (float): Sampling rate of the waveform. It is needed
+            to assert that it matches the sampling rate given in the config.
+          waveform (Vector): More data to process.
+        """
 
       def `InputFinished` as input_finished(self):
-        """Tells the class that you wont be providing any more waveform"""
+        """Tells the class that you wont be providing any more waveform.
+
+        This will help flush out the last few frames of delta or LDA features,
+        and finalize the pitch features (making them more accurate).
+        """
 
       def `SetTransform` as set_transform(self, transform: MatrixBase):
-        """This is used to set the fMLLR transform"""
+        """Sets the fMLLR transform.
+
+        Call it with an empty matrix if you want to stop it using any transform.
+        """
 
       def `HaveFmllrTransform` as have_fmllr_transform(self) -> bool:
-        """Returns true if an fMLLR transform has been set"""
+        """Returns True if an fMLLR transform has been set."""
 
-      def `New` as _new(self) -> _OnlineFeaturePipeline:
-        """Returns a newly initialized copy of *this"""
+      def `New` as new(self) -> OnlineFeaturePipeline:
+        """Returns a newly initialized copy.
+
+        This does not duplicate all the internal state or the
+        speaker-adaptation state, but gives you a freshly initialized version
+        of this object, as if you had initialized it using the constructor that
+        takes the configuration object.  After calling this you may want to
+        call :meth:`set_cmvn_state` and :meth:`set_transform`.
+        """

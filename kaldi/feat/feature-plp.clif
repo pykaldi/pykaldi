@@ -9,61 +9,136 @@ from kaldi.matrix import _matrix_wrapper
 from "feat/feature-plp.h":
   namespace `kaldi`:
     class PlpOptions:
+      """PlpOptions()
+
+      Options for computing PLP features.
+      """
+
       frame_opts: FrameExtractionOptions
+      """Options for frame extraction"""
+
       mel_opts: MelBanksOptions
+      """Options for Mel banks (default #mel-banks is 23)"""
+
       lpc_order: int
+      """Order of LPC analysis (default=12)"""
+
       num_ceps: int
+      """Number of cepstral coefficients including C0 (default=13)"""
+
       use_energy: bool
+      """Whether to use energy (not C0) in MFCC computation (default=True)"""
+
       energy_floor: float
+      """Absolute energy floor used in PLP computation (default=0.0)"""
+
       raw_energy: bool
+      """Whether to compute energy before preemphasis and windowing (default=True)"""
+
       compress_factor: float
+      """Compression factor in PLP computation (default=0.33333)"""
+
       cepstral_lifter: int
+      """Constant controlling the scaling of PLPs (default=22)"""
+
       cepstral_scale: float
+      """Scaling constant in PLP computation (default=1.0)"""
+
       htk_compat: bool
+      """Whether to put energy (or C0) last (default=False)"""
 
-      def `Register` as register(self, opts: OptionsItf)
-
-    class PlpComputer:
-      def __init__(self, opts: PlpOptions)
-
-      @add__init__
-      def `PlpComputer` as from_other(self, other: PlpComputer)
-
-      def `GetFrameOptions` as get_frame_options(self)
-          -> FrameExtractionOptions
-
-      def `Dim` as dim(self) -> int
-
-      def `NeedRawLogEnergy` as need_raw_log_energy(self) -> bool
-
-      def `Compute` as compute(self, signal_log_energy: float,
-                               vtln_warp: float, signal_frame: VectorBase,
-                               feature: VectorBase)
-
-    class `OfflineFeatureTpl<PlpComputer>` as Plp:
-      def __init__(self, opts: PlpOptions)
-
-      @add__init__
-      def `PlpOfflineFeatureTpl` as from_other(self, other: Plp)
-
-      def `Compute` as compute(self, wave: VectorBase, vtnl_warp: float)
-          -> Matrix:
-        return _matrix_wrapper(...)
-
-      def `ComputeFeatures` as compute_features(self,
-          wave: VectorBase, sample_freq: float, vtnl_warp: float) -> Matrix:
-        """Computes the features for one file (one sequence of features).
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
         Args:
-          wave (:class:`kaldi.matrix.VectorBase`): The input waveform
-          sample_freq (float): The sampling frequency with which wave is
-            sampled. If sample_freq is higher than the frequency specified in
-            the config, Kaldi will downsample the waveform
-          vtnl_warp (float): The VTNL wrapping factor (normally 1.0)
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class PlpComputer:
+      """PLP computer.
+
+      This is the low-level interface for computing PLP features.
+
+      Args:
+        opts (PlpOptions): Options for computing PLP features.
+      """
+      def __init__(self, opts: PlpOptions)
+
+      @add__init__
+      def `PlpComputer` as from_other(self, other: PlpComputer):
+        """Constructs a new PlpComputer object from another."""
+
+      def `GetFrameOptions` as get_frame_options(self) -> FrameExtractionOptions:
+        """Returns frame extraction options."""
+
+      def `Dim` as dim(self) -> int:
+        """Returns feature dimension."""
+
+      def `NeedRawLogEnergy` as need_raw_log_energy(self) -> bool:
+        """Whether raw log energy is added to features."""
+
+      def `Compute` as compute(self, signal_log_energy: float, vtln_warp: float,
+                               signal_frame: VectorBase, feature: VectorBase):
+        """Computes one feature frame from one signal frame.
+
+        Args:
+          signal_log_energy (float): The log-energy of the signal frame prior
+            to windowing and pre-emphasis, or log(min-positive-float),
+            whichever is greater. Ignored if :meth:`need_raw_log_energy`
+            returns False.
+          vtln_warp (float): The VTLN warping factor. Normally 1.0, meaning no
+            warping is to be done. This value is ignored for feature types
+            that don't support VTLN, such as spectrogram features.
+          signal_frame (Vector): One frame of the signal. The frame vector is
+            overwritten with intermedite values during computation to avoid new
+            memory allocation.
+          feature (Vector): Output frame of features.
+         """
+
+    class `OfflineFeatureTpl<PlpComputer>` as Plp:
+      """PLP computer.
+
+      Args:
+        opts (PlpOptions): Options for computing PLP features.
+      """
+      def __init__(self, opts: PlpOptions)
+
+      @add__init__
+      def `PlpOfflineFeatureTpl` as from_other(self, other: Plp):
+        """Constructs a new Plp object from another."""
+
+      def `Compute` as compute(self, wave: VectorBase, vtln_warp: float) -> Matrix:
+        """Computes the PLP features from input waveform.
+
+        This interface for computing features requires that the user has
+        already checked that the sampling frequency of the waveform is equal to
+        the sampling frequency specified in the frame extraction options.
+
+        Args:
+          wave (Vector): The input waveform
+          vtln_warp (float): The VTLN wrapping factor (normally 1.0).
 
         Returns:
-          The matrix of features, where the row-index is the frame index
+          The matrix of features, where the row-index is the frame index.
         """
         return _matrix_wrapper(...)
 
-      def `Dim` as dim(self) -> int
+      def `ComputeFeatures` as compute_features(self,
+          wave: VectorBase, sample_freq: float, vtln_warp: float) -> Matrix:
+        """Computes the PLP features from input waveform.
+
+        Args:
+          wave (Vector): The input waveform
+          sample_freq (float): The sampling frequency with which wave is
+            sampled. If sample_freq is higher than the frequency specified in
+            the config, the waveform is downsampled.
+          vtln_warp (float): The VTLN wrapping factor (normally 1.0).
+
+        Returns:
+          The matrix of features, where the row-index is the frame index.
+        """
+        return _matrix_wrapper(...)
+
+      def `Dim` as dim(self) -> int:
+        """Returns the feature dimension."""

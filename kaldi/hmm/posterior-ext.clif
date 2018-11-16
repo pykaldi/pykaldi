@@ -1,0 +1,107 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "util/const-integer-set-clifwrap.h" import *
+
+from kaldi.matrix import _matrix_wrapper
+
+from "hmm/posterior-ext.h":
+  namespace `kaldi`:
+    class `PosteriorWrapper` as Posterior:
+      """Wrapper for frame posteriors.
+
+      We wrap frame posteriors (of type list<list<tuple<int, float>>>) with
+      this class to avoid copying frame posteriors every time a function that
+      accept frame posteriors is called and also to provide a more Pythonic
+      interface.
+      """
+      @add__init__
+      def `PosteriorWrapper` as from_posteriors(self, post: list<list<tuple<int, float>>>):
+        """Creates a new Posterior object from frame posteriors."""
+
+      @add__init__
+      def `PosteriorWrapper` as from_alignment(self, ali: list<int>):
+        """Creates a new Posterior object from an alignment."""
+
+      def `GetPosteriors` as get_posteriors(self) -> list<list<tuple<int, float>>>:
+        """Returns the frame posteriors."""
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes Posterior object to output stream."""
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads Posterior object from input stream."""
+
+      def `Scale` as scale(self, scale: float):
+        """Scales frame posteriors."""
+
+      def `Total` as total(self) -> float:
+        """Returns the total of all the weights in the frame posteriors."""
+
+      def `SortByPdfs` as sort_by_pdfs(self, tmodel: TransitionModel):
+        """Sorts posterior entries by pdf-ids.
+
+        At the end of this operation posterior entries for transition-ids with
+        the same pdf-ids are next to each other.
+        """
+
+      def `WeightSilence` as weight_silence(self, tmodel: TransitionModel,
+                                            silence_set: ConstIntegerSet,
+                                            silence_scale: float):
+        """Weights silence phones.
+
+        Any silence phone in the frame posteriors (i.e. any phone in the set
+        "silence_set") is weighted by "silence_scale".
+        """
+
+      def `WeightSilenceDistributed` as weight_silence_distributed(self,
+        tmodel: TransitionModel, silence_set: ConstIntegerSet, silence_scale: float):
+        """Weights silence phones.
+
+        This is similar to :meth:`weight_silence`, except that on each frame it
+        works out the amount by which the overall posterior would be reduced,
+        and scales down everything on that frame by the same amount.  It
+        has the effect that frames that are mostly silence get down-weighted.
+        """
+
+      def `ToMatrix` as to_matrix(self, post_dim: int) -> Matrix:
+        """Converts frame posteriors to a matrix.
+
+        The number of matrix-rows is the same as the length of the posterior and
+        the number of matrix-columns is defined by 'post_dim'. The elements which
+        are not specified in the posterior are equal to zero.
+        """
+        return _matrix_wrapper(...)
+
+      def `ToPdfMatrix` as to_pdf_matrix(self, model: TransitionModel) -> Matrix:
+        """Converts frame posteriors to a matrix.
+
+        The number of matrix-rows is the same as the length of the posterior and
+        the number of matrix-columns is defined by the number of PDFs in the
+        transition model. The elements which are not specified in the posterior
+        are equal to zero.
+        """
+        return _matrix_wrapper(...)
+
+      def `ConvertTransitionsToPdfs` as convert_transitions_to_pdfs(self,
+        tmodel: TransitionModel) -> Posterior:
+        """Converts posteriors over transition-ids to posteriors over pdf-ids."""
+
+      def `ConvertTransitionsToPhones` as convert_transitions_to_phones(self,
+        tmodel: TransitionModel) -> Posterior:
+        """Converts posteriors over transition-ids to posteriors over phones."""
+
+    def `MergePosteriorWrappers` as merge_posteriors(
+      post1: Posterior, post2: Posterior, merge: bool, drop_frames: bool)
+      -> (num_frames: int, post_out: Posterior):
+      """Merges two Posterior objects.
+
+      Inputs must have the same number of frames. If "merge" is true, it will
+      make a common entry whenever there are duplicated entries, adding up the
+      weights. If "drop_frames" is true, for frames where the two sets of
+      posteriors were originally disjoint, makes no entries for that frame
+      (relates to frame dropping, or drop_frames, see Vesely et al, ICASSP
+      2013). Also returns the number of frames for which the two posteriors
+      were disjoint (i.e. no common transition-ids or whatever index we are
+      using).
+      """

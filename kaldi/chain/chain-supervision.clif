@@ -14,43 +14,82 @@ from kaldi.util import _value_error_on_false
 from "chain/chain-supervision.h":
   namespace `kaldi::chain`:
     class SupervisionOptions:
+      """Supervision options."""
+
       left_tolerance: int
+      """Left tolerance for shift in phone position relative to the alignment"""
+
       right_tolerance: int
+      """Right tolerance for shift in phone position relative to the alignment"""
+
       frame_subsampling_factor: int
+      """Frame subsampling factor"""
 
-      def `Register` as register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
-      def `Check` as check(self)
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `Check` as check(self):
+        """Checks if options are valid."""
 
     class ProtoSupervision:
-      allowed_phones: list<list<int>>
-      fst: StdVectorFst
+      """Proto supervision that is compiled into supervision."""
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      allowed_phones: list<list<int>>
+      """Phones allowed at each frame."""
+
+      fst: StdVectorFst
+      """The FST of phones; an epsilon-free acceptor."""
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes to output stream for debugging."""
 
     def `AlignmentToProtoSupervision` as alignment_to_proto_supervision(
       opts: SupervisionOptions, phones: list<int>, durations: list<int>)
       -> (success: bool, proto_supervision: ProtoSupervision):
-      """Creates a proto supervision from a phone alignment."""
+      """Creates a proto supervision from lists of phones and durations."""
       return _value_error_on_false(...)
 
     def `AlignmentToProtoSupervision`
-        as alignment_to_proto_supervision_with_phone_durs(
+        as alignment_to_proto_supervision_with_phones_durs(
       opts: SupervisionOptions, phones_durs: list<tuple<int, int>>)
       -> (success: bool, proto_supervision: ProtoSupervision):
+      """Creates a proto supervision from a list of (phone, duration) pairs."""
       return _value_error_on_false(...)
-
 
     def `PhoneLatticeToProtoSupervision`
         as phone_lattice_to_proto_supervision(
       opts: SupervisionOptions, clat: CompactLatticeVectorFst)
       -> (success: bool, proto_supervision: ProtoSupervision):
+      """Creates a proto supervision from a phone-aligned phone lattice."""
       return _value_error_on_false(...)
 
-
     class TimeEnforcerFst(StdDeterministicOnDemandFst):
-      def __init__(self, trans_model: TransitionModel,
-                   allowed_phones: list<list<int>>)
+      """Deterministic on-demand FST to limit the frames each phone is allowed.
+
+      This class wraps the vector of allowed phones for each frame to create a
+      DeterministicOnDemandFst that we can compose with the decoding-graph FST to
+      limit the frames on which these phones are allowed to appear.  This FST also
+      helps us convert the labels from transition-ids to (pdf-ids plus one), which
+      is what we'll be using in the forward-backward (it avoids the need to
+      keep the transition model around).
+
+      Suppose the number of frames is T, then there will be T+1 states in
+      this FST, numbered from 0 to T+1, where state 0 is initial and state
+      T+1 is final.  A transition is only allowed from state t to state t+1
+      with a particular transition-id as its ilabel, if the corresponding
+      phone is listed in the 'allowed_phones' for that frame.  The olabels
+      are pdf-ids plus one.
+
+      Args:
+        trans_model (TransitionModel): Transition model
+        allowed_phones (List[List[int]]): Phones allowed at each frame.
+      """
+      def __init__(self, trans_model: TransitionModel, allowed_phones: list<list<int>>)
 
       def `Start` as start(self) -> int:
         """Returns the start state index."""
@@ -72,50 +111,96 @@ from "chain/chain-supervision.h":
         return _value_error_on_false(...)
 
     class Supervision:
+      """Supervision()
+
+      Supervision information.
+
+      Fully-processed supervision information for a whole utterance or (after
+      splitting) part of an utterance. It contains the time limits on phones
+      encoded into the FST.
+      """
+
       weight: float
+      """Weight of this example (default=1.0)."""
 
       num_sequences: int
+      """Number of sequences (default=1)."""
 
       frames_per_sequence: int
+      """Number of frames per sequence (deafult=-1)."""
 
       label_dim: int
+      """Maximum possible value of the labels in fst (default=-1)."""
 
       fst: StdVectorFst
+      """Supervision FST."""
 
       @add__init__
-      def `Supervision` as new_with_other(self, other: Supervision)
+      def `Supervision` as from_other(self, other: Supervision):
+        """Creates a new Supervision object from another."""
 
-      def `Swap` as swap(self, other: Supervision)
+      def `Swap` as swap(self, other: Supervision):
+        """Swaps contents with another Supervision object."""
+
+      def __eq__(self, other: Supervision) -> bool
 
       def `Check` as check(self, trans_model: TransitionModel):
-        """Checks that this supervision objects satisfies some of the properties expected"""
+        """Checks if some of the expected properties are satisfied."""
 
-      def `Write` as write(self, os:ostream, binary: bool)
+      def `Write` as write(self, os:ostream, binary: bool):
+        """Writes Supervision object to output stream."""
 
-      def `Read` as read(self, is:istream, binary: bool)
+      def `Read` as read(self, is:istream, binary: bool):
+        """Reads Supervision object from input stream."""
 
     def `ProtoSupervisionToSupervision` as proto_supervision_to_supervision(ctx_dep: ContextDependencyInterface, trans_model: TransitionModel, proto_supervision: ProtoSupervision) -> (success: bool, supervision: Supervision):
+      """Creates a Supervision object from a ProtoSupervision object."""
       return _value_error_on_false(...)
 
-    def `SortBreadthFirstSearch` as sort_breadth_first_search(fst: StdVectorFst)
+    def `SortBreadthFirstSearch` as sort_breadth_first_search(fst: StdVectorFst):
+      """Sorts the states of the Fst in a breadth-first search order."""
 
     class SupervisionSplitter:
+      """Supervision splitter.
+
+      This is used for splitting a Supervision objects into multiple
+      Supervision objects corresponding to different frame-ranges.
+
+      Args:
+        supervision (Supervision): Input Supervision object.
+      """
       def __init__(self, supervision: Supervision)
 
-      def `GetFrameRange` as get_frame_range(self, begin_frame: int, frames_per_sequence: int) -> (supervision: Supervision)
+      def `GetFrameRange` as get_frame_range(self, begin_frame: int, frames_per_sequence: int) -> (supervision: Supervision):
+        """Extracts the Supervision object for the given frame range."""
 
-    def `AddWeightToSupervisionFst` as add_weight_to_supervision_fst(normalization_fst: StdVectorFst) -> (success: bool, supervision: Supervision):
+    def `AddWeightToSupervisionFst` as add_weight_to_supervision_fst(normalization_fst: StdVectorFst, supervision: Supervision) -> (success: bool):
+      """Adds weights to supervision FST by composing it with normalization FST."""
       return _value_error_on_false(...)
 
     def `ComputeFstStateTimes` as compute_fst_state_times(fst: StdVectorFst) -> (path_length: int, state_times: list<int>):
-      """Returns the total number of frames under certain assumptions.
+      """Computes the times for FST states.
+
+      Assuming the 'fst' is epsilon-free, connected, and has the property that
+      all paths from the start-state are of the same length, output a vector
+      containing that length (from the start-state to the current state) to
+      'state_times'.  The member 'fst' of struct Supervision has this property.
+
+      Similar to `lattice_state_times` and `compact_lattice_state_times`,
+      except that it does not allow epsilons-- not because they are hard to
+      handle but because in this context we don't expect them.  This function
+      also expects that the input fst will have the property that the state
+      times are in nondecreasing order (as `sort_breadth_first_search` will
+      accomplish for FSTs satsifying the other properties we mentioned). This
+      just happens to be something we enforce while creating these FSTs.
 
       Args:
-        fst (StdVectorFst): Input fst; epsilon-free; connected; nonempty; should have the property that all paths to a given state should have the same number of arcs; and its states should be sorted on this path length
+        fst (StdVectorFst): Input fst; epsilon-free; connected; nonempty;
+          should have the property that all paths to a given state should have
+          the same number of arcs; and states should be sorted on this path length
 
       Returns:
-        path_length (int): the path length
-        state_times (list of int): state times set to a vector with dimension fst.num_states
+        The path length and the state times.
       """
 
     # This function will crash if the values of label_dim in the inputs are note all the same

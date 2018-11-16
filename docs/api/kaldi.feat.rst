@@ -308,6 +308,7 @@ kaldi\.feat\.wave
       :nosignatures:
    
       WaveData
+      WaveInfo
    
    
 
@@ -328,9 +329,11 @@ kaldi\.feat\.window
    
       dither
       extract_waveform_remainder
+      extract_window
       first_sample_of_frame
       num_frames
       preemphasize
+      process_window
    
    
 
