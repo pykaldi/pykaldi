@@ -1,8 +1,12 @@
 from __future__ import division
 
+from . import decoder as _dec
 from . import fstext as _fst
 from .fstext import utils as _utils
+from .gmm import am as _am
+from . import hmm as _hmm
 from . import lat as _lat
+from .util import io as _io
 
 
 __all__ = ['convert_indices_to_symbols', 'Recognizer']
@@ -21,35 +25,56 @@ def convert_indices_to_symbols(symbol_table, indices):
     Raises:
         KeyError: If an index is not found in the symbol table.
     """
-    syms = []
-    for idx in indices:
-        sym = symbol_table.find_symbol(idx)
-        if sym == "":
+    symbols = []
+    for index in indices:
+        symbol = symbol_table.find_symbol(index)
+        if symbol == "":
             raise KeyError("Index {} is not found in the symbol table."
-                           .format(idx))
-        syms.append(sym)
-    return syms
+                           .format(index))
+        symbols.append(symbol)
+    return symbols
 
 
-class Recognizer(object):
-    """Simple speech recognizer.
+class _Recognizer(object):
+    """Speech recognizer.
 
-    This class provides a simple interface for decoding acoustic features.
+    This is an abstract base class defining a simple interface for decoding
+    acoustic features. All subclasses should override :meth:`make_decodable`.
 
     Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (object): The acoustic model.
         decoder (object): The decoder.
-        decodable_wrapper (callable): The model wrapper returning decodable
-            objects given features and acoustic scale.
         symbols (SymbolTable): The symbol table. If provided, "text" output of
             :meth:`decode` includes symbols instead of integer indices.
+        acoustic_scale (float): Acoustic score scale.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        determinize_lattice (bool): Whether to determinize output lattice.
     """
-    def __init__(self, decoder, decodable_wrapper, symbols=None):
+    def __init__(self, transition_model, acoustic_model, decoder, symbols=None,
+                 acoustic_scale=0.1, allow_partial=True,
+                 determinize_lattice=False):
+        self.transition_model = transition_model
+        self.acoustic_model = acoustic_model
         self.decoder = decoder
-        self.decodable_wrapper = decodable_wrapper
         self.symbols = symbols
+        self.acoustic_scale = acoustic_scale
+        self.allow_partial = allow_partial
+        self.determinize_lattice = determinize_lattice
 
-    def decode(self, features, acoustic_scale=0.1, allow_partial=True,
-               determinize_lattice=False, trans_model=None):
+    def make_decodable(self, features):
+        """Constructs a new decodable object from input features.
+
+        Args:
+            features (object): Input features.
+
+        Returns:
+            DecodableInterface: A decodable object.
+        """
+        raise NotImplementedError
+
+    def decode(self, features):
         """Decodes acoustic features.
 
         Decoding output is a dictionary with the following `(key, value)` pairs:
@@ -66,39 +91,27 @@ class Recognizer(object):
         "words"       Words on best path.        `List[int]`
         ============  ========================== ==============================
 
-        The "lattice" output requires a lattice generating decoder. It will be a
-        raw state-level lattice if `determinize_lattice == False`. Otherwise, it
-        will be a compact deterministic lattice. If :attr:`symbols` is ``None``,
-        the "text" output will be a string of space separated integer indices.
-        Otherwise it will be a string of space separated symbols. The "weight"
-        output is a lattice weight consisting of (graph-score, acoustic-score).
+        The "lattice" output is produced only if the decoder can generate
+        lattices. It will be a raw state-level lattice if `determinize_lattice
+        == False`. Otherwise, it will be a compact deterministic lattice.
+
+        If :attr:`symbols` is ``None``, the "text" output will be a string of
+        space separated integer indices. Otherwise it will be a string of space
+        separated symbols. The "weight" output is a lattice weight consisting of
+        (graph-score, acoustic-score).
 
         Args:
-            features (MatrixBase): Features to decode.
-            acoustic_scale (float): Acoustic score scale.
-            allow_partial (bool): Whether to output decoding results if no
-                final state was active on the last frame.
-            determinize_lattice (bool): Whether to determinize output lattice.
-            trans_model (TransitionModel): The transition model used for
-                determinizing output lattices.
+            features (object): Features to decode.
 
         Returns:
             A dictionary representing decoding output.
 
         Raises:
-            ValueError: If feature matrix is empty.
             RuntimeError: If decoding fails.
         """
-        if features.num_rows == 0:
-            raise ValueError("Empty feature matrix.")
+        self.decoder.decode(self.make_decodable(features))
 
-        if determinize_lattice and trans_model is None:
-            raise RuntimeError("Lattice determinization requires a "
-                               "transition model.")
-
-        self.decoder.decode(self.decodable_wrapper(features, acoustic_scale))
-
-        if not (allow_partial or self.decoder.reached_final()):
+        if not (self.allow_partial or self.decoder.reached_final()):
             raise RuntimeError("No final state was active on the last frame.")
 
         try:
@@ -115,8 +128,8 @@ class Recognizer(object):
 
         likelihood = - (weight.value1 + weight.value2)
 
-        if acoustic_scale != 0.0:
-            scale = _utils.acoustic_lattice_scale(1.0 / acoustic_scale)
+        if self.acoustic_scale != 0.0:
+            scale = _utils.acoustic_lattice_scale(1.0 / self.acoustic_scale)
             _utils.scale_lattice(scale, best_path)
         best_path = _utils.convert_lattice_to_compact_lattice(best_path)
 
@@ -135,16 +148,17 @@ class Recognizer(object):
                 "words": words,
             }
 
-        if determinize_lattice:
+        if self.determinize_lattice:
             opts = self.decoder.get_options()
             clat = _fst.CompactLatticeVectorFst()
             success = _lat.determinize_lattice_phone_pruned_wrapper(
-                trans_model, lat, opts.lattice_beam, clat, opts.det_opts)
+                self.transition_model, lat, opts.lattice_beam, clat,
+                opts.det_opts)
             if not success:
                 raise RuntimeError("Lattice determinization failed.")
             lat = clat
 
-        if acoustic_scale != 0.0:
+        if self.acoustic_scale != 0.0:
             if isinstance(lat, _fst.CompactLatticeVectorFst):
                 _utils.scale_compact_lattice(scale, lat)
             else:
@@ -159,3 +173,147 @@ class Recognizer(object):
             "weight": weight,
             "words": words,
         }
+
+
+class _GmmRecognizer(_Recognizer):
+    """GMM-based speech recognizer.
+
+    This class provides a simple interface for decoding acoustic features with a
+    diagonal GMM.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmDiagGmm): The acoustic model.
+        decoder (object): The decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        acoustic_scale (float): Acoustic score scale.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        determinize_lattice (bool): Whether to determinize output lattice.
+    """
+    def __init__(self, transition_model, acoustic_model, decoder,
+                 symbols=None, acoustic_scale=0.1, allow_partial=True,
+                 determinize_lattice=False):
+        if not isinstance(acoustic_model, _am.AmDiagGmm):
+            raise TypeError("acoustic_model argument should be a diagonal GMM")
+        super(_GmmRecognizer, self).__init__(transition_model, acoustic_model,
+                                             decoder, symbols, acoustic_scale,
+                                             allow_partial, determinize_lattice)
+
+    @staticmethod
+    def read_model(model_rxfilename):
+        """Reads model from an extended filename."""
+        with _io.xopen(model_rxfilename) as ki:
+            transition_model = _hmm.TransitionModel().read(ki.stream(),
+                                                           ki.binary)
+            acoustic_model = _am.AmDiagGmm().read(ki.stream(), ki.binary)
+        return transition_model, acoustic_model
+
+    def make_decodable(self, features):
+        """Constructs a new decodable object from input features.
+
+        Args:
+            features (object): Input features.
+
+        Returns:
+            DecodableAmDiagGmmScaled: A decodable object for computing scaled
+            log-likelihoods.
+        """
+        if features.num_rows == 0:
+            raise ValueError("Empty feature matrix.")
+        return _am.DecodableAmDiagGmmScaled(self.acoustic_model,
+                                            self.transition_model,
+                                            features,
+                                            self.acoustic_scale)
+
+
+class _DecoderMixin(object):
+    """Mixin class for decoder."""
+
+    @staticmethod
+    def make_decoder(graph, opts=_dec.FasterDecoderOptions()):
+        """Constructs a new decoder from the graph and configuration options."""
+        return _dec.FasterDecoder(graph, opts)
+
+
+class _LatticeDecoderMixin(object):
+    """Mixin class for lattice generating decoder."""
+
+    @staticmethod
+    def make_decoder(graph, opts=_dec.LatticeFasterDecoderOptions()):
+        """Constructs a new decoder from the graph and configuration options."""
+        return _dec.LatticeFasterDecoder(graph, opts)
+
+
+class _OnDiskModelsMixin(object):
+    """Mixin class for reading models from disk."""
+
+    @classmethod
+    def from_files(cls, model_rxfilename, graph_rxfilename,
+                   symbols_filename=None, decoder_opts=None,
+                   acoustic_scale=0.1, allow_partial=True,
+                   determinize_lattice=False):
+        """Constructs a new recognizer from given files.
+
+        Args:
+            model_rxfilename (str): Extended filename for reading the model.
+            graph_rxfilename (str): Extended filename for reading the graph.
+            symbols_filename (str): The symbols file. If provided, "text" output
+                of :meth:`decode` includes symbols instead of integer indices.
+            decoder_opts (object): Configuration options for the decoder.
+            acoustic_scale (float): Acoustic score scale.
+            allow_partial (bool): Whether to output decoding results if no
+                final state was active on the last frame.
+            determinize_lattice (bool): Whether to determinize output lattice.
+
+        Returns:
+            A new recognizer object.
+        """
+        transition_model, acoustic_model = cls.read_model(model_rxfilename)
+        graph = _fst.read_fst_kaldi(graph_rxfilename)
+        decoder = cls.make_decoder(graph, decoder_opts)
+        if symbols_filename is None:
+            symbols = None
+        else:
+            symbols = _fst.SymbolTable.read_text(symbols_filename)
+        return cls(transition_model, acoustic_model, decoder, symbols,
+                   acoustic_scale, allow_partial, determinize_lattice)
+
+
+class GmmRecognizer(_GmmRecognizer, _DecoderMixin, _OnDiskModelsMixin):
+    """GMM-based speech recognizer.
+
+    This class provides a simple interface for decoding acoustic features with a
+    diagonal GMM.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmDiagGmm): The acoustic model.
+        decoder (FasterDecoder): The decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        acoustic_scale (float): Acoustic score scale.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        determinize_lattice (bool): Whether to determinize output lattice.
+    """
+
+
+class GmmLatticeRecognizer(_GmmRecognizer, _LatticeDecoderMixin, _OnDiskModelsMixin):
+    """GMM-based lattice generating speech recognizer.
+
+    This class provides a simple interface for decoding acoustic features with a
+    diagonal GMM.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmDiagGmm): The acoustic model.
+        decoder (LatticeFasterDecoder): The decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        acoustic_scale (float): Acoustic score scale.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        determinize_lattice (bool): Whether to determinize output lattice.
+    """
