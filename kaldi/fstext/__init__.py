@@ -104,6 +104,52 @@ class SymbolTableIterator(_symbol_table.SymbolTableIterator):
             self.next()
 
 
+def indices_to_symbols(symbol_table, indices):
+    """Converts indices to symbols by looking them up in the symbol table.
+
+    Args:
+        symbol_table (SymbolTable): The symbol table.
+        indices (List[int]): The list of indices.
+
+    Returns:
+        List[str]: The list of symbols corresponding to the given indices.
+
+    Raises:
+        KeyError: If an index is not found in the symbol table.
+    """
+    symbols = []
+    for index in indices:
+        symbol = symbol_table.find_symbol(index)
+        if symbol == "":
+            raise KeyError("Index {} is not found in the symbol table."
+                           .format(index))
+        symbols.append(symbol)
+    return symbols
+
+
+def symbols_to_indices(symbol_table, symbols):
+    """Converts symbols to indices by looking them up in the symbol table.
+
+    Args:
+        symbol_table (SymbolTable): The symbol table.
+        indices (List[str]): The list of symbols.
+
+    Returns:
+        List[int]: The list of indices corresponding to the given symbols.
+
+    Raises:
+        KeyError: If a symbol is not found in the symbol table.
+    """
+    indices = []
+    for symbol in symbols:
+        index = symbol_table.find_index(symbol)
+        if index == -1:
+            raise KeyError("Symbol {} is not found in the symbol table."
+                           .format(symbol))
+        indices.append(index)
+    return indices
+
+
 # Tropical semiring
 
 class TropicalWeight(_float_weight.TropicalWeight):

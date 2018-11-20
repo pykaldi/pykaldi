@@ -6,12 +6,6 @@ kaldi\.asr
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      convert_indices_to_symbols
-   
    
 
    
@@ -20,6 +14,8 @@ kaldi\.asr
 
    .. autosummary::
    
+      GmmLatticeRecognizer
+      GmmRecognizer
       Recognizer
    
    

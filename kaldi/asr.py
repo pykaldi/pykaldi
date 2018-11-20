@@ -1,3 +1,14 @@
+"""
+This module provides a general `Recognizer` base class and a number of
+high-level speech recognizers with an easy to use API.
+
+Note that in Kaldi, therefore in PyKaldi, there is no single "canonical"
+decoder, or a fixed interface that decoders must satisfy. Same is true for the
+models. The decoders and models provided by Kaldi/PyKaldi can be mixed and
+matched to construct specialized speech recognizers. The high-level speech
+recognizers in this module cover only the most "typical" combinations.
+"""
+
 from __future__ import division
 
 from . import decoder as _dec
@@ -9,33 +20,10 @@ from . import lat as _lat
 from .util import io as _io
 
 
-__all__ = ['convert_indices_to_symbols', 'Recognizer']
+__all__ = ['Recognizer', 'GmmRecognizer', 'GmmLatticeRecognizer']
 
 
-def convert_indices_to_symbols(symbol_table, indices):
-    """Converts indices to symbols by looking them up in the symbol table.
-
-    Args:
-        symbol_table (SymbolTable): The symbol table.
-        indices (List[int]): The list of indices.
-
-    Returns:
-        List[str]: The list of symbols corresponding to the given indices.
-
-    Raises:
-        KeyError: If an index is not found in the symbol table.
-    """
-    symbols = []
-    for index in indices:
-        symbol = symbol_table.find_symbol(index)
-        if symbol == "":
-            raise KeyError("Index {} is not found in the symbol table."
-                           .format(index))
-        symbols.append(symbol)
-    return symbols
-
-
-class _Recognizer(object):
+class Recognizer(object):
     """Speech recognizer.
 
     This is an abstract base class defining a simple interface for decoding
@@ -122,7 +110,7 @@ class _Recognizer(object):
         ali, words, weight = _utils.get_linear_symbol_sequence(best_path)
 
         if self.symbols:
-            text = " ".join(convert_indices_to_symbols(self.symbols, words))
+            text = " ".join(_fst.indices_to_symbols(self.symbols, words))
         else:
             text = " ".join(map(str, words))
 
@@ -175,7 +163,7 @@ class _Recognizer(object):
         }
 
 
-class _GmmRecognizer(_Recognizer):
+class _GmmRecognizer(Recognizer):
     """GMM-based speech recognizer.
 
     This class provides a simple interface for decoding acoustic features with a
@@ -300,7 +288,8 @@ class GmmRecognizer(_GmmRecognizer, _DecoderMixin, _OnDiskModelsMixin):
     """
 
 
-class GmmLatticeRecognizer(_GmmRecognizer, _LatticeDecoderMixin, _OnDiskModelsMixin):
+class GmmLatticeRecognizer(_GmmRecognizer, _LatticeDecoderMixin,
+                           _OnDiskModelsMixin):
     """GMM-based lattice generating speech recognizer.
 
     This class provides a simple interface for decoding acoustic features with a
