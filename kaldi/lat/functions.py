@@ -95,10 +95,10 @@ def determinize_lattice_phone_pruned(ifst, trans_model, prune,
     """
     if opts is None:
         opts = DeterminizeLatticePhonePrunedOptions()
-    if not destructive or not isinstance(ifst, _api.MutableFstBase):
+    if not destructive or not isinstance(ifst, _api._MutableFstBase):
         ifst = _fst.LatticeVectorFst(ifst)
     ofst = _fst.CompactLatticeVectorFst()
-    success = _dlp._determinize_lattice_phone_pruned_wrapper(ifst, trans_model,
+    success = _dlp._determinize_lattice_phone_pruned_wrapper(trans_model, ifst,
                                                              prune, ofst, opts)
     if not success:
         logging.warning(

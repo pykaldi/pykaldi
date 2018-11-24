@@ -755,7 +755,7 @@ class _MutableFstBase(_FstBase):
         Returns:
           self.
         """
-        self._ops._connect(self)
+        self._ops.connect(self)
         self._check_mutating_imethod()
         return self
 

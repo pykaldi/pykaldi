@@ -132,6 +132,8 @@ The main things the TransitionModel object can do are:
 """
 
 from ._hmm_topology import *
+from ._hmm_utils import *
+from ._hmm_utils_ext import *
 from ._posterior import *
 from ._posterior_ext import *
 from ._transition_model import *

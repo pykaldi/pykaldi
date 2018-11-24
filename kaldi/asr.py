@@ -13,11 +13,11 @@ from __future__ import division
 
 from . import decoder as _dec
 from . import fstext as _fst
-from .fstext import utils as _utils
-from .gmm import am as _am
+from .fstext import utils as _fst_utils
+from .gmm import am as _gmm_am
 from . import hmm as _hmm
-from . import lat as _lat
-from .util import io as _io
+from .lat import functions as _lat_funcs
+from .util import io as _util_io
 
 
 __all__ = ['Recognizer', 'GmmRecognizer', 'GmmLatticeRecognizer']
@@ -67,17 +67,17 @@ class Recognizer(object):
 
         Decoding output is a dictionary with the following `(key, value)` pairs:
 
-        ============  ========================== ==============================
-        key           value                      value type
-        ============  ========================== ==============================
-        "alignment"   Frame-level alignment.     `List[int]`
-        "best_path"   Best lattice path.         `CompactLattice`
-        "lattice"     Output lattice.            `Lattice` or `CompactLattice`
-        "likelihood"  Log-likehood of best path. `float`
-        "text"        Output transcript.         `str`
-        "weight"      Cost of best path.         `LatticeWeight`
-        "words"       Words on best path.        `List[int]`
-        ============  ========================== ==============================
+        ============ =========================== ==============================
+        key          value                       value type
+        ============ =========================== ==============================
+        "alignment"  Frame-level alignment       `List[int]`
+        "best_path"  Best lattice path           `CompactLattice`
+        "lattice"    Output lattice              `Lattice` or `CompactLattice`
+        "likelihood" Log-likelihood of best path `float`
+        "text"       Output transcript           `str`
+        "weight"     Cost of best path           `LatticeWeight`
+        "words"      Words on best path          `List[int]`
+        ============ =========================== ==============================
 
         The "lattice" output is produced only if the decoder can generate
         lattices. It will be a raw state-level lattice if `determinize_lattice
@@ -107,7 +107,7 @@ class Recognizer(object):
         except RuntimeError:
             raise RuntimeError("Empty decoding output.")
 
-        ali, words, weight = _utils.get_linear_symbol_sequence(best_path)
+        ali, words, weight = _fst_utils.get_linear_symbol_sequence(best_path)
 
         if self.symbols:
             text = " ".join(_fst.indices_to_symbols(self.symbols, words))
@@ -117,15 +117,12 @@ class Recognizer(object):
         likelihood = - (weight.value1 + weight.value2)
 
         if self.acoustic_scale != 0.0:
-            scale = _utils.acoustic_lattice_scale(1.0 / self.acoustic_scale)
-            _utils.scale_lattice(scale, best_path)
-        best_path = _utils.convert_lattice_to_compact_lattice(best_path)
+            scale = _fst_utils.acoustic_lattice_scale(1.0 / self.acoustic_scale)
+            _fst_utils.scale_lattice(scale, best_path)
+        best_path = _fst_utils.convert_lattice_to_compact_lattice(best_path)
 
         try:
             lat = self.decoder.get_raw_lattice()
-            if lat.num_states() == 0:
-                raise RuntimeError("Empty output lattice.")
-            lat.connect()
         except AttributeError:
             return {
                 "alignment": ali,
@@ -135,22 +132,21 @@ class Recognizer(object):
                 "weight": weight,
                 "words": words,
             }
+        if lat.num_states() == 0:
+            raise RuntimeError("Empty output lattice.")
+        lat.connect()
 
         if self.determinize_lattice:
             opts = self.decoder.get_options()
-            clat = _fst.CompactLatticeVectorFst()
-            success = _lat.determinize_lattice_phone_pruned_wrapper(
-                self.transition_model, lat, opts.lattice_beam, clat,
-                opts.det_opts)
-            if not success:
-                raise RuntimeError("Lattice determinization failed.")
-            lat = clat
+            lat = _lat_funcs.determinize_lattice_phone_pruned(
+                lat, self.transition_model,
+                opts.lattice_beam, opts.det_opts, True)
 
         if self.acoustic_scale != 0.0:
             if isinstance(lat, _fst.CompactLatticeVectorFst):
-                _utils.scale_compact_lattice(scale, lat)
+                _fst_utils.scale_compact_lattice(scale, lat)
             else:
-                _utils.scale_lattice(scale, lat)
+                _fst_utils.scale_lattice(scale, lat)
 
         return {
             "alignment": ali,
@@ -183,7 +179,7 @@ class _GmmRecognizer(Recognizer):
     def __init__(self, transition_model, acoustic_model, decoder,
                  symbols=None, acoustic_scale=0.1, allow_partial=True,
                  determinize_lattice=False):
-        if not isinstance(acoustic_model, _am.AmDiagGmm):
+        if not isinstance(acoustic_model, _gmm_am.AmDiagGmm):
             raise TypeError("acoustic_model argument should be a diagonal GMM")
         super(_GmmRecognizer, self).__init__(transition_model, acoustic_model,
                                              decoder, symbols, acoustic_scale,
@@ -192,10 +188,10 @@ class _GmmRecognizer(Recognizer):
     @staticmethod
     def read_model(model_rxfilename):
         """Reads model from an extended filename."""
-        with _io.xopen(model_rxfilename) as ki:
+        with _util_io.xopen(model_rxfilename) as ki:
             transition_model = _hmm.TransitionModel().read(ki.stream(),
                                                            ki.binary)
-            acoustic_model = _am.AmDiagGmm().read(ki.stream(), ki.binary)
+            acoustic_model = _gmm_am.AmDiagGmm().read(ki.stream(), ki.binary)
         return transition_model, acoustic_model
 
     def make_decodable(self, features):
@@ -210,10 +206,9 @@ class _GmmRecognizer(Recognizer):
         """
         if features.num_rows == 0:
             raise ValueError("Empty feature matrix.")
-        return _am.DecodableAmDiagGmmScaled(self.acoustic_model,
-                                            self.transition_model,
-                                            features,
-                                            self.acoustic_scale)
+        return _gmm_am.DecodableAmDiagGmmScaled(self.acoustic_model,
+                                                self.transition_model,
+                                                features, self.acoustic_scale)
 
 
 class _DecoderMixin(object):
