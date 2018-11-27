@@ -25,7 +25,7 @@ class Aligner(object):
     Args:
         transition_model (TransitionModel): The transition model.
         acoustic_model (object): The acoustic model.
-        tree (ContextDependency). The phonetic decision tree.
+        tree (ContextDependency): The phonetic decision tree.
         lexicon (StdFst): The lexicon FST.
         symbols (SymbolTable): The symbol table. If provided, "text" output of
             :meth:`decode` includes symbols instead of integer indices.
@@ -220,7 +220,7 @@ class GmmAligner(Aligner):
     Args:
         transition_model (TransitionModel): The transition model.
         acoustic_model (object): The acoustic model.
-        tree (ContextDependency). The phonetic decision tree.
+        tree (ContextDependency): The phonetic decision tree.
         lexicon (StdFst): The lexicon FST.
         symbols (SymbolTable): The symbol table. If provided, "text" input of
             :meth:`align` should include symbols instead of integer indices.
@@ -307,7 +307,7 @@ class NnetAligner(Aligner):
     Args:
         transition_model (TransitionModel): The transition model.
         acoustic_model (AmNnetSimple): The acoustic model.
-        tree (ContextDependency). The phonetic decision tree.
+        tree (ContextDependency): The phonetic decision tree.
         lexicon (StdFst): The lexicon FST.
         symbols (SymbolTable): The symbol table. If provided, "text" input of
             :meth:`align` should include symbols instead of integer indices.
