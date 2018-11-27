@@ -75,7 +75,7 @@ from "hmm/transition-model.h":
         """Returns the HMM topology."""
 
       def `TupleToTransitionState` as tuple_to_transition_state(self, phone: int, hmm_state: int, pdf: int, self_loop_pdf: int) -> int:
-        """Maps (phone, hmm-state, forward-pdf-id, selfloop-pdf-id) tuple to transition-state."""
+        """Maps (phone, hmm-state, forward-pdf-id, self-loop-pdf-id) tuple to transition-state."""
 
       def `PairToTransitionId` as pair_to_transition_id(self, trans_state: int, trans_index: int) -> int:
         """Maps (trans-state, trans-index) pair to transition-id."""
@@ -96,13 +96,13 @@ from "hmm/transition-model.h":
         """Maps transition-state to forward-pdf-class."""
 
       def `TransitionStateToSelfLoopPdfClass` as transition_state_to_self_loop_pdf_class(self, trans_state: int) -> int:
-        """Maps transition-state to selfloop-pdf-class."""
+        """Maps transition-state to self-loop-pdf-class."""
 
       def `TransitionStateToForwardPdf` as transition_state_to_forward_pdf(self, trans_state: int) -> int:
         """Maps transition-state to forward-pdf-id."""
 
       def `TransitionStateToSelfLoopPdf` as transition_state_to_self_loop_pdf(self, trans_state: int) -> int:
-        """Maps transition-state to selfloop-pdf-id."""
+        """Maps transition-state to self-loop-pdf-id."""
 
       def `SelfLoopOf` as self_loop_of(self, trans_state: int) -> int:
         """Returns the self-loop transition-id, or zero id this state does not have a self-loop."""
@@ -150,19 +150,19 @@ from "hmm/transition-model.h":
         """Returns the log probability associated with given transition-id."""
 
       def `GetTransitionLogProbIgnoringSelfLoops` as get_transition_log_prob_ignoring_self_loops(self, trans_id: int) -> float:
-        """Returns the log probability associated with given transition-id if selfloop is ignored.
+        """Returns the log probability associated with given transition-id if self-loop is ignored.
 
         Returns the log-probability of a particular non-self-loop transition
         after subtracting the probability mass of the self-loop and
         renormalizing.  Specifically: for non-self-loops it returns
-        log(prob-for-transition / (1 - prob-for-selfloop)).
+        log(prob-for-transition / (1 - prob-for-sel-floop)).
 
         Raises:
           RuntimeError: if called on a self-loop.
         """
 
       def `GetNonSelfLoopLogProb` as get_non_self_loop_log_prob(self, trans_id: int) -> float:
-        """Returns the log of non-selfloop probability mass for given transition."""
+        """Returns the log of non-self-loop probability mass for given transition."""
 
       def `MleUpdate` as mle_update(self, stats: DoubleVector, cfg: MleTransitionUpdateConfig)
         -> (objf_impr_out: float, count_out: float):

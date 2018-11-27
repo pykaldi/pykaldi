@@ -14,17 +14,17 @@ from "nnet3/am-nnet-simple.h":
 
       def `NumPdfs` as num_pdfs(self) -> int
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool) -> self
 
-      def `Read` as read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool) ->  self
 
-      def `GetNnet` as get_nnet(self) -> Nnet
+      def `GetNnetPtr` as get_nnet(self) -> Nnet
 
-      def `SetNnet` as set_nnet(self, nnet: Nnet)
+      def `SetNnet` as set_nnet(self, nnet: Nnet) -> self
 
-      def `SetPriors` as set_priors(self, priors: VectorBase)
+      def `SetPriors` as set_priors(self, priors: VectorBase) -> self
 
-      # def Priors(self) -> VectorBase
+      def `PriorsPtr` as priors(self) -> VectorBase
 
       def `Info` as info(self) -> str
 
@@ -36,4 +36,4 @@ from "nnet3/am-nnet-simple.h":
 
       def `IvectorDim` as ivector_dim(self) -> int
 
-      def `SetContext` as set_context(self)
+      def `SetContext` as set_context(self) -> self
