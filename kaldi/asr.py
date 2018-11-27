@@ -355,7 +355,7 @@ class LatticeBiglmGmmRecognizer(GmmRecognizer):
     def from_files(cls, model_rxfilename, graph_rxfilename, old_lm_rxfilename,
                    new_lm_rxfilename, symbols_filename=None, allow_partial=True,
                    determinize_lattice=False,
-                   decoder_opts=_dec.LatticeBiglmFasterDecoderOptions(),
+                   decoder_opts=_dec.LatticeFasterDecoderOptions(),
                    acoustic_scale=0.1):
         """Constructs a new GMM recognizer from given files.
 
@@ -369,7 +369,7 @@ class LatticeBiglmGmmRecognizer(GmmRecognizer):
             allow_partial (bool): Whether to output decoding results if no
                 final state was active on the last frame.
             determinize_lattice (bool): Whether to determinize output lattice.
-            decoder_opts (LatticeBiglmFasterDecoderOptions): Configuration
+            decoder_opts (LatticeFasterDecoderOptions): Configuration
                 options for the decoder.
             acoustic_scale (float): Acoustic score scale.
 
@@ -650,7 +650,7 @@ class LatticeBiglmNnetRecognizer(NnetRecognizer):
             allow_partial (bool): Whether to output decoding results if no
                 final state was active on the last frame.
             determinize_lattice (bool): Whether to determinize output lattice.
-            decoder_opts (LatticeBiglmFasterDecoderOptions): Configuration
+            decoder_opts (LatticeFasterDecoderOptions): Configuration
                 options for the decoder.
             decodable_opts (NnetSimpleComputationOptions): Configuration options
                 for simple nnet3 am decodable objects.

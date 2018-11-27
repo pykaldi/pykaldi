@@ -1,4 +1,28 @@
 
+kaldi\.alignment
+----------------
+
+.. automodule:: kaldi.alignment
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Aligner
+      GmmAligner
+      NnetAligner
+   
+   
+
+   
+   
+   
 kaldi\.asr
 ----------
 
@@ -14,8 +38,14 @@ kaldi\.asr
 
    .. autosummary::
    
-      GmmLatticeRecognizer
+      FasterGmmRecognizer
+      FasterNnetRecognizer
       GmmRecognizer
+      LatticeBiglmGmmRecognizer
+      LatticeBiglmNnetRecognizer
+      LatticeGmmRecognizer
+      LatticeNnetRecognizer
+      NnetRecognizer
       Recognizer
    
    
