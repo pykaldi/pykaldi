@@ -187,9 +187,7 @@ class StdEncodeMapper(_api._EncodeMapper, _encode.StdEncodeMapper):
 
 class StdFstCompiler(_api._FstCompiler):
     """Compiler for FSTs over the tropical semiring."""
-    @classmethod
-    def _compiler_type():
-        return _compiler.StdFstCompiler
+    _compiler_type = _compiler.StdFstCompiler
 
 
 class _StdFstDrawer(_api._FstDrawer, _drawer.StdFstDrawer):
@@ -371,9 +369,7 @@ class LogEncodeMapper(_api._EncodeMapper, _encode.LogEncodeMapper):
 
 class LogFstCompiler(_api._FstCompiler):
     """Compiler for FSTs over the log semiring."""
-    @classmethod
-    def _compiler_type():
-        return _compiler.LogFstCompiler
+    _compiler_type = _compiler.LogFstCompiler
 
 
 class _LogFstDrawer(_api._FstDrawer, _drawer.LogFstDrawer):
@@ -566,9 +562,7 @@ class LatticeEncodeMapper(_api._EncodeMapper, _encode.LatticeEncodeMapper):
 
 class LatticeFstCompiler(_api._FstCompiler):
     """Compiler for FSTs over the lattice semiring."""
-    @classmethod
-    def _compiler_type():
-        return _compiler.LatticeFstCompiler
+    _compiler_type = _compiler.LatticeFstCompiler
 
 
 class _LatticeFstDrawer(_api._FstDrawer, _drawer.LatticeFstDrawer):
@@ -772,9 +766,7 @@ class CompactLatticeEncodeMapper(_api._EncodeMapper,
 
 class CompactLatticeFstCompiler(_api._FstCompiler):
     """Compiler for FSTs over the compact lattice semiring."""
-    @classmethod
-    def _compiler_type():
-        return _compiler.compactLatticeFstCompiler
+    _compiler_type = _compiler.CompactLatticeFstCompiler
 
 
 class _CompactLatticeFstDrawer(_api._FstDrawer, _drawer.CompactLatticeFstDrawer):
@@ -1019,9 +1011,7 @@ class KwsIndexEncodeMapper(_api._EncodeMapper, _encode.KwsIndexEncodeMapper):
 
 class KwsIndexFstCompiler(_api._FstCompiler):
     """Compiler for FSTs over the KWS index semiring."""
-    @classmethod
-    def _compiler_type():
-        return _compiler.KwsIndexFstCompiler
+    _compiler_type = _compiler.KwsIndexFstCompiler
 
 
 class _KwsIndexFstDrawer(_api._FstDrawer, _drawer.KwsIndexFstDrawer):
