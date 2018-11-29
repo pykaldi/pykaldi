@@ -7,6 +7,16 @@ import matplotlib.mlab as mlb
 
 
 def ApplyARMA(in_matrix, order):
+  """This function applies Autoregressive Moving Averarge(ARMA)
+     on the rows of the input matrix.
+     
+  Args:
+      in_matrix: the input matrix
+      order: the order of the ARMA process
+
+  Output:
+      out_matrix: the matrix after the ARMA process
+  """
 
   nframes, nfeats = in_matrix.shape
   out_matrix = np.copy(in_matrix)

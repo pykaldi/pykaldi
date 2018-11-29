@@ -2,6 +2,7 @@
 #Used in the DARPA RATS program
 
 from __future__ import division
+from __future__ import print_function
 import numpy as np
 from scipy import signal
 from scipy import version
@@ -18,7 +19,17 @@ from kaldi.util.table import (MatrixWriter, RandomAccessFloatReaderMapped,
                               SequentialWaveReader, VectorWriter)
 
 def show_plot(segment_times, sample_freqs, spec, wave, wav_data, vad_feat):
+  """This function plots the vad against the signal and the spectrogram.
 
+  Args:
+      segment_times: the time intervals acting as the x axis
+      sample_freqs: the frequency bins acting as the y axis
+      spec: the spectrogram
+      wave: the wave file in kaldi format (including wave headers)
+      wav_data: the wave data (the audio part of the wave)
+      vad_feat: The calculated vad
+
+  """
   plt.subplot(3, 1, 1)
   plt.pcolormesh(segment_times, sample_freqs, 10*np.log10(spec), cmap='jet')
   plt.ylabel('Frequency [Hz]')
@@ -39,19 +50,28 @@ def show_plot(segment_times, sample_freqs, spec, wave, wav_data, vad_feat):
   plt.xlabel('Time [sec]')
 
   plt.savefig('test', bbox_inches='tight')
-
-  return
   
 def compute_vad(wav_rspecifier, feats_wspecifier, opts):
-  
+  """This function computes the vad based on ltsv features.
+  The output is written in the file denoted by feats_wspecifier,
+  and if the test_plot flaf is set, it produces a plot.
+
+  Args:
+      wav_rspecifier: The decoder.
+      opts: The symbol table. If provided, "text" output of
+          :meth:`decode` includes symbols instead of integer indices.
+
+  Output:
+      feats_wspecifier: The specifier that will hold the vad output
+  """ 
+ 
   num_utts, num_success = 0, 0
   with SequentialWaveReader(wav_rspecifier) as reader, \
          VectorWriter(feats_wspecifier) as writer:
 
     for num_utts, (key, wave) in enumerate(reader, 1):
       if wave.duration < opts.min_duration:
-        print("File: {} is too short ({} sec): producing no output."
-              .format(key, wave.duration), file=sys.stderr)
+        print("File: {} is too short ({} sec): producing no output.".format(key, wave.duration), file=sys.stderr)
         continue
 
       num_chan = wave.data().num_rows
@@ -72,7 +92,7 @@ def compute_vad(wav_rspecifier, feats_wspecifier, opts):
                                                                nperseg=fr_length_samples, nfft=opts.nfft,
                                                                noverlap=fr_length_samples-fr_shift_samples,
                                                                scaling='spectrum',mode = 'psd')
-
+        
         specT = np.transpose(spec)
 
         spect_n = ARMA.ApplyARMA(specT, opts.arma_order)

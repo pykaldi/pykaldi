@@ -6,13 +6,36 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlb
 
 def ApplySigmoidScale (ltsv_sigmoidThr, ltsv_sigmoidSlope, ltsv_input):
+  """This function applies sigmoid scale on the input
+  
+  Args:
+      ltsv_sigmoidThr: the threshold of the sigmoid
+      ltsv_sigmoidSlople: the slope of the sigmoid
+      ltsv_input: the input vector
+
+  Output:
+      ltsv_input: the transformed input vector
+  
+  """
   ltsv_input = 1/( np.exp( (-1/ltsv_sigmoidSlope)*(ltsv_input-ltsv_sigmoidThr) )+1 )
   return ltsv_input
 
 
 
 def ApplyLTSV(spec, ctx_win, sigThresh, sigSlope, sigmoidscale):
+  """This function computes the long term signal variability(LTSV)
+  from a spectrogram.
 
+  Args:
+      spec: the input spectrogram
+      ctx_win: the context window over which we will compute LTSV
+      sigThresh: parameter for sigmoid scaling
+      sigSlope: parameter for sigmoid scaling
+      sigmoidscale: Flag that determines if sigmoid scaling is going to be applied
+          
+  Output:
+      ltsv: The LTSV features
+  """
   nframes, nfeats = spec.shape
   if nframes < ctx_win+1:
     ctx_win = num_frames-1
