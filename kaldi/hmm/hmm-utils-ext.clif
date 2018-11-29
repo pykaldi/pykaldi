@@ -1,0 +1,23 @@
+from "itf/context-dep-itf-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+
+from kaldi.util import _value_error_on_false
+
+from "hmm/hmm-utils-ext.h":
+  namespace `kaldi`:
+
+    def `ConvertAlignmentExt` as convert_alignment_with_phone_map(
+      old_trans_model: TransitionModel, new_trans_model: TransitionModel,
+      new_ctx_dep: ContextDependencyInterface, old_alignment: list<int>,
+      subsample_factor: int, repeat_frames: bool, reorder: bool, phone_map: list<int>)
+      -> (success: bool, new_alignment: list<int>):
+      """Converts an alignment that was created using one model to another."""
+      return _value_error_on_false(...)
+
+    def `ConvertAlignmentExt2` as convert_alignment(
+      old_trans_model: TransitionModel, new_trans_model: TransitionModel,
+      new_ctx_dep: ContextDependencyInterface, old_alignment: list<int>,
+      subsample_factor: int, repeat_frames: bool, reorder: bool)
+      -> (success: bool, new_alignment: list<int>):
+      """Converts an alignment that was created using one model to another."""
+      return _value_error_on_false(...)

@@ -159,12 +159,12 @@ class _FstCompiler(object):
             RuntimeError: Compilation failed.
         """
         sstrm = stringstream.from_str(self._strbuf)
-        compiler = (self._compiler_type())(
+        compiler = self._compiler_type(
             sstrm, "compile",
             self._isymbols, self._osymbols, self._ssymbols,
             self._acceptor, self._keep_isymbols, self._keep_osymbols,
             self._keep_state_numbering, self._allow_negative_labels)
-        ofst = compiler.Fst()
+        ofst = compiler.fst()
         self._strbuf = ""
         if ofst is None:
             raise RuntimeError("Compilation failed")
@@ -755,7 +755,7 @@ class _MutableFstBase(_FstBase):
         Returns:
           self.
         """
-        self._ops._connect(self)
+        self._ops.connect(self)
         self._check_mutating_imethod()
         return self
 

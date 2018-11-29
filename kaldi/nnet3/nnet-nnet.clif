@@ -36,7 +36,7 @@ from "nnet3/nnet-nnet.h":
 
 
     class Nnet:
-      def `ReadConfig` as read_config(self, config_file: istream)
+      def `ReadConfig` as read_config(self, config_file: istream) -> self
 
       def `NumComponents` as num_components(self) -> int
 
@@ -44,7 +44,7 @@ from "nnet3/nnet-nnet.h":
 
       # def `GetComponent` as GetComponent(self, c: int) -> Component
 
-      def `SetComponent` as set_component(self, c: int, component: Component)
+      def `SetComponent` as set_component(self, c: int, component: Component) -> self
 
       def `AddComponent` as add_component(self, name: str, component: Component) -> int
 
@@ -66,7 +66,7 @@ from "nnet3/nnet-nnet.h":
 
       def `GetNodeName` as get_node_name(self, node_index: int) -> str
 
-      def `SetNodeName` as set_node_name(self, node_index: int, new_name: str)
+      def `SetNodeName` as set_node_name(self, node_index: int, new_name: str) -> self
 
       def `GetComponentNames` as get_component_names(self) -> list<str>
 
@@ -80,11 +80,11 @@ from "nnet3/nnet-nnet.h":
 
       def `OutputDim` as output_dim(self, output_name: str) -> int
 
-      def `Read` as read(self, is: istream, binary: bool)
+      def `Read` as read(self, is: istream, binary: bool) -> self
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool) -> self
 
-      def `Check` as check(self, warn_for_orphans: bool = default)
+      def `Check` as check(self, warn_for_orphans: bool = default) -> self
 
       def `Info` as info(self) -> str
 
@@ -95,14 +95,14 @@ from "nnet3/nnet-nnet.h":
 
       def `Copy` as copy(self) -> Nnet
 
-      def `Swap` as swap(self, other: Nnet)
+      def `Swap` as swap(self, other: Nnet) -> self
 
-      def `RemoveOrphanNodes` as remove_orphan_nodes(self, remove_orphan_inputs: bool = default)
+      def `RemoveOrphanNodes` as remove_orphan_nodes(self, remove_orphan_inputs: bool = default) -> self
 
-      def `RemoveOrphanComponents` as remove_orphan_components(self)
+      def `RemoveOrphanComponents` as remove_orphan_components(self) -> self
 
-      def `RemoveSomeNodes` as remove_some_nodes(self, nodes_to_remove: list<int>)
+      def `RemoveSomeNodes` as remove_some_nodes(self, nodes_to_remove: list<int>) -> self
 
-      def `ResetGenerators` as reset_generators(self)
+      def `ResetGenerators` as reset_generators(self) -> self
 
       def `GetConfigLines` as get_config_lines(self, include_dim: bool) -> list<str>

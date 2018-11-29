@@ -20,6 +20,7 @@ kaldi\.fstext
       epsnormalize
       equal
       equivalent
+      indices_to_symbols
       intersect
       isomorphic
       prune
@@ -35,6 +36,7 @@ kaldi\.fstext
       shortestdistance
       shortestpath
       statemap
+      symbols_to_indices
       synchronize
       write_fst_kaldi
    

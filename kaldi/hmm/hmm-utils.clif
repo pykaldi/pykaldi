@@ -1,0 +1,68 @@
+from "itf/options-itf-clifwrap.h" import *
+from "itf/context-dep-itf-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from kaldi.fstext import StdVectorFst
+from kaldi.util import _value_error_on_false
+
+from "hmm/hmm-utils.h":
+  namespace `kaldi`:
+    class HTransducerConfig:
+      transition_scale: float
+      """Scale of transition probabilities (relative to language model)"""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    # NOTE(Dogan): No need for the following functions in Python.
+    # GetHmmAsFst, GetHmmAsFstSimple
+
+    def `GetHTransducer` as get_h_transducer(
+      ilabel_info: list<list<int>>, ctx_dep: ContextDependencyInterface,
+      trans_model: TransitionModel, config: HTransducerConfig)
+      -> (h_transducer: StdVectorFst, disambig_syms_left: list<int>):
+      """Creates the H transducer."""
+      return StdVectorFst(...)
+
+    def `GetIlabelMapping` as get_ilabel_mapping(
+      ilabel_info_old: list<list<int>>, ctx_dep: ContextDependencyInterface,
+      trans_model: TransitionModel) -> list<int>:
+      """Produces a mapping from logical to physical HMMs."""
+
+    def `AddSelfLoops` as add_self_loops(
+      trans_model: TransitionModel, disambig_syms: list<int>,
+      self_loop_scale: float, reorder: bool, fst: StdVectorFst):
+      """Expands an FST that has been built without self-loops."""
+
+    def `AddTransitionProbs` as add_transition_probs(
+      trans_model: TransitionModel, disambig_syms: list<int>,
+      transition_scale: float, self_loop_scale: float, fst: StdVectorFst):
+      """Adds transition probabilities with the supplied scales to the graph."""
+
+    def `AddTransitionProbs` as add_transition_probs_lat(
+      trans_model: TransitionModel, transition_scale: float,
+      self_loop_scale: float, fst: LatticeVectorFst):
+      """Adds transition probabilities with the supplied scales to the lattice."""
+
+    # NOTE(Dogan): No need for the following functions in Python.
+    # GetPdfToTransitionIdTransducer, ConvertTransitionIdsToPdfs
+
+    def `SplitToPhones` as split_to_phones(trans_model: TransitionModel, alignment: list<int>)
+    -> (success: bool, split_alignment: list<list<int>>):
+      """Splits transition-ids in alignment into phones (one list per phone)."""
+
+    def `ConvertPhnxToProns` as convert_phnx_to_prons(
+      phnx: list<int>, words: list<int>, word_start_sym: int, word_end_sym: int)
+      -> (success: bool, prons: list<list<int>>):
+      """Converts a phone sequence and a word sequence to a list of pronunciations"""
+      return _value_error_on_false(...)
+
+    # NOTE(Dogan): No need for the following functions in Python.
+    # GetRandomAlignmentForPhone, ChangeReorderingOfAlignment

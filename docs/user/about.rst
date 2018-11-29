@@ -54,7 +54,7 @@ If you use PyKaldi in research, please cite our paper as follows::
 
     @inproceedings{pykaldi,
         title = {PyKaldi: A python wrapper for Kaldi},
-        author = {Doğan Can and Victor R. Martinez and Pavlos Papadopoulos and Shrikanth S. Narayanan},
+        author = {Dogan Can and Victor R. Martinez and Pavlos Papadopoulos and Shrikanth S. Narayanan},
         booktitle={Acoustics, Speech and Signal Processing (ICASSP), 2018 IEEE International Conference on},
         year = {2018},
         organization = {IEEE}

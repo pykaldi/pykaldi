@@ -1,16 +1,10 @@
 
-kaldi\.asr
-----------
+kaldi\.alignment
+----------------
 
-.. automodule:: kaldi.asr
+.. automodule:: kaldi.alignment
 
    
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      convert_indices_to_symbols
    
    
 
@@ -20,6 +14,38 @@ kaldi\.asr
 
    .. autosummary::
    
+      Aligner
+      GmmAligner
+      NnetAligner
+   
+   
+
+   
+   
+   
+kaldi\.asr
+----------
+
+.. automodule:: kaldi.asr
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FasterGmmRecognizer
+      FasterNnetRecognizer
+      GmmRecognizer
+      LatticeBiglmGmmRecognizer
+      LatticeBiglmNnetRecognizer
+      LatticeGmmRecognizer
+      LatticeNnetRecognizer
+      NnetRecognizer
       Recognizer
    
    
