@@ -9,7 +9,7 @@ def ApplyARMA(in_matrix, order):
       in_matrix: the input matrix
       order: the order of the ARMA process
 
-  Output:
+  Returns:
       out_matrix: the matrix after the ARMA process
   """
 

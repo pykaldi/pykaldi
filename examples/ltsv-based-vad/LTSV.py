@@ -21,7 +21,6 @@ def ApplySigmoidScale (ltsv_sigmoidThr, ltsv_sigmoidSlope, ltsv_input):
   return ltsv_input
 
 
-
 def ApplyLTSV(spec, ctx_win, sigThresh, sigSlope, sigmoidscale):
   """This function computes the long term signal variability(LTSV)
   from a spectrogram.

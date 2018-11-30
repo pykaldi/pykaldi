@@ -59,7 +59,7 @@ def compute_vad(wav_rspecifier, feats_wspecifier, opts):
   Args:
       wav_rspecifier: An ark or scp file as in Kaldi, that contains the input audio
       feats_wspecifier:  An ark or scp file as in Kaldi, that contains the input audio
-      opts: Options
+      opts: Options. See main function for list of options
  
   Returns:
       The number of successful trials.
