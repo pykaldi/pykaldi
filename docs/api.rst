@@ -2,7 +2,8 @@
    :caption: API Guide
    :hidden:
 
-   api/kaldi
+   api/kaldi.alignment
+   api/kaldi.asr
    api/kaldi.base
    api/kaldi.chain
    api/kaldi.cudamatrix
@@ -20,6 +21,7 @@
    api/kaldi.nnet3
    api/kaldi.online2
    api/kaldi.rnnlm
+   api/kaldi.segmentation
    api/kaldi.sgmm2
    api/kaldi.tfrnnlm
    api/kaldi.transform
