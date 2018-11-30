@@ -13,7 +13,7 @@ def ApplySigmoidScale (ltsv_sigmoidThr, ltsv_sigmoidSlope, ltsv_input):
       ltsv_sigmoidSlople: the slope of the sigmoid
       ltsv_input: the input vector
 
-  Output:
+  Returns:
       ltsv_input: the transformed input vector
   
   """
@@ -33,7 +33,7 @@ def ApplyLTSV(spec, ctx_win, sigThresh, sigSlope, sigmoidscale):
       sigSlope: parameter for sigmoid scaling
       sigmoidscale: Flag that determines if sigmoid scaling is going to be applied
           
-  Output:
+  Returns:
       ltsv: The LTSV features
   """
   nframes, nfeats = spec.shape

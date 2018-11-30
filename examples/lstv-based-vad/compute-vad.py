@@ -57,12 +57,12 @@ def compute_vad(wav_rspecifier, feats_wspecifier, opts):
   and if the test_plot flaf is set, it produces a plot.
 
   Args:
-      wav_rspecifier: The decoder.
-      opts: The symbol table. If provided, "text" output of
-          :meth:`decode` includes symbols instead of integer indices.
-
-  Output:
-      feats_wspecifier: The specifier that will hold the vad output
+      wav_rspecifier: An ark or scp file as in Kaldi, that contains the input audio
+      feats_wspecifier:  An ark or scp file as in Kaldi, that contains the input audio
+      opts: Options
+ 
+  Returns:
+      The number of successful trials.
   """ 
  
   num_utts, num_success = 0, 0

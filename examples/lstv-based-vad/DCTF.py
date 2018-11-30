@@ -17,7 +17,7 @@ def DCTFCompute(input_s, input_dct_matrix, ctx_win, num_ceps):
       ctx_win: the context window
       num_ceps: the number of coefficients
           
-  Output:
+  Returns:
       dctf_output: The transformed singal
   """
   input_row_n = input_s.shape[0]
@@ -51,7 +51,7 @@ def ApplyDCT(num_cep, context_window, feature):
       context_window: window over which we will calculate the DCT. 
       feature: the input feature
           
-  Output:
+  Returns:
       ltsv: The LTSV features
   """
   dct_matrix_full = Matrix(context_window, context_window)
