@@ -24,7 +24,7 @@ seg = SegmentationProcessor(target_labels=[2])
 # Define feature pipeline as a Kaldi rspecifier
 feats_rspec = "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:- |"
 
-# Segment wav files
+# Segment
 with SequentialMatrixReader(feats_rspec) as f, open ("segments", "w") as s:
     for key, feats in f:
         out = sad.segment(feats)

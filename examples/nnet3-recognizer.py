@@ -2,9 +2,7 @@
 
 from __future__ import print_function
 
-import os
-
-from kaldi.asr import LatticeNnetRecognizer
+from kaldi.asr import NnetLatticeFasterRecognizer
 from kaldi.decoder import LatticeFasterDecoderOptions
 from kaldi.nnet3 import NnetSimpleComputationOptions
 from kaldi.util.table import SequentialMatrixReader
@@ -16,9 +14,10 @@ decoder_opts.max_active = 7000
 decodable_opts = NnetSimpleComputationOptions()
 decodable_opts.acoustic_scale = 1.0
 decodable_opts.frame_subsampling_factor = 3
-asr = LatticeNnetRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt",
-                                       decoder_opts=decoder_opts,
-                                       decodable_opts=decodable_opts)
+decodable_opts.frames_per_chunk = 150
+asr = NnetLatticeFasterRecognizer.from_files(
+    "final.mdl", "HCLG.fst", "words.txt",
+    decoder_opts=decoder_opts, decodable_opts=decodable_opts)
 
 # Define feature pipelines as Kaldi rspecifiers
 feats_rspec = "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:- |"

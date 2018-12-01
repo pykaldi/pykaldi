@@ -2,9 +2,7 @@
 
 from __future__ import print_function
 
-import os
-
-from kaldi.asr import LatticeGmmRecognizer
+from kaldi.asr import GmmLatticeFasterRecognizer
 from kaldi.decoder import LatticeFasterDecoderOptions
 from kaldi.feat.mfcc import Mfcc, MfccOptions
 from kaldi.feat.functions import compute_deltas, DeltaFeaturesOptions
@@ -14,30 +12,22 @@ from kaldi.util.table import SequentialMatrixReader, SequentialWaveReader
 
 # Construct recognizer
 decoder_opts = LatticeFasterDecoderOptions()
-decoder_opts.beam = 13
+decoder_opts.beam = 11.0
 decoder_opts.max_active = 7000
-asr = LatticeGmmRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt",
-                                      decoder_opts)
+asr = GmmLatticeFasterRecognizer.from_files(
+    "final.mdl", "HCLG.fst", "words.txt", decoder_opts=decoder_opts)
 
 # Define feature pipeline as a Kaldi rspecifier
 feats_rspecifier = (
     "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:-"
-    " | tee mfcc.pipe"
-    " | compute-cmvn-stats ark:- ark:-"
-    " | apply-cmvn ark:- ark:mfcc.pipe ark:-"
+    " | apply-cmvn-sliding --cmn-window=10000 --center=true ark:- ark:-"
     " | add-deltas ark:- ark:- |"
     )
-try:
-    os.remove("mfcc.pipe")  # remove leftover named pipe
-except FileNotFoundError:
-    pass
 
-# Decode wav files
-os.mkfifo("mfcc.pipe")  # create named pipe used by the pipeline
+# Decode
 for key, feats in SequentialMatrixReader(feats_rspecifier):
     out = asr.decode(feats)
     print(key, out["text"], flush=True)
-os.remove("mfcc.pipe")  # remove named pipe
 
 print("-" * 80, flush=True)
 
@@ -52,14 +42,14 @@ def make_feat_pipeline(base, opts=DeltaFeaturesOptions()):
     return feat_pipeline
 
 frame_opts = FrameExtractionOptions()
-frame_opts.samp_freq = 8000
+frame_opts.samp_freq = 16000
 frame_opts.allow_downsample = True
 mfcc_opts = MfccOptions()
 mfcc_opts.use_energy = False
 mfcc_opts.frame_opts = frame_opts
 feat_pipeline = make_feat_pipeline(Mfcc(mfcc_opts))
 
-# Decode wav files
+# Decode
 for key, wav in SequentialWaveReader("scp:wav.scp"):
     feats = feat_pipeline(wav)
     out = asr.decode(feats)

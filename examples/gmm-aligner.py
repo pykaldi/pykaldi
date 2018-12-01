@@ -2,8 +2,6 @@
 
 from __future__ import print_function
 
-import os
-
 from kaldi.alignment import GmmAligner
 from kaldi.fstext import SymbolTable
 from kaldi.lat.align import WordBoundaryInfoNewOpts, WordBoundaryInfo
@@ -20,18 +18,11 @@ wb_info = WordBoundaryInfo.from_file(WordBoundaryInfoNewOpts(),
 # Define feature pipeline as a Kaldi rspecifier
 feats_rspecifier = (
     "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:-"
-    " | tee mfcc.pipe"
-    " | compute-cmvn-stats ark:- ark:-"
-    " | apply-cmvn ark:- ark:mfcc.pipe ark:-"
+    " | apply-cmvn-sliding --cmn-window=10000 --center=true ark:- ark:-"
     " | add-deltas ark:- ark:- |"
     )
-try:
-    os.remove("mfcc.pipe")  # remove leftover named pipe
-except FileNotFoundError:
-    pass
 
-# Align wav files
-os.mkfifo("mfcc.pipe")  # create named pipe used by the pipeline
+# Align
 with SequentialMatrixReader(feats_rspecifier) as f, open("text") as t:
     for (fkey, feats), line in zip(f, t):
         tkey, text = line.strip().split(None, 1)
@@ -42,4 +33,3 @@ with SequentialMatrixReader(feats_rspecifier) as f, open("text") as t:
         print(fkey, phone_alignment, flush=True)
         word_alignment = aligner.to_word_alignment(out["best_path"], wb_info)
         print(fkey, word_alignment, flush=True)
-os.remove("mfcc.pipe")  # remove named pipe

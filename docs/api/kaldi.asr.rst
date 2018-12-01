@@ -13,13 +13,20 @@ kaldi\.asr
 
    .. autosummary::
    
-      FasterGmmRecognizer
-      FasterNnetRecognizer
+      FasterRecognizer
+      GmmFasterRecognizer
+      GmmLatticeBiglmFasterRecognizer
+      GmmLatticeFasterRecognizer
       GmmRecognizer
-      LatticeBiglmGmmRecognizer
-      LatticeBiglmNnetRecognizer
-      LatticeGmmRecognizer
-      LatticeNnetRecognizer
+      LatticeBiglmFasterRecognizer
+      LatticeFasterRecognizer
+      MappedFasterRecognizer
+      MappedLatticeBiglmFasterRecognizer
+      MappedLatticeFasterRecognizer
+      MappedRecognizer
+      NnetFasterRecognizer
+      NnetLatticeBiglmFasterRecognizer
+      NnetLatticeFasterRecognizer
       NnetRecognizer
       Recognizer
    

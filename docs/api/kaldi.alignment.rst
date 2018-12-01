@@ -15,6 +15,7 @@ kaldi\.alignment
    
       Aligner
       GmmAligner
+      MappedAligner
       NnetAligner
    
    

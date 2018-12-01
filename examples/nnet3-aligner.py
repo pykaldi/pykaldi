@@ -2,8 +2,6 @@
 
 from __future__ import print_function
 
-import os
-
 from kaldi.alignment import NnetAligner
 from kaldi.fstext import SymbolTable
 from kaldi.lat.align import WordBoundaryInfoNewOpts, WordBoundaryInfo

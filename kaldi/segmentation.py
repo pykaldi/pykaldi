@@ -15,39 +15,37 @@ __all__ = ['Segmenter', 'NnetSAD', 'SegmentationProcessor']
 
 
 class Segmenter(object):
-    """Abstract base class for segmenters.
-
-    All concrete subclasses should override :meth:`make_decodable`.
+    """Base class for speech segmenters.
 
     Args:
-        model (object): Segmentation model.
         graph (StdVectorFst): Segmentation graph.
         beam (float): Logarithmic decoding beam.
         max_active (int): Maximum number of active states in decoding.
         acoustic_scale (float): Acoustic score scale.
     """
-    def __init__(self, model, graph, beam=8, max_active=1000,
-                 acoustic_scale=0.1):
-        self.model = model
+    def __init__(self, graph, beam=8, max_active=1000, acoustic_scale=0.1):
         decoder_opts = _dec.FasterDecoderOptions()
         decoder_opts.beam = beam
         decoder_opts.max_active = max_active
         self.decoder = _dec.FasterDecoder(graph, decoder_opts)
         self.acoustic_scale = acoustic_scale
 
-    def make_decodable(self, features):
-        """Constructs a new decodable object from input features.
+    def _make_decodable(self, loglikes):
+        """Constructs a new decodable object from input log-likelihoods.
 
         Args:
-            features (object): Input features.
+            loglikes (object): Input log-likelihoods.
 
         Returns:
-            DecodableInterface: A decodable object.
+            DecodableMatrixScaled: A decodable object for computing scaled
+            log-likelihoods.
         """
-        raise NotImplementedError
+        if loglikes.num_rows == 0:
+            raise ValueError("Empty loglikes matrix.")
+        return _dec.DecodableMatrixScaled(loglikes, self.acoustic_scale)
 
-    def segment(self, features):
-        """Segments acoustic features.
+    def segment(self, input):
+        """Segments input.
 
         Output is a dictionary with the following `(key, value)` pairs:
 
@@ -64,7 +62,7 @@ class Segmenter(object):
         acoustic-score).
 
         Args:
-            features (object): Input features.
+            input (object): Input to segment.
 
         Returns:
             A dictionary representing segmentation output.
@@ -72,7 +70,7 @@ class Segmenter(object):
         Raises:
             RuntimeError: If segmentation fails.
         """
-        self.decoder.decode(self.make_decodable(features))
+        self.decoder.decode(self._make_decodable(input))
 
         if not self.decoder.reached_final():
             raise RuntimeError("No final state was active on the last frame.")
@@ -99,34 +97,45 @@ class Segmenter(object):
 
 
 class NnetSAD(Segmenter):
-    """Nnet3-based speech activity detection (SAD).
+    """Neural network based speech activity detection (SAD).
 
     Args:
-        model (Nnet): SAD model.
-        transform (Matrix): Transformation applied to SAD label posteriors.
-        graph (StdVectorFst): SAD graph.
+        model (Nnet): SAD model. Model output should be log-posteriors for
+            [silence, speech, garbage] labels.
+        transform (Matrix): Transformation applied to SAD label posteriors. It
+            should be a 3x2 matrix mapping [silence, speech, garbage] posteriors
+            to [silence, speech] pseudo-likelihoods.
+        graph (StdVectorFst): SAD graph. Silence and speech arcs should be
+            labeled respectively with 1 and 2.
         beam (float): Logarithmic decoding beam.
         max_active (int): Maximum number of active states in decoding.
         decodable_opts (NnetSimpleComputationOptions): Configuration options for
             the SAD model.
     """
     def __init__(self, model, transform, graph, beam=8, max_active=1000,
-                 decodable_opts=_nnet3.NnetSimpleComputationOptions()):
+                 decodable_opts=None):
         if not isinstance(model, _nnet3.Nnet):
             raise TypeError("model argument should be a Nnet object")
-        super(NnetSAD, self).__init__(model, graph, beam, max_active,
-                                      decodable_opts.acoustic_scale)
         self.model = model
         self.priors = _mat.Vector()
         self.transform = transform
-        self.decodable_opts = decodable_opts
         _nnet3.set_batchnorm_test_mode(True, model)
         _nnet3.set_dropout_test_mode(True, model)
         _nnet3.collapse_model(_nnet3.CollapseModelConfig(), model)
+        if decodable_opts:
+            if not isinstance(decodable_opts,
+                              _nnet3.NnetSimpleComputationOptions):
+                raise TypeError("decodable_opts should be either None or a "
+                                "NnetSimpleComputationOptions object")
+            self.decodable_opts = decodable_opts
+        else:
+            self.decodable_opts = _nnet3.NnetSimpleComputationOptions()
         self.compiler = _nnet3.CachingOptimizingCompiler.new_with_optimize_opts(
-            model, decodable_opts.optimize_config)
+            model, self.decodable_opts.optimize_config)
+        super(NnetSAD, self).__init__(graph, beam, max_active,
+                                      self.decodable_opts.acoustic_scale)
 
-    def make_decodable(self, features):
+    def _make_decodable(self, features):
         """Constructs a new decodable object from input features.
 
         Args:
