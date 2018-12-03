@@ -87,7 +87,7 @@ from "online2/online-endpoint.h":
                                                 trailing_silence_frames: int,
                                                 frame_shift_in_seconds: float,
                                                 final_relative_cost: float) -> bool:
-      """Determines if any of the endpointing rules is active for given arguments.
+      """Determines if any of the endpointing rules are active for given arguments.
 
       Args:
         config (:obj:`OnlineEndpointConfig`): Online endpointing configuration.
@@ -111,10 +111,10 @@ from "online2/online-endpoint.h":
         decoder (LatticeFasterOnlineDecoder): Online decoder.
       """
 
-    def `EndpointDetected` as endpoint_detected_decoder(config: OnlineEndpointConfig,
-                                                        tmodel: TransitionModel,
-                                                        frame_shift_in_seconds: float,
-                                                        decoder: LatticeFasterOnlineDecoder) -> bool:
+    def `EndpointDetected` as decoding_endpoint_detected(config: OnlineEndpointConfig,
+                                                         tmodel: TransitionModel,
+                                                         frame_shift_in_seconds: float,
+                                                         decoder: LatticeFasterOnlineDecoder) -> bool:
       """Determines if we should terminate decoding.
 
       This is a higher-level convenience function that works out the arguments

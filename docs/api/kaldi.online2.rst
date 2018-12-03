@@ -10,8 +10,8 @@ kaldi\.online2
    .. autosummary::
       :nosignatures:
    
+      decoding_endpoint_detected
       endpoint_detected
-      endpoint_detected_decoder
       trailing_silence_length
    
    

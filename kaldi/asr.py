@@ -19,6 +19,7 @@ from . import hmm as _hmm
 from .lat import functions as _lat_funcs
 from .matrix import _kaldi_matrix
 from . import nnet3 as _nnet3
+from . import online2 as _online2
 from .util import io as _util_io
 
 
@@ -29,7 +30,9 @@ __all__ = ['Recognizer', 'FasterRecognizer',
            'GmmRecognizer', 'GmmFasterRecognizer',
            'GmmLatticeFasterRecognizer', 'GmmLatticeBiglmFasterRecognizer',
            'NnetRecognizer', 'NnetFasterRecognizer',
-           'NnetLatticeFasterRecognizer', 'NnetLatticeBiglmFasterRecognizer']
+           'NnetLatticeFasterRecognizer', 'NnetLatticeBiglmFasterRecognizer',
+           'OnlineRecognizer', 'NnetOnlineRecognizer',
+           'NnetLatticeFasterOnlineRecognizer']
 
 
 class Recognizer(object):
@@ -87,7 +90,7 @@ class Recognizer(object):
     def decode(self, input):
         """Decodes input.
 
-        Decoding output is a dictionary with the following `(key, value)` pairs:
+        Output is a dictionary with the following `(key, value)` pairs:
 
         ============ =========================== ==============================
         key          value                       value type
@@ -1115,3 +1118,446 @@ class NnetLatticeBiglmFasterRecognizer(NnetRecognizer):
             symbols = _fst.SymbolTable.read_text(symbols_filename)
         return cls(transition_model, acoustic_model, decoder, symbols,
                    allow_partial, decodable_opts, online_ivector_period)
+
+
+class OnlineRecognizer(object):
+    """Base class for online speech recognizers.
+
+    Args:
+        decoder (object): The online decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        acoustic_scale (float): Acoustic score scale.
+    """
+    def __init__(self, decoder, symbols=None, allow_partial=True,
+                 acoustic_scale=0.1):
+        self.decoder = decoder
+        self.symbols = symbols
+        self.allow_partial = allow_partial
+        self.acoustic_scale = acoustic_scale
+
+    def _make_decodable(self, input_pipeline):
+        """Constructs a new online decodable object from input pipeline.
+
+        Args:
+            input_pipeline (object): Input pipeline.
+
+        Returns:
+            DecodableInterface: An online decodable object for computing scaled
+            log-likelihoods.
+        """
+        raise NotImplementedError
+
+    def _determinize_lattice(self, lattice):
+        """Determinizes raw state-level lattice.
+
+        Args:
+            lattice (Lattice): Raw state-level lattice.
+
+        Returns:
+            CompactLattice or Lattice: A deterministic compact lattice if the
+            decoder is configured to determinize lattices. Otherwise, a raw
+            state-level lattice.
+        """
+        opts = self.decoder.get_options()
+        if opts.determinize_lattice:
+            det_opts = _lat_funcs.DeterminizeLatticePrunedOptions()
+            det_opts.max_mem = opts.det_opts.max_mem
+            return _lat_funcs.determinize_lattice_pruned(
+                lattice, opts.lattice_beam, det_opts, True)
+        else:
+            return lattice
+
+    def set_input_pipeline(self, input_pipeline):
+        """Sets input pipeline.
+
+        Args:
+            input_pipeline (object): Input pipeline to decode online.
+        """
+        self._decodable = self._make_decodable(input_pipeline)
+
+    def init_decoding(self):
+        """Initializes decoding.
+
+        This should only be used if you intend to call :meth:`advance_decoding`.
+        If you intend to call :meth:`decode`, you don't need to call this. You
+        can also call this method if you have already decoded an utterance and
+        want to start with a new utterance.
+        """
+        self.decoder.init_decoding()
+
+    def advance_decoding(self, max_num_frames=-1):
+        """Advances decoding.
+
+        This will decode until there are no more frames ready in the input
+        pipeline or `max_num_frames` are decoded. You can keep calling this as
+        more frames become available.
+
+        Args:
+            max_num_frames (int): Maximum number of frames to decode. If
+                negative, all available frames are decoded.
+        """
+        self.decoder.advance_decoding(self._decodable, max_num_frames)
+
+    def finalize_decoding(self):
+        """Finalizes decoding.
+
+        This function may be optionally called after :meth:`advance_decoding`,
+        when you do not plan to decode any further. It does an extra pruning
+        step that will help to prune the output lattices more accurately,
+        particularly toward the end of the utterance. It does this by using the
+        final-probs in pruning (if any final-state survived); it also does a
+        final pruning step that visits all states (the pruning that is done
+        during decoding may fail to prune states that are within pruning_scale =
+        0.1 outside of the beam). If you call this, you cannot call
+        :meth:`advance_decoding` again (it will fail), and you cannot call
+        get_lattice and related functions with use_final_probs = false.
+        """
+        self.decoder.finalize_decoding()
+
+    def decode(self):
+        """Decodes all frames in the input pipeline and returns the output.
+
+        Output is a dictionary with the following `(key, value)` pairs:
+
+        ============ =========================== ==============================
+        key          value                       value type
+        ============ =========================== ==============================
+        "alignment"  Frame-level alignment       `List[int]`
+        "best_path"  Best lattice path           `CompactLattice`
+        "lattice"    Output lattice              `Lattice` or `CompactLattice`
+        "likelihood" Log-likelihood of best path `float`
+        "text"       Output transcript           `str`
+        "weight"     Cost of best path           `LatticeWeight`
+        "words"      Words on best path          `List[int]`
+        ============ =========================== ==============================
+
+        The "lattice" output is produced only if the decoder can generate
+        lattices. It will be a deterministic compact lattice if the decoder is
+        configured to determinize lattices. Otherwise, it will be a raw
+        state-level lattice.
+
+        If :attr:`symbols` is ``None``, the "text" output will be a string of
+        space separated integer indices. Otherwise it will be a string of space
+        separated symbols. The "weight" output is a lattice weight consisting of
+        (graph-score, acoustic-score).
+
+        Args:
+            input (object): Input to decode.
+
+        Returns:
+            A dictionary representing decoding output.
+
+        Raises:
+            RuntimeError: If decoding fails.
+        """
+        self.decoder.decode(self._decodable)
+        return self.get_output()
+
+    def get_output(self):
+        """Returns decoding output.
+
+        Output is a dictionary with the following `(key, value)` pairs:
+
+        ============ =========================== ==============================
+        key          value                       value type
+        ============ =========================== ==============================
+        "alignment"  Frame-level alignment       `List[int]`
+        "best_path"  Best lattice path           `CompactLattice`
+        "lattice"    Output lattice              `Lattice` or `CompactLattice`
+        "likelihood" Log-likelihood of best path `float`
+        "text"       Output transcript           `str`
+        "weight"     Cost of best path           `LatticeWeight`
+        "words"      Words on best path          `List[int]`
+        ============ =========================== ==============================
+
+        The "lattice" output is produced only if the decoder can generate
+        lattices. It will be a deterministic compact lattice if the decoder is
+        configured to determinize lattices. Otherwise, it will be a raw
+        state-level lattice.
+
+        If :attr:`symbols` is ``None``, the "text" output will be a string of
+        space separated integer indices. Otherwise it will be a string of space
+        separated symbols. The "weight" output is a lattice weight consisting of
+        (graph-score, acoustic-score).
+
+        Returns:
+            A dictionary representing decoding output.
+
+        Raises:
+            RuntimeError: If decoding fails.
+        """
+        if not (self.allow_partial or self.decoder.reached_final()):
+            raise RuntimeError("No final state was active on the last frame.")
+
+        try:
+            best_path = self.decoder.get_best_path()
+        except RuntimeError:
+            raise RuntimeError("Empty decoding output.")
+
+        ali, words, weight = _fst_utils.get_linear_symbol_sequence(best_path)
+
+        if self.symbols:
+            text = " ".join(_fst.indices_to_symbols(self.symbols, words))
+        else:
+            text = " ".join(map(str, words))
+
+        likelihood = - (weight.value1 + weight.value2)
+
+        if self.acoustic_scale != 0.0:
+            scale = _fst_utils.acoustic_lattice_scale(1.0 / self.acoustic_scale)
+            _fst_utils.scale_lattice(scale, best_path)
+        best_path = _fst_utils.convert_lattice_to_compact_lattice(best_path)
+
+        try:
+            lat = self.decoder.get_raw_lattice()
+        except AttributeError:
+            return {
+                "alignment": ali,
+                "best_path": best_path,
+                "likelihood": likelihood,
+                "text": text,
+                "weight": weight,
+                "words": words,
+            }
+        if lat.num_states() == 0:
+            raise RuntimeError("Empty output lattice.")
+        lat.connect()
+
+        lat = self._determinize_lattice(lat)
+
+        if self.acoustic_scale != 0.0:
+            if isinstance(lat, _fst.CompactLatticeVectorFst):
+                _fst_utils.scale_compact_lattice(scale, lat)
+            else:
+                _fst_utils.scale_lattice(scale, lat)
+
+        return {
+            "alignment": ali,
+            "best_path": best_path,
+            "lattice": lat,
+            "likelihood": likelihood,
+            "text": text,
+            "weight": weight,
+            "words": words,
+        }
+
+    def get_partial_output(self, use_final_probs=False):
+        """Returns partial decoding output.
+
+        Output is a dictionary with the following `(key, value)` pairs:
+
+        ============ =========================== ==============================
+        key          value                       value type
+        ============ =========================== ==============================
+        "alignment"  Frame-level alignment       `List[int]`
+        "best_path"  Best lattice path           `Lattice`
+        "likelihood" Log-likelihood of best path `float`
+        "text"       Output transcript           `str`
+        "weight"     Cost of best path           `LatticeWeight`
+        "words"      Words on best path          `List[int]`
+        ============ =========================== ==============================
+
+        If :attr:`symbols` is ``None``, the "text" output will be a string of
+        space separated integer indices. Otherwise it will be a string of space
+        separated symbols. The "weight" output is a lattice weight consisting of
+        (graph-score, acoustic-score).
+
+        Args:
+            use_final_probs (bool): Whether to use final probabilities when
+                computing best path.
+
+        Returns:
+            A dictionary representing decoding output.
+
+        Raises:
+            RuntimeError: If decoding fails.
+        """
+        try:
+            best_path = self.decoder.get_best_path(use_final_probs)
+        except RuntimeError:
+            raise RuntimeError("Empty decoding output.")
+
+        ali, words, weight = _fst_utils.get_linear_symbol_sequence(best_path)
+
+        if self.symbols:
+            text = " ".join(_fst.indices_to_symbols(self.symbols, words))
+        else:
+            text = " ".join(map(str, words))
+
+        likelihood = - (weight.value1 + weight.value2)
+
+        return {
+            "alignment": ali,
+            "best_path": best_path,
+            "likelihood": likelihood,
+            "text": text,
+            "weight": weight,
+            "words": words,
+        }
+
+
+class NnetOnlineRecognizer(OnlineRecognizer):
+    """Base class for neural network based online speech recognizers.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmNnetSimple): The acoustic model.
+        decoder (object): The online decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        decodable_opts (NnetSimpleLoopedComputationOptions): Configuration
+            options for simple looped neural network computation.
+        endpoint_opts (OnlineEndpointConfig): Online endpointing configuration.
+    """
+    def __init__(self, transition_model, acoustic_model, decoder, symbols=None,
+                 allow_partial=True, decodable_opts=None, endpoint_opts=None):
+        if not isinstance(acoustic_model, _nnet3.AmNnetSimple):
+            raise TypeError("acoustic_model should be a AmNnetSimple object")
+        self.transition_model = transition_model
+        self.acoustic_model = acoustic_model
+        nnet = self.acoustic_model.get_nnet()
+        _nnet3.set_batchnorm_test_mode(True, nnet)
+        _nnet3.set_dropout_test_mode(True, nnet)
+        _nnet3.collapse_model(_nnet3.CollapseModelConfig(), nnet)
+
+        if decodable_opts:
+            if not isinstance(decodable_opts,
+                              _nnet3.NnetSimpleLoopedComputationOptions):
+                raise TypeError("decodable_opts should be either None or a "
+                                "NnetSimpleLoopedComputationOptions object")
+            self.decodable_opts = decodable_opts
+        else:
+            self.decodable_opts = _nnet3.NnetSimpleLoopedComputationOptions()
+        self.decodable_info = _nnet3.DecodableNnetSimpleLoopedInfo.from_am(
+            self.decodable_opts, self.acoustic_model)
+
+        if endpoint_opts:
+            if not isinstance(endpoint_opts,
+                              _online2.OnlineEndpointConfig):
+                raise TypeError("decodable_opts should be either None or a "
+                                "OnlineEndpointConfig object")
+            self.endpoint_opts = endpoint_opts
+        else:
+            self.endpoint_opts = _online2.OnlineEndpointConfig()
+
+        super(NnetOnlineRecognizer, self).__init__(
+            decoder, symbols, allow_partial, self.decodable_opts.acoustic_scale)
+
+    @staticmethod
+    def read_model(model_rxfilename):
+        """Reads model from an extended filename."""
+        with _util_io.xopen(model_rxfilename) as ki:
+            transition_model = _hmm.TransitionModel().read(ki.stream(),
+                                                           ki.binary)
+            acoustic_model = _nnet3.AmNnetSimple().read(ki.stream(), ki.binary)
+        return transition_model, acoustic_model
+
+    def _make_decodable(self, feature_pipeline):
+        """Constructs a new online decodable object from input feature pipeline.
+
+        This method also sets output_frame_shift which is used in endpointing.
+
+        Args:
+            feature_pipeline (OnlineNnetFeaturePipeline): Input feature
+                pipeline.
+
+        Returns:
+            DecodableAmNnetLoopedOnline: A decodable object for computing scaled
+            log-likelihoods.
+        """
+        self.output_frame_shift = (feature_pipeline.frame_shift_in_seconds() *
+                                   self.decodable_opts.frame_subsampling_factor)
+        return _nnet3.DecodableAmNnetLoopedOnline(
+            self.transition_model, self.decodable_info,
+            feature_pipeline.input_feature(),
+            feature_pipeline.ivector_feature())
+
+    def _determinize_lattice(self, lattice):
+        """Determinizes raw state-level lattice.
+
+        Args:
+            lattice (Lattice): Raw state-level lattice.
+
+        Returns:
+            CompactLattice or Lattice: A deterministic compact lattice if the
+            decoder is configured to determinize lattices. Otherwise, a raw
+            state-level lattice.
+        """
+        opts = self.decoder.get_options()
+        if opts.determinize_lattice:
+            return _lat_funcs.determinize_lattice_phone_pruned(
+                lattice, self.transition_model, opts.lattice_beam,
+                opts.det_opts, True)
+        else:
+            return lattice
+
+    def endpoint_detected(self):
+        """Determines if any of the endpointing rules are active."""
+        return _online2.decoding_endpoint_detected(
+            self.endpoint_opts, self.transition_model,
+            self.output_frame_shift, self.decoder)
+
+
+class NnetLatticeFasterOnlineRecognizer(NnetOnlineRecognizer):
+    """Neural network based lattice generating faster online speech recognizer.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmNnetSimple): The acoustic model.
+        decoder (LatticeFasterOnlineDecoder): The online decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        decodable_opts (NnetSimpleLoopedComputationOptions): Configuration
+            options for simple looped neural network computation.
+        endpoint_opts (OnlineEndpointConfig): Online endpointing configuration.
+    """
+    def __init__(self, transition_model, acoustic_model, decoder, symbols=None,
+                 allow_partial=True, decodable_opts=None, endpoint_opts=None):
+        if not isinstance(decoder, _dec.LatticeFasterOnlineDecoder):
+            raise TypeError("decoder argument should be a "
+                            "LatticeFasterOnlineDecoder")
+        super(NnetLatticeFasterOnlineRecognizer, self).__init__(
+            transition_model, acoustic_model, decoder, symbols, allow_partial,
+            decodable_opts, endpoint_opts)
+
+    @classmethod
+    def from_files(cls, model_rxfilename, graph_rxfilename,
+                   symbols_filename=None, allow_partial=True,
+                   decoder_opts=None, decodable_opts=None, endpoint_opts=None):
+        """Constructs a new recognizer from given files.
+
+        Args:
+            model_rxfilename (str): Extended filename for reading the model.
+            graph_rxfilename (str): Extended filename for reading the graph.
+            symbols_filename (str): The symbols file. If provided, "text" output
+                of :meth:`decode` includes symbols instead of integer indices.
+            allow_partial (bool): Whether to output decoding results if no
+                final state was active on the last frame.
+            decoder_opts (FasterDecoderOptions): Configuration options for the
+                decoder.
+            decodable_opts (NnetSimpleLoopedComputationOptions): Configuration
+                options for simple looped neural network computation.
+            endpoint_opts (OnlineEndpointConfig): Online endpointing
+                configuration.
+
+        Returns:
+            NnetLatticeFasterOnlineRecognizer: A new recognizer.
+        """
+        transition_model, acoustic_model = cls.read_model(model_rxfilename)
+        graph = _fst.read_fst_kaldi(graph_rxfilename)
+        if not decoder_opts:
+            decoder_opts = _dec.LatticeFasterDecoderOptions()
+        decoder = _dec.LatticeFasterOnlineDecoder(graph, decoder_opts)
+        if symbols_filename is None:
+            symbols = None
+        else:
+            symbols = _fst.SymbolTable.read_text(symbols_filename)
+        return cls(transition_model, acoustic_model, decoder, symbols,
+                   allow_partial, decodable_opts, endpoint_opts)

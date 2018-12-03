@@ -81,8 +81,8 @@ from "online2/online-nnet2-feature-pipeline.h":
       # FIXME(Dogan):
       # OnlineIvectorExtractionInfo has no copy constructor.
       #
-      # ivector_extractor_info: _OnlineIvectorExtractionInfo
-      # """Options for online iVector extraction."""
+      ivector_extractor_info: _OnlineIvectorExtractionInfo = property(`IvectorExtractionInfoPtr`)
+      """Options for online iVector extraction."""
 
       silence_weighting_config: OnlineSilenceWeightingConfig
       """Options for weighting silence in iVector adaptation."""

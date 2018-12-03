@@ -34,7 +34,7 @@ from "online2/online-ivector-feature.h":
       def `Register` as register(self, opts: OptionsItf)
 
     class `OnlineIvectorExtractionInfo` as _OnlineIvectorExtractionInfo:
-      
+
       `lda_mat` as _lda_mat: Matrix
       `global_cmvn_stats` as _global_cmvn_stats: DoubleMatrix
 
@@ -61,7 +61,7 @@ from "online2/online-ivector-feature.h":
       max_remembered_frames: float
 
       @add__init__
-      def `OnlineIvectorExtractionInfo` as new_with_config(self, config: OnlineIvectorExtractionConfig)
+      def `OnlineIvectorExtractionInfo` as from_config(self, config: OnlineIvectorExtractionConfig)
 
       def `Init` as init(self, config: OnlineIvectorExtractionConfig)
 
@@ -72,10 +72,10 @@ from "online2/online-ivector-feature.h":
       ivector_stats: OnlineIvectorEstimationStats
 
       @add__init__
-      def `OnlineIvectorExtractorAdaptationState` as new_with_info(self, info: _OnlineIvectorExtractionInfo)
+      def `OnlineIvectorExtractorAdaptationState` as from_info(self, info: _OnlineIvectorExtractionInfo)
 
       @add__init__
-      def `OnlineIvectorExtractorAdaptationState` as new_with_other(self, other: OnlineIvectorExtractorAdaptationState)
+      def `OnlineIvectorExtractorAdaptationState` as from_other(self, other: OnlineIvectorExtractorAdaptationState)
 
       def `LimitFrames` as limit_frames(self, max_remembered_frames: float, posterior_scale: float):
         """Scales down the stats if needed to ensure the number of frames in the speaker-specific CMVN stats does not exceed max_remembered_frames"""
@@ -120,7 +120,7 @@ from "online2/online-ivector-feature.h":
 
       def `NumFrames` as num_frames(self) -> float
 
-      def `UpdateFrameWeights` as update_weight_frames(self, delta_weights: list<tuple<int, float>>)
+      def `UpdateFrameWeights` as update_frame_weights(self, delta_weights: list<tuple<int, float>>)
 
     class OnlineSilenceWeightingConfig:
       silence_phones_str: str
