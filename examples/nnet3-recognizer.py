@@ -7,6 +7,11 @@ from kaldi.decoder import LatticeFasterDecoderOptions
 from kaldi.nnet3 import NnetSimpleComputationOptions
 from kaldi.util.table import SequentialMatrixReader
 
+from kaldi.cudamatrix import cuda_available
+if cuda_available():
+    from kaldi.cudamatrix import CuDevice
+    CuDevice.instantiate().select_gpu_id('yes')
+
 # Construct recognizer
 decoder_opts = LatticeFasterDecoderOptions()
 decoder_opts.beam = 13
