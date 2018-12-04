@@ -10,35 +10,48 @@ from "tree/context-dep.h":
     const `kPdfClass` as PDF_CLASS: int
 
     class ContextDependency(ContextDependencyInterface):
-      def `Read` as read(self, is: istream, binary: bool)
+      """Phonetic decision tree."""
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads the object from an input stream."""
 
       @add__init__
       def `ContextDependency` as from_event_map(self, N: int, P: int,
-                                                to_pdf: EventMap)
+                                                to_pdf: EventMap):
+        """Constructs a new ContextDependency object from an event map."""
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes the object to an output stream."""
 
-      def `ToPdfMapPtr` as to_pdf_map(self) -> EventMap
+      def `ToPdfMapPtr` as to_pdf_map(self) -> EventMap:
+        """Returns the event map."""
 
-      def `ContextWidth` as context_width(self) -> int
+      def `ContextWidth` as context_width(self) -> int:
+        """Returns context width."""
 
-      def `CentralPosition` as central_position(self) -> int
+      def `CentralPosition` as central_position(self) -> int:
+        """Returns central position of the context."""
 
       def `Compute` as compute(self, phoneseq: list<int>, pdf_class: int)
         -> (success: bool, pdf_id: int):
+        """Returns the pdf-id for given phone seq and pdf class."""
         return _value_error_on_false(...)
 
       def `GetPdfInfo` as get_pdf_info(self, phones: list<int>,
                                        num_pdf_classes: list<int>)
-        -> list<list<tuple<int, int>>>
+        -> list<list<tuple<int, int>>>:
+        """Returns the list of (phone, pdf-id) pairs each pdf-id can correspond to."""
 
       def `GetPdfInfo` as get_pdf_pair_info(self,
         phones: list<int>, pdf_class_pairs: list<list<tuple<int, int>>>)
-        -> list<list<list<tuple<int, int>>>>
+        -> list<list<list<tuple<int, int>>>>:
+        """Returns indo about what possible pdf-ids can be generated for HMM-states."""
 
-      def `NumPdfs` as num_pdfs(self) -> int
+      def `NumPdfs` as num_pdfs(self) -> int:
+        """Returns the number of PDFs."""
 
-      def `Copy` as copy(self) -> ContextDependencyInterface
+      def `Copy` as copy(self) -> ContextDependencyInterface:
+        """Returns a copy of this object."""
 
 
     def `GenRandContextDependency` as _gen_rand_context_dependency(
@@ -51,9 +64,11 @@ from "tree/context-dep.h":
 
     def `MonophoneContextDependency` as monophone_context_dependency(
         phones: list<int>, phone2num_pdf_classes: list<int>)
-        -> ContextDependency
+        -> ContextDependency:
+        """Returns a new ContextDependency object for a monophone system."""
 
     def `MonophoneContextDependencyShared`
         as monophone_context_dependency_shared(
         phone_classes: list<list<int>>, phone2num_pdf_classes: list<int>)
-        -> ContextDependency
+        -> ContextDependency:
+        """Returns a new ContextDependency object for a monophone system with shared PDFs."""

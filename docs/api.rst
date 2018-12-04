@@ -12,7 +12,6 @@
    api/kaldi.fstext
    api/kaldi.gmm
    api/kaldi.hmm
-   api/kaldi.itf
    api/kaldi.ivector
    api/kaldi.kws
    api/kaldi.lat

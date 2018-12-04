@@ -3,28 +3,43 @@ from "base/iostream-clifwrap.h" import *
 from "itf/clusterable-itf.h":
   namespace `kaldi`:
     class Clusterable:
-      def `Copy` as copy(self) -> Clusterable
+      """Clusterable interface definition."""
 
-      def `Objf` as objf(self) -> float
+      def `Copy` as copy(self) -> Clusterable:
+        """Returns a copy of this object."""
 
-      def `Normalizer` as normalizer(self) -> float
+      def `Objf` as objf(self) -> float:
+        """Returns the objective function associated with the stats."""
 
-      def `SetZero` as set_zero(self)
+      def `Normalizer` as normalizer(self) -> float:
+        """Returns the normalizer (typically count) associated with the stats."""
 
-      def `Add` as add(self, other: Clusterable)
+      def `SetZero` as set_zero(self):
+        """Sets stats to zero."""
 
-      def `Sub` as sub(self, other: Clusterable)
+      def `Add` as add(self, other: Clusterable):
+        """Adds other stats."""
 
-      def `Scale` as scale(self, f: float)
+      def `Sub` as sub(self, other: Clusterable):
+        """Subtracts other stats."""
 
-      def `Type` as type(self) -> str
+      def `Scale` as scale(self, f: float):
+        """Scales the stats."""
 
-      def `Write` as write(self, os: ostream, binary: bool)
+      def `Type` as type(self) -> str:
+        """Returns a string describing the type."""
 
-      def `ReadNew` as read_new(self, is: istream, binary: bool) -> Clusterable
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes the object to output stream."""
 
-      def `ObjfPlus` as objf_plus(self, other: Clusterable) -> float
+      def `ReadNew` as read_new(self, is: istream, binary: bool) -> Clusterable:
+        """Reads the object from input stream."""
 
-      def `ObjfMinus` as objf_minus(self, other: Clusterable) -> float
+      def `ObjfPlus` as objf_plus(self, other: Clusterable) -> float:
+        """Returns the objective function of the combined object this + other."""
 
-      def `Distance` as distance(self, other: Clusterable) -> float
+      def `ObjfMinus` as objf_minus(self, other: Clusterable) -> float:
+        """Returns the objective function of the subtracted object this - other."""
+
+      def `Distance` as distance(self, other: Clusterable) -> float:
+        """Returns the objective function decrease from merging the two clusters."""

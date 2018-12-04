@@ -3,6 +3,7 @@ from "itf/decodable-itf.h":
   namespace `kaldi`:
     class DecodableInterface:
       """Decodable interface definition."""
+
       def `LogLikelihood` as log_likelihood(self, frame: int, index: int) -> float:
         """Returns the log-likehood of the given index for the given frame."""
 

@@ -50,6 +50,8 @@ with open("api.rst", "w") as api, \
                                                    onerror=lambda x: None):
         if modname.split(".")[-1][0] == "_" and not args.include_private:
             continue
+        if modname == "kaldi.itf":
+            continue
         if ispkg:
             print("   {}/{}".format(args.out_dir, modname), file=api)
             print("   {}".format(modname), file=packages)
@@ -74,6 +76,8 @@ for importer, modname, ispkg in pkgutil.walk_packages(path=kaldi.__path__,
                                                       prefix=kaldi.__name__+'.',
                                                       onerror=lambda x: None):
     if modname.split(".")[-1][0] == "_" and not args.include_private:
+        continue
+    if modname == "kaldi.itf":
         continue
     if not ispkg and len(modname.split(".")) > 2:
         mod_file = "{}.rst".format(modname)
@@ -102,6 +106,8 @@ for importer, modname, ispkg in pkgutil.walk_packages(path=kaldi.__path__,
                                                       prefix=kaldi.__name__+'.',
                                                       onerror=lambda x: None):
     if modname.split(".")[-1][0] == "_" and not args.include_private:
+        continue
+    if modname == "kaldi.itf":
         continue
     if ispkg:
         pkg_file = "{}.rst".format(modname)

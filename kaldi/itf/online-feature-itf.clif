@@ -3,6 +3,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "itf/online-feature-itf.h":
   namespace `kaldi`:
     class OnlineFeatureInterface:
+      """Online feature interface definition."""
 
       def `Dim` as dim(self) -> int:
         """Returns feature dimension"""
@@ -20,6 +21,7 @@ from "itf/online-feature-itf.h":
         """Returns the features for given frame index"""
 
     class OnlineBaseFeature(OnlineFeatureInterface):
+      """Online base feature interface definition."""
 
       def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
         """Accepts input waveform for feature extraction."""
