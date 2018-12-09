@@ -39,7 +39,7 @@ with SequentialMatrixReader(feats_rspec) as f:
     for key, feats in f:
         feats = torch.from_numpy(feats.numpy()).unsqueeze(1)  # insert batch dim
         loglikes = Matrix(model(feats).squeeze().numpy())     # remove batch dim
-        out = asr2.decode(loglikes)
+        out = asr.decode(loglikes)
         print(key, out["text"])
 ```
 
