@@ -14,25 +14,25 @@ technical details of PyKaldi in
 Here is a taste.
 
 ```python
-from kaldi.asr import NnetLatticeFasterRecognizer
+from kaldi.asr import NnetLatticeFasterRecognizer, MappedLatticeFasterRecognizer
 from kaldi.matrix import Matrix
 from kaldi.util.table import SequentialMatrixReader
-from model import AcousticModel
+from models import AcousticModel
 import torch
 
 # Define Kaldi pipeline for reading features
 feats_rspec = "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:- |"
 
-# Decode with a Kaldi nnet3 acoustic model
+# Decode with a Kaldi neural network acoustic model
 asr = NnetLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
 with SequentialMatrixReader(feats_rspec) as f:
     for key, feats in f:
         out = asr.decode(feats)
         print(key, out["text"])
 
-# Decode with a PyTorch acoustic model
+# Decode with a PyTorch neural network acoustic model
 asr = MappedLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
-model = AcousticModel()  # subclass of torch.nn.Module
+model = AcousticModel()  # torch neural network module
 model.load_state_dict(torch.load("model.pt"))
 model.eval()
 with SequentialMatrixReader(feats_rspec) as f:
