@@ -17,7 +17,7 @@ Here is a taste.
 from kaldi.asr import NnetLatticeFasterRecognizer
 from kaldi.matrix import Matrix
 from kaldi.util.table import SequentialMatrixReader
-from model import RecurrentAcousticModel
+from model import AcousticModel
 import torch
 
 # Define Kaldi pipeline for reading features
@@ -30,15 +30,16 @@ with SequentialMatrixReader(feats_rspec) as f:
         out = asr.decode(feats)
         print(key, out["text"])
 
-# Decode with a recurrent PyTorch acoustic model
+# Decode with a PyTorch acoustic model
 asr = MappedLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
-model = RecurrentAcousticModel()  # subclass of torch.nn.Module
+model = AcousticModel()  # subclass of torch.nn.Module
 model.load_state_dict(torch.load("model.pt"))
 model.eval()
 with SequentialMatrixReader(feats_rspec) as f:
     for key, feats in f:
-        feats = torch.from_numpy(feats.numpy()).unsqueeze(1)  # insert batch dim
-        loglikes = Matrix(model(feats).squeeze().numpy())     # remove batch dim
+        feats = torch.from_numpy(feats.numpy())  # convert to torch tensor
+        loglikes = model(feats)                  # compute log-likelihoods
+        loglikes = Matrix(loglikes.numpy())      # convert to kaldi matrix
         out = asr.decode(loglikes)
         print(key, out["text"])
 ```
