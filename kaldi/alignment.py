@@ -20,6 +20,9 @@ __all__ = ['Aligner', 'MappedAligner', 'GmmAligner', 'NnetAligner']
 class Aligner(object):
     """Speech aligner.
 
+    This can be used to align transition-id log-likelihood matrices with
+    reference texts.
+
     Args:
         transition_model (TransitionModel): The transition model.
         tree (ContextDependency): The phonetic decision tree.
@@ -54,7 +57,11 @@ class Aligner(object):
 
     @staticmethod
     def read_tree(tree_rxfilename):
-        """Reads phonetic decision tree from an extended filename."""
+        """Reads phonetic decision tree from an extended filename.
+
+        Returns:
+            ContextDependency: Phonetic decision tree.
+        """
         tree = _tree.ContextDependency()
         with _util_io.xopen(tree_rxfilename) as ki:
             tree.read(ki.stream(), ki.binary)
@@ -62,12 +69,20 @@ class Aligner(object):
 
     @staticmethod
     def read_lexicon(lexicon_rxfilename):
-        """Reads lexicon FST from an extended filename."""
+        """Reads lexicon FST from an extended filename.
+
+        Returns:
+            StdFst: Lexicon FST.
+        """
         return _fst.read_fst_kaldi(lexicon_rxfilename)
 
     @staticmethod
     def read_symbols(symbols_filename):
-        """Reads symbol table from file."""
+        """Reads symbol table from file.
+
+        Returns:
+            SymbolTable: Symbol table.
+        """
         if symbols_filename is None:
             return None
         else:
@@ -75,7 +90,11 @@ class Aligner(object):
 
     @staticmethod
     def read_disambig_symbols(disambig_rxfilename):
-        """Reads disambiguation symbols from an extended filename."""
+        """Reads disambiguation symbols from an extended filename.
+
+        Returns:
+            List[int]: List of disambiguation symbols.
+        """
         if disambig_rxfilename is None:
             return None
         else:
@@ -84,7 +103,11 @@ class Aligner(object):
 
     @staticmethod
     def read_model(model_rxfilename):
-        """Reads transition model from an extended filename."""
+        """Reads transition model from an extended filename.
+
+        Returns:
+            TransitionModel: Transition model.
+        """
         with _util_io.xopen(model_rxfilename) as ki:
             return _hmm.TransitionModel().read(ki.stream(), ki.binary)
 
@@ -117,7 +140,7 @@ class Aligner(object):
             acoustic_scale (float): Acoustic score scale.
 
         Returns:
-            A new GMM aligner object.
+            A new aligner object.
         """
         transition_model = cls.read_model(model_rxfilename)
         tree = cls.read_tree(tree_rxfilename)
@@ -262,6 +285,9 @@ class Aligner(object):
 class MappedAligner(Aligner):
     """Mapped speech aligner.
 
+    This can be used to align phone-id log-likelihood matrices with reference
+    texts.
+
     Args:
         transition_model (TransitionModel): The transition model.
         tree (ContextDependency): The phonetic decision tree.
@@ -298,6 +324,8 @@ class MappedAligner(Aligner):
 class GmmAligner(Aligner):
     """GMM based speech aligner.
 
+    This can be used to align feature matrices with reference texts.
+
     Args:
         transition_model (TransitionModel): The transition model.
         acoustic_model (AmDiagGmm): The acoustic model.
@@ -330,7 +358,12 @@ class GmmAligner(Aligner):
 
     @staticmethod
     def read_model(model_rxfilename):
-        """Reads model from an extended filename."""
+        """Reads model from an extended filename.
+
+        Returns:
+            Tuple[TransitionModel, AmDiagGmm]: A (transition model, acoustic
+            model) pair.
+        """
         with _util_io.xopen(model_rxfilename) as ki:
             transition_model = _hmm.TransitionModel().read(ki.stream(),
                                                            ki.binary)
@@ -365,7 +398,7 @@ class GmmAligner(Aligner):
             acoustic_scale (float): Acoustic score scale.
 
         Returns:
-            A new GMM aligner object.
+            A new aligner object.
         """
         transition_model, acoustic_model = cls.read_model(model_rxfilename)
         tree = cls.read_tree(tree_rxfilename)
@@ -395,6 +428,8 @@ class GmmAligner(Aligner):
 
 class NnetAligner(Aligner):
     """Neural network based speech aligner.
+
+    This can be used to align feature matrices with reference texts.
 
     Args:
         transition_model (TransitionModel): The transition model.
@@ -446,7 +481,12 @@ class NnetAligner(Aligner):
 
     @staticmethod
     def read_model(model_rxfilename):
-        """Reads model from an extended filename."""
+        """Reads model from an extended filename.
+
+        Returns:
+            Tuple[TransitionModel, AmNnetSimple]: A (transition model, acoustic
+            model) pair.
+        """
         with _util_io.xopen(model_rxfilename) as ki:
             transition_model = _hmm.TransitionModel().read(ki.stream(),
                                                            ki.binary)
@@ -485,7 +525,7 @@ class NnetAligner(Aligner):
                 online ivectors are used.
 
         Returns:
-            A new nnet3 aligner object.
+            A new aligner object.
         """
         transition_model, acoustic_model = cls.read_model(model_rxfilename)
         tree = cls.read_tree(tree_rxfilename)

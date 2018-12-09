@@ -15,15 +15,31 @@ Here is a taste.
 
 ```python
 from kaldi.asr import NnetLatticeFasterRecognizer
+from kaldi.matrix import Matrix
 from kaldi.util.table import SequentialMatrixReader
+from model import RecurrentAcousticModel
+import torch
 
-asr = NnetLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
-
+# Define Kaldi pipeline for reading features
 feats_rspec = "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:- |"
 
+# Decode with a Kaldi nnet3 acoustic model
+asr = NnetLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
 with SequentialMatrixReader(feats_rspec) as f:
     for key, feats in f:
         out = asr.decode(feats)
+        print(key, out["text"])
+
+# Decode with a recurrent PyTorch acoustic model
+asr = MappedLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
+model = RecurrentAcousticModel()  # subclass of torch.nn.Module
+model.load_state_dict(torch.load("model.pt"))
+model.eval()
+with SequentialMatrixReader(feats_rspec) as f:
+    for key, feats in f:
+        feats = torch.from_numpy(feats.numpy()).unsqueeze(1)  # insert batch dim
+        loglikes = Matrix(model(feats).squeeze().numpy())     # remove batch dim
+        out = asr2.decode(loglikes)
         print(key, out["text"])
 ```
 
