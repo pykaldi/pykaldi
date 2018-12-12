@@ -1,0 +1,54 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct1-ops.h":
+  namespace `fst`:
+
+## CompactLattice Semiring
+
+# Constructive Ops 1
+
+    def `MapExt` as map(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst, map_type: MapType,
+                     delta: float, weight: CompactLatticeWeight)
+
+    def `ComposeExt` as compose(ifst1: CompactLatticeFst, ifst2: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+                             connect: bool, compose_filter: ComposeFilter)
+
+    def `DeterminizeExt` as determinize(
+        ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst, delta: float = default,
+        weight_threshold: CompactLatticeWeight = default,
+        state_threshold: int = default, subsequential_label: int = default,
+        type: DeterminizeType = default,
+        increment_subsequential_label: bool = default)
+
+    def `DifferenceExt` as difference(ifst1: CompactLatticeFst, ifst2: CompactLatticeFst,
+                                   ofst: CompactLatticeMutableFst, connect: bool,
+                                   compose_filter: ComposeFilter)
+
+    def `DisambiguateExt` as disambiguate(
+        ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst, delta: float = default,
+        weight_threshold: CompactLatticeWeight = default,
+        state_threshold: int = default, subsequential_label: int = default)
+
+    def `EpsNormalizeExt` as epsnormalize(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+                                          type: EpsNormalizeType = default)
+
+    def `EqualExt` as equal(ifst1: CompactLatticeFst, ifst2: CompactLatticeFst,
+                            delta: float = default) -> bool
+
+    def `EquivalentExt` as equivalent(ifst1: CompactLatticeFst, ifst2: CompactLatticeFst, delta: float)
+        -> (result: bool, error: bool)
+
+    def `IntersectExt` as intersect(ifst1: CompactLatticeFst, ifst2: CompactLatticeFst,
+                                 ofst: CompactLatticeMutableFst, connect: bool,
+                                 compose_filter: ComposeFilter)
+
+    def `IsomorphicExt` as isomorphic(ifst1: CompactLatticeFst, ifst2: CompactLatticeFst,
+                                      delta: float = default) -> bool
+
+    def `PruneExt` as prune_cons(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+                                 weight_threshold: CompactLatticeWeight,
+                                 state_threshold: int = default,
+                                 delta: float = default)

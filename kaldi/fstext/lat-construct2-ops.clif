@@ -1,0 +1,52 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct2-ops.h":
+  namespace `fst`:
+
+## Lattice Semiring
+
+# Constructive Ops 2
+
+    def `PushExt` as push_cons(ifst: LatticeFst, ofst: LatticeMutableFst,
+                               flags: int, type: ReweightType, delta: float)
+
+    def `RandEquivalentExt` as randequivalent(
+        ifst1: LatticeFst, ifst2: LatticeFst, num_paths: int, delta: float,
+        seed: int, selector_type: RandArcSelection, max_length: int)
+        -> (result: bool, error: bool)
+
+    def `RandGenExt` as randgen(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                seed: int, selector_type: RandArcSelection,
+                                max_length: int, num_paths: int,
+                                weighted: bool, remove_total_weight: bool)
+
+    def `LatticeReplace` as replace(
+        pairs: list<tuple<int, LatticeFst>>, ofst: LatticeMutableFst,
+        root_label: int, call_label_type: ReplaceLabelType,
+        return_label_type: ReplaceLabelType, return_label: int)
+
+    def `ReverseExt` as reverse(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                require_superinitial: bool = default)
+
+    def `RmEpsilonExt` as rmepsiloncons(
+        ifst: LatticeFst, ofst: LatticeMutableFst, connect: bool = default,
+        reverse: bool = default, queue_type: QueueType = default,
+        delta: float = default, weight_threshold: LatticeWeight = default,
+        state_threshold: int = default)
+
+    def `ShortestDistanceExt` as shortestdistance(
+        fst: LatticeFst, reverse: bool = default, source: int = default,
+        queue_type: QueueType = default, delta: float = default)
+        -> list<LatticeWeight>
+
+    def `ShortestPathExt` as shortestpath(
+        ifst: LatticeFst, ofst: LatticeMutableFst,
+        nshortest: int = default, unique: bool = default,
+        queue_type: QueueType = default, delta: float = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default)
+
+    def `SynchronizeExt` as synchronize(ifst: LatticeFst, ofst: LatticeMutableFst)

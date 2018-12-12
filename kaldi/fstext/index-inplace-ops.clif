@@ -1,0 +1,78 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/lexicographic-weight-clifwrap.h" import *
+from "fstext/encode-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-inplace-ops.h":
+  namespace `fst`:
+
+## KWS Index Semiring
+
+# Constant Ops
+
+    def `FstToBytes` as to_bytes(fst: KwsIndexFst) -> bytes
+
+    def `BytesToKwsIndexFst` as from_bytes(s: bytes) -> KwsIndexFst
+
+    def `VerifyExt` as verify(fst: KwsIndexFst) -> bool
+
+    def `CountStatesExt` as count_states(fst: KwsIndexFst) -> int
+
+    def `CountArcsExt` as count_arcs(fst: KwsIndexFst) -> int
+
+# In-place Mutation Ops
+
+    def `ArcSortExt` as arcsort(fst: KwsIndexMutableFst, sort_type: ArcSortType)
+
+    def `ClosureExt` as closure(fst: KwsIndexMutableFst, closure_type: ClosureType)
+
+    def `ConcatExt` as concat(fst1: KwsIndexMutableFst, fst2: KwsIndexFst)
+
+    def `ConnectExt` as connect(fst: KwsIndexMutableFst)
+
+    def `DecodeExt` as decode(fst: KwsIndexMutableFst, mapper: KwsIndexEncodeMapper)
+
+    def `EncodeExt` as encode(fst: KwsIndexMutableFst, mapper: KwsIndexEncodeMapper)
+
+    def `InvertExt` as invert(fst: KwsIndexMutableFst)
+
+    def `MinimizeExt` as minimize(
+        fst: KwsIndexMutableFst, sfst: KwsIndexMutableFst = default,
+        delta: float = default, allow_nondet: bool = default)
+
+    def `ProjectExt` as project(fst: KwsIndexMutableFst, project_type: ProjectType)
+
+    def `PruneExt` as prune(
+        fst: KwsIndexMutableFst, weight_threshold: KwsIndexWeight,
+        state_threshold: int = default, delta: float = default)
+
+    def `PushExt` as push(fst: KwsIndexMutableFst, type: ReweightType,
+                          delta: float = default,
+                          remove_total_weight: bool = default)
+
+    def `RelabelExt` as relabel(fst: KwsIndexMutableFst,
+                                ipairs: list<tuple<int, int>>,
+                                opairs: list<tuple<int, int>>)
+
+    def `RelabelTables` as relabel_tables(
+        fst: KwsIndexMutableFst,
+        old_isymbols: SymbolTable, new_isymbols: SymbolTable,
+        unknown_isymbol: str, attach_new_isymbols: bool,
+        old_osymbols: SymbolTable, new_osymbols: SymbolTable,
+        unknown_osymbol: str, attach_new_osymbols: bool)
+
+    def `ReweightExt` as reweight(fst: KwsIndexMutableFst,
+                                  potential: list<KwsIndexWeight>,
+                                  type: ReweightType)
+
+    def `RmEpsilonExt` as rmepsilon(
+        fst: KwsIndexMutableFst, connect: bool = default,
+        weight_threshold: KwsIndexWeight = default,
+        state_threshold: int = default, delta: float = default)
+
+    def `TopSortExt` as topsort(fst: KwsIndexMutableFst) -> bool
+
+    def `UnionExt` as union(fst1: KwsIndexMutableFst, fst2: KwsIndexFst)

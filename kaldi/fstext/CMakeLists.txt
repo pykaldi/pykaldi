@@ -118,28 +118,78 @@ add_pyclif_library("_encode" encode.clif
   NAMESPACES fst
 )
 
-add_pyclif_library("_std_ops" std-ops.clif
-  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+add_pyclif_library("_std_inplace_ops" std-inplace-ops.clif
+  CLIF_DEPS _getters _encode _fst _mutable_fst
   NAMESPACES fst
 )
 
-add_pyclif_library("_log_ops" log-ops.clif
-  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+add_pyclif_library("_std_construct1_ops" std-construct1-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
   NAMESPACES fst
 )
 
-add_pyclif_library("_lat_ops" lat-ops.clif
-  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+add_pyclif_library("_std_construct2_ops" std-construct2-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
   NAMESPACES fst
 )
 
-add_pyclif_library("_clat_ops" clat-ops.clif
-  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+add_pyclif_library("_log_inplace_ops" log-inplace-ops.clif
+  CLIF_DEPS _getters _encode _fst _mutable_fst
   NAMESPACES fst
 )
 
-add_pyclif_library("_index_ops" index-ops.clif
-  CLIF_DEPS _getters _encode _mutable_fst _vector_fst
+add_pyclif_library("_log_construct1_ops" log-construct1-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_log_construct2_ops" log-construct2-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_lat_inplace_ops" lat-inplace-ops.clif
+  CLIF_DEPS _getters _encode _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_lat_construct1_ops" lat-construct1-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_lat_construct2_ops" lat-construct2-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_clat_inplace_ops" clat-inplace-ops.clif
+  CLIF_DEPS _getters _encode _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_clat_construct1_ops" clat-construct1-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_clat_construct2_ops" clat-construct2-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_index_inplace_ops" index-inplace-ops.clif
+  CLIF_DEPS _getters _encode _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_index_construct1_ops" index-construct1-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
+  NAMESPACES fst
+)
+
+add_pyclif_library("_index_construct2_ops" index-construct2-ops.clif
+  CLIF_DEPS _getters _fst _mutable_fst
   NAMESPACES fst
 )
 

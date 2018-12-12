@@ -1,0 +1,53 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct2-ops.h":
+  namespace `fst`:
+
+## Log Semiring
+
+# Constructive Ops 2
+
+    def `PushExt` as push_cons(ifst: LogFst, ofst: LogMutableFst,
+                               flags: int, type: ReweightType, delta: float)
+
+    def `RandEquivalentExt` as randequivalent(
+        ifst1: LogFst, ifst2: LogFst, num_paths: int, delta: float,
+        seed: int, selector_type: RandArcSelection, max_length: int)
+        -> (result: bool, error: bool)
+
+    def `RandGenExt` as randgen(ifst: LogFst, ofst: LogMutableFst,
+                                seed: int, selector_type: RandArcSelection,
+                                max_length: int, num_paths: int,
+                                weighted: bool, remove_total_weight: bool)
+
+    def `LogReplace` as replace(
+        pairs: list<tuple<int, LogFst>>, ofst: LogMutableFst,
+        root_label: int, call_label_type: ReplaceLabelType,
+        return_label_type: ReplaceLabelType, return_label: int)
+
+    def `ReverseExt` as reverse(ifst: LogFst, ofst: LogMutableFst,
+                                require_superinitial: bool = default)
+
+    def `RmEpsilonExt` as rmepsiloncons(
+        ifst: LogFst, ofst: LogMutableFst, connect: bool = default,
+        reverse: bool = default, queue_type: QueueType = default,
+        delta: float = default, weight_threshold: LogWeight = default,
+        state_threshold: int = default)
+
+    def `ShortestDistanceExt` as shortestdistance(
+        fst: LogFst, reverse: bool = default, source: int = default,
+        queue_type: QueueType = default, delta: float = default)
+        -> list<LogWeight>
+
+    def `ShortestPathExt` as shortestpath(
+        ifst: LogFst, ofst: LogMutableFst,
+        nshortest: int = default, unique: bool = default,
+        queue_type: QueueType = default, delta: float = default,
+        weight_threshold: LogWeight = default,
+        state_threshold: int = default)
+
+    def `SynchronizeExt` as synchronize(ifst: LogFst, ofst: LogMutableFst)

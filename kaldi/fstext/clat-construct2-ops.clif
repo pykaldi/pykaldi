@@ -1,0 +1,52 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct2-ops.h":
+  namespace `fst`:
+
+## CompactLattice Semiring
+
+# Constructive Ops 2
+
+    def `PushExt` as push_cons(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+                               flags: int, type: ReweightType, delta: float)
+
+    def `RandEquivalentExt` as randequivalent(
+        ifst1: CompactLatticeFst, ifst2: CompactLatticeFst, num_paths: int, delta: float,
+        seed: int, selector_type: RandArcSelection, max_length: int)
+        -> (result: bool, error: bool)
+
+    def `RandGenExt` as randgen(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+                                seed: int, selector_type: RandArcSelection,
+                                max_length: int, num_paths: int,
+                                weighted: bool, remove_total_weight: bool)
+
+    def `CompactLatticeReplace` as replace(
+        pairs: list<tuple<int, CompactLatticeFst>>, ofst: CompactLatticeMutableFst,
+        root_label: int, call_label_type: ReplaceLabelType,
+        return_label_type: ReplaceLabelType, return_label: int)
+
+    def `ReverseExt` as reverse(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+                                require_superinitial: bool = default)
+
+    def `RmEpsilonExt` as rmepsiloncons(
+        ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst, connect: bool = default,
+        reverse: bool = default, queue_type: QueueType = default,
+        delta: float = default, weight_threshold: CompactLatticeWeight = default,
+        state_threshold: int = default)
+
+    def `ShortestDistanceExt` as shortestdistance(
+        fst: CompactLatticeFst, reverse: bool = default, source: int = default,
+        queue_type: QueueType = default, delta: float = default)
+        -> list<CompactLatticeWeight>
+
+    def `ShortestPathExt` as shortestpath(
+        ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst,
+        nshortest: int = default, unique: bool = default,
+        queue_type: QueueType = default, delta: float = default,
+        weight_threshold: CompactLatticeWeight = default,
+        state_threshold: int = default)
+
+    def `SynchronizeExt` as synchronize(ifst: CompactLatticeFst, ofst: CompactLatticeMutableFst)

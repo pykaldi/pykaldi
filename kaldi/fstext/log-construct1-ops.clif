@@ -1,0 +1,55 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct1-ops.h":
+  namespace `fst`:
+
+## Log Semiring
+
+# Constructive Ops 1
+
+    def `MapExt` as map(ifst: LogFst, ofst: LogMutableFst, map_type: MapType,
+                     delta: float, weight: LogWeight)
+
+    def `ComposeExt` as compose(ifst1: LogFst, ifst2: LogFst, ofst: LogMutableFst,
+                             connect: bool, compose_filter: ComposeFilter)
+
+    def `DeterminizeExt` as determinize(
+        ifst: LogFst, ofst: LogMutableFst, delta: float = default,
+        weight_threshold: LogWeight = default,
+        state_threshold: int = default, subsequential_label: int = default,
+        type: DeterminizeType = default,
+        increment_subsequential_label: bool = default)
+
+    def `DifferenceExt` as difference(ifst1: LogFst, ifst2: LogFst,
+                                   ofst: LogMutableFst, connect: bool,
+                                   compose_filter: ComposeFilter)
+
+    def `DisambiguateExt` as disambiguate(
+        ifst: LogFst, ofst: LogMutableFst, delta: float = default,
+        weight_threshold: LogWeight = default,
+        state_threshold: int = default, subsequential_label: int = default)
+
+    def `EpsNormalizeExt` as epsnormalize(ifst: LogFst, ofst: LogMutableFst,
+                                          type: EpsNormalizeType = default)
+
+    def `EqualExt` as equal(ifst1: LogFst, ifst2: LogFst,
+                            delta: float = default) -> bool
+
+    def `EquivalentExt` as equivalent(ifst1: LogFst, ifst2: LogFst, delta: float)
+        -> (result: bool, error: bool)
+
+    def `IntersectExt` as intersect(ifst1: LogFst, ifst2: LogFst,
+                                 ofst: LogMutableFst, connect: bool,
+                                 compose_filter: ComposeFilter)
+
+    def `IsomorphicExt` as isomorphic(ifst1: LogFst, ifst2: LogFst,
+                                      delta: float = default) -> bool
+
+    def `PruneExt` as prune_cons(ifst: LogFst, ofst: LogMutableFst,
+                                 weight_threshold: LogWeight,
+                                 state_threshold: int = default,
+                                 delta: float = default)

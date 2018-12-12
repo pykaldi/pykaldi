@@ -1,0 +1,78 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/encode-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-inplace-ops.h":
+  namespace `fst`:
+
+## Log Semiring
+
+# Constant Ops
+
+    def `FstToBytes` as to_bytes(fst: LogFst) -> bytes
+
+    def `BytesToLogFst` as from_bytes(s: bytes) -> LogFst
+
+    def `VerifyExt` as verify(fst: LogFst) -> bool
+
+    def `CountStatesExt` as count_states(fst: LogFst) -> int
+
+    def `CountArcsExt` as count_arcs(fst: LogFst) -> int
+
+# In-place Mutation Ops
+
+    def `ArcSortExt` as arcsort(fst: LogMutableFst, sort_type: ArcSortType)
+
+    def `ClosureExt` as closure(fst: LogMutableFst, closure_type: ClosureType)
+
+    def `ConcatExt` as concat(fst1: LogMutableFst, fst2: LogFst)
+
+    def `ConnectExt` as connect(fst: LogMutableFst)
+
+    def `DecodeExt` as decode(fst: LogMutableFst, mapper: LogEncodeMapper)
+
+    def `EncodeExt` as encode(fst: LogMutableFst, mapper: LogEncodeMapper)
+
+    def `InvertExt` as invert(fst: LogMutableFst)
+
+    def `MinimizeExt` as minimize(
+        fst: LogMutableFst, sfst: LogMutableFst = default,
+        delta: float = default, allow_nondet: bool = default)
+
+    def `ProjectExt` as project(fst: LogMutableFst, project_type: ProjectType)
+
+    def `PruneExt` as prune(
+        fst: LogMutableFst, weight_threshold: LogWeight,
+        state_threshold: int = default, delta: float = default)
+
+    def `PushExt` as push(fst: LogMutableFst, type: ReweightType,
+                          delta: float = default,
+                          remove_total_weight: bool = default)
+
+    def `RelabelExt` as relabel(fst: LogMutableFst,
+                                ipairs: list<tuple<int, int>>,
+                                opairs: list<tuple<int, int>>)
+
+    def `RelabelTables` as relabel_tables(
+        fst: LogMutableFst,
+        old_isymbols: SymbolTable, new_isymbols: SymbolTable,
+        unknown_isymbol: str, attach_new_isymbols: bool,
+        old_osymbols: SymbolTable, new_osymbols: SymbolTable,
+        unknown_osymbol: str, attach_new_osymbols: bool)
+
+    def `ReweightExt` as reweight(fst: LogMutableFst,
+                                  potential: list<LogWeight>,
+                                  type: ReweightType)
+
+    def `RmEpsilonExt` as rmepsilon(
+        fst: LogMutableFst, connect: bool = default,
+        weight_threshold: LogWeight = default,
+        state_threshold: int = default, delta: float = default)
+
+    def `TopSortExt` as topsort(fst: LogMutableFst) -> bool
+
+    def `UnionExt` as union(fst1: LogMutableFst, fst2: LogFst)

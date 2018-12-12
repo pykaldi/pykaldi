@@ -1,0 +1,55 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/lexicographic-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct1-ops.h":
+  namespace `fst`:
+
+## KWS Index Semiring
+
+# Constructive Ops 1
+
+    def `MapExt` as map(ifst: KwsIndexFst, ofst: KwsIndexMutableFst, map_type: MapType,
+                     delta: float, weight: KwsIndexWeight)
+
+    def `ComposeExt` as compose(ifst1: KwsIndexFst, ifst2: KwsIndexFst, ofst: KwsIndexMutableFst,
+                             connect: bool, compose_filter: ComposeFilter)
+
+    def `DeterminizeExt` as determinize(
+        ifst: KwsIndexFst, ofst: KwsIndexMutableFst, delta: float = default,
+        weight_threshold: KwsIndexWeight = default,
+        state_threshold: int = default, subsequential_label: int = default,
+        type: DeterminizeType = default,
+        increment_subsequential_label: bool = default)
+
+    def `DifferenceExt` as difference(ifst1: KwsIndexFst, ifst2: KwsIndexFst,
+                                   ofst: KwsIndexMutableFst, connect: bool,
+                                   compose_filter: ComposeFilter)
+
+    def `DisambiguateExt` as disambiguate(
+        ifst: KwsIndexFst, ofst: KwsIndexMutableFst, delta: float = default,
+        weight_threshold: KwsIndexWeight = default,
+        state_threshold: int = default, subsequential_label: int = default)
+
+    def `EpsNormalizeExt` as epsnormalize(ifst: KwsIndexFst, ofst: KwsIndexMutableFst,
+                                          type: EpsNormalizeType = default)
+
+    def `EqualExt` as equal(ifst1: KwsIndexFst, ifst2: KwsIndexFst,
+                            delta: float = default) -> bool
+
+    def `EquivalentExt` as equivalent(ifst1: KwsIndexFst, ifst2: KwsIndexFst, delta: float)
+        -> (result: bool, error: bool)
+
+    def `IntersectExt` as intersect(ifst1: KwsIndexFst, ifst2: KwsIndexFst,
+                                 ofst: KwsIndexMutableFst, connect: bool,
+                                 compose_filter: ComposeFilter)
+
+    def `IsomorphicExt` as isomorphic(ifst1: KwsIndexFst, ifst2: KwsIndexFst,
+                                      delta: float = default) -> bool
+
+    def `PruneExt` as prune_cons(ifst: KwsIndexFst, ofst: KwsIndexMutableFst,
+                                 weight_threshold: KwsIndexWeight,
+                                 state_threshold: int = default,
+                                 delta: float = default)

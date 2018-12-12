@@ -1,0 +1,77 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/encode-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-inplace-ops.h":
+  namespace `fst`:
+
+## CompactLattice Semiring
+
+# Constant Ops
+
+    def `FstToBytes` as to_bytes(fst: CompactLatticeFst) -> bytes
+
+    def `BytesToCompactLatticeFst` as from_bytes(s: bytes) -> CompactLatticeFst
+
+    def `VerifyExt` as verify(fst: CompactLatticeFst) -> bool
+
+    def `CountStatesExt` as count_states(fst: CompactLatticeFst) -> int
+
+    def `CountArcsExt` as count_arcs(fst: CompactLatticeFst) -> int
+
+# In-place Mutation Ops
+
+    def `ArcSortExt` as arcsort(fst: CompactLatticeMutableFst, sort_type: ArcSortType)
+
+    def `ClosureExt` as closure(fst: CompactLatticeMutableFst, closure_type: ClosureType)
+
+    def `ConcatExt` as concat(fst1: CompactLatticeMutableFst, fst2: CompactLatticeFst)
+
+    def `ConnectExt` as connect(fst: CompactLatticeMutableFst)
+
+    def `DecodeExt` as decode(fst: CompactLatticeMutableFst, mapper: CompactLatticeEncodeMapper)
+
+    def `EncodeExt` as encode(fst: CompactLatticeMutableFst, mapper: CompactLatticeEncodeMapper)
+
+    def `InvertExt` as invert(fst: CompactLatticeMutableFst)
+
+    def `MinimizeExt` as minimize(
+        fst: CompactLatticeMutableFst, sfst: CompactLatticeMutableFst = default,
+        delta: float = default, allow_nondet: bool = default)
+
+    def `ProjectExt` as project(fst: CompactLatticeMutableFst, project_type: ProjectType)
+
+    def `PruneExt` as prune(
+        fst: CompactLatticeMutableFst, weight_threshold: CompactLatticeWeight,
+        state_threshold: int = default, delta: float = default)
+
+    def `PushExt` as push(fst: CompactLatticeMutableFst, type: ReweightType,
+                          delta: float = default,
+                          remove_total_weight: bool = default)
+
+    def `RelabelExt` as relabel(fst: CompactLatticeMutableFst,
+                                ipairs: list<tuple<int, int>>,
+                                opairs: list<tuple<int, int>>)
+
+    def `RelabelTables` as relabel_tables(
+        fst: CompactLatticeMutableFst,
+        old_isymbols: SymbolTable, new_isymbols: SymbolTable,
+        unknown_isymbol: str, attach_new_isymbols: bool,
+        old_osymbols: SymbolTable, new_osymbols: SymbolTable,
+        unknown_osymbol: str, attach_new_osymbols: bool)
+
+    def `ReweightExt` as reweight(fst: CompactLatticeMutableFst,
+                                  potential: list<CompactLatticeWeight>,
+                                  type: ReweightType)
+
+    def `RmEpsilonExt` as rmepsilon(
+        fst: CompactLatticeMutableFst, connect: bool = default,
+        weight_threshold: CompactLatticeWeight = default,
+        state_threshold: int = default, delta: float = default)
+
+    def `TopSortExt` as topsort(fst: CompactLatticeMutableFst) -> bool
+
+    def `UnionExt` as union(fst1: CompactLatticeMutableFst, fst2: CompactLatticeFst)

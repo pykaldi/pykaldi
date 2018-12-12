@@ -1,0 +1,54 @@
+from "fstext/getters-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+
+from "fstext/fst-construct1-ops.h":
+  namespace `fst`:
+
+## Lattice Semiring
+
+# Constructive Ops 1
+
+    def `MapExt` as map(ifst: LatticeFst, ofst: LatticeMutableFst, map_type: MapType,
+                     delta: float, weight: LatticeWeight)
+
+    def `ComposeExt` as compose(ifst1: LatticeFst, ifst2: LatticeFst, ofst: LatticeMutableFst,
+                             connect: bool, compose_filter: ComposeFilter)
+
+    def `DeterminizeExt` as determinize(
+        ifst: LatticeFst, ofst: LatticeMutableFst, delta: float = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default, subsequential_label: int = default,
+        type: DeterminizeType = default,
+        increment_subsequential_label: bool = default)
+
+    def `DifferenceExt` as difference(ifst1: LatticeFst, ifst2: LatticeFst,
+                                   ofst: LatticeMutableFst, connect: bool,
+                                   compose_filter: ComposeFilter)
+
+    def `DisambiguateExt` as disambiguate(
+        ifst: LatticeFst, ofst: LatticeMutableFst, delta: float = default,
+        weight_threshold: LatticeWeight = default,
+        state_threshold: int = default, subsequential_label: int = default)
+
+    def `EpsNormalizeExt` as epsnormalize(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                          type: EpsNormalizeType = default)
+
+    def `EqualExt` as equal(ifst1: LatticeFst, ifst2: LatticeFst,
+                            delta: float = default) -> bool
+
+    def `EquivalentExt` as equivalent(ifst1: LatticeFst, ifst2: LatticeFst, delta: float)
+        -> (result: bool, error: bool)
+
+    def `IntersectExt` as intersect(ifst1: LatticeFst, ifst2: LatticeFst,
+                                 ofst: LatticeMutableFst, connect: bool,
+                                 compose_filter: ComposeFilter)
+
+    def `IsomorphicExt` as isomorphic(ifst1: LatticeFst, ifst2: LatticeFst,
+                                      delta: float = default) -> bool
+
+    def `PruneExt` as prune_cons(ifst: LatticeFst, ofst: LatticeMutableFst,
+                                 weight_threshold: LatticeWeight,
+                                 state_threshold: int = default,
+                                 delta: float = default)
