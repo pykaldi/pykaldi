@@ -6,10 +6,8 @@
 
 PyKaldi is a Python wrapper for [Kaldi](http://kaldi-asr.org) exposing nearly
 all of Kaldi's C++ API to Python code. It aims to bridge the gap between Kaldi
-and all the nice things Python has to offer including its mature ecosystem of
-high quality software for scientific computing, machine learning, interactive
-data exploration and visualization. You can read more about the design and
-technical details of PyKaldi in
+and all the nice things Python has to offer. You can read more about the design
+and technical details of PyKaldi in
 [our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf).
 Here is a taste.
 
@@ -43,6 +41,7 @@ with SequentialMatrixReader(feats_rspec) as f:
         out = asr.decode(loglikes)
         print(key, out["text"])
 ```
+
 
 ## Features
 
@@ -165,6 +164,10 @@ Some places to help you get started:
 
 ## Installation
 
+For the moment, PyKaldi installation scripts do not work on non-Linux platforms.
+If you are on a relatively recent Linux platform, such as Ubuntu >= 16.04 or
+CentOS >= 7, you should be able to install PyKaldi without too much trouble.
+
 ### Conda
 
 To install PyKaldi with CUDA support:
@@ -180,8 +183,8 @@ conda install -c pykaldi pykaldi-cpu
 ```
 
 Note that PyKaldi package does not provide Kaldi executables. If you would like
-to use Kaldi executables along with PyKaldi, e.g. as part of read/write specifiers,
-you need to install Kaldi separately.
+to use Kaldi executables along with PyKaldi, e.g. as part of read/write
+specifiers, you need to install Kaldi separately.
 
 ### Docker
 
@@ -244,7 +247,7 @@ are hoping to upstream these changes over time.
 
 You can use the scripts in the `tools` directory to install or update these
 software locally. Make sure you check the output of these scripts. If you do not
-see "Done installing {protobuf,CLIF,Kaldi}." printed at the very end, it means
+see `Done installing {protobuf,CLIF,Kaldi}.` printed at the very end, it means
 that installation has failed for some reason.
 
 ```bash
@@ -272,6 +275,7 @@ Once installed, you can run PyKaldi tests with the following command.
 python setup.py test
 ```
 
+
 ## FAQ
 
 ### How do I prevent PyKaldi install command from exhausting the system memory?
@@ -294,8 +298,8 @@ into it.
 
 ### How do I build PyKaldi on Windows?
 
-We have no idea what is needed to build PyKaldi on Windows. We have no intention
-of adding Windows support in the foreseeable future.
+We have no idea what is needed to build PyKaldi on Windows. It would probably
+require lots of changes to the build system.
 
 ### How do I build PyKaldi using a different Kaldi installation?
 
@@ -364,5 +368,5 @@ as follows:
 ## Contributing
 
 We appreciate all contributions! If you find a bug, feel free to open an issue
-or a pull request. If you would like to add, extend or request a feature,
-please open an issue for discussion.
+or a pull request. If you would like to request or add a new feature please open
+an issue for discussion.
