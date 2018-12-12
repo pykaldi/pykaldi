@@ -23,16 +23,28 @@ from . import online2 as _online2
 from .util import io as _util_io
 
 
-__all__ = ['Recognizer', 'FasterRecognizer',
-           'LatticeFasterRecognizer', 'LatticeBiglmFasterRecognizer',
-           'MappedRecognizer', 'MappedFasterRecognizer',
-           'MappedLatticeFasterRecognizer', 'MappedLatticeBiglmFasterRecognizer',
-           'GmmRecognizer', 'GmmFasterRecognizer',
-           'GmmLatticeFasterRecognizer', 'GmmLatticeBiglmFasterRecognizer',
-           'NnetRecognizer', 'NnetFasterRecognizer',
-           'NnetLatticeFasterRecognizer', 'NnetLatticeBiglmFasterRecognizer',
-           'OnlineRecognizer', 'NnetOnlineRecognizer',
-           'NnetLatticeFasterOnlineRecognizer']
+__all__ = ['Recognizer',
+           'FasterRecognizer',
+           'LatticeFasterRecognizer',
+           'LatticeBiglmFasterRecognizer',
+           'MappedRecognizer',
+           'MappedFasterRecognizer',
+           'MappedLatticeFasterRecognizer',
+           'MappedLatticeBiglmFasterRecognizer',
+           'GmmRecognizer',
+           'GmmFasterRecognizer',
+           'GmmLatticeFasterRecognizer',
+           'GmmLatticeBiglmFasterRecognizer',
+           'NnetRecognizer',
+           'NnetFasterRecognizer',
+           'NnetLatticeFasterRecognizer',
+           'NnetLatticeFasterBatchRecognizer',
+           'NnetLatticeFasterGrammarRecognizer',
+           'NnetLatticeBiglmFasterRecognizer',
+           'OnlineRecognizer',
+           'NnetOnlineRecognizer',
+           'NnetLatticeFasterOnlineRecognizer',
+           'NnetLatticeFasterOnlineGrammarRecognizer']
 
 
 class Recognizer(object):
@@ -1022,8 +1034,8 @@ class NnetLatticeFasterRecognizer(NnetRecognizer):
                 of :meth:`decode` includes symbols instead of integer indices.
             allow_partial (bool): Whether to output decoding results if no
                 final state was active on the last frame.
-            decoder_opts (FasterDecoderOptions): Configuration options for the
-                decoder.
+            decoder_opts (LatticeFasterDecoderOptions): Configuration options
+                for the decoder.
             decodable_opts (NnetSimpleComputationOptions): Configuration options
                 for simple nnet3 am decodable objects.
             online_ivector_period (int): Onlne ivector period. Relevant only if
@@ -1037,6 +1049,269 @@ class NnetLatticeFasterRecognizer(NnetRecognizer):
         if not decoder_opts:
             decoder_opts = _dec.LatticeFasterDecoderOptions()
         decoder = _dec.LatticeFasterDecoder(graph, decoder_opts)
+        if symbols_filename is None:
+            symbols = None
+        else:
+            symbols = _fst.SymbolTable.read_text(symbols_filename)
+        return cls(transition_model, acoustic_model, decoder, symbols,
+                   allow_partial, decodable_opts, online_ivector_period)
+
+
+class NnetLatticeFasterBatchRecognizer(object):
+    """Neural network based lattice generating faster batch speech recognizer.
+
+    This uses multiple CPU threads for the graph search, plus a GPU thread for
+    the neural net inference. The interface of this object should be accessed
+    from only one thread, presumably the main thread of the program.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmNnetSimple): The acoustic model.
+        graph (StdFst): The decoding graph.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        decoder_opts (LatticeFasterDecoderOptions): Configuration options
+            for the decoder.
+        compute_opts (NnetBatchComputerOptions): Configuration options
+            for neural network batch computer.
+        num_threads (int): Number of processing threads.
+        online_ivector_period (int): Onlne ivector period. Relevant only if
+            online ivectors are used.
+    """
+    def __init__(self, transition_model, acoustic_model, graph, symbols=None,
+                 allow_partial=True, decoder_opts=None, compute_opts=None,
+                 num_threads=1, online_ivector_period=10):
+        self.transition_model = transition_model
+        self.acoustic_model = acoustic_model
+        nnet = self.acoustic_model.get_nnet()
+        _nnet3.set_batchnorm_test_mode(True, nnet)
+        _nnet3.set_dropout_test_mode(True, nnet)
+        _nnet3.collapse_model(_nnet3.CollapseModelConfig(), nnet)
+        self.graph = graph
+        self.symbols = symbols
+        if not decoder_opts:
+            decoder_opts = _dec.LatticeFasterDecoderOptions()
+        if not compute_opts:
+            compute_opts = _nnet3.NnetBatchComputerOptions()
+        self.computer = _nnet3.NnetBatchComputer(compute_opts, nnet,
+                                                 self.acoustic_model.priors())
+        self.decoder = _nnet3.NnetBatchDecoder(
+            self.graph, decoder_opts, self.transition_model, self.symbols,
+            allow_partial, num_threads, self.computer)
+        if decoder_opts.determinize_lattice:
+            self._get_output = self.decoder.get_output
+        else:
+            self._get_output = self.decoder.get_raw_output
+        self.online_ivector_period = online_ivector_period
+
+    @staticmethod
+    def read_model(model_rxfilename):
+        """Reads model from an extended filename."""
+        with _util_io.xopen(model_rxfilename) as ki:
+            transition_model = _hmm.TransitionModel().read(ki.stream(),
+                                                           ki.binary)
+            acoustic_model = _nnet3.AmNnetSimple().read(ki.stream(), ki.binary)
+        return transition_model, acoustic_model
+
+    @classmethod
+    def from_files(cls, model_rxfilename, graph_rxfilename,
+                   symbols_filename=None, allow_partial=True, decoder_opts=None,
+                   compute_opts=None, num_threads=1, online_ivector_period=10):
+        """Constructs a new recognizer from given files.
+
+        Args:
+            model_rxfilename (str): Extended filename for reading the model.
+            graph_rxfilename (str): Extended filename for reading the graph.
+            symbols_filename (str): The symbols file. If provided, "text" output
+                of :meth:`decode` includes symbols instead of integer indices.
+            allow_partial (bool): Whether to output decoding results if no
+                final state was active on the last frame.
+            decoder_opts (LatticeFasterDecoderOptions): Configuration options
+                for the decoder.
+            compute_opts (NnetBatchComputerOptions): Configuration options
+                for neural network batch computer.
+            num_threads (int): Number of processing threads.
+            online_ivector_period (int): Onlne ivector period. Relevant only if
+                online ivectors are used.
+
+        Returns:
+            NnetLatticeFasterBatchRecognizer: A new recognizer.
+        """
+        transition_model, acoustic_model = cls.read_model(model_rxfilename)
+        graph = _fst.read_fst_kaldi(graph_rxfilename)
+        if symbols_filename is None:
+            symbols = None
+        else:
+            symbols = _fst.SymbolTable.read_text(symbols_filename)
+        return cls(transition_model, acoustic_model, graph, symbols,
+                   allow_partial, decoder_opts, compute_opts, num_threads,
+                   online_ivector_period)
+
+    def accept_input(self, key, input):
+        """Accepts input for decoding.
+
+        This should be called for each utterance that is to be decoded
+        (interspersed with calls to :meth:`get_output`). This call will block
+        when no threads are ready to start processing this utterance.
+
+        Input can be just a feature matrix or a tuple of a feature matrix and
+        an ivector or a tuple of a feature matrix and an online ivector matrix.
+
+        Args:
+            key (str): Utterance ID. This ID will be used to identify the
+                utterance when returned by :meth:`get_output`.
+            input (Matrix or Tuple[Matrix, Vector] or Tuple[Matrix, Matrix]):
+                Input to decode.
+
+        Raises:
+            RuntimeError: If decoding fails.
+        """
+        ivector, online_ivectors = None, None
+        if isinstance(input, tuple):
+            features, ivector_features = input
+            if isinstance(ivector_features, _kaldi_matrix.MatrixBase):
+                online_ivectors = ivector_features
+            else:
+                ivector = ivector_features
+        else:
+            features = input
+        if features.num_rows == 0:
+            raise ValueError("Empty feature matrix.")
+        self.decoder.accept_input(key, features, ivector, online_ivectors,
+                                  self.online_ivector_period)
+
+    def get_output(self):
+        """Returns the next available output.
+
+        This returns the output for the first utterance in the output queue.
+        The outputs returned by this method are guaranteed to be in the same
+        order the inputs were provieded, but they may be delayed and some
+        outputs might be missing, for instance because of search failures.
+
+        This call does not block.
+
+        Output is a dictionary with the following `(key, value)` pairs:
+
+        ============ =========================== ==============================
+        key          value                       value type
+        ============ =========================== ==============================
+        "key"        Utterence ID                `str`
+        "lattice"    Output lattice              `Lattice` or `CompactLattice`
+        "text"       Output transcript           `str`
+        ============ =========================== ==============================
+
+        The "lattice" output will be a deterministic compact lattice if lattice
+        determinization is enabled. Otherwise, it will be a raw state-level
+        lattice. The acoustic scores in the output lattice will already be
+        divided by the acoustic scale used in decoding.
+
+        If the decoder was not initialized with a symbol table, the "text"
+        output will be a string of space separated integer indices. Otherwise it
+        will be a string of space separated symbols.
+
+        Returns:
+            A dictionary representing decoding output.
+
+        Raises:
+            ValueError: If there is no output to return.
+        """
+        key, lat, text = self._get_output()
+        return {"key": key, "lattice": lat, "text": text}
+
+    def get_outputs(self):
+        """Creates a generator for iterating over available outputs.
+
+        Each output generated will be a dictionary like the output of
+        :meth:`get_output`. The outputs are generated in the same order the
+        inputs were provided.
+
+        See Also: :meth:`get_output`
+        """
+        while True:
+            try:
+                yield self.get_output()
+            except ValueError:
+                return
+
+    def finished(self):
+        """Informs the decoder that all input has been provided.
+
+        This will block until all computation threads have terminated. After
+        that you can keep calling :meth:`get_output`, until it raises a
+        `ValueError`, to get the outputs for the remaining utterances.
+
+        Returns:
+            int: The number of utterances that have been successfully decoded.
+        """
+        return self.decoder.finished()
+
+    def utterance_failed(self):
+        """Informs the decoder that there was a problem with an utterance.
+
+        This will update the number of failed utterances stats.
+        """
+        self.decoder.utterance_failed()
+
+
+class NnetLatticeFasterGrammarRecognizer(NnetRecognizer):
+    """Neural network based lattice generating faster grammar speech recognizer.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmNnetSimple): The acoustic model.
+        decoder (LatticeFasterGrammarDecoder): The decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        decodable_opts (NnetSimpleComputationOptions): Configuration options for
+            simple nnet3 am decodable objects.
+        online_ivector_period (int): Onlne ivector period. Relevant only if
+            online ivectors are used.
+    """
+    def __init__(self, transition_model, acoustic_model, decoder,
+                 symbols=None, allow_partial=True, decodable_opts=None,
+                 online_ivector_period=10):
+        if not isinstance(decoder, _dec.LatticeFasterGrammarDecoder):
+            raise TypeError("decoder argument should be a "
+                            "LatticeFasterGrammarDecoder")
+        super(NnetLatticeFasterGrammarRecognizer, self).__init__(
+            transition_model, acoustic_model, decoder, symbols, allow_partial,
+            decodable_opts, online_ivector_period)
+
+    @classmethod
+    def from_files(cls, model_rxfilename, graph_rxfilename,
+                   symbols_filename=None, allow_partial=True,
+                   decoder_opts=None, decodable_opts=None,
+                   online_ivector_period=10):
+        """Constructs a new recognizer from given files.
+
+        Args:
+            model_rxfilename (str): Extended filename for reading the model.
+            graph_rxfilename (str): Extended filename for reading the graph.
+            symbols_filename (str): The symbols file. If provided, "text" output
+                of :meth:`decode` includes symbols instead of integer indices.
+            allow_partial (bool): Whether to output decoding results if no
+                final state was active on the last frame.
+            decoder_opts (FasterDecoderOptions): Configuration options for the
+                decoder.
+            decodable_opts (NnetSimpleComputationOptions): Configuration options
+                for simple nnet3 am decodable objects.
+            online_ivector_period (int): Onlne ivector period. Relevant only if
+                online ivectors are used.
+
+        Returns:
+            NnetLatticeFasterGrammarRecognizer: A new recognizer.
+        """
+        transition_model, acoustic_model = cls.read_model(model_rxfilename)
+        with _util_io.xopen(graph_rxfilename) as ki:
+            graph = _dec.GrammarFst()
+            graph.read(ki.stream(), ki.binary)
+        if not decoder_opts:
+            decoder_opts = _dec.LatticeFasterDecoderOptions()
+        decoder = _dec.LatticeFasterGrammarDecoder(graph, decoder_opts)
         if symbols_filename is None:
             symbols = None
         else:
@@ -1496,12 +1771,6 @@ class NnetOnlineRecognizer(OnlineRecognizer):
         else:
             return lattice
 
-    def endpoint_detected(self):
-        """Determines if any of the endpointing rules are active."""
-        return _online2.decoding_endpoint_detected(
-            self.endpoint_opts, self.transition_model,
-            self.output_frame_shift, self.decoder)
-
 
 class NnetLatticeFasterOnlineRecognizer(NnetOnlineRecognizer):
     """Neural network based lattice generating faster online speech recognizer.
@@ -1561,3 +1830,77 @@ class NnetLatticeFasterOnlineRecognizer(NnetOnlineRecognizer):
             symbols = _fst.SymbolTable.read_text(symbols_filename)
         return cls(transition_model, acoustic_model, decoder, symbols,
                    allow_partial, decodable_opts, endpoint_opts)
+
+    def endpoint_detected(self):
+        """Determines if any of the endpointing rules are active."""
+        return _online2.decoding_endpoint_detected(
+            self.endpoint_opts, self.transition_model,
+            self.output_frame_shift, self.decoder)
+
+
+class NnetLatticeFasterOnlineGrammarRecognizer(NnetOnlineRecognizer):
+    """Neural network based lattice generating faster online grammar speech recognizer.
+
+    Args:
+        transition_model (TransitionModel): The transition model.
+        acoustic_model (AmNnetSimple): The acoustic model.
+        decoder (LatticeFasterOnlineGrammarDecoder): The online decoder.
+        symbols (SymbolTable): The symbol table. If provided, "text" output of
+            :meth:`decode` includes symbols instead of integer indices.
+        allow_partial (bool): Whether to output decoding results if no
+            final state was active on the last frame.
+        decodable_opts (NnetSimpleLoopedComputationOptions): Configuration
+            options for simple looped neural network computation.
+        endpoint_opts (OnlineEndpointConfig): Online endpointing configuration.
+    """
+    def __init__(self, transition_model, acoustic_model, decoder, symbols=None,
+                 allow_partial=True, decodable_opts=None, endpoint_opts=None):
+        if not isinstance(decoder, _dec.LatticeFasterOnlineGrammarDecoder):
+            raise TypeError("decoder argument should be a "
+                            "LatticeFasterOnlineGrammarDecoder")
+        super(NnetLatticeFasterOnlineGrammarRecognizer, self).__init__(
+            transition_model, acoustic_model, decoder, symbols, allow_partial,
+            decodable_opts, endpoint_opts)
+
+    @classmethod
+    def from_files(cls, model_rxfilename, graph_rxfilename,
+                   symbols_filename=None, allow_partial=True,
+                   decoder_opts=None, decodable_opts=None, endpoint_opts=None):
+        """Constructs a new recognizer from given files.
+
+        Args:
+            model_rxfilename (str): Extended filename for reading the model.
+            graph_rxfilename (str): Extended filename for reading the graph.
+            symbols_filename (str): The symbols file. If provided, "text" output
+                of :meth:`decode` includes symbols instead of integer indices.
+            allow_partial (bool): Whether to output decoding results if no
+                final state was active on the last frame.
+            decoder_opts (FasterDecoderOptions): Configuration options for the
+                decoder.
+            decodable_opts (NnetSimpleLoopedComputationOptions): Configuration
+                options for simple looped neural network computation.
+            endpoint_opts (OnlineEndpointConfig): Online endpointing
+                configuration.
+
+        Returns:
+            NnetLatticeFasterOnlineGrammarRecognizer: A new recognizer.
+        """
+        transition_model, acoustic_model = cls.read_model(model_rxfilename)
+        with _util_io.xopen(graph_rxfilename) as ki:
+            graph = _dec.GrammarFst()
+            graph.read(ki.stream(), ki.binary)
+        if not decoder_opts:
+            decoder_opts = _dec.LatticeFasterDecoderOptions()
+        decoder = _dec.LatticeFasterOnlineGrammarDecoder(graph, decoder_opts)
+        if symbols_filename is None:
+            symbols = None
+        else:
+            symbols = _fst.SymbolTable.read_text(symbols_filename)
+        return cls(transition_model, acoustic_model, decoder, symbols,
+                   allow_partial, decodable_opts, endpoint_opts)
+
+    def endpoint_detected(self):
+        """Determines if any of the endpointing rules are active."""
+        return _online2.decoding_endpoint_detected_grammar(
+            self.endpoint_opts, self.transition_model,
+            self.output_frame_shift, self.decoder)
