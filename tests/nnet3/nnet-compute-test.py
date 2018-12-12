@@ -146,7 +146,8 @@ class TestNnetCompute(unittest.TestCase):
 
         if (not nnet_is_recurrent(nnet)
             and nnet.info().find("statistics-extraction") == -1
-            and nnet.info().find("TimeHeightConvolutionComponent") == -1):
+            and nnet.info().find("TimeHeightConvolutionComponent") == -1
+            and nnet.info().find("RestrictedAttentionComponent") == -1):
             for t in range(num_frames):
                 self.assertTrue(approx_equal(output1[t], output2[t]))
 
