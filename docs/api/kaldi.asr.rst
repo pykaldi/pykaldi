@@ -26,6 +26,9 @@ kaldi\.asr
       MappedRecognizer
       NnetFasterRecognizer
       NnetLatticeBiglmFasterRecognizer
+      NnetLatticeFasterBatchRecognizer
+      NnetLatticeFasterGrammarRecognizer
+      NnetLatticeFasterOnlineGrammarRecognizer
       NnetLatticeFasterOnlineRecognizer
       NnetLatticeFasterRecognizer
       NnetOnlineRecognizer

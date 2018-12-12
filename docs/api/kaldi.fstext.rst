@@ -153,12 +153,13 @@ kaldi\.fstext\.special
    
       add_subsequential_loop
       compose_context
-      compose_context_fst
+      compose_context_left_biphone
       compose_deterministic_on_demand_fst
       create_ilabel_info_symbol_table
       determinize_lattice
       determinize_star
       determinize_star_in_log
+      get_encoding_multiple
       push_in_log
       push_special
       read_ilabel_info
@@ -176,13 +177,13 @@ kaldi\.fstext\.special
    .. autosummary::
       :nosignatures:
    
+      NonterminalValues
       StdBackoffDeterministicOnDemandFst
       StdCacheDeterministicOnDemandFst
       StdComposeDeterministicOnDemandFst
-      StdContextFst
-      StdContextFstArcIterator
-      StdContextFstStateIterator
       StdDeterministicOnDemandFst
+      StdInverseContextFst
+      StdInverseLeftBiphoneContextFst
       StdUnweightedNgramFst
       TableComposeCache
       TableComposeOptions

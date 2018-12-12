@@ -30,6 +30,7 @@ kaldi\.nnet3
       compute_top_sort_order
       compute_variable_accesses
       consolidate_io_operations
+      consolidate_memory
       consolidate_model_update
       constrain_orthonormal
       convert_addition_to_assignment
@@ -117,6 +118,7 @@ kaldi\.nnet3
       set_learning_rate
       set_nnet_as_gradient
       snip_row_ops
+      split_row_ops
       summarize_cu_vector
       summarize_double_vector
       summarize_vector
@@ -199,6 +201,7 @@ kaldi\.nnet3
       GeneralDescriptor
       GeneralDropoutComponent
       GeneralDropoutComponentPrecomputedIndexes
+      GruNonlinearityComponent
       Index
       IndexSet
       IoSpecification
@@ -212,6 +215,10 @@ kaldi\.nnet3
       NaturalGradientRepeatedAffineComponent
       NetworkNode
       Nnet
+      NnetBatchComputer
+      NnetBatchComputerOptions
+      NnetBatchDecoder
+      NnetBatchInference
       NnetComputation
       NnetComputeOptions
       NnetComputeProb
@@ -234,6 +241,7 @@ kaldi\.nnet3
       OffsetForwardingDescriptor
       OnlineNaturalGradient
       OptionalSumDescriptor
+      OutputGruNonlinearityComponent
       PerDimObjectiveInfo
       PerElementOffsetComponent
       PerElementScaleComponent
@@ -260,6 +268,7 @@ kaldi\.nnet3
       SumGroupComponent
       SwitchingForwardingDescriptor
       TanhComponent
+      TdnnComponent
       TimeHeightConvolutionComponent
       UpdatableComponent
       UtteranceSplitter

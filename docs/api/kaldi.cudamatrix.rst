@@ -23,6 +23,7 @@ kaldi\.cudamatrix
       same_dim_and_stride_cu_matrix
       same_dim_cu_double_matrix
       same_dim_cu_matrix
+      synchronize_gpu
       trace_mat_smat
    
    

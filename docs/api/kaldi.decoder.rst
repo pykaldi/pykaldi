@@ -5,6 +5,14 @@ kaldi\.decoder
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      grammar_to_vector_fst
+      prepare_for_grammar_fst
+   
    
 
    
@@ -17,6 +25,7 @@ kaldi\.decoder
       BiglmFasterDecoder
       BiglmFasterDecoderOptions
       DecodableMapped
+      DecodableMatrixMapped
       DecodableMatrixMappedOffset
       DecodableMatrixScaled
       DecodableMatrixScaledMapped
@@ -24,10 +33,15 @@ kaldi\.decoder
       DecodableSumScaled
       FasterDecoder
       FasterDecoderOptions
+      GrammarFst
+      GrammarFstArc
+      GrammarFstArcIterator
       LatticeBiglmFasterDecoder
       LatticeFasterDecoder
       LatticeFasterDecoderOptions
+      LatticeFasterGrammarDecoder
       LatticeFasterOnlineDecoder
+      LatticeFasterOnlineGrammarDecoder
       TrainingGraphCompiler
       TrainingGraphCompilerOptions
    

@@ -11,8 +11,10 @@ kaldi\.online2
       :nosignatures:
    
       decoding_endpoint_detected
+      decoding_endpoint_detected_grammar
       endpoint_detected
       trailing_silence_length
+      trailing_silence_length_grammar
    
    
 
@@ -44,6 +46,7 @@ kaldi\.online2
       OnlineSilenceWeightingConfig
       SingleUtteranceGmmDecoder
       SingleUtteranceNnetDecoder
+      SingleUtteranceNnetGrammarDecoder
    
    
 
