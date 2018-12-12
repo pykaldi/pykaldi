@@ -12,10 +12,6 @@ from "fstext/special-ops.h":
 
 ## Kaldi FST Ops
 
-    def `ComposeContextFstExt` as _compose_context_fst(
-        ifst1: StdContextFst, ifst2: StdFst, ofst: StdMutableFst,
-        connect: bool = default, compose_filter: ComposeFilter = default)
-
     def `ComposeContextExt` as _compose_context(
         disambig_syms: list<int>, N: int, P: int,
         ifst: StdVectorFst, ofst: StdVectorFst) -> list<list<int>>

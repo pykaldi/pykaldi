@@ -37,6 +37,8 @@ from "nnet3/nnet-optimize-utils.h":
 
     def `SnipRowOps` as snip_row_ops(computation: NnetComputation) -> bool
 
+    def `SplitRowOps` as split_row_ops(computation: NnetComputation) -> bool
+
     def `RenumberComputation` as renumber_computation(computation: NnetComputation)
 
     def `RemoveNoOps` as remove_no_ops(computation: NnetComputation)

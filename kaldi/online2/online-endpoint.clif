@@ -1,6 +1,7 @@
 from "itf/options-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
+from "decoder/lattice-faster-online-decoder-ext-clifwrap.h" import *
 
 from "online2/online-endpoint.h":
   namespace `kaldi`:
@@ -82,11 +83,9 @@ from "online2/online-endpoint.h":
             Typically a command-line option parser.
         """
 
-    def `EndpointDetected` as endpoint_detected(config: OnlineEndpointConfig,
-                                                num_frames_decoded: int,
-                                                trailing_silence_frames: int,
-                                                frame_shift_in_seconds: float,
-                                                final_relative_cost: float) -> bool:
+    def `EndpointDetected` as endpoint_detected(
+      config: OnlineEndpointConfig, num_frames_decoded: int, trailing_silence_frames: int,
+      frame_shift_in_seconds: float, final_relative_cost: float) -> bool:
       """Determines if any of the endpointing rules are active for given arguments.
 
       Args:
@@ -100,9 +99,9 @@ from "online2/online-endpoint.h":
         bool: True if endpointing rules determines we should terminate decoding.
       """
 
-    def `TrailingSilenceLength` as trailing_silence_length(tmodel: TransitionModel,
-                                                           silence_phones: str,
-                                                           decoder: LatticeFasterOnlineDecoder) -> int:
+    def `TrailingSilenceLength` as trailing_silence_length(
+      tmodel: TransitionModel, silence_phones: str,
+      decoder: LatticeFasterOnlineDecoder) -> int:
       """Returns the number of trailing silence frames on the best-path traceback.
 
       Args:
@@ -111,10 +110,20 @@ from "online2/online-endpoint.h":
         decoder (LatticeFasterOnlineDecoder): Online decoder.
       """
 
-    def `EndpointDetected` as decoding_endpoint_detected(config: OnlineEndpointConfig,
-                                                         tmodel: TransitionModel,
-                                                         frame_shift_in_seconds: float,
-                                                         decoder: LatticeFasterOnlineDecoder) -> bool:
+    def `TrailingSilenceLength` as trailing_silence_length_grammar(
+      tmodel: TransitionModel, silence_phones: str,
+      decoder: LatticeFasterOnlineGrammarDecoder) -> int:
+      """Returns the number of trailing silence frames on the best-path traceback.
+
+      Args:
+        tmodel (TransitionModel): Transition model.
+        silence_phones (str): Colon-separated list of integer ids of silence phones.
+        decoder (LatticeFasterOnlineGrammarDecoder): Online grammar decoder.
+      """
+
+    def `EndpointDetected` as decoding_endpoint_detected(
+      config: OnlineEndpointConfig, tmodel: TransitionModel,
+      frame_shift_in_seconds: float, decoder: LatticeFasterOnlineDecoder) -> bool:
       """Determines if we should terminate decoding.
 
       This is a higher-level convenience function that works out the arguments
@@ -125,6 +134,24 @@ from "online2/online-endpoint.h":
         tmodel (TransitionModel): Transition model.
         frame_shift_in_seconds (float): Frame shift (in seconds).
         decoder (LatticeFasterOnlineDecoder): Online lattice-generating decoder.
+
+      Returns:
+        bool: True if endpointing rules determines we should terminate decoding.
+      """
+
+    def `EndpointDetected` as decoding_endpoint_detected_grammar(
+      config: OnlineEndpointConfig, tmodel: TransitionModel,
+      frame_shift_in_seconds: float, decoder: LatticeFasterOnlineGrammarDecoder) -> bool:
+      """Determines if we should terminate decoding.
+
+      This is a higher-level convenience function that works out the arguments
+      to the :meth:`endpoint_detected` function.
+
+      Args:
+        config (:obj:`OnlineEndpointConfig`): Online endpointing configuration.
+        tmodel (TransitionModel): Transition model.
+        frame_shift_in_seconds (float): Frame shift (in seconds).
+        decoder (LatticeFasterOnlineGrammarDecoder): Online lattice-generating decoder.
 
       Returns:
         bool: True if endpointing rules determines we should terminate decoding.

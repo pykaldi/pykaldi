@@ -30,3 +30,5 @@ from "nnet3/natural-gradient-online.h":
 
       @add__init__
       def `OnlineNaturalGradient` as from_other(self, other: OnlineNaturalGradient)
+
+      def `Swap` as swap(self, other: OnlineNaturalGradient)

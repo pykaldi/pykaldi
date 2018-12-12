@@ -34,7 +34,6 @@ from "matrix/sparse-matrix.h":
             Error in case of dimension mismatch
         """
 
-      #FIXME(pavlos): This needs a C++ wrapper
       def `AddToVec` as add_to_vec(self, alpha: float, vec: VectorBase):
         """Performs vec=vec+alpha*self
 
@@ -56,6 +55,10 @@ from "matrix/sparse-matrix.h":
       @add__init__
       def `SparseVector` as from_other(self, other: SparseVector):
         """Initialization by copying the elements of other."""
+
+      @add__init__
+      def `SparseVector` as from_vector(self, vec: VectorBase):
+        """Initialization by copying the elements of vector."""
 
       def `Swap` as swap_(self, other: SparseVector) -> self:
         """Swaps the contents of self and other. Shallow swap.
@@ -194,6 +197,14 @@ from "matrix/sparse-matrix.h":
 
         Args:
             other(SparseMatrix): A sparse matrix
+        """
+
+      @add__init__
+      def `SparseMatrix` as from_matrix(self, mat: MatrixBase):
+        """Initialization by copying the elements of a matrix.
+
+        Args:
+            mat(Matrix): A matrix
         """
 
       def `Swap` as swap_(self, other: SparseMatrix) ->  self:

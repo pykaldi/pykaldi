@@ -1,5 +1,5 @@
 from "cudamatrix/cu-matrix-clifwrap.h" import *
-
+from "chain/chain-supervision-clifwrap.h" import *
 
 
 from "chain/chain-numerator.h":

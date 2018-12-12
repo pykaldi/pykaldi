@@ -3,32 +3,110 @@ from kaldi.base._timer import Timer
 from "cudamatrix/cu-device.h":
   namespace `kaldi`:
     class CuTimer(Timer):
+      """Convenience wrapper for Timer.
+
+      This class sets the time only if the verbose level is >= 1.  This helps
+      avoid an unnecessary system call if the verbose level is 0 and you won't
+      be accumulating the timing stats.
+      """
       pass
 
     class CuDevice:
+      """CUDA Device.
+
+      This class is for initializing, selecting and querying a CUDA device.
+
+      There is a separate instance of the CuDevice object for each thread of
+      the program, but many of its variables are static (hence, shared between
+      all instances).
+      """
+
       @classmethod
-      def `InstantiatePtr` as instantiate(cls) -> CuDevice
+      def `InstantiatePtr` as instantiate(cls) -> CuDevice:
+        """Instantiates a new CuDevice.
 
-      def `SelectGpuId` as select_gpu_id(self, use_gpu: str)
+        You obtain the CuDevice for the current thread by calling
+        `CuDevice.instantiate`
+        At the beginning of the program, if you want to use a GPU, you
+        should call `CuDevice.instantiate().select_gpu_id(..)`.
+        """
 
-      def `Enabled` as enabled(self) -> bool
+      def `SelectGpuId` as select_gpu_id(self, use_gpu: str):
+        """Selects a GPU for computation.
 
-      def `ActiveGpuId` as active_gpu_id(self) -> int
+        This function is supposed to be called just once, at the beginning of
+        the program (from the main thread), or not at all.
 
-      def `DoublePrecisionSupported` as double_precision_supported(self) -> bool
+        Args:
+          use_gpu (str): GPU use mode. One of "yes", "optional" or "no".
+            "yes" -- Select GPU automatically and die if this fails. If you
+            have set the GPUs to exclusive mode it will select one
+            pseudo-randomly; otherwise it will choose whichever one has the
+            most free memory (but we recommend to set GPUs to exclusive mode,
+            or controlling which GPU to use by setting the variable
+            CUDA_VISIBLE_DEVICES to the id of the GPU you want the program to
+            use. "optional" -- Do as above, but if it fails, back off to CPU.
+            "no" -- Run on CPU.
+        """
 
-      # def AccuProfile(self, function_name: str, timer: CuTimer)
+      def `Enabled` as enabled(self) -> bool:
+        """Checks if the CUDA GPU is selected for use."""
 
-      def `PrintProfile` as print_profile(self)
+      def `DoublePrecisionSupported` as double_precision_supported(self) -> bool:
+        """Checks if double precision is supported.
 
-      def `PrintMemoryUsage` as print_memory_usage(self)
+        Returns true if either we have no GPU, or we have a GPU and it supports
+        double precision.
+        """
 
-      def `ResetProfile` as reset_profile(self)
+      # def `AccuProfile` as accu_profile(self, function_name: str, timer: CuTimer)
 
-      # def GetFreeMemory(self) -> (ret: str, free: int, total: int)
+      # def `PrintProfile` as print_profile(self)
+
+      def `PrintMemoryUsage` as print_memory_usage(self):
+        """Print some memory-usage information using KALDI_LOG."""
+
+      def `AllowMultithreading` as allow_multithreading(self):
+        """Enables multi-threaded access to GPU.
+
+        The user should call this if the program plans to access the GPU (e.g.
+        via using class CuMatrix) from more than one thread. If you fail to
+        call this for a multi-threaded program, it may occasionally segfault
+        (and also the code will detect that you failed to call it, and will
+        print a warning).
+        """
 
       # def DeviceGetName(self, len: int, dev: int) -> str
 
-      def `CheckGpuHealth` as check_gpu_health(self)
+      def `CheckGpuHealth` as check_gpu_health(self):
+        """Check if GPU is in good condition.
 
-      def `SetDebugStrideMode` as set_debug_stride_mode(self, mode: bool) -> bool
+        This is done by multiplying small matrices on GPU+CPU. Overheated GPUs
+        may give inaccurate results, which we want to detect.
+        """
+
+      def `SetDebugStrideMode` as set_debug_stride_mode(self, mode: bool) -> bool:
+        """Activates debug stride mode.
+
+        Activates a mode where calls to MallocPitch will purposely allocate
+        arrays with different pitch (inconsistent between calls). This is only
+        useful for testing code. This function returns the previous mode, where
+        true means inconsistent pitch. Note that you cannot ever rely on the
+        strides from MallocPitch() being consistent for the same request, but
+        in practice they tend to be consistent unless you are close to running
+        out of memory.
+        """
+
+      def `IsComputeExclusive` as is_compute_exclusive(self) -> bool:
+        """Checks if the GPU is set to compute exclusive mode.
+
+        You can set this mode, if you are root, by doing: `nvidia-smi -c 3`.
+
+        Returns True if we have a GPU and it is running in compute exclusive
+        mode.  Returns false otherwise. WILL CRASH if we are not using a GPU at
+        all.  If calling this as a user (i.e. from outside the class), call
+        this only if :meth:`enabled` returns True.
+        """
+
+    def `SynchronizeGpu` as synchronize_gpu():
+      """Synchronizes threads."""

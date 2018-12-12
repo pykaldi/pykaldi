@@ -6,6 +6,7 @@ from "ivector/ivector-extractor-clifwrap.h" import *
 from "feat/online-feature-clifwrap.h" import *
 from "base/iostream-clifwrap.h" import *
 from "decoder/lattice-faster-online-decoder-clifwrap.h" import *
+from "decoder/lattice-faster-online-decoder-ext-clifwrap.h" import *
 from "itf/online-feature-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 
@@ -143,6 +144,8 @@ from "online2/online-ivector-feature.h":
       def `Active` as active(self) -> bool
 
       def `ComputeCurrentTraceback` as compute_current_traceback(self, decoder: LatticeFasterOnlineDecoder)
+
+      def `ComputeCurrentTraceback` as compute_current_traceback_grammar(self, decoder: LatticeFasterOnlineGrammarDecoder)
 
       def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int) -> (delta_weights: list<tuple<int, float>>):
         """Calling this function gets the changes in weight that require us to modify the stats. Output format is (frame-index, delta-weight).

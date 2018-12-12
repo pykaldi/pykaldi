@@ -163,8 +163,3 @@ from "feat/feature-window.h":
         window (Vector): The output windowed waveform (possibly-padded). It
           will be resized as needed.
       """
-
-    def `ExtractWaveformRemainder` as extract_waveform_remainder(wave: VectorBase,
-                                 opts: FrameExtractionOptions,
-                                 wave_remainder: Vector):
-      """Extracts waveform reaminder."""

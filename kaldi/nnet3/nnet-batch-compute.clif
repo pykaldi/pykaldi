@@ -1,0 +1,68 @@
+from "itf/options-itf-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "fstext/symbol-table-clifwrap.h" import *
+from "hmm/transition-model-clifwrap.h" import *
+from "decoder/lattice-faster-decoder-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+
+from kaldi.nnet3._nnet_am_decodable_simple import NnetSimpleComputationOptions
+from kaldi.util import _value_error_on_false
+
+from "nnet3/nnet-batch-compute.h":
+  namespace `kaldi::nnet3`:
+    class NnetBatchComputerOptions(NnetSimpleComputationOptions):
+      minibatch_size: int
+      edge_minibatch_size: int
+      ensure_exact_final_context: bool
+      partial_minibatch_factor: float
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class NnetBatchComputer:
+      def __init__(self, options: NnetBatchComputerOptions,
+                   nnet: Nnet, priors: VectorBase)
+
+    class NnetBatchInference:
+      def __init__(self, options: NnetBatchComputerOptions,
+                   nnet: Nnet, priors: VectorBase)
+
+      def `AcceptInput` as accept_input(self, utterance_id: str, input: Matrix,
+                                        ivector: Vector, online_ivectors: Matrix,
+                                        online_ivector_period: int)
+
+      def `Finished` as finished(self)
+
+      def `GetOutput` as get_output(self) -> (success: bool, utterance_id: str, output: Matrix):
+        return _value_error_on_false(...)
+
+    class NnetBatchDecoder:
+      def __init__(self, fst: StdFst, decoder_config: LatticeFasterDecoderOptions,
+                   trans_model: TransitionModel, word_syms: SymbolTable, allow_partial: bool,
+                   num_threads: int, computer: NnetBatchComputer)
+
+      def `AcceptInput` as accept_input(self, utterance_id: str, input: Matrix,
+                                        ivector: Vector, online_ivectors: Matrix,
+                                        online_ivector_period: int)
+
+      def `UtteranceFailed` as utterance_failed(self)
+
+      def `Finished` as finished(self) -> int
+
+      def `GetOutput` as get_output(self) -> (success: bool, utterance_id: str,
+                                              clat: CompactLatticeVectorFst, sentence: str):
+        return _value_error_on_false(...)
+
+      def `GetOutput` as get_raw_output(self) -> (success: bool, utterance_id: str,
+                                                  clat: LatticeVectorFst, sentence: str):
+        return _value_error_on_false(...)

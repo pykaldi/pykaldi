@@ -1,0 +1,110 @@
+from "base/iostream-clifwrap.h" import *
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/const-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from kaldi.fstext import StdVectorFst
+
+from "decoder/grammar-fst.h":
+  namespace `fst`:
+    class GrammarFstArc:
+      """Grammar FST arc.
+
+      Attributes of the arc can be accessed and mutated.
+
+      GrammarFstArc():
+        Creates an uninitialized GrammarFstArc.
+      """
+
+      ilabel: int
+      """int: The input label."""
+      olabel: int
+      """int: The output label."""
+      weight: TropicalWeight
+      """TropicalWeight: The arc weight."""
+      nextstate: int
+      """int: The destination state for the arc."""
+
+      @add__init__
+      def `ArcTpl` as from_attrs(self, ilabel: int, olabel:int,
+                                 weight: TropicalWeight, nextstate: int):
+        """Creates a new arc with the given attributes.
+
+        Args:
+            ilabel (int): The input label.
+            olabel (int): The output label.
+            weight (TropicalWeight): The arc weight.
+            nextstate (int): The destination state for the arc.
+        """
+
+    class GrammarFst:
+      """Grammar FST."""
+
+      @add__init__
+      def `GrammarFst` as from_fsts(self, top_fst: StdConstFst,
+                                    ifsts: list<tuple<int, StdConstFst>>,
+                                    nonterm_phones_offset: int):
+        """Creates a new grammar FST from input FSTs.
+
+        Args:
+          top_fst (StdConstFst): The top-level FST of the grammar.
+          ifsts (List[Tuple[int,StdConstFst]]): The list of (non-terminal
+            symbol, decoding graph) pairs.
+          nonterm_phones_offset (int): The integer index of the first
+            non-terminal symbol.
+        """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes object to output stream.
+
+        Supports only binary mode.
+        """
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads object from input stream.
+
+        Supports only binary mode.
+        """
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `NumInputEpsilons` as num_input_epsilons(self, state: int) -> int:
+        """Returns number of input epsilon arcs originating from given state."""
+
+      def `Type` as type(self) -> str:
+        """Returns the FST type."""
+
+
+    class `ArcIterator<GrammarFst>` as GrammarFstArcIterator:
+      """Grammar FST arc iterator.
+
+      Args:
+          fst: The grammar fst.
+          state: The state index.
+      """
+      def __init__(self, fst: GrammarFst, s: int)
+
+      def `Done` as done(self) -> bool:
+        """Indicates whether the iterator is exhausted or not.
+
+        Returns:
+          True if the iterator is exhausted, False otherwise.
+        """
+
+      def `Next` as next(self):
+        """Advances the iterator."""
+
+      def `Value` as value(self) -> GrammarFstArc:
+        """Returns the current arc."""
+
+    def `CopyToVectorFst` as grammar_to_vector_fst(grammar_fst: GrammarFst) -> StdVectorFst:
+      """Converts a GrammarFST to a StdVectorFst."""
+      return StdVectorFst(...)
+
+    def `PrepareForGrammarFst` as prepare_for_grammar_fst(nonterm_phones_offset: int, fst: StdVectorFst):
+      """Prepares input FST for use in GrammarFST."""

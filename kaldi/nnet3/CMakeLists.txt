@@ -38,6 +38,11 @@ add_pyclif_library("_nnet_simple_component" nnet-simple-component.clif
   LIBRARIES kaldi-nnet3
 )
 
+add_pyclif_library("_nnet_combined_component" nnet-combined-component.clif
+  CLIF_DEPS _nnet_component_itf
+  LIBRARIES kaldi-nnet3
+)
+
 add_pyclif_library("_nnet_normalize_component" nnet-normalize-component.clif
   CLIF_DEPS _nnet_component_itf
   LIBRARIES kaldi-nnet3
@@ -96,6 +101,11 @@ add_pyclif_library("_nnet_analyze" nnet-analyze.clif
 add_pyclif_library("_nnet_compute" nnet-compute.clif
   CLIF_DEPS _options_itf _nnet_example _nnet_computation
   LIBRARIES kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_batch_compute" nnet-batch-compute.clif
+  CLIF_DEPS _options_itf _nnet_nnet _lattice_faster_decoder _cu_matrix _symbol_table _transition_model
+  LIBRARIES kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_optimize" nnet-optimize.clif

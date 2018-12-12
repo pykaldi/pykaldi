@@ -118,6 +118,8 @@ from "cudamatrix/cu-matrix.h":
 
       def `ApplyExp` as apply_exp(self)
 
+      def `ApplyExpLimited` as apply_exp_limited(self, lower_limit: float, upper_limit: float)
+
       def `ApplySoftMaxPerRow` as apply_soft_max_per_row(self, src: CuMatrixBase)
 
       def `ApplyLogSoftMaxPerRow` as apply_log_soft_max_per_row(self, src: CuMatrixBase)

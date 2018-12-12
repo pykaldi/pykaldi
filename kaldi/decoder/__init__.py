@@ -1,11 +1,14 @@
+from ._grammar_fst import *
 from ._decodable_matrix import *
 from ._decodable_mapped import *
 from ._decodable_sum import *
 from ._faster_decoder import *
 from ._biglm_faster_decoder import *
 from ._lattice_faster_decoder import *
+from ._lattice_faster_decoder_ext import *
 from ._lattice_biglm_faster_decoder import *
 from ._lattice_faster_online_decoder import *
+from ._lattice_faster_online_decoder_ext import *
 from ._training_graph_compiler import *
 from ._training_graph_compiler_ext import *
 from .. import fstext as _fst
@@ -166,6 +169,18 @@ class LatticeFasterDecoder(_LatticeDecoderBase,
         super(LatticeFasterDecoder, self).__init__(fst, opts)
         self._fst = fst  # keep a reference to FST to keep it in scope
 
+class LatticeFasterGrammarDecoder(
+    _LatticeDecoderBase,
+    _lattice_faster_decoder_ext.LatticeFasterGrammarDecoder):
+    """Lattice generating faster grammar decoder.
+
+    Args:
+        fst (GrammarFst): Decoding graph `HCLG`.
+        opts (LatticeFasterDecoderOptions): Decoder options.
+    """
+    def __init__(self, fst, opts):
+        super(LatticeFasterGrammarDecoder, self).__init__(fst, opts)
+        self._fst = fst  # keep a reference to FST to keep it in scope
 
 class LatticeBiglmFasterDecoder(
     _LatticeDecoderBase,
@@ -204,6 +219,38 @@ class LatticeFasterOnlineDecoder(
     """
     def __init__(self, fst, opts):
         super(LatticeFasterOnlineDecoder, self).__init__(fst, opts)
+        self._fst = fst  # keep a reference to FST to keep it in scope
+
+    # This method is missing from the C++ class so we implement it here.
+    def _get_lattice(self, use_final_probs=True):
+        raw_fst = self.get_raw_lattice(use_final_probs).invert().arcsort()
+        lat_opts = _lat.DeterminizeLatticePrunedOptions()
+        config = self.get_options()
+        lat_opts.max_mem = config.det_opts.max_mem
+        ofst = _fst.CompactLatticeVectorFst()
+        _lat.determinize_lattice_pruned(raw_fst, config.lattice_beam,
+                                        ofst, lat_opts)
+        ofst.connect()
+        if ofst.num_states() == 0:
+            raise RuntimeError("Decoding failed. No tokens survived.")
+        return ofst
+
+
+class LatticeFasterOnlineGrammarDecoder(
+    _LatticeOnlineDecoderBase,
+    _lattice_faster_online_decoder_ext.LatticeFasterOnlineGrammarDecoder):
+    """Lattice generating faster online grammar decoder.
+
+    Similar to :class:`LatticeFasterGrammarDecoder` but computes the best path
+    without generating the entire raw lattice and finding the best path
+    through it. Instead, it traces back through the lattice.
+
+    Args:
+        fst (GrammarFst): Decoding graph `HCLG`.
+        opts (LatticeFasterDecoderOptions): Decoder options.
+    """
+    def __init__(self, fst, opts):
+        super(LatticeFasterOnlineGrammarDecoder, self).__init__(fst, opts)
         self._fst = fst  # keep a reference to FST to keep it in scope
 
     # This method is missing from the C++ class so we implement it here.

@@ -23,6 +23,7 @@ from "nnet3/nnet-optimize.h":
       max_deriv_time: int
       max_deriv_time_relative: int
       snip_row_ops: bool
+      split_row_ops: bool
       memory_compression_level: int
       optimize_looped_computation: bool
 
@@ -54,12 +55,14 @@ from "nnet3/nnet-optimize.h":
           self, nnet: Nnet, opt_config: NnetOptimizeOptions,
           config: CachingOptimizingCompilerOptions = default)
 
-      def `Compile` as compile(self, request: ComputationRequest) -> NnetComputation
+      def `CompilePtr` as compile(self, request: ComputationRequest) -> NnetComputation
 
       def `ReadCache` as read_cache(self, is: istream, binary: bool)
 
       def `WriteCache` as write_cache(self, os: ostream, binary: bool)
 
+      def `GetSimpleNnetContext` as get_simple_nnet_context(self)
+        -> (nnet_left_context: int, nnet_right_context: int)
 
     def `ConvertAdditionToAssignment` as convert_addition_to_assignment(nnet: Nnet, computation: NnetComputation)
 

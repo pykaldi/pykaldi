@@ -94,4 +94,6 @@ from "nnet3/nnet-utils.h":
 
     def `ConstrainOrthonormal` as constrain_orthonormal(nnet: Nnet)
 
+    def `ConsolidateMemory` as consolidate_memory(nnet: Nnet)
+
     def `GetNumNvalues` as get_num_n_values(io_vec: list<NnetIo>, exhaustive: bool) -> int

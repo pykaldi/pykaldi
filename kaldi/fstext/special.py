@@ -1,6 +1,6 @@
-from ._context_fst import *
-from ._context_fst_inl import *
 from ._deterministic_fst import *
+from ._context_fst import *
+from ._grammar_context_fst import *
 from . import _determinize_lattice
 from ._push_special import *
 from . import _special_ops
@@ -10,29 +10,6 @@ from ._table_matcher import *
 from .. import fstext as _fst
 import _getters
 import _weight
-
-
-def compose_context_fst(ifst1, ifst2, connect=True, compose_filter="auto"):
-    """Composes context FST with an FST over the tropical semiring.
-
-    Args:
-        ifst1 (StdContextFst): The input context FST over the tropical semiring.
-        ifst2 (StdFst): The input FST over the tropical semiring.
-        connect (bool): Should output be trimmed?
-        compose_filter: A string matching a known composition filter; one of:
-            "alt_sequence", "auto", "match", "null", "sequence", "trivial".
-
-    Returns:
-        A composed FST.
-    """
-    try:
-        compose_filter = _getters.GetComposeFilter(compose_filter)
-    except ValueError:
-        raise ValueError("Unknown compose filter: {!r}".format(compose_filter))
-    ofst = _fst.StdVectorFst()
-    _special_ops._compose_context_fst(ifst1, ifst2, ofst, connect,
-                                      compose_filter)
-    return ofst
 
 
 def compose_context(disambig_syms, N, P, ifst):

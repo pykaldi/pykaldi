@@ -1,4 +1,5 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
 
 from "itf/online-feature-itf.h":
   namespace `kaldi`:
@@ -19,6 +20,9 @@ from "itf/online-feature-itf.h":
 
       def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
         """Returns the features for given frame index"""
+
+      def `GetFrames` as get_frames(self, frames: list<int>, feats: MatrixBase):
+        """Returns the features for given frame indices"""
 
     class OnlineBaseFeature(OnlineFeatureInterface):
       """Online base feature interface definition."""

@@ -1,0 +1,25 @@
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "chain/chain-supervision-clifwrap.h" import *
+
+
+from "chain/chain-generic-numerator.h":
+  namespace `kaldi::chain`:
+    class GenericNumeratorComputation:
+      """Numerator computer used in end-to-end chain training.
+
+      This does forward-backward of the end-to-end 'supervision' (numerator)
+      FSTs. This kind of FST can have self-loops.
+
+      Args:
+        supervision (Supervision): Supervision for this minibatch
+        nnet_output (CuMatrix): The output of the neural network for this minibatch
+
+      """
+      def __init__(self, supervision: Supervision, nnet_output: CuMatrixBase)
+
+      def `ForwardBackward` as forward_backward(self, total_loglike: `float` as float,
+                                                nnet_output_deriv: CuMatrixBase) -> bool:
+        """Does the forward-backward computation."""
+
+      def `ComputeObjf` as compute_objf(self) -> float:
+        """Computes the objective function."""

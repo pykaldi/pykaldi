@@ -13,6 +13,9 @@ from "hmm/hmm-utils.h":
       transition_scale: float
       """Scale of transition probabilities (relative to language model)"""
 
+      nonterm_phones_offset: int
+      """The integer index of the first non-terminal symbol."""
+
       def `Register` as register(self, opts: OptionsItf):
         """Registers options with an object implementing the options interface.
 
@@ -22,7 +25,7 @@ from "hmm/hmm-utils.h":
         """
 
     # NOTE(Dogan): No need for the following functions in Python.
-    # GetHmmAsFst, GetHmmAsFstSimple
+    # GetHmmAsFsa, GetHmmAsFsaSimple
 
     def `GetHTransducer` as get_h_transducer(
       ilabel_info: list<list<int>>, ctx_dep: ContextDependencyInterface,
@@ -38,7 +41,7 @@ from "hmm/hmm-utils.h":
 
     def `AddSelfLoops` as add_self_loops(
       trans_model: TransitionModel, disambig_syms: list<int>,
-      self_loop_scale: float, reorder: bool, fst: StdVectorFst):
+      self_loop_scale: float, reorder: bool, check_no_self_loops: bool, fst: StdVectorFst):
       """Expands an FST that has been built without self-loops."""
 
     def `AddTransitionProbs` as add_transition_probs(

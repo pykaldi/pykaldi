@@ -13,13 +13,6 @@ namespace fst {
 
 // Kaldi FST operations
 
-template <class Arc>
-void ComposeContextFstExt(const ContextFst<Arc> &ifst1, const Fst<Arc> &ifst2,
-                          MutableFst<Arc> *ofst, bool connect =  true,
-                          ComposeFilter filter_type = AUTO_FILTER) {
-  ComposeContextFst(ifst1, ifst2, ofst, ComposeOptions(connect, filter_type));
-}
-
 void ComposeContextExt(const std::vector<int32> &disambig_syms,
                        int N, int P,
                        VectorFst<StdArc> *ifst,

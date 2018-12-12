@@ -1,5 +1,8 @@
 from "fst/symbol-table.h":
   namespace `fst`:
+
+    const `kNoSymbol` as NO_SYMBOL: int
+
     class SymbolTableTextOptions:
       """Options for reading symbol table from text file.
 
@@ -37,8 +40,6 @@ from "fst/symbol-table.h":
         table.write_text("alphabet.syms")
 
       """
-
-      const `kNoSymbol` as NO_SYMBOL: int
 
       @add__init__
       def `SymbolTable` as from_name(self, name: str):

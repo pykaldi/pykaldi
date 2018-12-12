@@ -110,6 +110,9 @@ from "hmm/transition-model.h":
       def `TransitionIdToPdf` as transition_id_to_pdf(self, trans_id: int) -> int:
         """Maps transition-id to pdf-id."""
 
+      def `TransitionIdToPdfFast` as transition_id_to_pdf_fast(self, trans_id: int) -> int:
+        """Maps transition-id to pdf-id (faster, skips an assertion)."""
+
       def `TransitionIdToPhone` as transition_id_to_phone(self, trans_id: int) -> int:
         """Maps transition-id to phone."""
 

@@ -1,0 +1,113 @@
+from "itf/decodable-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "decoder/grammar-fst-clifwrap.h" import *
+from "decoder/lattice-faster-decoder-clifwrap.h" import *
+
+from "decoder/lattice-faster-decoder-ext.h":
+  namespace `kaldi`:
+    class LatticeFasterGrammarDecoder:
+      """LatticeFasterGrammarDecoder(fst, opts)
+
+      Lattice generating faster grammar decoder.
+
+      Args:
+        fst (GrammarFst): Decoding graph `HCLG`.
+        opts (LatticeFasterDecoderOptions): Decoder options.
+      """
+      def __init__(self, fst: GrammarFst, opts: LatticeFasterDecoderOptions)
+
+      def `SetOptions` as set_options(self, opts: LatticeFasterDecoderOptions):
+        """Sets decoder options.
+
+        Args:
+          opts (LatticeFasterDecoderOptions): Decoder options.
+        """
+
+      def `GetOptions` as get_options(self) -> LatticeFasterDecoderOptions:
+        """Gets decoder options.
+
+        Returns:
+          The decoder options.
+        """
+
+      def `Decode` as decode(self, decodable: DecodableInterface) -> bool:
+        """Decodes all available frames in the decodable object.
+
+        This may block waiting for input if the `decodable` object blocks.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
+
+        Returns:
+          True if any kind of traceback is available (not necessarily from a
+          final state).
+        """
+
+      def `ReachedFinal` as reached_final(self) -> bool:
+        """Checks if a final state was active on the last decoded frame.
+
+        Returns:
+          True if a final state was active on the last decoded frame.
+        """
+
+      def `GetBestPath` as _get_best_path(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool
+
+      def `GetRawLattice` as _get_raw_lattice(self,
+          fst_out: LatticeVectorFst, use_final_probs: bool = default) -> bool
+
+      def `GetLattice` as _get_lattice(self, fst_out: CompactLatticeVectorFst,
+                                      use_final_probs: bool = default) -> bool
+
+      def `InitDecoding` as init_decoding(self):
+        """Initializes decoding.
+
+        As an alternative to :meth:`decode`, you can call :meth:`init_decoding`
+        and then call :meth:`advance_decoding` (possibly multiple times).
+        """
+
+      def `AdvanceDecoding` as advance_decoding(self,
+          decodable: DecodableInterface, max_num_frames: int = default):
+        """Advances decoding.
+
+        This will decode until there are no more frames ready in the decodable
+        object, but if `max_num_frames >= 0` it will decode no more than that
+        many frames.
+
+        Args:
+          decodable (DecodableInterface): The decodable object.
+          max_num_frames (int): Max number of frames to decode. Defaults to
+            ``-1`` which means decode all available frames.
+        """
+
+      def `FinalizeDecoding` as finalize_decoding(self):
+        """Finalizes decoding.
+
+        This function may be optionally called after the last call to
+        :meth:`advance_decoding`. It does an extra pruning step to prune the
+        lattices output by :meth:`get_lattice` and :meth:`get_raw_lattice`.
+        more accurately.
+        """
+
+      def `FinalRelativeCost` as final_relative_cost(self) -> float:
+        """Queries the final relative cost.
+
+        This method serves the same purpose as :meth:`reached_final`, but gives
+        more information. It returns the difference between the best
+        (final-cost plus cost) of any token on the final frame, and the best
+        cost of any token on the final frame. If it is infinity it means no
+        final-states were present on the final frame. It will usually be
+        nonnegative. If it not too positive (e.g. < 5) you can take it as an
+        indication that we reached the final-state with reasonable likelihood.
+
+        Returns:
+          The final relative cost.
+        """
+
+      def `NumFramesDecoded` as num_frames_decoded(self) -> int:
+        """Queries the number of frames already decoded.
+
+        Returns:
+          The number of frames already decoded.
+        """

@@ -51,19 +51,19 @@ add_pyclif_library("_const_fst" const-fst.clif
   CLIF_DEPS _fst _iostream
 )
 
-add_pyclif_library("_context_fst" context-fst.clif
-  NAMESPACES fst fst::internal
-  CLIF_DEPS _fst
-)
-
-add_pyclif_library("_context_fst_inl" context-fst-inl.clif
-  CLIF_DEPS _symbol_table _iostream
-  LIBRARIES kaldi-base
-)
-
 add_pyclif_library("_deterministic_fst" deterministic-fst.clif
   NAMESPACES fst
   CLIF_DEPS _fst _mutable_fst
+)
+
+add_pyclif_library("_context_fst" context-fst.clif
+  CLIF_DEPS _deterministic_fst
+  LIBRARIES kaldi-fstext
+)
+
+add_pyclif_library("_grammar_context_fst" grammar-context-fst.clif
+  CLIF_DEPS _vector_fst _deterministic_fst
+  LIBRARIES kaldi-fstext
 )
 
 add_pyclif_library("_lattice_utils" lattice-utils.clif)

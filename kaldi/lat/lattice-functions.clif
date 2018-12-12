@@ -327,3 +327,6 @@ from "lat/lattice-functions.h":
       only graph costs. The output is another compact lattice.
       """
       return CompactLatticeVectorFst(...)
+
+    # Note(Dogan): These are probably not needed in Python.
+    # ComputeAcousticScoresMap, ReplaceAcousticScoresFromMap

@@ -356,6 +356,7 @@ from "nnet3/nnet-simple-component.h":
 
       def `Copy` as copy(self) -> Component
 
+      def `ConsolidateMemory` as consolidate_memory(self)
 
     class SoftmaxComponent(NonlinearComponent):
       @add__init__
@@ -425,6 +426,8 @@ from "nnet3/nnet-simple-component.h":
 
       def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
 
+      def `ConsolidateMemory` as consolidate_memory(self)
+
 
     class LinearComponent(UpdatableComponent):
       @add__init__
@@ -474,6 +477,8 @@ from "nnet3/nnet-simple-component.h":
       def `UnVectorize` as unvectorize(self, params: VectorBase)
 
       def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
+
+      def `ConsolidateMemory` as consolidate_memory(self)
 
       def `OrthonormalConstraint` as orthonormal_constraint(self) -> float
 
@@ -617,6 +622,18 @@ from "nnet3/nnet-simple-component.h":
       def `Type` as type(self) -> str
 
       def `Properties` as properties(self) -> int
+
+      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Info` as info(self) -> str
 
       def `Copy` as copy(self) -> Component
 
@@ -839,6 +856,8 @@ from "nnet3/nnet-simple-component.h":
 
       def `UnVectorize` as unvectorize(self, params: VectorBase)
 
+      def `ConsolidateMemory` as consolidate_memory(self)
+
 
     class ConstantFunctionComponent(UpdatableComponent):
       @add__init__
@@ -912,6 +931,9 @@ from "nnet3/nnet-simple-component.h":
                                      update_period: int,
                                      num_samples_history: float, alpha: float)
 
+      def `ConsolidateMemory` as consolidate_memory(self)
+
+
     class ScaleAndOffsetComponent(UpdatableComponent):
       @add__init__
       def `ScaleAndOffsetComponent` as from_other(self, other: ScaleAndOffsetComponent)
@@ -956,62 +978,8 @@ from "nnet3/nnet-simple-component.h":
 
       def `UnVectorize` as unvectorize(self, params: VectorBase)
 
+      def `ConsolidateMemory` as consolidate_memory(self)
 
-    # ConvolutionComponent
-
-    class LstmNonlinearityComponent(UpdatableComponent):
-      @add__init__
-      def `LstmNonlinearityComponent` as from_other(self, other: LstmNonlinearityComponent)
-
-      def `Init` as init(self, cell_dim: int, use_dropout: bool, param_stddev: float,
-                         tanh_self_repair_threshold: float,
-                         sigmoid_self_repair_threshold: float, self_repair_scale: float)
-
-      def `InputDim` as input_dim(self) -> int
-
-      def `OutputDim` as output_dim(self) -> int
-
-      def `Info` as info(self) -> str
-
-      def `InitFromConfig` as init_from_config(self, cfl: ConfigLine)
-
-      def `Type` as type(self) -> str
-
-      def `Properties` as properties(self) -> int
-
-      def `Propagate` as propagate(self, indexes: ComponentPrecomputedIndexes,
-                                   in: CuMatrixBase, out: CuMatrixBase) -> Memo
-
-      def `Backprop` as backprop(
-          self, debug_info: str, indexes: ComponentPrecomputedIndexes,
-          in_value: CuMatrixBase, out_value: CuMatrixBase, out_deriv: CuMatrixBase,
-          memo: Memo, to_update: Component, in_deriv: CuMatrixBase)
-
-      def `Read` as read(self, is: istream, binary: bool)
-
-      def `Write` as write(self, os: ostream, binary: bool)
-
-      def `Copy` as copy(self) -> Component
-
-      def `Scale` as scale(self, scale: float)
-
-      def `Add` as add(self, alpha: float, other: Component)
-
-      def `PerturbParams` as perturb_params(self, stddev: float)
-
-      def `DotProduct` as dot_product(self, other: UpdatableComponent) -> float
-
-      def `NumParameters` as num_parameters(self) -> int
-
-      def `Vectorize` as vectorize(self, params: VectorBase)
-
-      def `UnVectorize` as unvectorize(self, params: VectorBase)
-
-      def `ZeroStats` as zero_stats(self)
-
-      def `FreezeNaturalGradient` as freeze_natural_gradient(self, freeze: bool)
-
-    # MaxPoolingComponent
 
     class CompositeComponent(UpdatableComponent):
       def `InputDim` as input_dim(self) -> int

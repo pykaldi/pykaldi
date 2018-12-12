@@ -298,6 +298,9 @@ from "feat/online-feature.h":
       def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
         """Returns the features for given frame index"""
 
+      def `GetFrames` as get_frames(self, frames: list<int>, feats: MatrixBase):
+        """Returns the features for given frame indices"""
+
     class OnlineDeltaFeature(OnlineFeatureInterface):
       """Online delta features.
 
@@ -347,6 +350,9 @@ from "feat/online-feature.h":
 
       def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
         """Returns the features for given frame index"""
+
+      def `GetFrames` as get_frames(self, frames: list<int>, feats: MatrixBase):
+        """Returns the features for given frame indices"""
 
     class OnlineAppendFeature(OnlineFeatureInterface):
       """Online feature concatenation.

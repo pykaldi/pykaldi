@@ -131,3 +131,6 @@ from "rnnlm/rnnlm-core-training.h":
         This is the percentage of time that per-component max-change and global
         max-change were enforced.
         """
+
+      def `ConsolidateMemory` as consolidate_memory(self):
+        """Consolidates neural network memory."""

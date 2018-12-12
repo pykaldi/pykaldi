@@ -299,6 +299,8 @@ from "nnet3/nnet-general-component.h":
 
       def `UnVectorize` as unvectorize(self, params: VectorBase)
 
+      def `ConsolidateMemory` as consolidate_memory(self)
+
 
     class DropoutMaskComponent(RandomComponent):
       @add__init__

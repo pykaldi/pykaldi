@@ -25,6 +25,15 @@ from "chain/chain-supervision.h":
       frame_subsampling_factor: int
       """Frame subsampling factor"""
 
+      weight: float
+      """Supervision weight for training"""
+
+      lm_scale: float
+      """The scale on graph weights from phone lattice included in the supervision FST"""
+
+      convert_to_pdfs: bool
+      """Convert transition-ids to pdf-ids + 1 in supervision FST"""
+
       def `Register` as register(self, opts: OptionsItf):
         """Registers options with an object implementing the options interface.
 
@@ -87,9 +96,13 @@ from "chain/chain-supervision.h":
 
       Args:
         trans_model (TransitionModel): Transition model
+        convert_to_pdfs (bool): If True, this FST will map from transition-id
+          on the inpurt side to pdf-id plus one on the output side. Otherwise,
+          both sides' labels will be transition-id.
         allowed_phones (List[List[int]]): Phones allowed at each frame.
       """
-      def __init__(self, trans_model: TransitionModel, allowed_phones: list<list<int>>)
+      def __init__(self, trans_model: TransitionModel, convert_to_pdfs: bool,
+                   allowed_phones: list<list<int>>)
 
       def `Start` as start(self) -> int:
         """Returns the start state index."""
@@ -153,8 +166,17 @@ from "chain/chain-supervision.h":
       def `Read` as read(self, is:istream, binary: bool):
         """Reads Supervision object from input stream."""
 
-    def `ProtoSupervisionToSupervision` as proto_supervision_to_supervision(ctx_dep: ContextDependencyInterface, trans_model: TransitionModel, proto_supervision: ProtoSupervision) -> (success: bool, supervision: Supervision):
+    def `ProtoSupervisionToSupervision` as proto_supervision_to_supervision(
+      ctx_dep: ContextDependencyInterface, trans_model: TransitionModel,
+      proto_supervision: ProtoSupervision, convert_to_pdfs: bool)
+      -> (success: bool, supervision: Supervision):
       """Creates a Supervision object from a ProtoSupervision object."""
+      return _value_error_on_false(...)
+
+    def `TrainingGraphToSupervisionE2e` as training_graph_to_supervision_e2e(
+      training_graph: StdVectorFst, trans_model: TransitionModel, num_frames: int)
+      -> (success: bool, supervision: Supervision):
+      """Creates and initializes an end-to-end supervision object from training FST."""
       return _value_error_on_false(...)
 
     def `SortBreadthFirstSearch` as sort_breadth_first_search(fst: StdVectorFst):
@@ -203,8 +225,11 @@ from "chain/chain-supervision.h":
         The path length and the state times.
       """
 
-    # This function will crash if the values of label_dim in the inputs are note all the same
-    # def `AppendSupervision` as _append_supervision(input: list<Supervision>, compactify: bool) -> (output: list<Supervision>)
+    # def `MergeSupervision` as merge_supervision(input: list<Supervision>) -> Supervision:
+    #   """Merges a list of supervision objects.
+    #
+    #   All input supervison objects must have the same num-frames and label-dim.
+    #   """
 
     def `SplitIntoRanges` as split_into_ranges(num_frames: int, frames_per_range: int) -> (range_starts: list<int>):
       """Pseudo-randomly split a sequence of length num_frames into pieces of length exactly frames_per_range"""
@@ -219,3 +244,16 @@ from "chain/chain-supervision.h":
       Returns:
         Output vector weights with the same dimension as range_starts.
       """
+
+    def `ConvertSupervisionToUnconstrained` as convert_supervision_to_unconstrained(
+      trans_model: TransitionModel, supervision: Supervision) -> bool:
+      """Converts supervision to an unconstrained supervision.
+
+      This function converts a 'Supervision' object that has a non-cyclic FST
+      as its 'fst' member, and converts it to one that has a cyclic FST in
+      its e2e_fsts[0], and has 'alignment_pdfs' set to a random path through
+      the original 'fst' (this used only in the binary nnet3-chain-acc-lda-stats).
+      This can be used to train without any constraints on the alignment of phones
+      internal to chunks, while still imposing constraints at chunk boundaries.
+      """
+      return _value_error_on_false(...)

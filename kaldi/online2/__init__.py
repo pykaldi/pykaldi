@@ -53,6 +53,7 @@ from ._online_ivector_feature import *
 from ._online_ivector_feature import _OnlineIvectorExtractionInfo
 from ._online_nnet2_feature_pipeline import *
 from ._online_nnet3_decoding import *
+from ._online_nnet3_decoding_ext import *
 
 from .. import matrix as _matrix
 

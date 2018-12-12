@@ -73,6 +73,8 @@ from "nnet3/nnet-component-itf.h":
 
       def `DeleteMemo` as delete_memo(self, memo: Memo)
 
+      def `ConsolidateMemory` as consolidate_memory(self)
+
 
     class RandomComponent(Component):
       def `ResetGenerator` as reset_generator(self)
@@ -132,6 +134,8 @@ from "nnet3/nnet-component-itf.h":
       def `Scale` as scale(self, scale: float)
 
       def `Add` as add(self, alpha: float, other: Component)
+
+      def `ConsolidateMemory` as consolidate_memory(self)
 
       def ValueSum(self) -> CuDoubleVector
 

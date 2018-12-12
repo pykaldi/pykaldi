@@ -1,0 +1,74 @@
+from "fstext/float-weight-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/arc-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from kaldi.fstext._deterministic_fst import StdDeterministicOnDemandFst
+from kaldi.util import _value_error_on_false
+
+from "fstext/grammar-context-fst.h":
+  namespace `fst`:
+    enum NonterminalValues
+
+    def `GetEncodingMultiple` as get_encoding_multiple(nonterm_phones_offset: int) -> int:
+      """Returns the smallest multiple of 1000 > nonterm_phones_offset."""
+
+    def `ComposeContextLeftBiphone` as compose_context_left_biphone(
+        nonterm_phones_offset: int, disambig_syms: list<int>,
+        ifst: StdVectorFst, ofst: StdVectorFst) -> list<list<int>>:
+      """Creates a context FST and composes it on the left with input fst.
+
+      This is a variant of the function :meth:compose_context which is to be
+      used with the "grammar FST" framework. This does not take the
+      'context_width' and 'central_position' arguments because they are assumed
+      to be 2 and 1 respectively (meaning, left-biphone phonetic context).
+
+      Args:
+          nonterm_phones_offset (int): The integer index of the first
+            non-terminal symbol.
+          disambig_syms (List[int]): Disambiguation symbols.
+          ifst (StdVectorFst): Input FST.
+          ofst (StdVectorFst): Output FST.
+      Returns:
+          List[List[int]]: Label information.
+      """
+
+    class `InverseLeftBiphoneContextFst` as StdInverseLeftBiphoneContextFst(StdDeterministicOnDemandFst):
+      """Inverse of the left-biphone context FST "C" over the tropical semiring.
+
+      This does not take the arguments 'context_width' or 'central_position'
+      because they are assumed to be (2, 1) meaning a system with left-biphone
+      context; and there is no subsequential symbol because it is not needed in
+      systems without right context.
+
+      Args:
+        nonterm_phones_offset (int): Integer index of the first non-terminal
+          symbol. Set to a large value, e.g. 1 million, if not using
+          non-terminals.
+        phones (List[int]): Integer indices for the phones.
+        disambig_syms (List[int]): Integer indices for disambiguation symbols.
+      """
+      def __init__(self, nonterm_phones_offset: int, phones: list<int>,
+                   disambig_syms: list<int>)
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
+
+      def `IlabelInfo` as ilabel_info(self) -> list<list<int>>:
+        """Returns input label info."""
