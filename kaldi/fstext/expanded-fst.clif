@@ -24,7 +24,7 @@ from "fst/expanded-fst.h":
       # @classmethod
       # def Read(cls, filename: str) -> StdExpandedFst
 
-    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
+    # CountStates, CountArcs methods are wrapped via shims in fst-inplace-ops.h.
 
     # LogArc
 
@@ -39,7 +39,7 @@ from "fst/expanded-fst.h":
       # @classmethod
       # def Read(cls, filename: str) -> LogExpandedFst
 
-    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
+    # CountStates, CountArcs methods are wrapped via shims in fst-inplace-ops.h.
 
     # LatticeArc
 
@@ -54,7 +54,7 @@ from "fst/expanded-fst.h":
       # @classmethod
       # def Read(cls, filename: str) -> LatticeExpandedFst
 
-    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
+    # CountStates, CountArcs methods are wrapped via shims in fst-inplace-ops.h.
 
     # CompactLatticeArc
 
@@ -69,7 +69,7 @@ from "fst/expanded-fst.h":
       # @classmethod
       # def Read(cls, filename: str) -> CompactLatticeExpandedFst
 
-    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
+    # CountStates, CountArcs methods are wrapped via shims in fst-inplace-ops.h.
 
     # KwsIndexArc
 
@@ -84,4 +84,4 @@ from "fst/expanded-fst.h":
       # @classmethod
       # def Read(cls, filename: str) -> KwsIndexExpandedFst
 
-    # CountStates, CountArcs methods are wrapped via shims in fst-ops.h.
+    # CountStates, CountArcs methods are wrapped via shims in fst-inplace-ops.h.

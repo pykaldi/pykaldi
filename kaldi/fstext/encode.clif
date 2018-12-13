@@ -389,7 +389,7 @@ from "fst/encode.h":
         See also: `set_input_symbols`.
         """
 
-    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+    # Encode, Decode functions are wrapped via shims in fst-inplace-ops.h.
 
     # Log Semiring
 
@@ -492,7 +492,7 @@ from "fst/encode.h":
         See also: `set_input_symbols`.
         """
 
-    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+    # Encode, Decode functions are wrapped via shims in fst-inplace-ops.h.
 
     # Lattice Semiring
 
@@ -595,7 +595,7 @@ from "fst/encode.h":
         See also: `set_input_symbols`.
         """
 
-    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+    # Encode, Decode functions are wrapped via shims in fst-inplace-ops.h.
 
     # CompactLattice Semiring
 
@@ -698,7 +698,7 @@ from "fst/encode.h":
         See also: `set_input_symbols`.
         """
 
-    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+    # Encode, Decode functions are wrapped via shims in fst-inplace-ops.h.
 
     # KwsIndex Semiring
 
@@ -801,4 +801,4 @@ from "fst/encode.h":
         See also: `set_input_symbols`.
         """
 
-    # Encode, Decode functions are wrapped via shims in fst-ops.h.
+    # Encode, Decode functions are wrapped via shims in fst-inplace-ops.h.

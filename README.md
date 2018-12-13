@@ -247,7 +247,7 @@ are hoping to upstream these changes over time.
 
 You can use the scripts in the `tools` directory to install or update these
 software locally. Make sure you check the output of these scripts. If you do not
-see `Done installing {protobuf,CLIF,Kaldi}.` printed at the very end, it means
+see `Done installing {protobuf,CLIF,Kaldi}` printed at the very end, it means
 that installation has failed for some reason.
 
 ```bash
