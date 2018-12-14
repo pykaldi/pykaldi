@@ -1,0 +1,59 @@
+from "base/iostream-clifwrap.h" import *
+from "matrix/kaldi-vector-clifwrap.h" import *
+from "chain/chain-supervision-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-computation-clifwrap.h" import *
+
+from "nnet3/nnet-chain-example.h":
+  namespace `kaldi::nnet3`:
+    class NnetChainSupervision:
+      name: str
+      indexes: list<Index>
+      supervision: Supervision
+      deriv_weights: Vector
+
+      @add__init__
+      def `NnetChainSupervision` as from_supervision(self, name: str, supervision: Supervision,
+                                                     deriv_weights: Vector, first_frame: int,
+                                                     frame_skip: int)
+
+      @add__init__
+      def `NnetChainSupervision` as from_other(self, other: NnetChainSupervision)
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Swap` as swap(self, other: NnetChainSupervision)
+
+      def `CheckDim` as check_dim(self)
+
+      def __eq__(self, other: NnetChainSupervision) -> bool
+
+    class NnetChainExample:
+      inputs: list<NnetIo>
+      outputs: list<NnetChainSupervision>
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `Swap` as swap(self, other: NnetChainExample)
+
+      def `Compress` as compress(self)
+
+      @add__init__
+      def `NnetChainExample` as from_other(self, other: NnetChainExample)
+
+      def __eq__(self, other: NnetChainExample) -> bool
+
+    # MergeChainExamples is wrapped in nnet-chain-example-ext.clif
+
+    def `ShiftChainExampleTimes` as shift_chain_example_times(
+      frame_shift: int, exclude_names: list<str>, eg: NnetChainExample)
+
+    def `GetChainComputationRequest` as get_chain_computation_request(
+      nnet: Nnet, eg: NnetChainExample, need_model_derivative: bool, store_component_stats: bool,
+      use_xent_regularization: bool, use_xent_derivative: bool) -> ComputationRequest

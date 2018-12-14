@@ -1,0 +1,21 @@
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+
+from "nnet3/attention.h":
+  namespace `kaldi::nnet3::attention`:
+    def `GetAttentionDotProducts` as get_attention_dot_products(
+      alpha: float, A: CuMatrixBase, B: CuMatrixBase, C: CuMatrixBase)
+
+    def `ApplyScalesToOutput` as apply_scales_to_output(
+      alpha: float, B: CuMatrixBase, C: CuMatrixBase, A: CuMatrixBase)
+
+    def `ApplyScalesToInput` as apply_scales_to_input(
+      alpha: float, A: CuMatrixBase, C: CuMatrixBase, B: CuMatrixBase)
+
+    def `AttentionForward` as attention_forward(
+      key_scale: float, keys: CuMatrixBase, queries: CuMatrixBase, values: CuMatrixBase,
+      c: CuMatrixBase, output:CuMatrixBase)
+
+    def `AttentionBackward` as attention_backward(
+      key_scale: float, keys: CuMatrixBase, queries: CuMatrixBase, values: CuMatrixBase,
+      c: CuMatrixBase, output_deriv:CuMatrixBase, keys_deriv: CuMatrixBase,
+      queries_deriv: CuMatrixBase, values_deriv: CuMatrixBase)

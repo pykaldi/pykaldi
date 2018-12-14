@@ -48,9 +48,19 @@ add_pyclif_library("_nnet_normalize_component" nnet-normalize-component.clif
   LIBRARIES kaldi-nnet3
 )
 
+add_pyclif_library("_convolution" convolution.clif
+  CLIF_DEPS _cu_matrix _nnet_common
+  LIBRARIES kaldi-nnet3
+)
+
 add_pyclif_library("_nnet_convolutional_component" nnet-convolutional-component.clif
   CLIF_DEPS _nnet_component_itf
   LIBRARIES kaldi-cudamatrix kaldi-nnet3
+)
+
+add_pyclif_library("_attention" attention.clif
+  CLIF_DEPS _cu_matrix
+  LIBRARIES kaldi-nnet3
 )
 
 add_pyclif_library("_nnet_attention_component" nnet-attention-component.clif
@@ -90,6 +100,11 @@ add_pyclif_library("_nnet_graph" nnet-graph.clif
 
 add_pyclif_library("_nnet_compile" nnet-compile.clif
   CLIF_DEPS _nnet_computation
+  LIBRARIES kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_compile_utils" nnet-compile-utils.clif
+  CLIF_DEPS _nnet_common
   LIBRARIES kaldi-nnet3
 )
 
@@ -145,6 +160,31 @@ add_pyclif_library("_nnet_diagnostics" nnet-diagnostics.clif
 
 add_pyclif_library("_nnet_training" nnet-training.clif
   CLIF_DEPS _nnet_compute _nnet_optimize
+  LIBRARIES kaldi-util kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_chain_example" nnet-chain-example.clif
+  CLIF_DEPS _iostream _kaldi_vector _chain_supervision _nnet_example _nnet_computation
+  LIBRARIES kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_chain_example_ext" nnet-chain-example-ext.clif
+  CLIF_DEPS _nnet_chain_example
+  LIBRARIES kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_chain_example_merger" nnet-chain-example-merger.clif
+  CLIF_DEPS _kaldi_table _nnet_example_utils
+  LIBRARIES kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_chain_diagnostics" nnet-chain-diagnostics.clif
+  CLIF_DEPS _chain_training _vector_fst _nnet_diagnostics _nnet_chain_example
+  LIBRARIES kaldi-util kaldi-nnet3
+)
+
+add_pyclif_library("_nnet_chain_training" nnet-chain-training.clif
+  CLIF_DEPS _options_itf _chain_training _vector_fst _nnet_training _nnet_chain_example
   LIBRARIES kaldi-util kaldi-nnet3
 )
 

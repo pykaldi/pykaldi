@@ -1,0 +1,7 @@
+from "nnet3/nnet-chain-example-clifwrap.h" import *
+
+from "nnet3/nnet-chain-example-ext.h":
+  namespace `kaldi::nnet3`:
+
+    def `MergeChainExamplesExt` as merge_chain_examples(compress: bool, input: list<NnetChainExample>)
+      -> NnetChainExample

@@ -1,0 +1,35 @@
+from "chain/chain-training-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-chain-example-clifwrap.h" import *
+from "nnet3/nnet-diagnostics-clifwrap.h" import *
+
+from "nnet3/nnet-chain-diagnostics.h":
+  namespace `kaldi::nnet3`:
+
+    class ChainObjectiveInfo:
+      tot_weight: float
+      tot_like: float
+      tot_l2_term: float
+
+    class NnetChainComputeProb:
+      def __init__(self, nnet_config: NnetComputeProbOptions,
+                   chain_config: ChainTrainingOptions, den_fst: StdVectorFst, nnet: Nnet)
+
+      # NnetChainComputeProb second constructor
+
+      def `Reset` as reset(self)
+
+      def `Compute` as compute(self, eg: NnetChainExample)
+
+      def `PrintTotalStats` as print_total_stats(self) -> bool
+
+      def `GetObjective` as get_objective(self, output_name: str) -> ChainObjectiveInfo
+
+      def `GetTotalObjective` as get_total_objective(self) -> (tot_objective: float, tot_weight: float)
+
+      def `GetDeriv` as get_deriv(self) -> Nnet
+
+    def `RecomputeStats` as recompute_stats(egs: list<NnetChainExample>,
+                                            chain_config: ChainTrainingOptions,
+                                            den_fst: StdVectorFst, nnet: Nnet)

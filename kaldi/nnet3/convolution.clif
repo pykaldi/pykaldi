@@ -1,0 +1,144 @@
+from "base/iostream-clifwrap.h" import *
+from "cudamatrix/cu-array-clifwrap.h" import *
+from "cudamatrix/cu-matrix-clifwrap.h" import *
+from "nnet3/nnet-common-clifwrap.h" import *
+
+from "nnet3/convolution.h":
+  namespace `kaldi::nnet3::time_height_convolution`:
+    class ConvolutionModel:
+      num_filters_in: int
+      num_filters_out: int
+      height_in: int
+      height_out: int
+      height_subsample_out: int
+
+      class Offset:
+        time_offset: int
+        height_offset: int
+
+        def __lt__(self, other: Offset) -> bool
+
+        def __le__(self, other: Offset) -> bool
+
+        def __eq__(self, other: Offset) -> bool
+
+      offsets: list<Offset>
+      required_time_offsets: `std::set` as set<int>
+      all_time_offsets: `std::set` as set<int>
+      time_offsets_modulus: int
+
+      def `ComputeDerived` as compute_derived(self)
+
+      def `InputDim` as input_dim(self) -> int
+
+      def `OutputDim` as output_dim(self) -> int
+
+      def `ParamRows` as param_rows(self) -> int
+
+      def `ParamCols` as param_cols(self) -> int
+
+      def __eq__(self, other: ConvolutionModel) -> bool
+
+      def `Check` as check(self, check_heights_used: bool = default,
+                           allow_height_padding: bool = default) -> bool
+
+      def `Info` as info(self) -> str
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+    class ConvolutionComputation:
+      num_filters_in: int
+      num_filters_out: int
+      height_in: int
+      height_out: int
+      num_t_in: int
+      num_t_out: int
+      num_images: int
+      temp_rows: int
+      temp_cols: int
+
+      class ConvolutionStep:
+        input_time_shift: int
+        params_start_col: int
+        height_map: list<int>
+        columns: CuArray
+        backward_columns: list<CuArray>
+        columns_are_contiguous: bool
+        first_column: int
+
+      steps: list<ConvolutionStep>
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+      def `ComputeDerived` as compute_derived(self)
+
+      def `Check` as check(self)
+
+
+    class ConvolutionComputationOptions:
+      max_memory_mb: float
+
+    class ConvolutionComputationIo:
+      num_images: int
+      start_t_in: int
+      t_step_in: int
+      num_t_in: int
+      start_t_out: int
+      t_step_out: int
+      num_t_out: int
+      reorder_t_in: int
+
+      def `Write` as write(self, os: ostream, binary: bool)
+
+      def `Read` as read(self, is: istream, binary: bool)
+
+    def `CheckModelAndIo` as check_model_and_io(
+      model: ConvolutionModel, io: ConvolutionComputationIo, allow_extra_input: bool = default)
+
+    def `CompileConvolutionComputation` as compile_convolution_computation(
+      model: ConvolutionModel, input_indexes: list<Index>, output_indexes: list<Index>,
+      opts: ConvolutionComputationOptions)
+      -> (computation: ConvolutionComputation,
+          input_indexes_modified: list<Index>,
+          output_indexes_modified: list<Index>)
+
+    def `ConvolveForward` as convolve_forward(conv_comp: ConvolutionComputation,
+                                              input: CuMatrixBase, params: CuMatrixBase,
+                                              output: CuMatrixBase)
+
+    def `ConvolveBackwardData` as convolve_backward_data(
+      conv_comp: ConvolutionComputation, params: CuMatrixBase, output_deriv: CuMatrixBase,
+      input_deriv: CuMatrixBase)
+
+
+    def `ConvolveBackwardParams` as convolve_backward_params(
+      conv_comp: ConvolutionComputation, input: CuMatrixBase, output_deriv: CuMatrixBase,
+      alpha: float, params_deriv: CuMatrixBase)
+
+    def `GetComputationIo` as get_computation_io(
+      input_indexes: list<Index>, output_indexes: list<Index>) -> ConvolutionComputationIo
+
+    def `GetIndexesForComputation` as get_indexes_for_computation(
+      io: ConvolutionComputationIo, orig_input_indexes: list<Index>, orig_output_indexes: list<Index>)
+      -> (input_indexes: list<Index>, output_indexes: list<Index>)
+
+    def `PadComputationInputTime` as pad_computation_input_time(model: ConvolutionModel)
+      -> ConvolutionComputationIo
+
+    def `PadModelHeight` as pad_model_height(model: ConvolutionModel) -> ConvolutionModel
+
+    def `UnPadModelHeight`as un_pad_model_height(
+      opts: ConvolutionComputationOptions, model: ConvolutionModel, model_padded: ConvolutionModel)
+      -> ConvolutionComputation
+
+    def `AppendInputFrames` as append_input_frames(
+      model: ConvolutionModel, io: ConvolutionComputationIo)
+      -> (model_appended: ConvolutionModel, io_appended: ConvolutionComputationIo)
+
+    def `MakeComputation` as make_computation(
+      model: ConvolutionModel, io: ConvolutionComputationIo, opts: ConvolutionComputationOptions)
+      -> ConvolutionComputation

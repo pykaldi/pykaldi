@@ -1,0 +1,23 @@
+from "nnet3/nnet-common-clifwrap.h" import *
+
+from "nnet3/nnet-compile-utils.h":
+  namespace `kaldi::nnet3`:
+
+    def `SplitLocations` as split_locations(submat_lists: list<list<tuple<int, int>>>)
+      -> list<list<tuple<int, int>>>
+
+    def `SplitLocationsBackward` as split_locations_backward(submat_lists: list<list<tuple<int, int>>>)
+      -> list<list<tuple<int, int>>>
+
+    def `ConvertToIndexes` as convert_to_indexes(location_vector: list<tuple<int, int>>)
+      -> (success: bool, first_value: int, second_values: list<int>)
+
+    def `HasContiguousProperty` as has_contiguous_property(indexes: list<int>)
+      -> (success: bool, reverse_indexes: list<tuple<int, int>>)
+
+    def `EnsureContiguousProperty` as ensure_contiguous_property(indexes: list<int>)
+      -> list<list<int>>
+
+    def `GetTList` as get_t_list(indexes: list<Index>) -> list<int>
+
+    def `GetNxList` as get_nx_list(indexes: list<Index>) -> list<tuple<int, int>>

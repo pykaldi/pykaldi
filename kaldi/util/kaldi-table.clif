@@ -4,6 +4,7 @@ from "matrix/compressed-matrix-clifwrap.h" import *
 from "feat/wave-reader-clifwrap.h" import *
 from "hmm/posterior-ext-clifwrap.h" import *
 from "nnet3/nnet-example-clifwrap.h" import *
+from "nnet3/nnet-chain-example-clifwrap.h" import *
 from "rnnlm/rnnlm-example-clifwrap.h" import *
 from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
@@ -1211,6 +1212,27 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+    class SequentialNnetChainExampleReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `Done` as done(self) -> bool
+
+      def `Key` as key(self) -> str
+
+      def `FreeCurrent` as free_current(self)
+
+      def `Value` as value(self) -> NnetChainExample
+
+      def `Next` as next(self)
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
     class RandomAccessNnetExampleReader:
 
       def `Open` as open(self, rspecifier: str) -> bool
@@ -1226,6 +1248,21 @@ from "util/kaldi-table.h":
       @__exit__
       def Close(self) -> bool
 
+    class RandomAccessNnetChainExampleReader:
+
+      def `Open` as open(self, rspecifier: str) -> bool
+
+      def `HasKey` as has_key(self, key: str) -> bool
+
+      def `Value` as value(self, key: str) -> NnetChainExample
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
     class NnetExampleWriter:
 
       def `Open` as open(self, wspecifier: str) -> bool
@@ -1233,6 +1270,21 @@ from "util/kaldi-table.h":
       def `IsOpen` as is_open(self) -> bool
 
       def `Write` as write(self, key: str, value: NnetExample)
+
+      def `Flush` as flush(self)
+
+      def `Close` as close(self) -> bool
+
+      @__exit__
+      def Close(self) -> bool
+
+    class NnetChainExampleWriter:
+
+      def `Open` as open(self, wspecifier: str) -> bool
+
+      def `IsOpen` as is_open(self) -> bool
+
+      def `Write` as write(self, key: str, value: NnetChainExample)
 
       def `Flush` as flush(self)
 

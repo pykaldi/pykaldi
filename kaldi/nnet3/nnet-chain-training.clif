@@ -1,0 +1,24 @@
+from "itf/options-itf-clifwrap.h" import *
+from "chain/chain-training-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+from "nnet3/nnet-nnet-clifwrap.h" import *
+from "nnet3/nnet-training-clifwrap.h" import *
+from "nnet3/nnet-chain-example-clifwrap.h" import *
+
+from "nnet3/nnet-chain-training.h":
+  namespace `kaldi::nnet3`:
+    class NnetChainTrainingOptions:
+      nnet_config: NnetTrainerOptions
+      chain_config: ChainTrainingOptions
+      apply_deriv_weights: bool
+
+      def `Register` as register(self, opts: OptionsItf)
+
+    class NnetChainTrainer:
+      def __init__(self, config: NnetChainTrainingOptions, den_fst: StdVectorFst, nnet: Nnet)
+
+      def `Train` as train(self, eg: NnetChainExample)
+
+      def `PrintTotalStats` as print_total_stats(self) -> bool
+
+      def `PrintMaxChangeStats` as print_max_change_stats(self)

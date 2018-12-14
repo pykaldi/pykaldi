@@ -1,0 +1,20 @@
+from "nnet3/nnet-example-utils-clifwrap.h" import *
+# To import kaldi table wrapper, we first need to import wave reader, kaldi
+# lattice and RNNLM example.
+from "feat/wave-reader-clifwrap.h" import *
+from "hmm/posterior-ext-clifwrap.h" import *
+from "lat/kaldi-lattice.h" import *
+from "nnet3/nnet-chain-example-clifwrap.h" import *
+from "rnnlm/rnnlm-example-clifwrap.h" import *
+from "util/kaldi-table-clifwrap.h" import *
+
+from "nnet3/nnet-chain-example.h":
+  namespace `kaldi::nnet3`:
+    class ChainExampleMerger:
+      def __init__(self, config: ExampleMergingConfig, writer: NnetChainExampleWriter)
+
+      def `AcceptExample` as accept_example(self, a: NnetChainExample)
+
+      def `Finish` as finish(self)
+
+      def `ExitStatus` as exit_status(self) -> int

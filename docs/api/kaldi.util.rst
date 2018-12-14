@@ -133,6 +133,7 @@ kaldi\.util\.table
       LatticeWriter
       LogFstWriter
       MatrixWriter
+      NnetChainExampleWriter
       NnetExampleWriter
       PosteriorWriter
       RandomAccessBoolReader
@@ -156,6 +157,7 @@ kaldi\.util\.table
       RandomAccessLogFstReader
       RandomAccessMatrixReader
       RandomAccessMatrixReaderMapped
+      RandomAccessNnetChainExampleReader
       RandomAccessNnetExampleReader
       RandomAccessPosteriorReader
       RandomAccessVectorReader
@@ -182,6 +184,7 @@ kaldi\.util\.table
       SequentialLatticeReader
       SequentialLogFstReader
       SequentialMatrixReader
+      SequentialNnetChainExampleReader
       SequentialNnetExampleReader
       SequentialPosteriorReader
       SequentialRnnlmExampleReader
