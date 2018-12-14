@@ -14,6 +14,8 @@ from kaldi.online2 import (OnlineEndpointConfig,
 from kaldi.util.options import ParseOptions
 from kaldi.util.table import SequentialWaveReader
 
+chunk_size = 1440
+
 # Define online feature pipeline
 feat_opts = OnlineNnetFeaturePipelineConfig()
 endpoint_opts = OnlineEndpointConfig()
@@ -47,7 +49,6 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
     print(key, out["text"], flush=True)
 
 # Decode (chunked + partial output)
-chunk_size = 1440 * 4
 for key, wav in SequentialWaveReader("scp:wav.scp"):
     feat_pipeline = OnlineNnetFeaturePipeline(feat_info)
     asr.set_input_pipeline(feat_pipeline)
@@ -108,10 +109,19 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
                 asr.finalize_decoding()
                 out = asr.get_output()
                 print(key + "-utt%d-final" % utt, out["text"], flush=True)
+                offset = int(feat_pipeline.num_frames_ready()
+                             * feat_pipeline.frame_shift_in_seconds()
+                             * wav.samp_freq)
+                feat_pipeline.get_adaptation_state(adaptation_state)
+                feat_pipeline = OnlineNnetFeaturePipeline(feat_info)
+                feat_pipeline.set_adaptation_state(adaptation_state)
+                asr.set_input_pipeline(feat_pipeline)
                 asr.init_decoding()
                 sil_weighting = OnlineSilenceWeighting(
                     asr.transition_model, feat_info.silence_weighting_config,
                     decodable_opts.frame_subsampling_factor)
+                remainder = data[offset:i + chunk_size]
+                feat_pipeline.accept_waveform(wav.samp_freq, remainder)
                 utt += 1
                 part = 1
                 max_num_frames_decoded = 0
