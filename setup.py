@@ -36,13 +36,13 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
 
 if not PYCLIF:
-    PYCLIF = os.path.join(sys.prefix, 'bin/clif-matcher')
+    PYCLIF = os.path.join(sys.prefix, 'bin/pyclif')
 PYCLIF = os.path.abspath(PYCLIF)
 
 if not (os.path.isfile(PYCLIF) and os.access(PYCLIF, os.X_OK)):
     try:
         PYCLIF = check_output(['which', 'pyclif'])
-    except OSError:
+    except subprocess.CalledProcessError:
         print("\nCould not find pyclif.\nPlease add pyclif binary to your PATH "
              "or set PYCLIF environment variable.", file=sys.stderr)
         sys.exit(1)
