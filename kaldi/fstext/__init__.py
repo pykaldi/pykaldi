@@ -53,7 +53,7 @@ context-dependent phones to context-independent phones C, and an HMM set H::
 
 from ..util import io as _io
 
-from ._getters import EncodeType
+from _getters import EncodeType, MatchType
 from ._symbol_table import *
 from . import _float_weight
 from . import _lattice_weight

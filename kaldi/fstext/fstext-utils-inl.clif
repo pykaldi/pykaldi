@@ -193,6 +193,16 @@ from "fstext/fstext-utils-inl.h":
       the requested symbol.
       """
 
+    def `PhiCompose` as phi_compose_lattice(fst1: LatticeFst, fst2: LatticeFst,
+                                            phi_label: int, ofst: LatticeMutableFst):
+      """Performs lattice composition by handling phi (failure) transitions.
+
+      This is a version of composition where the right hand FST (fst2) is
+      treated as a backoff language model, with the phi symbol (e.g. #0)
+      treated as a "failure transition", only taken when there is no match for
+      the requested symbol.
+      """
+
     def `PropagateFinal` as propagate_final(phi_label: int, fst: StdMutableFst):
       """Propagates final-probs through "phi" transitions.
 

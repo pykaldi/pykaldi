@@ -12,8 +12,10 @@ from __future__ import division
 
 from . import decoder as _dec
 from . import fstext as _fst
-from .fstext import utils as _fst_utils
+from .fstext import _fst as _fst_fst
+from .fstext import properties as _fst_props
 from .fstext import special as _fst_spec
+from .fstext import utils as _fst_utils
 from .gmm import am as _gmm_am
 from . import hmm as _hmm
 from .lat import functions as _lat_funcs
@@ -1904,3 +1906,87 @@ class NnetLatticeFasterOnlineGrammarRecognizer(NnetOnlineRecognizer):
         return _online2.decoding_endpoint_detected_grammar(
             self.endpoint_opts, self.transition_model,
             self.output_frame_shift, self.decoder)
+
+
+class LatticeLmRescorer(object):
+    """Lattice LM rescorer.
+
+    If `phi_label` is provided, rescoring will be "exact" in the sense that
+    back-off arcs in the new LM will only be taken if there are no other
+    matching arcs. Inexact rescoring can overestimate the new LM scores for some
+    paths in the output lattice. This happens when back-off paths have higher
+    scores than matching regular paths in the new LM.
+
+    Args:
+        old_lm (StdFst): Old language model FST.
+        new_lm (StdFst): New language model FST.
+        phi_label (int): Back-off label in the new LM.
+    """
+    def __init__(self, old_lm, new_lm, phi_label=None):
+        self.phi_label = phi_label
+        self.old_lm = _fst_utils.convert_std_to_lattice(old_lm).project(True)
+        if not bool(self.old_lm.properties(_fst_props.I_LABEL_SORTED, True)):
+            self.old_lm.arcsort()
+        self.new_lm = _fst_utils.convert_std_to_lattice(new_lm)
+        if not self.phi_label:
+            self.new_lm.project(True)
+        if not bool(self.new_lm.properties(_fst_props.I_LABEL_SORTED, True)):
+            self.new_lm.arcsort()
+        self.old_lm_compose_cache = _fst_spec.LatticeTableComposeCache.from_compose_opts(
+            _fst_spec.TableComposeOptions.from_matcher_opts(
+                _fst_spec.TableMatcherOptions(),
+                table_match_type=_fst.MatchType.MATCH_INPUT))
+        if not self.phi_label:
+            self.new_lm_compose_cache = _fst_spec.LatticeTableComposeCache.from_compose_opts(
+                _fst_spec.TableComposeOptions.from_matcher_opts(
+                    _fst_spec.TableMatcherOptions(),
+                    table_match_type=_fst.MatchType.MATCH_INPUT))
+
+    def rescore(self, lat):
+        """Rescores input lattice.
+
+        Args:
+            lat (CompactLatticeFst): Input lattice.
+
+        Returns:
+            CompactLatticeVectorFst: Rescored lattice.
+        """
+        if isinstance(lat, _fst_fst.CompactLatticeFst):
+            lat = _fst_utils.convert_compact_lattice_to_lattice(lat)
+        else:
+            raise TypeError("Input should be a compact lattice.")
+        scale = _fst_utils.graph_lattice_scale(-1.0)
+        _fst_utils.scale_lattice(scale, lat)
+        if not bool(lat.properties(_fst_props.O_LABEL_SORTED, True)):
+            lat.arcsort("olabel")
+        composed_lat = _fst.LatticeVectorFst()
+        _fst_spec.table_compose_cache_lattice(lat, self.old_lm, composed_lat,
+                                              self.old_lm_compose_cache)
+        determinized_lat = _fst_spec.determinize_lattice(composed_lat.invert(),
+                                                         False).invert()
+        _fst_utils.scale_lattice(scale, determinized_lat)
+        if self.phi_label:
+            _fst_utils.phi_compose_lattice(determinized_lat, self.new_lm,
+                                           self.phi_label, composed_lat)
+        else:
+            _fst_spec.table_compose_cache_lattice(determinized_lat,
+                                                  self.new_lm, composed_lat,
+                                                  self.new_lm_compose_cache)
+        determinized_lat = _fst_spec.determinize_lattice(composed_lat.invert())
+        return determinized_lat
+
+    @classmethod
+    def from_files(cls, old_lm_rxfilename, new_lm_rxfilename, phi_label=None):
+        """Constructs a new lattice LM rescorer from given files.
+
+        Args:
+            old_lm_rxfilename (str): Extended filename for reading the old LM.
+            new_lm_rxfilename (str): Extended filename for reading the new LM.
+            phi_label (int): Back-off label in the new LM.
+
+        Returns:
+            LatticeRescorer: A new lattice LM rescorer.
+        """
+        old_lm = _fst.read_fst_kaldi(old_lm_rxfilename)
+        new_lm = _fst.read_fst_kaldi(new_lm_rxfilename)
+        return cls(old_lm, new_lm, phi_label)

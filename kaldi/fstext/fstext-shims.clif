@@ -105,3 +105,8 @@ from "fstext/fstext-shims.h":
         as _get_linear_symbol_sequence_from_lattice(fst: LatticeFst)
         -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>, tot_weight_out: LatticeWeight):
       return _value_error_on_false(...)
+
+    def `GetLinearSymbolSequenceFromCompactLatticeFst`
+        as _get_linear_symbol_sequence_from_compact_lattice(fst: CompactLatticeFst)
+        -> (success: bool, isymbols_out: list<int>, osymbols_out: list<int>, tot_weight_out: CompactLatticeWeight):
+      return _value_error_on_false(...)

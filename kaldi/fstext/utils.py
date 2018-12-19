@@ -80,6 +80,8 @@ def get_linear_symbol_sequence(fst):
         return _fstext_utils_inl._get_linear_symbol_sequence_from_std(fst)
     elif isinstance(fst, _fst.LatticeFst):
         return _fstext_shims._get_linear_symbol_sequence_from_lattice(fst)
+    elif isinstance(fst, _fst.CompactLatticeFst):
+        return _fstext_shims._get_linear_symbol_sequence_from_compact_lattice(fst)
     else:
         raise TypeError("Input FST arc type is not supported.")
 

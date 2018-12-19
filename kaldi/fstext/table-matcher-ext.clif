@@ -1,0 +1,27 @@
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/fst-clifwrap.h" import *
+from "fstext/mutable-fst-clifwrap.h" import *
+from "fstext/table-matcher-clifwrap.h" import *
+
+from "fstext/table-matcher-ext.h":
+  namespace `fst`:
+    class LatticeTableComposeCache:
+      """Cache for table compose.
+
+      Used for doing multiple compositions while caching the same matcher.
+
+      This version is for composing FSTs over lattice semiring.
+      """
+      # matcher: TableMatcher
+      opts: TableComposeOptions
+      """Table compose options."""
+
+      @add__init__
+      def `TableComposeCache` as from_compose_opts(
+        self, opts: TableComposeOptions = default):
+        """Creates a new `LatticeTableComposeCache` instance."""
+
+    def `TableComposeLattice` as table_compose_cache_lattice(
+      ifst1: LatticeFst, ifst2: LatticeFst, ofst: LatticeMutableFst,
+      cache: LatticeTableComposeCache):
+      """Performs cached table composition on lattices."""

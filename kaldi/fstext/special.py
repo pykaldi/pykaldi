@@ -6,6 +6,7 @@ from ._push_special import *
 from . import _special_ops
 from ._special_ops import *
 from ._table_matcher import *
+from ._table_matcher_ext import *
 
 from .. import fstext as _fst
 import _getters

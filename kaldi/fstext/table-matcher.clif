@@ -50,7 +50,12 @@ from "fstext/table-matcher.h":
                                         opts: TableComposeOptions = default):
       """Performs table composition."""
 
-    class `TableComposeCache<StdFst>` as TableComposeCache:
+    def `TableCompose` as table_compose_lattice(
+      ifst1: LatticeFst, ifst2: LatticeFst, ofst: LatticeMutableFst,
+      opts: TableComposeOptions = default):
+      """Performs table composition on lattices."""
+
+    class `TableComposeCache<StdFst>` as StdTableComposeCache:
       """Cache for table compose.
 
       Used for doing multiple compositions while caching the same matcher.
@@ -62,9 +67,12 @@ from "fstext/table-matcher.h":
       @add__init__
       def `TableComposeCache` as from_compose_opts(
         self, opts: TableComposeOptions = default):
-        """Creates a new `TableComposeCache` instance."""
+        """Creates a new `StdTableComposeCache` instance."""
 
-    def `TableCompose` as table_compose_cache(ifst1: StdFst, ifst2: StdFst,
-                                              ofst: StdMutableFst,
-                                              cache: TableComposeCache):
-      """Performs table composition using the cached table matcher."""
+    def `TableCompose` as table_compose_cache(
+      ifst1: StdFst, ifst2: StdFst, ofst: StdMutableFst,
+      cache: StdTableComposeCache):
+      """Performs cached table composition."""
+
+    # LatticeTableComposeCache and table_compose_cache_lattice are defined in
+    # table-matcher-ext.clif

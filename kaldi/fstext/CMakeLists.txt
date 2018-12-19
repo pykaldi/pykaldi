@@ -81,6 +81,11 @@ add_pyclif_library("_table_matcher" table-matcher.clif
   CLIF_DEPS _getters _fst _mutable_fst
 )
 
+add_pyclif_library("_table_matcher_ext" table-matcher-ext.clif
+  NAMESPACES fst
+CLIF_DEPS _table_matcher
+)
+
 add_pyclif_library("_fstext_shims" fstext-shims.clif
   CLIF_DEPS _iostream _expanded_fst _mutable_fst _vector_fst _const_fst
   LIBRARIES kaldi-fstext

@@ -104,6 +104,15 @@ bool GetLinearSymbolSequenceFromLatticeFst(
                                  tot_weight_out);
 }
 
+bool GetLinearSymbolSequenceFromCompactLatticeFst(
+    const Fst<ArcTpl<CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32>>> &fst,
+    vector<int32> *isymbols_out,
+    vector<int32> *osymbols_out,
+    CompactLatticeWeightTpl<LatticeWeightTpl<float>, int32> *tot_weight_out) {
+  return GetLinearSymbolSequence(fst, isymbols_out, osymbols_out,
+                                 tot_weight_out);
+}
+
 }  // namespace fst
 
 #endif  // PYKALDI_FSTEXT_FST_EXT_H_
