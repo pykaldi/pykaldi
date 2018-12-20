@@ -46,7 +46,8 @@ __all__ = ['Recognizer',
            'OnlineRecognizer',
            'NnetOnlineRecognizer',
            'NnetLatticeFasterOnlineRecognizer',
-           'NnetLatticeFasterOnlineGrammarRecognizer']
+           'NnetLatticeFasterOnlineGrammarRecognizer',
+           'LatticeLmRescorer']
 
 
 class Recognizer(object):
