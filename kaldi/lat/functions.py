@@ -5,6 +5,7 @@ from . import _determinize_lattice_pruned as _dlp
 from . import _lattice_functions as _lat_fun
 
 from ._confidence import *
+from ._compose_lattice_pruned import *
 from ._determinize_lattice_pruned import *
 from ._lattice_functions import *
 from ._minimize_lattice import *

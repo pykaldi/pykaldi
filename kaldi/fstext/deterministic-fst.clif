@@ -46,6 +46,58 @@ from "fstext/deterministic-fst.h":
       """
       def __init__(self, fst_: StdFst)
 
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
+
+    class ScaleDeterministicOnDemandFst(StdDeterministicOnDemandFst):
+      """A DeterministicOnDemandFst scaling the weights of another.
+
+      For instance, to subtract existing LM scores from a lattice you could use
+      this with a negative weight; and to interpolate LMs you can also use this
+      with weights less than one.
+
+      Args:
+        scale (float): The scaling factor.
+        det_fst (StdDeterministicOnDemandFst): The input deterministic on
+          demand FST.
+      """
+      def __init__(self, scale: float, det_fst: StdDeterministicOnDemandFst)
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
+
     class `UnweightedNgramFst<StdArc>`
         as StdUnweightedNgramFst(StdDeterministicOnDemandFst):
       """A DeterministicOnDemandFst in which states encode an n-gram history.
@@ -62,24 +114,84 @@ from "fstext/deterministic-fst.h":
       """
       def __init__(self, n: int)
 
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
+
     class `ComposeDeterministicOnDemandFst<StdArc>`
         as StdComposeDeterministicOnDemandFst(StdDeterministicOnDemandFst):
       """A DeterministicOnDemandFst implementing the composition of others.
 
       Args:
-        fst1 (StdFst): The first deterministic on demand FST.
-        fst2 (StdFst): The second deterministic on demand FST.
+        fst1 (StdDeterministicOnDemandFst): The first deterministic on demand
+          FST.
+        fst2 (StdDeterministicOnDemandFst): The second deterministic on demand
+          FST.
       """
       def __init__(self, fst1: StdDeterministicOnDemandFst,
                    fst2: StdDeterministicOnDemandFst)
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)
 
     class `CacheDeterministicOnDemandFst<StdArc>`
         as StdCacheDeterministicOnDemandFst(StdDeterministicOnDemandFst):
       """A DeterministicOnDemandFst caching the arcs of another.
 
       Args:
-        fst (StdFst): The input deterministic on demand FST.
+        fst (StdDeterministicOnDemandFst): The input deterministic on demand
+          FST.
         num_cached_arcs (int): Number of arcs to keep in the cache.
       """
       def __init__(self, fst: StdDeterministicOnDemandFst,
                    num_cached_arcs: int = default)
+
+      def `Start` as start(self) -> int:
+        """Returns the start state index."""
+
+      def `Final` as final(self, state: int) -> TropicalWeight:
+        """Returns the final weight of the given state."""
+
+      def `GetArc` as get_arc(self, s: int, ilabel: int)
+        -> (success: bool, oarc: StdArc):
+        """Creates an on demand arc and returns it.
+
+        Args:
+          s (int): State index.
+          ilabel (int): Arc label.
+
+        Returns:
+          The created arc.
+        """
+        return _value_error_on_false(...)

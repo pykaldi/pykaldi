@@ -8,6 +8,12 @@ add_pyclif_library("_sausages" sausages.clif
   LIBRARIES kaldi-lat
 )
 
+add_pyclif_library("_compose_lattice_pruned" compose-lattice-pruned.clif
+  NAMESPACES fst
+  CLIF_DEPS _options_itf _deterministic_fst _vector_fst
+  LIBRARIES kaldi-lat
+)
+
 add_pyclif_library("_determinize_lattice_pruned" determinize-lattice-pruned.clif
   NAMESPACES fst
   CLIF_DEPS _options_itf _expanded_fst _mutable_fst _transition_model

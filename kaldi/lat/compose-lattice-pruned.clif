@@ -1,0 +1,46 @@
+from "itf/options-itf-clifwrap.h" import *
+from "fstext/lattice-weight-clifwrap.h" import *
+from "fstext/deterministic-fst-clifwrap.h" import *
+from "fstext/vector-fst-clifwrap.h" import *
+
+from kaldi.fstext import CompactLatticeVectorFst
+
+from "lat/compose-lattice-pruned.h":
+  namespace `kaldi`:
+    class ComposeLatticePrunedOptions:
+      """Options for pruned lattice composition."""
+
+      lattice_compose_beam: float
+      """Beam width explored during composition (default=6.0)."""
+
+      max_arcs: int
+      """Maximum number of arcs to expand (default=100000)."""
+
+      initial_num_arcs: int
+      """Number of arcs used on the first outer iteration (default=100)."""
+
+      growth_ratio: float
+      """Determines how much num-arcs can grow on each outer iteration (default=1.5)."""
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    def `ComposeCompactLatticePruned` as compose_compact_lattice_pruned(
+        opts: ComposeLatticePrunedOptions, clat: CompactLatticeVectorFst,
+        det_fst: StdDeterministicOnDemandFst) -> CompactLatticeVectorFst:
+      """Does pruned composition of a lattice and a deterministic on demand FST.
+
+      Args:
+        opts (ComposeLatticePrunedOptions): Options for pruned lattice composition.
+        clat (compactLatticeVectorFst): Input lattice.
+        det_fst (StdDeterministicOnDemandFst): Input deterministic on demad FST.
+
+      Returns:
+        CompactLatticeVectorFst: Output lattice.
+      """
+      return CompactLatticeVectorFst(...)
