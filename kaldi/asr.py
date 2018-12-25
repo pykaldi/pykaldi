@@ -10,6 +10,7 @@ this module cover only the most "typical" combinations.
 
 from __future__ import division
 
+from . import cudamatrix as _cumatrix
 from . import decoder as _dec
 from . import fstext as _fst
 from .fstext import _fst as _fst_fst
@@ -19,7 +20,9 @@ from .fstext import utils as _fst_utils
 from .gmm import am as _gmm_am
 from . import hmm as _hmm
 from .lat import functions as _lat_funcs
+from . import lm as _lm
 from .matrix import _kaldi_matrix
+from . import rnnlm as _rnnlm
 from . import nnet3 as _nnet3
 from . import online2 as _online2
 from .util import io as _util_io
@@ -1991,3 +1994,123 @@ class LatticeLmRescorer(object):
         old_lm = _fst.read_fst_kaldi(old_lm_rxfilename)
         new_lm = _fst.read_fst_kaldi(new_lm_rxfilename)
         return cls(old_lm, new_lm, phi_label)
+
+
+class LatticeRnnlmPrunedRescorer(object):
+    """Lattice RNNLM rescorer.
+
+    Args:
+        old_lm (ConstArpaLm or StdFst): Old LM.
+        word_embedding_mat (CuMatrix): Word embeddings.
+        rnnlm (Nnet): RNNLM.
+        lm_scale (float): Scaling factor for RNNLM weights. Negated scaling
+            factor will be applied to old LM weights.
+        acoustic_scale (float): Scaling factor for acoustic weights.
+        max_ngram_order (int): RNNLM histories longer than this value will
+            be considered equivalent for rescoring purposes. This is an
+            approximation saving time and reducing output lattice size.
+        opts (RnnlmComputeStateComputationOptions): Options for RNNLM
+            state computation.
+        compose_opts (ComposeLatticePrunedOptions): Options for pruned
+            lattice composition.
+    """
+    def __init__(self, old_lm, word_embedding_mat, rnnlm,
+                 lm_scale=0.5, acoustic_scale=0.1, max_ngram_order=3,
+                 opts=None, compose_opts=None):
+        self.old_lm = old_lm
+        if isinstance(self.old_lm, _lm.ConstArpaLm):
+            self.det_old_lm = _lm.ConstArpaLmDeterministicFst(self.old_lm)
+        else:
+            if not bool(self.old_lm.properties(_fst_props.ACCEPTOR, True)):
+                self.old_lm.project(True)
+            if not bool(self.old_lm.properties(_fst_props.I_LABEL_SORTED, True)):
+                self.old_lm.arcsort()
+            self.det_old_lm = _fst_spec.StdBackoffDeterministicOnDemandFst(
+                self.old_lm)
+        self.scaled_old_lm = _fst_spec.ScaleDeterministicOnDemandFst(
+            -lm_scale, self.det_old_lm)
+        if not _nnet3.is_simple_nnet(rnnlm):
+            raise ValueError("RNNLM should be a simple nnet")
+        if not opts:
+            opts = _rnnlm.RnnlmComputeStateComputationOptions()
+        self.word_embedding_mat = word_embedding_mat
+        self.rnnlm = rnnlm
+        self.info = _rnnlm.RnnlmComputeStateInfo(opts, self.rnnlm,
+                                                 self.word_embedding_mat)
+        self.det_rnnlm = _rnnlm.KaldiRnnlmDeterministicFst(max_ngram_order,
+                                                           self.info)
+        self.lm_scale = lm_scale
+        self.acoustic_scale = acoustic_scale
+        if compose_opts:
+            self.compose_opts = compose_opts
+        else:
+            self.compose_opts = _lat_funcs.ComposeLatticePrunedOptions()
+
+    def rescore(self, lat):
+        """Rescores input lattice.
+
+        Args:
+            lat (CompactLatticeFst): Input lattice.
+
+        Returns:
+            CompactLatticeVectorFst: Rescored lattice.
+        """
+        scaled_rnnlm = _fst_spec.ScaleDeterministicOnDemandFst(
+            self.lm_scale, self.det_rnnlm)
+        if self.acoustic_scale != 1.0:
+            scale = _fst_utils.acoustic_lattice_scale(self.acoustic_scale)
+            _fst_utils.scale_compact_lattice(scale, lat)
+        _lat_funcs.top_sort_lattice_if_needed(lat)
+        combined_lms = _fst_spec.StdComposeDeterministicOnDemandFst(
+            self.scaled_old_lm, scaled_rnnlm)
+        composed_lat = _lat_funcs.compose_compact_lattice_pruned(
+            self.compose_opts, lat, combined_lms)
+        self.det_rnnlm.clear()
+        if self.acoustic_scale != 1.0:
+            scale = _fst_utils.acoustic_lattice_scale(1.0 / self.acoustic_scale)
+            _fst_utils.scale_compact_lattice(scale, composed_lat)
+        return composed_lat
+
+    @classmethod
+    def from_files(cls, old_lm_rxfilename, word_embedding_rxfilename,
+                   rnnlm_rxfilename, lm_scale=0.5, acoustic_scale=0.1,
+                   max_ngram_order=3, use_const_arpa=False, opts=None,
+                   compose_opts=None):
+        """Constructs a new lattice LM rescorer from given files.
+
+        Args:
+            old_lm_rxfilename (str): Extended filename for reading the old LM.
+            word_embedding_rxfilename (str): Extended filename for reading the
+                word embeddings.
+            rnnlm_rxfilename (str): Extended filename for reading the new RNNLM.
+            lm_scale (float): Scaling factor for RNNLM weights. Negated scaling
+                factor will be applied to old LM weights.
+            acoustic_scale (float): Scaling factor for acoustic weights.
+            max_ngram_order (int): RNNLM histories longer than this value will
+                be considered equivalent for rescoring purposes. This is an
+                approximation saving time and reducing output lattice size.
+            use_const_arpa (bool): If True, read the old LM as a const-arpa
+                file as opposed to an FST file. This is helpful when rescoring
+                with a large LM.
+            opts (RnnlmComputeStateComputationOptions): Options for RNNLM
+                state computation.
+            compose_opts (ComposeLatticePrunedOptions): Options for pruned
+                lattice composition.
+
+        Returns:
+            LatticeRnnlmPrunedRescorer: A new lattice RNNLM rescorer.
+        """
+        if use_const_arpa:
+            with _util_io.xopen(old_lm_rxfilename) as ki:
+                old_lm = _lm.ConstArpaLm()
+                old_lm.read(ki.stream(), ki.binary)
+        else:
+            old_lm = _fst.read_fst_kaldi(old_lm_rxfilename)
+        with _util_io.xopen(word_embedding_rxfilename) as ki:
+            word_embedding_mat = _cumatrix.CuMatrix()
+            word_embedding_mat.read(ki.stream(), ki.binary)
+        with _util_io.xopen(rnnlm_rxfilename) as ki:
+            rnnlm = _nnet3.Nnet()
+            rnnlm.read(ki.stream(), ki.binary)
+        return cls(old_lm, word_embedding_mat, rnnlm, lm_scale, acoustic_scale,
+                   max_ngram_order, opts, compose_opts)
