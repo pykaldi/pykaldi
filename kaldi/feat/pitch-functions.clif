@@ -6,6 +6,7 @@ from "itf/online-feature-itf-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 from kaldi.itf._online_feature_itf import OnlineBaseFeature
+from kaldi.matrix import _matrix_wrapper
 
 from "feat/pitch-functions.h":
   namespace `kaldi`:
@@ -205,6 +206,7 @@ from "feat/pitch-functions.h":
       Returns:
         Matrix: Pitch features.
       """
+      return _matrix_wrapper(...)
 
     def `ProcessPitch` as process_pitch(opts: ProcessPitchOptions, input: MatrixBase) -> Matrix:
       """Postprocesses pitch features.
@@ -216,6 +218,7 @@ from "feat/pitch-functions.h":
       Returns:
         Matrix: Postprocessed pitch features.
       """
+      return _matrix_wrapper(...)
 
     def `ComputeAndProcessKaldiPitch` as compute_and_process_kaldi_pitch(
       pitch_opts: PitchExtractionOptions, process_opts: ProcessPitchOptions,
@@ -230,3 +233,4 @@ from "feat/pitch-functions.h":
       Returns:
         Matrix: Postprocessed pitch features.
       """
+      return _matrix_wrapper(...)

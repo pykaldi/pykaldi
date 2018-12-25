@@ -1,6 +1,8 @@
 from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 
+from kaldi.matrix import _vector_wrapper
+
 from "feat/resample.h":
   namespace `kaldi`:
     class ArbitraryResample:
@@ -80,6 +82,7 @@ from "feat/resample.h":
         Returns:
           Vector: Output signal.
         """
+        return _vector_wrapper(...)
 
       def `Reset` as reset(self):
         """Resets the state of the resampler."""
@@ -90,3 +93,4 @@ from "feat/resample.h":
 
       This is a convenience wrapper for `LinearResample`.
       """
+      return _vector_wrapper(...)
