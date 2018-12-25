@@ -156,6 +156,7 @@ kaldi\.transform\.mllr
       fmllr_aux_func_diag_gmm
       fmllr_aux_func_diag_gmm_double
       fmllr_auxf_gradient
+      fmllr_inner_update
       init_fmllr
    
    

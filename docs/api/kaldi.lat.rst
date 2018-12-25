@@ -72,6 +72,7 @@ kaldi\.lat\.functions
       compact_lattice_to_word_alignment
       compact_lattice_to_word_prons
       compose_compact_lattice_deterministic
+      compose_compact_lattice_pruned
       compute_compact_lattice_alphas
       compute_compact_lattice_betas
       compute_lattice_alphas_and_betas
@@ -105,6 +106,7 @@ kaldi\.lat\.functions
    .. autosummary::
       :nosignatures:
    
+      ComposeLatticePrunedOptions
       DeterminizeLatticePhonePrunedOptions
       DeterminizeLatticePrunedOptions
    

@@ -20,6 +20,8 @@ kaldi\.asr
       GmmRecognizer
       LatticeBiglmFasterRecognizer
       LatticeFasterRecognizer
+      LatticeLmRescorer
+      LatticeRnnlmPrunedRescorer
       MappedFasterRecognizer
       MappedLatticeBiglmFasterRecognizer
       MappedLatticeFasterRecognizer

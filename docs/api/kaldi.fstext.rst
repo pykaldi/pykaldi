@@ -102,6 +102,7 @@ kaldi\.fstext
       LogVectorFstMutableArcIterator
       LogVectorFstStateIterator
       LogWeight
+      MatchType
       StdArc
       StdConstFst
       StdConstFstArcIterator
@@ -166,6 +167,8 @@ kaldi\.fstext\.special
       remove_eps_local
       table_compose
       table_compose_cache
+      table_compose_cache_lattice
+      table_compose_lattice
       write_ilabel_info
    
    
@@ -177,15 +180,17 @@ kaldi\.fstext\.special
    .. autosummary::
       :nosignatures:
    
+      LatticeTableComposeCache
       NonterminalValues
+      ScaleDeterministicOnDemandFst
       StdBackoffDeterministicOnDemandFst
       StdCacheDeterministicOnDemandFst
       StdComposeDeterministicOnDemandFst
       StdDeterministicOnDemandFst
       StdInverseContextFst
       StdInverseLeftBiphoneContextFst
+      StdTableComposeCache
       StdUnweightedNgramFst
-      TableComposeCache
       TableComposeOptions
       TableMatcherOptions
    
@@ -238,6 +243,7 @@ kaldi\.fstext\.utils
       minimize_encoded_std_fst
       nbest_as_fsts
       phi_compose
+      phi_compose_lattice
       preceding_input_symbols_are_same
       propagate_final
       remove_alignments_from_compact_lattice
