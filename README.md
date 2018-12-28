@@ -2,80 +2,243 @@
 
 --------------------------------------------------------------------------------
 
-[![Build Status](https://travis-ci.org/pykaldi/pykaldi.svg?branch=master)](https://travis-ci.org/pykaldi/pykaldi)
+[![Build Status]][Travis]
 
-PyKaldi is a Python wrapper for [Kaldi](http://kaldi-asr.org) exposing nearly
-all of Kaldi's C++ API to Python code. It aims to bridge the gap between Kaldi
-and all the nice things Python has to offer. You can read more about the design
-and technical details of PyKaldi in
-[our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf).
-Here is a taste.
+PyKaldi is a Python scripting layer for [Kaldi] speech recognition toolkit. It
+provides easy-to-use, low-overhead, first-class Python objects wrapping the C++
+code in Kaldi libraries. You can use PyKaldi to write Python code for things
+that would otherwise require writing C++ code such as calling low-level Kaldi
+functions, manipulating Kaldi objects in code or implementing executables
+compatible with Kaldi.
 
-```python
-from kaldi.asr import NnetLatticeFasterRecognizer, MappedLatticeFasterRecognizer
-from kaldi.matrix import Matrix
-from kaldi.util.table import SequentialMatrixReader
-from models import AcousticModel  # Import your PyTorch model
-import torch
-
-# Define Kaldi pipeline for reading features
-feats_rspec = "ark:compute-mfcc-feats --config=mfcc.conf scp:wav.scp ark:- |"
-
-# Decode with a Kaldi neural network acoustic model
-asr = NnetLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
-with SequentialMatrixReader(feats_rspec) as f:
-    for key, feats in f:
-        out = asr.decode(feats)
-        print(key, out["text"])
-
-# Decode with a PyTorch neural network acoustic model
-asr = MappedLatticeFasterRecognizer.from_files("final.mdl", "HCLG.fst", "words.txt")
-model = AcousticModel(...)  # Instantiate your model (subclass of torch.nn.Module)
-model.load_state_dict(torch.load("model.pt"))
-model.eval()
-with SequentialMatrixReader(feats_rspec) as f:
-    for key, feats in f:
-        feats = torch.from_numpy(feats.numpy())  # Convert to PyTorch tensor
-        loglikes = model(feats)                  # Compute log-likelihoods
-        loglikes = Matrix(loglikes.numpy())      # Convert to PyKaldi matrix
-        out = asr.decode(loglikes)
-        print(key, out["text"])
-```
-
-
-## Features
-
-* Near-complete coverage of Kaldi's C++ API
-
-* First class support for Kaldi and OpenFst types in Python
-
-* Extensible design
-
-* Open license
-
-* Extensive documentation
-
-* Thorough testing
-
-* Example scripts
-
-* Support for both Python 2.7 and 3.5+
+You can think of Kaldi as a large box of legos that you can mix and match to
+build custom speech recognition solutions. The best way to think of PyKaldi is
+as a supplement, a sidekick if you will, to Kaldi. In fact, PyKaldi is at its
+best when it is used alongside Kaldi. To that end, replicating the functionality
+of Kaldi executables, including command-line tools and general purpose scripts,
+is a non-goal for the PyKaldi project.
 
 
 ## Overview
 
+- [Getting Started](#getting-started)
 - [About PyKaldi](#about-pykaldi)
 - [Coverage Status](#coverage-status)
-- [Getting Started](#getting-started)
 - [Installation](#installation)
 - [FAQ](#faq)
 - [Citing](#citing)
 - [Contributing](#contributing)
 
 
+## Getting Started
+
+Automatic speech recognition (ASR) in Python is undoubtedly the "killer app" for
+PyKaldi, so we will go over a few ASR scenarios to get a feel for PyKaldi API.
+
+Following resources might come in handy if you would like to learn more:
+
+* [Kaldi Docs]: Read these to learn more about Kaldi.
+* [PyKaldi Docs]: Consult these to learn more about the PyKaldi API.
+* [PyKaldi Examples]: Check these out to see PyKaldi in action.
+
+
+### Automatic Speech Recognition in Python
+
+PyKaldi [`asr`][PyKaldi ASR Docs] module includes a number of easy-to-use,
+high-level classes to make it dead simple to put together ASR systems in Python.
+We should note that PyKaldi does not provide high-level utilities for training
+automatic speech recognition (ASR) models, so you need to use pre-trained ASR
+models with PyKaldi. The reason why this is so is simply because there is no
+high-level ASR training API in Kaldi C++ libraries. Kaldi ASR models are trained
+using complex shell [recipes][Kaldi Recipes] that handle everything from data
+preparation to the orchestration of myriad Kaldi executables used in training.
+This is by design and unlikely to change in the future.
+
+#### Offline ASR using Kaldi Models
+
+This is the most common scenario. We want to do offline ASR using pre-trained
+Kaldi models, such as [ASpIRE Chain Models]. Here we are using the term "models"
+loosely to refer to everything one would need to put together an ASR system. In
+this specific example, we are going to need:
+
+* a [neural network acoustic model][Kaldi Neural Network Docs],
+* a [transition model][Kaldi Transition Model Docs],
+* a [decoding graph][Kaldi Decoding Graph Docs],
+* a [word symbol table][Kaldi Symbol Table Docs],
+* and a couple of feature extraction [configs][Kaldi Config Docs].
+
+Note that you can use this example code to decode with [ASpIRE Chain Models].
+
+```python
+from kaldi.asr import NnetLatticeFasterRecognizer
+from kaldi.decoder import LatticeFasterDecoderOptions
+from kaldi.nnet3 import NnetSimpleComputationOptions
+from kaldi.util.table import SequentialMatrixReader, CompactLatticeWriter
+
+# Set the paths, extended filenames and read/write specifiers
+model_path = "models/aspire/final.mdl"
+graph_path = "models/aspire/graph_pp/HCLG.fst"
+symbols_path = "models/aspire/graph_pp/words.txt"
+feats_rspec = ("ark:compute-mfcc-feats --config=models/aspire/conf/mfcc.conf "
+               "scp:wav.scp ark:- |")
+ivectors_rspec = (feats_rspec + "ivector-extract-online2 "
+                  "--config=models/aspire/conf/ivector_extractor.conf "
+                  "ark:spk2utt ark:- ark:- |")
+lat_wspec = "ark:| gzip -c > lat.gz"
+
+# Instantiate the recognizer
+decoder_opts = LatticeFasterDecoderOptions()
+decoder_opts.beam = 13
+decoder_opts.max_active = 7000
+decodable_opts = NnetSimpleComputationOptions()
+decodable_opts.acoustic_scale = 1.0
+decodable_opts.frame_subsampling_factor = 3
+asr = NnetLatticeFasterRecognizer.from_files(
+    model_path, graph_path, symbols_path,
+    decoder_opts=decoder_opts, decodable_opts=decodable_opts)
+
+# Extract the features, decode and write output lattices
+with SequentialMatrixReader(feats_rspec) as feats_reader, \
+     SequentialMatrixReader(ivectors_rspec) as ivectors_reader, \
+     CompactLatticeWriter(lat_wspec) as lat_writer:
+    for (fkey, feats), (ikey, ivectors) in zip(feats_reader, ivectors_reader):
+        assert(fkey == ikey)
+        out = asr.decode((feats, ivectors))
+        print(fkey, out["text"])
+        lat_writer[fkey] = out["lattice"]
+```
+
+We first instantiate a recognizer by providing the paths for the models and
+appropriate configuration options. Then we decode the features extracted from
+the WAV files listed in the [script file][Kaldi Script File Docs] `wav.scp`. The
+[speaker to utterance map][Kaldi Data Docs] `spk2utt` is used for accumulating
+separate statistics for each speaker in online ivector extraction. It can be a
+simple identity mapping if speaker information is not available. Finally we
+write the output lattices to a Kaldi archive. The model file `final.mdl`
+contains both the transition model and the neural network acoustic model. The
+recognizer [NnetLatticeFasterRecognizer] processes feature matrices by first
+computing phone log-likelihoods using the acoustic model, then mapping those to
+transition log-likelihoods using the transition model and finally decoding
+transition log-likelihoods into word sequences using the decoding graph
+`HCLG.fst`, which has [transition IDs][Kaldi Transition Model Docs] on its input
+labels and [word IDs][Kaldi Symbol Table Docs] on its output labels.
+
+This example also illustrates the powerful [I/O mechanisms][Kaldi I/O Docs]
+provided by Kaldi. Instead of implementing the feature extraction pipelines in
+code, we define them as Kaldi read specifiers and compute the feature matrices
+simply by instantiating [PyKaldi table readers][PyKaldi Table Docs] and
+iterating over them. This is not only the simplest but also the fastest way of
+computing features with PyKaldi since the feature extraction pipeline is run in
+parallel by the operating system. Similarly, we use a Kaldi write specifier to
+instantiate a [PyKaldi table writer][PyKaldi Table Docs] which writes output
+lattices to a Kaldi archive and compresses the resulting archive. Note that for
+these to work, we need `compute-mfcc-feats`, `ivector-extract-online2` and
+`gzip` to be on our `PATH`.
+
+#### Offline ASR using a PyTorch Acoustic Model
+
+This is similar to the previous scenario, but instead of a Kaldi acoustic model,
+we use a [PyTorch] acoustic model. After computing the features as before, we
+convert them to a PyTorch tensor, do the forward pass using a PyTorch neural
+network module outputting phone log-likelihoods and finally convert those
+log-likelihoods back into a PyKaldi matrix for decoding. The recognizer uses the
+transition model to automatically map phone IDs to transition IDs, the input
+labels on a typical Kaldi decoding graph.
+
+```python
+from kaldi.asr import MappedLatticeFasterRecognizer
+from kaldi.decoder import LatticeFasterDecoderOptions
+from kaldi.matrix import Matrix
+from kaldi.util.table import SequentialMatrixReader, CompactLatticeWriter
+from models import AcousticModel  # Import your PyTorch model
+import torch
+
+# Set the paths, extended filenames and read/write specifiers
+acoustic_model_path = "models/aspire/model.pt"
+transition_model_path = "models/aspire/final.mdl"
+graph_path = "models/aspire/graph_pp/HCLG.fst"
+symbols_path = "models/aspire/graph_pp/words.txt"
+feats_rspec = ("ark:compute-mfcc-feats --config=models/aspire/conf/mfcc.conf "
+               "scp:wav.scp ark:- |")
+lat_wspec = "ark:| gzip -c > lat.gz"
+
+# Instantiate the recognizer
+decoder_opts = LatticeFasterDecoderOptions()
+decoder_opts.beam = 13
+decoder_opts.max_active = 7000
+asr = MappedLatticeFasterRecognizer.from_files(
+    transition_model_path, graph_path, symbols_path, decoder_opts=decoder_opts)
+
+# Instantiate the PyTorch acoustic model (subclass of torch.nn.Module)
+model = AcousticModel(...)
+model.load_state_dict(torch.load(acoustic_model_path))
+model.eval()
+
+# Extract the features, decode and write output lattices
+with SequentialMatrixReader(feats_rspec) as feats_reader, \
+     CompactLatticeWriter(lat_wspec) as lat_writer:
+    for key, feats in f:
+        feats = torch.from_numpy(feats.numpy())  # Convert to PyTorch tensor
+        loglikes = model(feats)                  # Compute log-likelihoods
+        loglikes = Matrix(loglikes.numpy())      # Convert to PyKaldi matrix
+        out = asr.decode(loglikes)
+        print(key, out["text"])
+        lat_writer[key] = out["lattice"]
+```
+
+#### Lattice Rescoring with a Kaldi RNNLM
+
+Lattice rescoring is a standard technique for using large n-gram language models
+or recurrent neural network language models (RNNLMs) in ASR. In this example, we
+rescore lattices using a Kaldi RNNLM. We first instantiate a rescorer by
+providing the paths for the models. Then we use a table reader to iterate over
+the lattices we want to rescore and finally we use a table writer to write
+rescored lattices back to disk.
+
+```python
+from kaldi.asr import LatticeRnnlmPrunedRescorer
+from kaldi.fstext import SymbolTable
+from kaldi.rnnlm import RnnlmComputeStateComputationOptions
+from kaldi.util.table import SequentialCompactLatticeReader, CompactLatticeWriter
+
+# Set the paths, extended filenames and read/write specifiers
+symbols_path = "models/tedlium/config/words.txt"
+old_lm_path = "models/tedlium/data/lang_nosp/G.fst"
+word_feats_path = "models/tedlium/word_feats.txt"
+feat_embedding_path = "models/tedlium/feat_embedding.final.mat"
+word_embedding_rxfilename = ("rnnlm-get-word-embedding %s %s - |"
+                             % (word_feats_path, feat_embedding_path))
+rnnlm_path = "models/tedlium/final.raw"
+lat_rspec = "ark:gunzip -c lat.gz |"
+lat_wspec = "ark:| gzip -c > rescored_lat.gz"
+
+# Instantiate the rescorer
+symbols = SymbolTable.read_text(symbols_path)
+opts = RnnlmComputeStateComputationOptions()
+opts.bos_index = symbols.find_index("<s>")
+opts.eos_index = symbols.find_index("</s>")
+opts.brk_index = symbols.find_index("<brk>")
+rescorer = LatticeRnnlmPrunedRescorer.from_files(
+    old_lm_path, word_embedding_rxfilename, rnnlm_path, opts=opts)
+
+# Read the lattices, rescore and write output lattices
+with SequentialCompactLatticeReader(lat_rspec) as lat_reader, \
+     CompactLatticeWriter(lat_wspec) as lat_writer:
+  for key, lat in lat_reader:
+    lat_writer[key] = rescorer.rescore(lat)
+```
+
+Notice the extended filename we used to compute the word embeddings from the
+word features and the feature embeddings on the fly. Also of note are the
+read/write specifiers we used to transparently decompress/compress the lattice
+archives. For these to work, we need `rnnlm-get-word-embedding`, `gunzip` and
+`gzip` to be on our `PATH`.
+
+
 ## About PyKaldi
 
-PyKaldi is more than a collection of bindings into Kaldi libraries. It is a
+PyKaldi aims to bridge the gap between Kaldi and all the nice things Python has
+to offer. It is more than a collection of bindings into Kaldi libraries. It is a
 scripting layer providing first class support for essential Kaldi and
 [OpenFst](http://www.openfst.org) types in Python. PyKaldi vector and matrix
 types are tightly integrated with [NumPy](http://www.numpy.org). They can be
@@ -113,6 +276,8 @@ written for the associated Kaldi library. The wrapper code consists of:
 * Python modules grouping together related extension modules generated with CLIF
   and extending the raw CLIF wrappers to provide a more "Pythonic" API.
 
+You can read more about the design and technical details of PyKaldi in
+[our paper](https://github.com/pykaldi/pykaldi/blob/master/docs/pykaldi.pdf).
 
 ## Coverage Status
 
@@ -152,14 +317,6 @@ dimensions:
 | transform  | &#10004; | &#10004;  | &#10004;                   |          |
 | tree       | &#10004; |           | &#10004;                   |          |
 | util       | &#10004; | &#10004;  | &#10004; &#10004; &#10004; | &#10004; |
-
-
-## Getting Started
-
-Some places to help you get started:
-
-* [PyKaldi Documentation](https://pykaldi.github.io)
-* [PyKaldi Examples](https://github.com/pykaldi/pykaldi/tree/master/examples/)
 
 
 ## Installation
@@ -370,3 +527,26 @@ as follows:
 We appreciate all contributions! If you find a bug, feel free to open an issue
 or a pull request. If you would like to request or add a new feature please open
 an issue for discussion.
+
+
+[Build Status]: https://travis-ci.org/pykaldi/pykaldi.svg?branch=master
+[Travis]: https://travis-ci.org/pykaldi/pykaldi
+[Kaldi]: https://github.com/kaldi-asr/kaldi
+[Kaldi Recipes]: https://github.com/kaldi-asr/kaldi/tree/master/egs
+[PyKaldi Examples]: https://github.com/pykaldi/pykaldi/tree/master/examples/
+[PyKaldi ASR Examples]: https://github.com/pykaldi/pykaldi/tree/master/examples/asr/
+[PyKaldi Docs]: https://pykaldi.github.io
+[PyKaldi ASR Docs]: https://pykaldi.github.io/api/kaldi.asr.html
+[PyKaldi Table Docs]: https://pykaldi.github.io/api/kaldi.util.html#module-kaldi.util.table
+[NnetLatticeFasterRecognizer]: https://pykaldi.github.io/api/kaldi.asr.html?#kaldi.asr.NnetLatticeFasterRecognizer
+[Kaldi Docs]: http://kaldi-asr.org/doc/
+[Kaldi Script File Docs]: http://kaldi-asr.org/doc/io.html#io_sec_scp
+[Kaldi Transition Model Docs]: http://kaldi-asr.org/doc/hmm.html#transition_model
+[Kaldi Neural Network Docs]: http://kaldi-asr.org/doc/dnn3.html
+[Kaldi Decoding Graph Docs]: http://kaldi-asr.org/doc/graph.html
+[Kaldi Symbol Table Docs]: http://kaldi-asr.org/doc/data_prep.html#data_prep_lang_contents
+[Kaldi Data Docs]: http://kaldi-asr.org/doc/data_prep.html#data_prep_data
+[Kaldi Config Docs]: http://kaldi-asr.org/doc/parse_options.html#parse_options_implicit
+[Kaldi I/O Docs]: http://kaldi-asr.org/doc/io.html
+[ASpIRE Chain Models]: http://kaldi-asr.org/models/m1
+[PyTorch]: https://pytorch.org
