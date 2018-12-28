@@ -5,7 +5,7 @@
 [![Build Status]][Travis]
 
 PyKaldi is a Python scripting layer for [Kaldi] speech recognition toolkit. It
-provides easy-to-use, low-overhead, first-class Python objects wrapping the C++
+provides easy-to-use, low-overhead, first-class Python wrappers for the C++
 code in Kaldi libraries. You can use PyKaldi to write Python code for things
 that would otherwise require writing C++ code such as calling low-level Kaldi
 functions, manipulating Kaldi objects in code or implementing executables
@@ -35,7 +35,7 @@ is a non-goal for the PyKaldi project.
 Automatic speech recognition (ASR) in Python is undoubtedly the "killer app" for
 PyKaldi, so we will go over a few ASR scenarios to get a feel for PyKaldi API.
 
-Following resources might come in handy if you would like to learn more:
+Following resources might come in handy if you would like to dive deeper:
 
 * [Kaldi Docs]: Read these to learn more about Kaldi.
 * [PyKaldi Docs]: Consult these to learn more about the PyKaldi API.
@@ -46,13 +46,13 @@ Following resources might come in handy if you would like to learn more:
 
 PyKaldi [`asr`][PyKaldi ASR Docs] module includes a number of easy-to-use,
 high-level classes to make it dead simple to put together ASR systems in Python.
-We should note that PyKaldi does not provide high-level utilities for training
-automatic speech recognition (ASR) models, so you need to use pre-trained ASR
-models with PyKaldi. The reason why this is so is simply because there is no
-high-level ASR training API in Kaldi C++ libraries. Kaldi ASR models are trained
-using complex shell [recipes][Kaldi Recipes] that handle everything from data
-preparation to the orchestration of myriad Kaldi executables used in training.
-This is by design and unlikely to change in the future.
+We should note that PyKaldi does not provide any high-level utilities for
+training ASR models, so you need to use pre-trained ASR models with PyKaldi. The
+reason why this is so is simply because there is no high-level ASR training API
+in Kaldi C++ libraries. Kaldi ASR models are trained using complex shell-level
+[recipes][Kaldi Recipes] that handle everything from data preparation to the
+orchestration of myriad Kaldi executables used in training. This is by design
+and unlikely to change in the future.
 
 #### Offline ASR using Kaldi Models
 
@@ -75,7 +75,7 @@ from kaldi.decoder import LatticeFasterDecoderOptions
 from kaldi.nnet3 import NnetSimpleComputationOptions
 from kaldi.util.table import SequentialMatrixReader, CompactLatticeWriter
 
-# Set the paths, extended filenames and read/write specifiers
+# Set the paths and read/write specifiers
 model_path = "models/aspire/final.mdl"
 graph_path = "models/aspire/graph_pp/HCLG.fst"
 symbols_path = "models/aspire/graph_pp/words.txt"
@@ -131,9 +131,8 @@ iterating over them. This is not only the simplest but also the fastest way of
 computing features with PyKaldi since the feature extraction pipeline is run in
 parallel by the operating system. Similarly, we use a Kaldi write specifier to
 instantiate a [PyKaldi table writer][PyKaldi Table Docs] which writes output
-lattices to a Kaldi archive and compresses the resulting archive. Note that for
-these to work, we need `compute-mfcc-feats`, `ivector-extract-online2` and
-`gzip` to be on our `PATH`.
+lattices to a compressed Kaldi archive. Note that for these to work, we need
+`compute-mfcc-feats`, `ivector-extract-online2` and `gzip` to be on our `PATH`.
 
 #### Offline ASR using a PyTorch Acoustic Model
 
@@ -153,7 +152,7 @@ from kaldi.util.table import SequentialMatrixReader, CompactLatticeWriter
 from models import AcousticModel  # Import your PyTorch model
 import torch
 
-# Set the paths, extended filenames and read/write specifiers
+# Set the paths and read/write specifiers
 acoustic_model_path = "models/aspire/model.pt"
 transition_model_path = "models/aspire/final.mdl"
 graph_path = "models/aspire/graph_pp/HCLG.fst"
