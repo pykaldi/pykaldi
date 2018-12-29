@@ -35,30 +35,32 @@ by Kaldi is a non-goal for the PyKaldi project.
 Like Kaldi, PyKaldi is primarily intended for speech recognition researchers and
 professionals. It is jam packed with goodies that one would need to build Python
 software taking advantage of the vast collection of utilities, algorithms and
-data structures provided by Kaldi and OpenFst libraries. PyKaldi comes with more
-or less everything you need to read, write, inspect, manipulate or visualize
-Kaldi and OpenFst objects in Python. It includes Python wrappers for more or
-less any function or method that is part of the public API of Kaldi and OpenFst
-C++ libraries. If you want to read/write files that are produced/consumed by a
-Kaldi tool, check out I/O and table utilities in the `util` package. If you want
-to work with Kaldi matrices and vectors, e.g. convert them to [NumPy] ndarrays
-and vice versa, check out the `matrix` package. If you want to use Kaldi for
-feature extraction and transformation, check out the `feat`, `ivector` and
-`transform` packages. If you want to work with lattices or other FST structures
-produced/consumed by Kaldi tools, check out the `fstext`, `lat` and `kws`
-packages. If you want low-level access to Gaussian mixture models, hidden Markov
-models, phonetic decision trees, check out the `gmm`, `sgmm2`, `hmm`, and `tree`
-packages. If you want low-level access to neural network models, check out the
-`nnet3`, `cudamatrix` and `chain` packages. If you want to use the decoders and
-language modeling utilities in Kaldi, check out the `decoder`, `lm`, `rnnlm`,
-`tfrnnlm` and `online2` packages.
+data structures provided by Kaldi and OpenFst libraries.
 
 If you are not familiar with FST-based speech recognition or have no interest in
 having access to the guts of Kaldi and OpenFst in Python, but only want to run a
-pre-trained Kaldi system as part of your Python application, do not fret. In
-addition to the low-level modules mentioned above, PyKaldi also includes a
-number of high-level application oriented modules, such as `asr`, `alignment`
-and `segmentation`, that should be accessible to most Python programmers.
+pre-trained Kaldi system as part of your Python application, do not fret.
+PyKaldi includes a number of high-level application oriented modules, such as
+`asr`, `alignment` and `segmentation`, that should be accessible to most Python
+programmers.
+
+If you are interested in using PyKaldi for research or building advanced ASR
+applications, you are in luck. PyKaldi comes with everything you need to read,
+write, inspect, manipulate or visualize Kaldi and OpenFst objects in Python. It
+includes Python wrappers for most functions and methods that are part of the
+public APIs of Kaldi and OpenFst C++ libraries. If you want to read/write files
+that are produced/consumed by Kaldi tools, check out I/O and table utilities in
+the `util` package. If you want to work with Kaldi matrices and vectors, e.g.
+convert them to [NumPy] ndarrays and vice versa, check out the `matrix` package.
+If you want to use Kaldi for feature extraction and transformation, check out
+the `feat`, `ivector` and `transform` packages. If you want to work with
+lattices or other FST structures produced/consumed by Kaldi tools, check out the
+`fstext`, `lat` and `kws` packages. If you want low-level access to Gaussian
+mixture models, hidden Markov models or phonetic decision trees in Kaldi, check
+out the `gmm`, `sgmm2`, `hmm`, and `tree` packages. If you want low-level access
+to Kaldi neural network models, check out the `nnet3`, `cudamatrix` and `chain`
+packages. If you want to use the decoders and language modeling utilities in
+Kaldi, check out the `decoder`, `lm`, `rnnlm`, `tfrnnlm` and `online2` packages.
 
 Interested readers who would like to learn more about Kaldi and PyKaldi might
 find the following resources useful:
@@ -77,14 +79,13 @@ simply because there is no high-level ASR training API in Kaldi C++ libraries.
 Kaldi ASR models are trained using complex shell-level [recipes][Kaldi Recipes]
 that handle everything from data preparation to the orchestration of myriad
 Kaldi executables used in training. This is by design and unlikely to change in
-the future. Now PyKaldi does provide wrappers for the low-level ASR training
+the future. PyKaldi does provide wrappers for the low-level ASR training
 utilities in Kaldi C++ libraries but those are not really useful unless you want
 to build an ASR training pipeline in Python from basic building blocks, which is
 no easy task. Continuing with the lego analogy, this task is akin to building
-[this][Lego Chiron] given access to a truck full of legos you might need. If
-you are crazy enough to try though, please don't let this paragraph discourage
-you. Before we started building PyKaldi, we thought that was a mad man's task
-too.
+[this][Lego Chiron] given access to a truck full of legos you might need. If you
+are crazy enough to try though, please don't let this paragraph discourage you.
+Before we started building PyKaldi, we thought that was a mad man's task too.
 
 ### Automatic Speech Recognition in Python
 
@@ -257,6 +258,11 @@ with SequentialMatrixReader(feats_rspec) as feats_reader, \
         print(key, out["text"])
         lat_writer[key] = out["lattice"]
 ```
+
+#### Online ASR using Kaldi Models
+
+This section is a placeholder. Check out [this script][PyKaldi Online ASR
+Example] in the meantime.
 
 #### Lattice Rescoring with a Kaldi RNNLM
 
@@ -617,6 +623,7 @@ an issue for discussion.
 [OpenFst]: http://www.openfst.org
 [PyKaldi Examples]: https://github.com/pykaldi/pykaldi/tree/master/examples/
 [PyKaldi ASR Examples]: https://github.com/pykaldi/pykaldi/tree/master/examples/asr/
+[PyKaldi Online ASR Example]: https://github.com/pykaldi/pykaldi/tree/master/examples/asr/nnet3-online-recognizer.py
 [PyKaldi Docs]: https://pykaldi.github.io
 [PyKaldi ASR Docs]: https://pykaldi.github.io/api/kaldi.asr.html
 [PyKaldi Table Docs]: https://pykaldi.github.io/api/kaldi.util.html#module-kaldi.util.table
