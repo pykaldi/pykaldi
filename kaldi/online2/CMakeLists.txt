@@ -11,7 +11,7 @@ add_pyclif_library("_online_gmm_decodable" online-gmm-decodable.clif
   LIBRARIES kaldi-online2
 )
 add_pyclif_library("_online_gmm_decoding" online-gmm-decoding.clif
-  CLIF_DEPS _online_gmm_decodable _options_itf _transition_model _am_diag_gmm _basis_fmllr_diag_gmm _online_feature _lattice_faster_decoder _online_endpoint _online_feature_pipeline
+  CLIF_DEPS _online_gmm_decodable _options_itf _transition_model _am_diag_gmm _fmllr_diag_gmm _basis_fmllr_diag_gmm _online_feature _lattice_faster_decoder _online_endpoint _online_feature_pipeline
   LIBRARIES kaldi-online2
 )
 add_pyclif_library("_online_ivector_feature" online-ivector-feature.clif
@@ -28,9 +28,5 @@ add_pyclif_library("_online_nnet3_decoding" online-nnet3-decoding.clif
 )
 add_pyclif_library("_online_nnet3_decoding_ext" online-nnet3-decoding-ext.clif
   CLIF_DEPS _online_endpoint _online_nnet2_feature_pipeline _lattice_faster_decoder _lattice_faster_online_decoder_ext _transition_model _decodable_online_looped _fst _vector_fst
-  LIBRARIES kaldi-online2
-)
-add_pyclif_library("_onlinebin_util" onlinebin-util.clif
-  CLIF_DEPS _fst
   LIBRARIES kaldi-online2
 )

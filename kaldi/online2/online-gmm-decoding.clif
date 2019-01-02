@@ -1,111 +1,262 @@
+from "base/iostream-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
-from "base/iostream-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "gmm/am-diag-gmm-clifwrap.h" import *
-from "transform/basis-fmllr-diag-gmm-clifwrap.h" import *
 from "transform/fmllr-diag-gmm-clifwrap.h" import *
+from "transform/basis-fmllr-diag-gmm-clifwrap.h" import *
 from "feat/online-feature-clifwrap.h" import *
 from "online2/online-feature-pipeline-clifwrap.h" import *
 from "online2/online-gmm-decodable-clifwrap.h" import *
 from "online2/online-endpoint-clifwrap.h" import *
 from "decoder/lattice-faster-decoder-clifwrap.h" import *
-from "hmm/posterior-clifwrap.h" import *
 from "fstext/fst-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 
-from kaldi.matrix import _matrix_wrapper
+from kaldi.fstext import LatticeVectorFst
+from kaldi.fstext import CompactLatticeVectorFst
 
 from "online2/online-gmm-decoding.h":
   namespace `kaldi`:
     class OnlineGmmDecodingAdaptationPolicyConfig:
+      """Configuration options for re-estimating basis-fMLLR during online decoding."""
+
       adaptation_first_utt_delay: float
+      """Delay before first basis-fMLLR adaptation for first utterance of each speaker"""
+
       adaptation_first_utt_ratio: float
+      """Ratio that controls frequency of fMLLR adaptation for first utterance of each speaker"""
+
       adaptation_delay: float
+      """Delay before first basis-fMLLR adaptation for not-first utterances of each speaker"""
+
       adaptation_ratio: float
+      """Ratio that controls frequency of fMLLR adaptation for not-first utterances of each speaker"""
 
-      def `Register` as register(self, opts: OptionsItf)
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
-      def `Check` as check(self)
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
-      def `DoAdapt` as do_adapt(self, chunk_begin_secs: float, chuck_end_secs:float, is_first_utterance: bool) -> bool
+      def `Check` as check(self):
+        """Checks if configuration is valid."""
+
+      def `DoAdapt` as do_adapt(self, chunk_begin_secs: float,
+                                chuck_end_secs:float, is_first_utterance: bool) -> bool:
+        """Checks if we are scheduled to re-estimate fMLLR.
+
+        Args:
+          chunk_begin_secs (float): Chunk begin time in seconds.
+          chuck_end_secs (float): Chunk end time in seconds.
+          is_first_utterance (bool): First utterance or not.
+
+        Returns:
+          bool: True if we are scheduled to re-estimate fMLLR in the interval
+          `[chunk_begin_secs, chuck_end_secs)`, False otherwise.
+        """
 
     class OnlineGmmDecodingConfig:
+      """Configuration options for online GMM decoding."""
+
       fmllr_lattice_beam: float
+      """Beam used in pruning lattices for fMLLR estimation"""
+
       basis_opts: BasisFmllrOptions
+      """Options for basis-fMLLR adaptation"""
+
       faster_decoder_opts: LatticeFasterDecoderOptions
+      """Options for lattice-generating faster decoder."""
+
       adaptation_policy_opts: OnlineGmmDecodingAdaptationPolicyConfig
+      """Options for re-estimating basis-fMLLR during online decoding"""
 
       online_alimdl_rxfilename: str
+      """Extended filename for reading the model trained with online-CMN features.
+
+      This is only needed if it is different from `model_rxfilename`.
+      """
+
       model_rxfilename: str
+      """Extended filename for reading the model used to estimate fMLLR transforms.
+
+      This is required.
+      """
+
       rescore_model_rxfilename: str
+      """Extended filename for reading the discriminatively trained model.
+
+      This is only needed if it is different from `model_rxfilename`.
+      """
+
       fmllr_basis_rxfilename: str
+      """Extended filename for reading the basis elements for basis-fMLLR."""
 
       acoustic_scale: float
+      """Scaling factor acoustic likelihoods"""
 
       silence_phones: str
-      silence_weight: float
+      """Colon-separated list of integer ids of silence phones"""
 
-      def `Register` as register(self, opts: OptionsItf)
+      silence_weight: float
+      """Weight applied to silence frames for fMLLR estimation.
+
+      This has an effect only if `silence_phones` option is supplied.
+      """
+
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
+
+        Args:
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
 
     class OnlineGmmDecodingModels:
+      """OnlineGmmDecodingModels(config)
 
+      GMM models used for online decoding.
+
+      This class is used to read, store and give access to the models used for
+      3 phases of decoding (first-pass with online-CMN features; the ML models
+      used for estimating transforms; and the discriminatively trained models).
+      It takes care of the logic whereby if, say, the last model isn't given we
+      default to the second model, and so on, and it interpretes the filenames
+      from the config object.
+
+      Args:
+        config (OnlineGmmDecodingConfig): Options for online GMM decoding.
+      """
       def __init__(self, config: OnlineGmmDecodingConfig)
 
-      def `GetTransitionModel` as get_transition_model(self) -> TransitionModel
+      def `GetTransitionModel` as get_transition_model(self) -> TransitionModel:
+        """Returns the transition model."""
 
-      def `GetOnlineAlignmentModel` as get_online_alignment_model(self) -> AmDiagGmm
+      def `GetOnlineAlignmentModel` as get_online_alignment_model(self) -> AmDiagGmm:
+        """Returns the model trained with online-CMN features.
 
-      def `GetModel` as get_model(self) -> AmDiagGmm
+        If supplied in the config, otherwise it returns the ML-trained model.
+        """
 
-      def `GetFinalModel` as get_final_model(self) -> AmDiagGmm
+      def `GetModel` as get_model(self) -> AmDiagGmm:
+        """Returns the ML-trained model used to get transforms."""
 
-      def `GetFmllrBasis` as basis_fmllr_estimate(self) -> BasisFmllrEstimate
+      def `GetFinalModel` as get_final_model(self) -> AmDiagGmm:
+        """Returns the discriminatively trained model.
+
+        If supplied in the config, otherwise it returns the ML-trained model.
+        """
+
+      def `GetFmllrBasis` as basis_fmllr_estimate(self) -> BasisFmllrEstimate:
+        """Returns the basis elements for basis-fMLLR."""
 
     class OnlineGmmAdaptationState:
+      """Online GMM adaptation state."""
+
       cmvn_state: OnlineCmvnState
+      """Online CMVN state"""
 
-      # FIXME
-      # @getter
-      # def `spk_stats` as get_spk_stats(self) -> FmllrDiagGmmAccs
+      spk_stats: FmllrDiagGmmAccs
+      """Speaker transform stats."""
 
-      # @setter
-      # def `spk_stats` as set_spk_stats(self, val: FmllrDiagGmmAccs)
+      transform: Matrix
+      """Transform matrix"""
 
-      `transform` as _transform: Matrix
+      def `Write` as write(self, out_stream: ostream, binary: bool):
+        """Writes this object to output stream."""
 
-      def `Write` as write(self, out_stream: ostream, binary: bool)
-
-      def `Read` as read(self, in_stream: istream, binary: bool)
+      def `Read` as read(self, in_stream: istream, binary: bool):
+        """Reads this object from input stream."""
 
     class `SingleUtteranceGmmDecoder` as SingleUtteranceGmmDecoder:
-      def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels, feature_prototype: OnlineFeaturePipeline, fst: StdFst, adaptation_state: OnlineGmmAdaptationState)
+      """Online lattice-generating decoder for diagonal GMM models.
 
-      def `FeaturePipeline` as feature_pipeline(self) -> OnlineFeaturePipeline
+      This class is used for decoding a single utterance in an online fashion
+      using diagonal GMMs.
+
+      Args:
+        config (OnlineGmmDecodingConfig): Options for online GMM decoding.
+        models (OnlineGmmDecodingModels): Models for online GMM decoding.
+        feature_prototype (OnlineFeaturePipeline): Online feature pipeline.
+        fst (StdFst): Decoding graph.
+        adaptation_state (OnlineGmmAdaptationState): Online GMM adaptation
+          state.
+      """
+      def __init__(self, config:OnlineGmmDecodingConfig, models: OnlineGmmDecodingModels,
+                   feature_prototype: OnlineFeaturePipeline, fst: StdFst,
+                   adaptation_state: OnlineGmmAdaptationState)
+
+      def `FeaturePipeline` as feature_pipeline(self) -> OnlineFeaturePipeline:
+        """Returns the online feature pipeline."""
 
       def `AdvanceDecoding` as advance_decoding(self):
-        """Advance the decoding as far as we can."""
+        """Advances the decoding until there are no more frames to decode.
+
+        This may also estimate fMLLR after advancing the decoding, depending on
+        the configuration.
+        """
 
       def `FinalizeDecoding` as finalize_decoding(self):
-        """Finalize the decoding"""
+        """Finalizes the decoding."""
 
       def `HaveTransform` as have_transform(self) -> bool:
-        """Returns true if we already have a fMLLR transform"""
+        """Returns True if we already have a fMLLR transform."""
 
       def `EstimateFmllr` as estimate_fmllr(self, end_of_utterance: bool):
-        """Estimate the [basis-]fMLLR transform and apply it to the features"""
+        """Estimates the [basis-]fMLLR transform and applies it to the features."""
 
-      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineGmmAdaptationState)
+      def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineGmmAdaptationState):
+        """Returns the adaptation state."""
 
-      # CompactLatticeVectorFst == CompactLattice
-      def `GetLattice` as get_lattice(self, rescore_if_needed: bool, end_of_utterance: bool, clat: CompactLatticeVectorFst):
-        """Gets the lattice. If rescore_if_needed is true and if there is any point in rescoring the state-level lattice, it will rescore the lattice."""
+      def `GetLattice` as get_lattice(self, rescore_if_needed: bool, end_of_utterance: bool)
+        -> CompactLatticeVectorFst:
+        """Gets the lattice-determinized compact lattice.
 
-      # LatticeVectorFst == lattice
-      def `GetBestPath` as get_best_path(self, end_of_utterance: bool, best_path: LatticeVectorFst):
-        """Outputs an FST corresponding to the single best path through the current lattice."""
+        The output is a deterministic compact lattice with a unique path for
+        each word sequence.
+
+        Args:
+          rescore_if_needed (bool): If this is True and there is any point in
+            rescoring the state-level lattice, it will rescore the lattice.
+          end_of_utterance (bool): If ``True`` and a final state of the graph
+            is reached, then the output will include final probabilities given
+            by the graph. Otherwise all final probabilities are treated as one.
+
+        Returns:
+          CompactLatticeVectorFst: The lattice-determinized compact lattice.
+
+        Raises:
+          RuntimeError: In the unusual circumstances where no tokens survive.
+        """
+        return CompactLatticeVectorFst(...)
+
+      def `GetBestPath` as get_best_path(self, end_of_utterance: bool) -> LatticeVectorFst:
+        """Gets best path as a lattice.
+
+        Args:
+          end_of_utterance (bool): If ``True`` and a final state of the graph
+            is reached, then the output will include final probabilities given
+            by the graph. Otherwise all final probabilities are treated as one.
+
+        Returns:
+          LatticeVectorFst: The best path.
+
+        Raises:
+          RuntimeError: In the unusual circumstances where no tokens survive.
+        """
+        return LatticeVectorFst(...)
 
       def `FinalRelativeCost` as final_relative_cost(self) -> float:
-        """Outputs to final_relative_cost, if non-NULL, a number >= 0 that will be close to zero if the final-probs were close to the best probs active on the final state."""
+        """Returns the final realtive cost."""
 
-      def `EndpointDetected` as endpoint_detected(self, config: OnlineEndpointConfig) -> bool
+      def `EndpointDetected` as endpoint_detected(self, config: OnlineEndpointConfig) -> bool:
+        """Determines if we should terminate decoding current utterance.
+
+        Args:
+          config (:obj:`OnlineEndpointConfig`): Online endpointing configuration.
+
+        Returns:
+          bool: True if an endpointing rule is active.
+        """

@@ -97,4 +97,13 @@ from "online2/online-nnet3-decoding-ext.h":
 
       # FIXME(Dogan):
       # LatticeFasterOnlineGrammarDecoder is further wrapped in Python.
-      def `DecoderPtr` as decoder(self) -> LatticeFasterOnlineGrammarDecoder
+      def `DecoderPtr` as decoder(self) -> LatticeFasterOnlineGrammarDecoder:
+        """Returns the underlying decoder object.
+
+        Note:
+          The decoder object returned by this method is an instance of
+          kaldi.decoder._lattice_faster_online_decoder_ext.LatticeFasterOnlineGrammarDecoder,
+          not an instance of kaldi.decoder.LatticeFasterOnlineGrammarDecoder.
+          Hence, it does not support the additional decoder API implemented in
+          Python.
+        """

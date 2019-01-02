@@ -16,140 +16,257 @@ from "online2/online-ivector-feature.h":
   namespace `kaldi`:
 
     class OnlineIvectorExtractionConfig:
+      """Command-line configuration options for online ivector extraction.
+
+      This class includes configuration variables relating to the online
+      ivector extraction, but not including configuration for the "base
+      feature", i.e. MFCC/PLP/filterbank, which is an input to this feature.
+
+      This configuration class is to set up `OnlineIvectorExtractionInfo`,
+      which in turn is the configuration class for `OnlineIvectorFeature`.
+      Instead of taking the options for each part of the online ivector
+      extractor directly, it reads in the configuration file for each part.
+
+      """
       lda_mat_rxfilename: str
+      """Extended filename for reading the LDA matrix."""
       global_cmvn_stats_rxfilename: str
+      """Extended filename for reading the global CMVN stats."""
       splice_config_rxfilename: str
+      """Extended filename for reading the online frame splicing configuration file."""
       cmvn_config_rxfilename: str
+      """Extended filename for reading the online CMVN configuration file."""
       diag_ubm_rxfilename: str
+      """Extended filename for reading the diagonal UBM used for obtaining the posteriors."""
       ivector_extractor_rxfilename: str
+      """Extended filename for reading the ivector extractor."""
       ivector_period: int
+      """Online ivector period (default=10)."""
       num_gselect: int
+      """Maximum number of posteriors to use per frame in ivector extraction (default=5)."""
       min_post:float
+      """Threshold for posterior pruning in ivector extraction (default=0.025)."""
       posterior_scale: float
+      """Scale on posteriors used in ivector extraction (default=0.1)."""
       max_count: float
+      """If nonzero, maximum stats count we allow before scaling down stats (default=0.0)."""
       num_cg_iters: int
+      """Number of iterations (default=15)."""
       use_most_recent_ivector: bool
+      """Whether to return the most recent ivector rather than the one for current frame (default=True)."""
       greedy_ivector_extractor: bool
+      """Whether to read ahead as much as we can when computing ivector stats (default=False)."""
       max_remembered_frames: float
+      """Largest number of frames to remember between utterances of the same speaker (default=1000)."""
 
-      def `Register` as register(self, opts: OptionsItf)
-
-    class `OnlineIvectorExtractionInfo` as _OnlineIvectorExtractionInfo:
-
-      `lda_mat` as _lda_mat: Matrix
-      `global_cmvn_stats` as _global_cmvn_stats: DoubleMatrix
-
-      cmvn_opts: OnlineCmvnOptions
-      splice_opts: OnlineSpliceOptions
-
-      # @getter
-      # def `diag_ubm` as get_diag_ubm(self) -> DiagGmm
-
-      # @setter
-      # def `diag_ubm` as set_diag_ubm(self, val: DiagGmm)
-
-
-      extractor: IvectorExtractor
-
-      ivector_period: int
-      num_gselect: int
-      min_post: float
-      posterior_scale: float
-      max_count: float
-      num_cg_iters: int
-      use_most_recent_ivector: bool
-      greedy_ivector_extractor: bool
-      max_remembered_frames: float
-
-      @add__init__
-      def `OnlineIvectorExtractionInfo` as from_config(self, config: OnlineIvectorExtractionConfig)
-
-      def `Init` as init(self, config: OnlineIvectorExtractionConfig)
-
-      def `Check` as check(self)
-
-    class OnlineIvectorExtractorAdaptationState:
-      cmvn_state: OnlineCmvnState
-      ivector_stats: OnlineIvectorEstimationStats
-
-      @add__init__
-      def `OnlineIvectorExtractorAdaptationState` as from_info(self, info: _OnlineIvectorExtractionInfo)
-
-      @add__init__
-      def `OnlineIvectorExtractorAdaptationState` as from_other(self, other: OnlineIvectorExtractorAdaptationState)
-
-      def `LimitFrames` as limit_frames(self, max_remembered_frames: float, posterior_scale: float):
-        """Scales down the stats if needed to ensure the number of frames in the speaker-specific CMVN stats does not exceed max_remembered_frames"""
-
-      def `Write` as write(self, os: ostream, binary: bool)
-
-      def `Read` as read(self, is: istream, binary: bool)
-
-    class OnlineIvectorFeature(OnlineFeatureInterface):
-      """OnlineIvectorFeature is an online feature-extraction class that's responsible
-      for extracting iVectors from raw features such as MFCC, PLP or filterbank."""
-
-      def `OnlineIvectorFeature` as __init__(self, info: _OnlineIvectorExtractionInfo, base_feature: OnlineFeatureInterface):
-        """Constructor
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
         Args:
-          base_feature (OnlineIvectorFeature): raw MFCC or PLP or filterbank used to train the iVector extractor
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
         """
 
+    class `OnlineIvectorExtractionInfo` as _OnlineIvectorExtractionInfo:
+      """Configuration options and other things needed for online ivector extraction.
+
+      Online ivector extractor does not take ownership of the objects
+      contained in this object, so make sure this object outlives the online
+      ivector extractor.
+      """
+      `lda_mat` as _lda_mat: Matrix
+      """LDA matrix"""
+      `global_cmvn_stats` as _global_cmvn_stats: DoubleMatrix
+      """Global CMVN stats"""
+      cmvn_opts: OnlineCmvnOptions
+      """Online CMVN options"""
+      splice_opts: OnlineSpliceOptions
+      """Online frame splicing options"""
+      diag_ubm: DiagGmm
+      """Diagonal UBM"""
+      extractor: IvectorExtractor
+      """Ivector extractor"""
+      ivector_period: int
+      """Online ivector period (default=10)."""
+      num_gselect: int
+      """Maximum number of posteriors to use per frame in ivector extraction (default=5)."""
+      min_post:float
+      """Threshold for posterior pruning in ivector extraction (default=0.025)."""
+      posterior_scale: float
+      """Scale on posteriors used in ivector extraction (default=0.1)."""
+      max_count: float
+      """If nonzero, maximum stats count we allow before scaling down stats (default=0.0)."""
+      num_cg_iters: int
+      """Number of iterations (default=15)."""
+      use_most_recent_ivector: bool
+      """Whether to return the most recent ivector rather than the one for current frame (default=True)."""
+      greedy_ivector_extractor: bool
+      """Whether to read ahead as much as we can when computing ivector stats (default=False)."""
+      max_remembered_frames: float
+      """Largest number of frames to remember between utterances of the same speaker (default=1000)."""
+
+      @add__init__
+      def `OnlineIvectorExtractionInfo` as from_config(self, config: OnlineIvectorExtractionConfig):
+        """Creates a new OnlineIvectorExtractionInfo from a OnlineIvectorExtractionConfig."""
+
+      def `Init` as init(self, config: OnlineIvectorExtractionConfig):
+        """Initializes with the given config."""
+
+      def `Check` as check(self):
+        """Checks if configuration options are valid."""
+
+    class OnlineIvectorExtractorAdaptationState:
+      """Adaptation state of the online ivector extractor.
+
+      This class stores the adaptation state from the online ivector extractor,
+      which can help you to initialize the adaptation state for the next
+      utterance of the same speaker in a more informed way.
+      """
+
+      cmvn_state: OnlineCmvnState
+      """Online CMVN state (used for getting posteriors for ivector extraction)"""
+
+      ivector_stats: OnlineIvectorEstimationStats
+      """Stats for online ivector estimation"""
+
+      @add__init__
+      def `OnlineIvectorExtractorAdaptationState` as from_info(self, info: _OnlineIvectorExtractionInfo):
+        """Creates a new OnlineIvectorExtractorAdaptationState from OnlineIvectorExtractionInfo."""
+
+      @add__init__
+      def `OnlineIvectorExtractorAdaptationState` as from_other(self, other: OnlineIvectorExtractorAdaptationState):
+        """Creates a new OnlineIvectorExtractorAdaptationState from another."""
+
+      def `LimitFrames` as limit_frames(self, max_remembered_frames: float, posterior_scale: float):
+        """Limits the frames.
+
+        Scales down the stats if needed to ensure the number of frames in the
+        speaker-specific CMVN stats does not exceed max_remembered_frames.
+        """
+
+      def `Write` as write(self, os: ostream, binary: bool):
+        """Writes this object to output stream."""
+
+      def `Read` as read(self, is: istream, binary: bool):
+        """Reads this object from input stream."""
+
+    class OnlineIvectorFeature(OnlineFeatureInterface):
+      """Online ivector extractor.
+
+      This class extracts online ivectors from raw features such as MFCC, PLP
+      or filterbank.
+
+      Args:
+        info (OnlineIvectorExtractionInfo): Options for online ivector extraction.
+        base_feature (OnlineIvectorFeature): Raw features MFCC, PLP or filterbank.
+
+      """
+      def __init__(self, info: _OnlineIvectorExtractionInfo, base_feature: OnlineFeatureInterface)
+
       def `Dim` as dim(self) -> int:
-        """Returns the iVector dimension"""
+        """Returns feature dimension"""
 
-      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool
+      def `IsLastFrame` as is_last_frame(self, frame: int) -> bool:
+        """Returns True if this is last frame, otherwise False"""
 
-      def `NumFramesReady` as num_ready_frames(self) -> int
+      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float:
+        """Returns frame shift in seconds"""
 
-      def `FrameShiftInSeconds` as frame_shift_in_seconds(self) -> float
+      def `NumFramesReady` as num_frames_ready(self) -> int:
+        """Returns number of frames ready"""
 
-      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase)
+      def `GetFrame` as get_frame(self, frame: int, feat: VectorBase):
+        """Returns the features for given frame index"""
 
       def `SetAdaptationState` as set_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
-        """Set the adaptation state to a particular value"""
+        """Sets online iVector adaptation state."""
 
       def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
-        """Get the adaptation state"""
+        """Gets online iVector adaptation state."""
 
       def `UbmLogLikePerFrame` as ubm_loglike_per_frame(self) -> float:
-        """UBM log-like per frame"""
+        """Returns UBM log-like per frame"""
 
       def `ObjfImprPerFrame` as objf_impr_per_frame(self) -> float:
-        """Objective improvement per frame from iVector estimation"""
+        """Returns Objective improvement per frame from iVector estimation"""
 
-      def `NumFrames` as num_frames(self) -> float
+      def `NumFrames` as num_frames(self) -> float:
+        """Returns number of frames seen"""
 
-      def `UpdateFrameWeights` as update_frame_weights(self, delta_weights: list<tuple<int, float>>)
+      def `UpdateFrameWeights` as update_frame_weights(self, delta_weights: list<tuple<int, float>>):
+        """Updates frame weights."""
 
     class OnlineSilenceWeightingConfig:
+      """Configuration options for online silence weighting."""
+
       silence_phones_str: str
+      """Colon or comma separated list of integer ids for silence phones."""
 
       silence_weight: float
+      """Weighing factor for silence frames."""
 
       max_state_duration: float
+      """Maximum allowed duration of a single transition-id."""
 
       new_data_weight: float
+      """Scale applied to data for which there is no decoder traceback yet."""
 
-      def `Active` as active(self) -> bool
+      def `Active` as active(self) -> bool:
+        """Returns true if list of silence phones is not empty and silence weight is not 1.0"""
 
-      def `Register` as register(self, opts: OptionsItf)
-
-      def `RegisterWithPrefix` as register_with_prefix(self, prefix: str, opts: OptionsItf)
-
-    class OnlineSilenceWeighting:
-      def `OnlineSilenceWeighting` as __init__(self, trans_model: TransitionModel, config: OnlineSilenceWeightingConfig, frame_subsampling_factor: int = default)
-
-      def `Active` as active(self) -> bool
-
-      def `ComputeCurrentTraceback` as compute_current_traceback(self, decoder: LatticeFasterOnlineDecoder)
-
-      def `ComputeCurrentTraceback` as compute_current_traceback_grammar(self, decoder: LatticeFasterOnlineGrammarDecoder)
-
-      def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int) -> (delta_weights: list<tuple<int, float>>):
-        """Calling this function gets the changes in weight that require us to modify the stats. Output format is (frame-index, delta-weight).
+      def `Register` as register(self, opts: OptionsItf):
+        """Registers options with an object implementing the options interface.
 
         Args:
-          num_frames_ready_in (int): number of frames available at the input of the online iVector extractor class
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+      def `RegisterWithPrefix` as register_with_prefix(self, prefix: str, opts: OptionsItf):
+        """Registers prefixed options with an object implementing the options interface.
+
+        Args:
+          prefix (str): String that will be prepended to option names.
+          opts (OptionsItf): An object implementing the options interface.
+            Typically a command-line option parser.
+        """
+
+    class OnlineSilenceWeighting:
+      """Online silence weighting.
+
+      This class is responsible for keeping track of the best-path traceback
+      from the decoder (efficiently) and computing a weighting of the data
+      based on the classification of frames as silence (or not silence)... also
+      with a duration limitation, so data from a very long run of the same
+      transition-id will get weighted down.  (this is often associated with
+      misrecognition or silence).
+
+      Args:
+        trans_model (TransitionModel): The transition model.
+        config (OnlineSilenceWeightingConfig): Options for online silence weighting.
+        frame_subsampling_factor (int): Frame subsampling factor (default=1).
+      """
+      def __init__(self, trans_model: TransitionModel, config: OnlineSilenceWeightingConfig,
+                   frame_subsampling_factor: int = default)
+
+      def `Active` as active(self) -> bool:
+        """Returns true if list of silence phones is not empty and silence weight is not 1.0"""
+
+      def `ComputeCurrentTraceback` as compute_current_traceback(self, decoder: LatticeFasterOnlineDecoder):
+        """Computes current traceback."""
+
+      def `ComputeCurrentTraceback` as compute_current_traceback_grammar(self, decoder: LatticeFasterOnlineGrammarDecoder):
+        """Computes current traceback."""
+
+      def `GetDeltaWeights` as get_delta_weights(self, num_frames_ready_in: int)
+        -> list<tuple<int, float>>:
+        """Gets the changes in frame weights.
+
+        Args:
+          num_frames_ready_in (int): Number of frames available at the input of
+            the online iVector extractor.
+
+        Returns:
+          List[Tuple[int, float]]: Delta weights as list of (frame-index,
+          delta-weight) tuples.
         """

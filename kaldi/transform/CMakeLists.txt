@@ -34,7 +34,7 @@ add_pyclif_library("_fmpe" fmpe.clif
 )
 
 add_pyclif_library("_fmllr_diag_gmm" fmllr-diag-gmm.clif
-  CLIF_DEPS _options_itf _kaldi_matrix _diag_gmm _mle_full_gmm _transform_common
+  CLIF_DEPS _options_itf _kaldi_matrix _sp_matrix _diag_gmm _mle_full_gmm _transform_common
   LIBRARIES kaldi-transform
 )
 

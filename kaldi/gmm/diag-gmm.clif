@@ -11,16 +11,19 @@ from "gmm/diag-gmm.h":
   namespace `kaldi`:
     class DiagGmm:
       @add__init__
-      def `DiagGmm` as from_other(self, gmm: DiagGmm)
+      def `DiagGmm` as from_other(self, gmm: DiagGmm):
+        """Creates a new DiagGmm from another DiagGmm."""
 
       @add__init__
       def `DiagGmm` as from_clusterable(self, gc: GaussClusterable,
-                                        var_floor: float)
+                                        var_floor: float):
+        """Creates a new DiagGmm from a GaussClusterable."""
 
       # def CopyFromNormal(self, diag_gmm_normal: DiagGmmNormal)
 
       @add__init__
-      def `DiagGmm` as from_nmix_dim(self, nmix: int, dim: int)
+      def `DiagGmm` as from_nmix_dim(self, nmix: int, dim: int):
+        """Creates a new DiagGmm with given number of mixtures and dimension."""
 
       # FIXME: CLIF is confused
       # @add__init__

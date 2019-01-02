@@ -1,6 +1,7 @@
 from "itf/options-itf-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/sp-matrix-clifwrap.h" import *
 from "gmm/diag-gmm-clifwrap.h" import *
 from "gmm/mle-full-gmm-clifwrap.h" import *
 from "transform/transform-common-clifwrap.h" import *
@@ -17,10 +18,12 @@ from "transform/fmllr-diag-gmm.h":
       def `Register` as register(self, opts: OptionsItf)
 
     class FmllrDiagGmmAccs(AffineXformStats):
-      def __init__(self, opts: FmllrOptions = default)
 
       @add__init__
       def `FmllrDiagGmmAccs` as from_other(self, other: FmllrDiagGmmAccs)
+
+      @add__init__
+      def `FmllrDiagGmmAccs` as from_options(self, opts: FmllrOptions)
 
       @add__init__
       def `FmllrDiagGmmAccs` as from_dim(self, dim: int,
@@ -89,4 +92,6 @@ from "transform/fmllr-diag-gmm.h":
     def `ApplyModelTransformToStats` as apply_model_transform_to_stats(
         xform: MatrixBase, stats: AffineXformStats)
 
-    # FmllrInnerUpdate
+    def `FmllrInnerUpdate` as fmllr_inner_update(
+        inv_G: DoubleSpMatrix, k: DoubleVectorBase, beta: float, row: int,
+        transform: DoubleMatrixBase)

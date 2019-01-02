@@ -10,6 +10,7 @@ from kaldi.util import _value_error_on_false
 from "hmm/hmm-utils.h":
   namespace `kaldi`:
     class HTransducerConfig:
+      """Configuration options for the H transducer."""
       transition_scale: float
       """Scale of transition probabilities (relative to language model)"""
 
