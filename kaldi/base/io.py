@@ -2,7 +2,6 @@ from ._iostream import *
 from ._fstream import *
 from ._sstream import *
 from ._io_funcs import *
-from ._io_funcs_inl import *
 from ._io_funcs_ext import *
 
 ################################################################################

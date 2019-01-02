@@ -19,3 +19,22 @@ from "base/io-funcs.h":
 
     def `ExpectToken` as expect_token(is: istream, binary: bool, token: str):
       """Tries to read the given token and throws exception on failure."""
+
+    def `WriteIntegerVector` as write_int_vector(os: ostream, binary: bool, v: list<int>):
+      """Writes a sequence of integers."""
+
+    def `ReadIntegerVector` as read_int_vector(is: istream, binary: bool) -> list<int>:
+      """Reads a sequence of integers."""
+
+    def `WriteIntegerPairVector` as write_int_pair_vector(os: ostream, binary: bool, v: list<tuple<int, int>>):
+      """Writes a sequence of integer pairs."""
+
+    def `ReadIntegerPairVector` as read_int_pair_vector(is: istream, binary: bool) -> list<tuple<int, int>>:
+      """Reads a sequence of integer pairs."""
+
+    def `InitKaldiOutputStream` as init_kaldi_output_stream(os: ostream, binary: bool):
+      """Initializes an output stream by writing an optional binary header."""
+
+    def `InitKaldiInputStream` as init_kaldi_input_stream(is: istream) -> (success: bool, binary: bool):
+      """Initializes an input stream by detecting the binary header."""
+      return _value_error_on_false(...)
