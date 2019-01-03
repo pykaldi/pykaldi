@@ -1,5 +1,6 @@
 from ._kaldi_thread import *
 from ._const_integer_set import *
+from ._edit_distance import *
 
 # This was adapted from CLIF to make sure it is available even if pyclif is not.
 def _value_error_on_false(ok, *args):

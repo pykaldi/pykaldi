@@ -1,0 +1,84 @@
+
+from "util/edit-distance.h":
+  namespace `kaldi`:
+    def `LevenshteinEditDistance` as levenshtein_edit_distance(a: list<int>, b: list<int>) -> int:
+      """Computes the edit distance between two lists of integer labels.
+
+      Args:
+        a (List[int]): First list of integer labels.
+        b (List[int]): Second list of integer labels.
+
+      Returns:
+        int: Edit-distance between the inputs.
+      """
+
+    def `LevenshteinEditDistance` as levenshtein_edit_distance_str(a: list<str>, b: list<str>) -> int:
+      """Computes the edit distance between two lists of string symbols.
+
+      Args:
+        a (List[str]): First list of string symbols.
+        b (List[str]): Second list of string symbols.
+
+      Returns:
+        int: Edit-distance between the inputs.
+      """
+
+    def `LevenshteinEditDistance` as levenshtein_edit_distance_conventional(
+      a: list<int>, b: list<int>) -> (err: int, ins: int, del: int, sub:int):
+      """Computes the edit distance between two lists of integer labels.
+
+      This version returns the number of insertions, deletions and
+      substitutions in addition to the total number of edits, i.e. error.
+
+      Args:
+        a (List[int]): First list of integer labels.
+        b (List[int]): Second list of integer labels.
+
+      Returns:
+        Tuple[int, int, int, int]: In order: edit-distance, #insertions,
+        #deletions, #substitutions.
+
+      Note:
+        Noise label, e.g. silence label, must be filtered out of the input
+        sequences.
+      """
+
+    def `LevenshteinEditDistance` as levenshtein_edit_distance_str_conventional(
+      a: list<str>, b: list<str>) -> (err: int, ins: int, del: int, sub:int):
+      """Computes the edit distance between two lists of string symbols.
+
+      This version returns the number of insertions, deletions and
+      substitutions in addition to the total number of edits, i.e. error.
+
+      Args:
+        a (List[str]): First list of string symbols.
+        b (List[str]): Second list of string symbols.
+
+      Returns:
+        Tuple[int, int, int, int]: In order: edit-distance, #insertions,
+        #deletions, #substitutions.
+
+      Note:
+        Noise symbol, e.g. silence symbol, must be filtered out of the input
+        sequences.
+      """
+
+    def `LevenshteinAlignment` as levenshtein_alignment(a: list<int>, b: list<int>, eps_label: int)
+      -> (err: int, alignment: list<tuple<int, int>>):
+      """Computes the levenshtein alignment between two lists of integer labels.
+
+      This version of the edit-distance computation outputs the alignment
+      between the two inputs. This is a list of pairs of (a label, b label).
+      The epsilon label must not occur in sequences a or b. Where one is
+      aligned to no label in the other (insertion or deletion), epsilon will be
+      the corresponding member of the pair.
+
+      Args:
+        a (List[int]): First list of integer labels.
+        b (List[int]): Second list of integer labels.
+        eps_label (int): Epsilon label.
+
+      Returns:
+        Tuple[int, List[Tuple[int, int]]]: Edit-distance and levenshtein
+        alignment between the inputs.
+      """
