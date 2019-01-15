@@ -5,6 +5,17 @@ kaldi\.util
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      levenshtein_alignment
+      levenshtein_edit_distance
+      levenshtein_edit_distance_conventional
+      levenshtein_edit_distance_str
+      levenshtein_edit_distance_str_conventional
+   
    
 
    

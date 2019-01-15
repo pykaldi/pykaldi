@@ -601,7 +601,7 @@ class _FstBase(object):
         Returns:
           True if the contents are sane, False otherwise.
         """
-        return self._verify()
+        return self._ops.verify(self)
 
     def write(self, filename):
         """Serializes FST to a file.

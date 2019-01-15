@@ -468,7 +468,7 @@ class SegmentationProcessor(object):
         filtered_segments = []
         for segment in segments:
             dur = segment[1] - segment[0]
-            if dur < min_segment_dur:
+            if dur < self.min_segment_dur:
                 stats.filter_short_duration += dur * self.frame_shift
                 stats.num_short_segments_filtered += 1
             else:
