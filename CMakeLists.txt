@@ -64,7 +64,10 @@ set(OPENFST_LIB_DIR "${KALDI_TOOLS_DIR}/openfst/lib")
 ####################################################################################################
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS} -Wno-maybe-uninitialized")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined -Wl,--as-needed ${LD_FLAGS}")
+if(DEBUG)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+endif(DEBUG)
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed ${LD_FLAGS}")
 if(CUDA)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CUDA_LD_FLAGS}")
   set(LD_LIBS "${LD_LIBS} ${CUDA_LD_LIBS}")
@@ -285,11 +288,19 @@ endfunction(add_CC_library)
 set(CLIF_LIBRARY "_clif")
 string(REPLACE "/build" "/build/lib/kaldi/lib" CLIF_LIB_OUTPUTDIR ${CMAKE_CURRENT_BINARY_DIR})
 set(CLIF_SRC_DIR "${CMAKE_SOURCE_DIR}/kaldi/lib")
-add_CC_library(${CLIF_LIBRARY}
-  "${CLIF_SRC_DIR}/clif/python/optional.cc;${CLIF_SRC_DIR}/clif/python/runtime.cc;${CLIF_SRC_DIR}/clif/python/slots.cc;${CLIF_SRC_DIR}/clif/python/types.cc"
-  OUTPUTDIR ${CLIF_LIB_OUTPUTDIR}
-  LIBRARIES ${PYTHON_LIBRARIES}
-)
+
+if(DEBUG)
+  add_CC_library(${CLIF_LIBRARY}
+    "${CLIF_SRC_DIR}/clif/python/optional.cc;${CLIF_SRC_DIR}/clif/python/runtime.cc;${CLIF_SRC_DIR}/clif/python/slots.cc;${CLIF_SRC_DIR}/clif/python/types.cc"
+    OUTPUTDIR ${CLIF_LIB_OUTPUTDIR}
+    LIBRARIES ${PYTHON_LIBRARIES}
+  )
+else(DEBUG)
+  add_CC_library(${CLIF_LIBRARY}
+    "${CLIF_SRC_DIR}/clif/python/optional.cc;${CLIF_SRC_DIR}/clif/python/runtime.cc;${CLIF_SRC_DIR}/clif/python/slots.cc;${CLIF_SRC_DIR}/clif/python/types.cc"
+    OUTPUTDIR ${CLIF_LIB_OUTPUTDIR}
+  )
+endif(DEBUG)
 
 ####################################################################################################
 # Add targets for pykaldi libraries
