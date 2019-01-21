@@ -120,7 +120,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
                 sil_weighting = OnlineSilenceWeighting(
                     asr.transition_model, feat_info.silence_weighting_config,
                     decodable_opts.frame_subsampling_factor)
-                remainder = data[offset:i + chunk_size]
+                remainder = data[i + offset:i + chunk_size]
                 feat_pipeline.accept_waveform(wav.samp_freq, remainder)
                 utt += 1
                 part = 1
