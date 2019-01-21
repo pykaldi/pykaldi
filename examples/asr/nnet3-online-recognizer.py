@@ -90,7 +90,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
     data = wav.data()[0]
     last_chunk = False
     utt, part = 1, 1
-    max_num_frames_decoded = 0
+    max_num_frames_decoded, offset = 0, 0
     for i in range(0, len(data), chunk_size):
         if i + chunk_size >= len(data):
             last_chunk = True
@@ -109,9 +109,9 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
                 asr.finalize_decoding()
                 out = asr.get_output()
                 print(key + "-utt%d-final" % utt, out["text"], flush=True)
-                offset = int(feat_pipeline.num_frames_ready()
-                             * feat_pipeline.frame_shift_in_seconds()
-                             * wav.samp_freq)
+                offset += int(feat_pipeline.num_frames_ready()
+                              * feat_pipeline.frame_shift_in_seconds()
+                              * wav.samp_freq)
                 feat_pipeline.get_adaptation_state(adaptation_state)
                 feat_pipeline = OnlineNnetFeaturePipeline(feat_info)
                 feat_pipeline.set_adaptation_state(adaptation_state)
@@ -120,7 +120,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
                 sil_weighting = OnlineSilenceWeighting(
                     asr.transition_model, feat_info.silence_weighting_config,
                     decodable_opts.frame_subsampling_factor)
-                remainder = data[i + offset:i + chunk_size]
+                remainder = data[offset:i + chunk_size]
                 feat_pipeline.accept_waveform(wav.samp_freq, remainder)
                 utt += 1
                 part = 1
