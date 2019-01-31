@@ -56,7 +56,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
     data = wav.data()[0]
     last_chunk = False
     part = 1
-    max_num_frames_decoded = 0
+    prev_num_frames_decoded = 0
     for i in range(0, len(data), chunk_size):
         if i + chunk_size >= len(data):
             last_chunk = True
@@ -66,8 +66,8 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
         asr.advance_decoding()
         num_frames_decoded = asr.decoder.num_frames_decoded()
         if not last_chunk:
-            if num_frames_decoded > max_num_frames_decoded:
-                max_num_frames_decoded = num_frames_decoded
+            if num_frames_decoded > prev_num_frames_decoded:
+                prev_num_frames_decoded = num_frames_decoded
                 out = asr.get_partial_output()
                 print(key + "-part%d" % part, out["text"], flush=True)
                 part += 1
