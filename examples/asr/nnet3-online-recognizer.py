@@ -56,7 +56,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
     data = wav.data()[0]
     last_chunk = False
     part = 1
-    max_num_frames_decoded = 0
+    prev_num_frames_decoded = 0
     for i in range(0, len(data), chunk_size):
         if i + chunk_size >= len(data):
             last_chunk = True
@@ -66,8 +66,8 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
         asr.advance_decoding()
         num_frames_decoded = asr.decoder.num_frames_decoded()
         if not last_chunk:
-            if num_frames_decoded > max_num_frames_decoded:
-                max_num_frames_decoded = num_frames_decoded
+            if num_frames_decoded > prev_num_frames_decoded:
+                prev_num_frames_decoded = num_frames_decoded
                 out = asr.get_partial_output()
                 print(key + "-part%d" % part, out["text"], flush=True)
                 part += 1
@@ -90,7 +90,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
     data = wav.data()[0]
     last_chunk = False
     utt, part = 1, 1
-    max_num_frames_decoded = 0
+    prev_num_frames_decoded, offset = 0, 0
     for i in range(0, len(data), chunk_size):
         if i + chunk_size >= len(data):
             last_chunk = True
@@ -109,9 +109,10 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
                 asr.finalize_decoding()
                 out = asr.get_output()
                 print(key + "-utt%d-final" % utt, out["text"], flush=True)
-                offset = int(feat_pipeline.num_frames_ready()
-                             * feat_pipeline.frame_shift_in_seconds()
-                             * wav.samp_freq)
+                offset += int(num_frames_decoded
+                              * decodable_opts.frame_subsampling_factor
+                              * feat_pipeline.frame_shift_in_seconds()
+                              * wav.samp_freq)
                 feat_pipeline.get_adaptation_state(adaptation_state)
                 feat_pipeline = OnlineNnetFeaturePipeline(feat_info)
                 feat_pipeline.set_adaptation_state(adaptation_state)
@@ -124,9 +125,9 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
                 feat_pipeline.accept_waveform(wav.samp_freq, remainder)
                 utt += 1
                 part = 1
-                max_num_frames_decoded = 0
-            elif num_frames_decoded > max_num_frames_decoded:
-                max_num_frames_decoded = num_frames_decoded
+                prev_num_frames_decoded = 0
+            elif num_frames_decoded > prev_num_frames_decoded:
+                prev_num_frames_decoded = num_frames_decoded
                 out = asr.get_partial_output()
                 print(key + "-utt%d-part%d" % (utt, part),
                       out["text"], flush=True)
