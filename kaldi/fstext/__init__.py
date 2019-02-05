@@ -175,9 +175,25 @@ class TropicalWeight(_float_weight.TropicalWeight):
         return _float_weight.TropicalWeight.from_float(weight)
 
 
-class StdArc(_api._ArcBase, _arc.StdArc):
-    """FST Arc with tropical weight."""
-    pass
+class StdArc(_arc.StdArc):
+    """FST arc with tropical weight.
+
+    StdArc():
+        Creates an uninitialized `StdArc` instance.
+
+    StdArc(ilabel, olabel, weight, nextstate):
+        Creates a new `StdArc` instance initalized with given arguments.
+
+    Args:
+        ilabel (int): The input label.
+        olabel (int): The output label.
+        weight (TropicalWeight): The arc weight.
+        nextstate (int): The destination state for the arc.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _arc.StdArc()
+        return _arc.StdArc.from_attrs(*args)
 
 
 class StdEncodeMapper(_api._EncodeMapper, _encode.StdEncodeMapper):
@@ -357,9 +373,25 @@ class LogWeight(_float_weight.LogWeight):
         return _float_weight.LogWeight.from_float(weight)
 
 
-class LogArc(_api._ArcBase, _arc.LogArc):
-    """FST Arc with log weight."""
-    pass
+class LogArc(_arc.LogArc):
+    """FST arc with log weight.
+
+    LogArc():
+        Creates an uninitialized `LogArc` instance.
+
+    LogArc(ilabel, olabel, weight, nextstate):
+        Creates a new `LogArc` instance initalized with given arguments.
+
+    Args:
+        ilabel (int): The input label.
+        olabel (int): The output label.
+        weight (LogWeight): The arc weight.
+        nextstate (int): The destination state for the arc.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _arc.LogArc()
+        return _arc.LogArc.from_attrs(*args)
 
 
 class LogEncodeMapper(_api._EncodeMapper, _encode.LogEncodeMapper):
@@ -550,9 +582,25 @@ class LatticeWeight(_lattice_weight.LatticeWeight):
         return _lattice_weight.LatticeWeight.from_pair(*args)
 
 
-class LatticeArc(_api._ArcBase, _arc.LatticeArc):
-    """FST Arc with lattice weight."""
-    pass
+class LatticeArc(_arc.LatticeArc):
+    """FST arc with lattice weight.
+
+    LatticeArc():
+        Creates an uninitialized `LatticeArc` instance.
+
+    LatticeArc(ilabel, olabel, weight, nextstate):
+        Creates a new `LatticeArc` instance initalized with given arguments.
+
+    Args:
+        ilabel (int): The input label.
+        olabel (int): The output label.
+        weight (LatticeWeight): The arc weight.
+        nextstate (int): The destination state for the arc.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _arc.LatticeArc()
+        return _arc.LatticeArc.from_attrs(*args)
 
 
 class LatticeEncodeMapper(_api._EncodeMapper, _encode.LatticeEncodeMapper):
@@ -753,9 +801,25 @@ class CompactLatticeWeight(_lattice_weight.CompactLatticeWeight):
                         "positional arguments; {} given".format(len(args)))
 
 
-class CompactLatticeArc(_api._ArcBase, _arc.CompactLatticeArc):
-    """FST Arc with compact lattice weight."""
-    pass
+class CompactLatticeArc(_arc.CompactLatticeArc):
+    """FST arc with compact lattice weight.
+
+    CompactLatticeArc():
+        Creates an uninitialized `CompactLatticeArc` instance.
+
+    CompactLatticeArc(ilabel, olabel, weight, nextstate):
+        Creates a new `CompactLatticeArc` instance initalized with given arguments.
+
+    Args:
+        ilabel (int): The input label.
+        olabel (int): The output label.
+        weight (CompactLatticeWeight): The arc weight.
+        nextstate (int): The destination state for the arc.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _arc.CompactLatticeArc()
+        return _arc.CompactLatticeArc.from_attrs(*args)
 
 
 class CompactLatticeEncodeMapper(_api._EncodeMapper,
@@ -999,9 +1063,25 @@ class KwsIndexWeight(_lexicographic_weight.KwsIndexWeight):
                         "positional arguments; {} given".format(len(args)))
 
 
-class KwsIndexArc(_api._ArcBase, _arc.KwsIndexArc):
-    """FST Arc with KWS index weight."""
-    pass
+class KwsIndexArc(_arc.KwsIndexArc):
+    """FST arc with KWS index weight.
+
+    KwsIndexArc():
+        Creates an uninitialized `KwsIndexArc` instance.
+
+    KwsIndexArc(ilabel, olabel, weight, nextstate):
+        Creates a new `KwsIndexArc` instance initalized with given arguments.
+
+    Args:
+        ilabel (int): The input label.
+        olabel (int): The output label.
+        weight (KwsIndexWeight): The arc weight.
+        nextstate (int): The destination state for the arc.
+    """
+    def __new__(cls, *args):
+        if len(args) == 0:
+            return _arc.KwsIndexArc()
+        return _arc.KwsIndexArc.from_attrs(*args)
 
 
 class KwsIndexEncodeMapper(_api._EncodeMapper, _encode.KwsIndexEncodeMapper):

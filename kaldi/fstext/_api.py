@@ -33,31 +33,6 @@ def _get_weight_or_default(weight_factory, weight=None, default_one=True):
     return weight_factory(weight)
 
 
-# Arc API
-
-class _ArcBase(object):
-    """Base class defining the Python API for Arc types."""
-    def __init__(self, ilabel=None, olabel=None, weight=None, nextstate=None):
-        """
-        Attributes of the arc can be accessed and mutated.
-
-        Args:
-            ilabel (int): The input label.
-            olabel (int): The output label.
-            weight: The arc weight.
-            nextstate (int): The destination state for the arc.
-        """
-        super(_ArcBase, self).__init__()
-        if ilabel is not None:
-            self.ilabel = ilabel
-        if olabel is not None:
-            self.olabel = olabel
-        if weight is not None:
-            self.weight = weight
-        if nextstate is not None:
-            self.nextstate = nextstate
-
-
 # Encoder API
 
 class _EncodeMapper(object):
