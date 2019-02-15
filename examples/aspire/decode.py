@@ -27,13 +27,14 @@ feats_rspec = (
     "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- |"
 )
 ivectors_rspec = (
-    "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- | "
+    "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- |"
     "ivector-extract-online2 --config=conf/ivector.conf ark:data/spk2utt ark:- ark:- |"
 )
 
 # Decode wav files
 with SequentialMatrixReader(feats_rspec) as f, \
-     SequentialMatrixReader(ivectors_rspec) as i:
+     SequentialMatrixReader(ivectors_rspec) as i, \
+     open("out/decode.out", "w") as o:
     for (key, feats), (_, ivectors) in zip(f, i):
         out = asr.decode((feats, ivectors))
-        print(key, out["text"], flush=True)
+        print(key, out["text"], file=o)
