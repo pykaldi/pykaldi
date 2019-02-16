@@ -1,26 +1,16 @@
-PyKaldi Examples
-----------------
+Examples
+--------
 
-This folder includes example scripts and setups to help you get started with
-PyKaldi.
+## setups
 
-1. `aspire` is a batteries included example setup for demonstrating the use of
-   PyKaldi with pre-trained ASpIRE chain models.
+Runnable example setups. These setups include not only some runnable scripts but
+also the data, models and configs you need to run them.
 
-2. `asr` directory contains example decoding scripts for a variety of ASR
-   scenarios.
+## scripts
 
-3. `alignment` directory contains example scripts for forced alignment.
+Example scripts demonstrating PyKaldi API. These scripts cover a variety of
+ASR, alignment, segmentation and feature extraction scenarios.
 
-4. `segmentation` directory contains example scripts for ASR-based segmentation,
-   e.g. speech activity detection.
+## notebooks
 
-5. `ltsv-based-vad` is an example setup for doing voice activity detection (VAD)
-   using long-term signal variability (LTSV) measure.
-
-6. `kaldi-style-executables` directory contains example scripts that replicate
-   the functionality of a selection of Kaldi executables for demonstrating the
-   PyKaldi API.
-
-7. `notebooks` directory contains example Jupyter notebooks for demonstrating
-   how PyKaldi can be used interactively.
+Example Jupyter notebooks demonstrating how PyKaldi can be used interactively.
