@@ -18,23 +18,23 @@ decodable_opts.frames_per_chunk = 150
 asr = NnetLatticeFasterRecognizer.from_files(
     "exp/tdnn_7b_chain_online/final.mdl",
     "exp/tdnn_7b_chain_online/graph_pp/HCLG.fst",
-    "exp/tdnn_7b_chain_online/graph_pp/words.txt",
+    "data/lang/words.txt",
     decoder_opts=decoder_opts,
     decodable_opts=decodable_opts)
 
 # Define feature pipelines as Kaldi rspecifiers
 feats_rspec = (
-    "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- |"
+    "ark:compute-mfcc-feats --config=conf/mfcc_hires.conf scp:data/test/wav.scp ark:- |"
 )
 ivectors_rspec = (
-    "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- |"
-    "ivector-extract-online2 --config=conf/ivector.conf ark:data/spk2utt ark:- ark:- |"
+    "ark:compute-mfcc-feats --config=conf/mfcc_hires.conf scp:data/test/wav.scp ark:- |"
+    "ivector-extract-online2 --config=conf/ivector_extractor.conf ark:data/test/spk2utt ark:- ark:- |"
 )
 
 # Decode wav files
 with SequentialMatrixReader(feats_rspec) as f, \
      SequentialMatrixReader(ivectors_rspec) as i, \
-     open("out/decode.out", "w") as o:
+     open("out/test/decode.out", "w") as o:
     for (key, feats), (_, ivectors) in zip(f, i):
         out = asr.decode((feats, ivectors))
         print(key, out["text"], file=o)

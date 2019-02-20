@@ -16,30 +16,30 @@ decodable_opts.frames_per_chunk = 150
 aligner = NnetAligner.from_files(
     "exp/tdnn_7b_chain_online/final.mdl",
     "exp/tdnn_7b_chain_online/tree",
-    "exp/langdir/L.fst",
-    "exp/langdir/words.txt",
-    "exp/langdir/phones/disambig.int",
+    "data/lang/L.fst",
+    "data/lang/words.txt",
+    "data/lang/phones/disambig.int",
     decodable_opts=decodable_opts)
-phones = SymbolTable.read_text("exp/langdir/phones.txt")
+phones = SymbolTable.read_text("data/lang/phones.txt")
 wb_info = WordBoundaryInfo.from_file(WordBoundaryInfoNewOpts(),
-                                     "exp/langdir/phones/word_boundary.int")
+                                     "data/lang/phones/word_boundary.int")
 
 # Define feature pipelines as Kaldi rspecifiers
 feats_rspec = (
-    "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- |"
+    "ark:compute-mfcc-feats --config=conf/mfcc_hires.conf scp:data/test/wav.scp ark:- |"
 )
 ivectors_rspec = (
-    "ark:compute-mfcc-feats --config=conf/mfcc.conf scp:data/wav.scp ark:- |"
-    "ivector-extract-online2 --config=conf/ivector.conf ark:data/spk2utt ark:- ark:- |"
+    "ark:compute-mfcc-feats --config=conf/mfcc_hires.conf scp:data/test/wav.scp ark:- |"
+    "ivector-extract-online2 --config=conf/ivector_extractor.conf ark:data/test/spk2utt ark:- ark:- |"
 )
 
 # Align wav files
 with SequentialMatrixReader(feats_rspec) as f, \
      SequentialMatrixReader(ivectors_rspec) as i, \
-     open("data/text") as t, \
-     open("out/align.out", "w") as a, \
-     open("out/phone_align.out", "w") as p, \
-     open("out/word_align.out", "w") as w:
+     open("data/test/text") as t, \
+     open("out/test/align.out", "w") as a, \
+     open("out/test/phone_align.out", "w") as p, \
+     open("out/test/word_align.out", "w") as w:
     for (fkey, feats), (ikey, ivectors), line in zip(f, i, t):
         tkey, text = line.strip().split(None, 1)
         assert(fkey == ikey == tkey)

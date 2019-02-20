@@ -26,12 +26,13 @@ There is an example data setup inside `data` directory. You can skip the rest
 of this section if you simply want to run the example setup.
 
 If you want to decode or align your own recordings, you can edit the files in
-`data` directory. For decoding, you need to provide `data/wav.scp` and
-`data/spk2utt` files. For alignment, you also need to provide `data/text`.
+`data/test` directory. For decoding, you need to provide `data/test/wav.scp` and
+`data/test/spk2utt` files. For alignment, you also need to provide
+`data/test/text`.
 
 ## List of Recordings
 
-The list of utterances `data/wav.scp` has the format:
+The list of utterances `data/test/wav.scp` has the format:
 
     utt1 /path/to/utt1.wav
     utt2 /path/to/utt2.wav
@@ -49,7 +50,7 @@ them to the required format.
 
 ## Speaker to Utterance Map
 
-The speaker to utterance map `data/spk2utt` has the format:
+The speaker to utterance map `data/test/spk2utt` has the format:
 
     spk1 utt1 utt4 ...
     spk2 utt2 utt3 ...
@@ -65,7 +66,7 @@ If no speaker information is available, make it an identity mapping:
 
 ## Transcripts (needed for alignment)
 
-The list of transcripts in `data/text` has the format:
+The list of transcripts in `data/test/text` has the format:
 
     utt1 trascript of first utterance
     utt2 trascript of second utterance
@@ -74,30 +75,30 @@ The list of transcripts in `data/text` has the format:
     ...
 
 Note that these should be tokenized transcripts and all of the tokens should be
-in system vocabulary `exp/langdir/words.txt`.
+in system vocabulary `data/lang/words.txt`.
 
 # ASR
 
-You can decode the utterances listed in `data/wav.scp` with the following
+You can decode the utterances listed in `data/test/wav.scp` with the following
 command.
 
     ./decode.py
 
-Note that the models used in this setup are fairly large so it takes some time
-to load models from disk. To decode with these models, you will need around 2GB
-memory. The decoding script will print a bunch of logs to stderr.
+The decoding script will print a bunch of logs to stderr.
 
-Decoding outputs are written to `out/decode.out`.
+Decoding outputs are written to `out/test/decode.out`.
 
 # Alignment
 
-Align the utterances listed in `data/wav.scp` with the transcripts listed in
-`data/text`:
+You can align the utterances listed in `data/test/wav.scp` with the transcripts
+listed in `data/test/text` using the following command.
 
     ./align.py
 
-Frame-level alignments are written to `out/align.out`.
+The alignment script will print a bunch of logs to stderr.
 
-Phone-level alignments are written to `out/phone_align.out`.
+Frame-level alignments are written to `out/test/align.out`.
 
-Word-level alignments are written to `out/word_align.out`.
+Phone-level alignments are written to `out/test/phone_align.out`.
+
+Word-level alignments are written to `out/test/word_align.out`.
