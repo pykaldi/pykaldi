@@ -4,7 +4,12 @@ Example Setups
 ## aspire
 
 Batteries included example setup for demonstrating the use of PyKaldi with
-pre-trained ASpIRE chain models.
+pre-trained ASpIRE chain tdnn models.
+
+## zamia
+
+Batteries included example setup for demonstrating the use of PyKaldi with
+pre-trained Zamia chain tdnn-f models.
 
 ## ltsv-based-vad
 
