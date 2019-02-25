@@ -1,3 +1,5 @@
+set(PACKAGE "kaldi")
+
 add_subdirectory("base")
 add_subdirectory("chain")
 add_subdirectory("cudamatrix")

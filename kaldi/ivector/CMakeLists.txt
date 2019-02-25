@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.ivector")
+
 add_pyclif_library("_voice_activity_detection" voice-activity-detection.clif
   CLIF_DEPS _kaldi_matrix _options_itf
   LIBRARIES kaldi-ivector

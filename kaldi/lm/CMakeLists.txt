@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.lm")
+
 add_pyclif_library("_arpa_file_parser" arpa-file-parser.clif
   CLIF_DEPS _iostream _options_itf
   LIBRARIES kaldi-lm

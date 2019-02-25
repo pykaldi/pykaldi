@@ -10,8 +10,8 @@ from "fstext/lattice-weight-clifwrap.h" import *
 from "fstext/vector-fst-clifwrap.h" import *
 from "lat/kaldi-lattice.h" import *
 
-from kaldi.matrix import _vector_wrapper
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _vector_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 from kaldi.util import _value_error_on_false
 from kaldi.fstext import LatticeVectorFst
 from kaldi.fstext import CompactLatticeVectorFst

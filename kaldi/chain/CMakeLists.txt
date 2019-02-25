@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.chain")
+
 add_pyclif_library("_chain_datastruct" chain-datastruct.clif)
 add_pyclif_library("_chain_den_graph" chain-den-graph.clif
   CLIF_DEPS _cu_matrixdim _cu_vector _vector_fst _transition_model _context_dep

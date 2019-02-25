@@ -4,8 +4,8 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "gmm/full-gmm-clifwrap.h" import *
 from "tree/clusterable-classes-clifwrap.h" import *
 
-from kaldi.matrix import _vector_wrapper
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _vector_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "gmm/diag-gmm.h":
   namespace `kaldi`:

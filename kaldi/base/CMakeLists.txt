@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.base")
+
 add_pyclif_library("_kaldi_error" kaldi-error.clif
   LIBRARIES kaldi-base
 )

@@ -3,7 +3,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/matrix-ext.h" import *
 
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "feat/feature-functions.h":
   namespace `kaldi`:

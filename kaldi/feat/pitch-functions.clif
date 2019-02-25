@@ -6,7 +6,7 @@ from "itf/online-feature-itf-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
 from kaldi.itf._online_feature_itf import OnlineBaseFeature
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "feat/pitch-functions.h":
   namespace `kaldi`:

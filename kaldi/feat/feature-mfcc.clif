@@ -4,7 +4,7 @@ from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
 from "feat/mel-computations-clifwrap.h" import *
 
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "feat/feature-mfcc.h":
   namespace `kaldi`:

@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.hmm")
+
 add_pyclif_library("_hmm_topology" hmm-topology.clif
   CLIF_DEPS _iostream
   LIBRARIES kaldi-base kaldi-hmm

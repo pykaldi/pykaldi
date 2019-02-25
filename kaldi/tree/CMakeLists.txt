@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.tree")
+
 add_pyclif_library("_event_map" event-map.clif
   CLIF_DEPS _iostream
   LIBRARIES kaldi-base kaldi-tree

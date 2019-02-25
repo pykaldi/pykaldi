@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.transform")
+
 add_pyclif_library("_transform_common" transform-common.clif
   CLIF_DEPS _iostream _sp_matrix
   LIBRARIES kaldi-transform

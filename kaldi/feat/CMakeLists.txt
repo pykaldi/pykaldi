@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.feat")
+
 add_pyclif_library("_wave_reader" wave-reader.clif
   CLIF_DEPS _iostream _kaldi_matrix
   LIBRARIES kaldi-feat

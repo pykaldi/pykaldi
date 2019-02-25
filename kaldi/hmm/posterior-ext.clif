@@ -3,7 +3,7 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "util/const-integer-set-clifwrap.h" import *
 
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "hmm/posterior-ext.h":
   namespace `kaldi`:

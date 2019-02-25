@@ -2,7 +2,7 @@ from "matrix/kaldi-vector-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
 
-from kaldi.matrix import _vector_wrapper
+from kaldi.matrix._matrix import _vector_wrapper
 
 from "feat/mel-computations.h":
   namespace `kaldi`:

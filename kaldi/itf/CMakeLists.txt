@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.itf")
+
 add_pyclif_library("_clusterable_itf" clusterable-itf.clif
   CLIF_DEPS _iostream
 )

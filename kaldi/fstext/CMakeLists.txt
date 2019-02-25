@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.fstext")
+
 add_pyclif_library("properties" properties.clif)
 
 add_pyclif_library("_symbol_table" symbol-table.clif

@@ -5,7 +5,7 @@ from "fstext/fst-clifwrap.h" import *
 from "fstext/mutable-fst-clifwrap.h" import *
 from "fstext/deterministic-fst-clifwrap.h" import *
 
-from kaldi.decoder import FasterDecoderOptions
+from kaldi.decoder._faster_decoder import FasterDecoderOptions
 
 from "decoder/biglm-faster-decoder.h":
   namespace `kaldi`:

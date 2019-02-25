@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.decoder")
+
 add_pyclif_library("_grammar_fst" grammar-fst.clif
   CLIF_DEPS _fst _const_fst _vector_fst
   LIBRARIES kaldi-decoder

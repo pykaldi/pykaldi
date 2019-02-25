@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.gmm")
+
 add_pyclif_library("_model_common" model-common.clif
   CLIF_DEPS _kaldi_vector
   LIBRARIES kaldi-gmm

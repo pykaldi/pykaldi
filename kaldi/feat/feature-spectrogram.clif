@@ -3,7 +3,7 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "itf/options-itf-clifwrap.h" import *
 from "feat/feature-window-clifwrap.h" import *
 
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "feat/feature-spectrogram.h":
   namespace `kaldi`:

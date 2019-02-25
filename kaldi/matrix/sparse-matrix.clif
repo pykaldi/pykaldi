@@ -5,7 +5,7 @@ from "matrix/kaldi-matrix-clifwrap.h" import *
 from "matrix/compressed-matrix-clifwrap.h" import *
 from "cudamatrix/cu-matrix-clifwrap.h" import *
 
-from kaldi.matrix import _matrix_wrapper
+from kaldi.matrix._matrix import _matrix_wrapper
 
 from "matrix/sparse-matrix.h":
   namespace `kaldi`:

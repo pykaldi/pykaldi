@@ -8,7 +8,7 @@ from "hmm/transition-model-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
 
 from kaldi.fstext import CompactLatticeVectorFst
-from kaldi.matrix import _vector_wrapper
+from kaldi.matrix._matrix import _vector_wrapper
 from kaldi.util import _value_error_on_false
 
 from "lat/lattice-functions.h":

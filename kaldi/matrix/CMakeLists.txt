@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.matrix")
+
 add_pyclif_library("_matrix_common" matrix-common.clif
   LIBRARIES kaldi-matrix
 )

@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.nnet3")
+
 add_pyclif_library("_natural_gradient_online" natural-gradient-online.clif
   CLIF_DEPS _cu_matrix
   LIBRARIES kaldi-nnet3

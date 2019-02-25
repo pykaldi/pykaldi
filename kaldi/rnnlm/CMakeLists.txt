@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.rnnlm")
+
 add_pyclif_library("_sampler" sampler.clif
   LIBRARIES kaldi-rnnlm
 )

@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.cudamatrix")
+
 if(CUDA)
   add_pyclif_library("_cu_device" cu-device.clif
     LIBRARIES kaldi-base kaldi-cudamatrix

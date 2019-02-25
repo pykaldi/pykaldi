@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.lat")
+
 add_pyclif_library("_confidence" confidence.clif
   CLIF_DEPS _vector_fst
   LIBRARIES kaldi-lat

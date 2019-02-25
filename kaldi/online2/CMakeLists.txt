@@ -1,3 +1,5 @@
+set(PACKAGE "${PACKAGE}.online2")
+
 add_pyclif_library("_online_endpoint" online-endpoint.clif
   CLIF_DEPS _options_itf _lattice_faster_online_decoder _lattice_faster_online_decoder_ext _transition_model
   LIBRARIES kaldi-util kaldi-online2

@@ -137,7 +137,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "_matrix_ext.SubVector",              // tp_name
+  "kaldi.matrix._matrix_ext.SubVector", // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -360,7 +360,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "_matrix_ext.SubMatrix",              // tp_name
+  "kaldi.matrix._matrix_ext.SubMatrix", // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -568,7 +568,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "_matrix_ext.DoubleSubVector",              // tp_name
+  "kaldi.matrix._matrix_ext.DoubleSubVector", // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -791,7 +791,7 @@ static void _dtor(void* self) {
 
 PyTypeObject wrapper_Type = {
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "_matrix_ext.DoubleSubMatrix",              // tp_name
+  "kaldi.matrix._matrix_ext.DoubleSubMatrix", // tp_name
   sizeof(wrapper),                     // tp_basicsize
   0,                                   // tp_itemsize
   _deallocator,                        // tp_dealloc
@@ -1086,18 +1086,18 @@ bool Ready() {
 
 #if PY_MAJOR_VERSION == 2
 PyObject* Init() {
-  PyObject* module = Py_InitModule3("_matrix_ext", Methods,
+  PyObject* module = Py_InitModule3("kaldi.matrix._matrix_ext", Methods,
                                     "kaldi matrix extension module");
   if (!module) {
     PyErr_SetString(PyExc_ImportError,
-                    "Cannot initialize _matrix_ext module.");
+                    "Cannot initialize kaldi.matrix._matrix_ext module.");
     return nullptr;
   }
-  if (PyObject* m = PyImport_ImportModule("_matrix_common")) Py_DECREF(m);
+  if (PyObject* m = PyImport_ImportModule("kaldi.matrix._matrix_common")) Py_DECREF(m);
   else return nullptr;
-  if (PyObject* m = PyImport_ImportModule("_kaldi_vector")) Py_DECREF(m);
+  if (PyObject* m = PyImport_ImportModule("kaldi.matrix._kaldi_vector")) Py_DECREF(m);
   else return nullptr;
-  if (PyObject* m = PyImport_ImportModule("_kaldi_matrix")) Py_DECREF(m);
+  if (PyObject* m = PyImport_ImportModule("kaldi.matrix._kaldi_matrix")) Py_DECREF(m);
   else return nullptr;
   if (PyModule_AddObject(module, "SubVector", reinterpret_cast<PyObject*>(&pySubVector::wrapper_Type)) < 0) return nullptr;
   if (PyModule_AddObject(module, "SubMatrix", reinterpret_cast<PyObject*>(&pySubMatrix::wrapper_Type)) < 0) return nullptr;
@@ -1114,7 +1114,7 @@ PyObject* Init() {
 #else
 static struct PyModuleDef Module = {
   PyModuleDef_HEAD_INIT,
-  "_matrix_ext",
+  "kaldi.matrix._matrix_ext",
   "kaldi matrix extension module",
   -1,  // module keeps state in global variables
   Methods
@@ -1123,11 +1123,11 @@ static struct PyModuleDef Module = {
 PyObject* Init() {
   PyObject* module = PyModule_Create(&Module);
   if (!module) return nullptr;
-  if (PyObject* m = PyImport_ImportModule("_matrix_common")) Py_DECREF(m);
+  if (PyObject* m = PyImport_ImportModule("kaldi.matrix._matrix_common")) Py_DECREF(m);
   else goto err;
-  if (PyObject* m = PyImport_ImportModule("_kaldi_vector")) Py_DECREF(m);
+  if (PyObject* m = PyImport_ImportModule("kaldi.matrix._kaldi_vector")) Py_DECREF(m);
   else goto err;
-  if (PyObject* m = PyImport_ImportModule("_kaldi_matrix")) Py_DECREF(m);
+  if (PyObject* m = PyImport_ImportModule("kaldi.matrix._kaldi_matrix")) Py_DECREF(m);
   else goto err;
   if (PyModule_AddObject(module, "SubVector", reinterpret_cast<PyObject*>(&pySubVector::wrapper_Type)) < 0) goto err;
   if (PyModule_AddObject(module, "SubMatrix", reinterpret_cast<PyObject*>(&pySubMatrix::wrapper_Type)) < 0) goto err;
