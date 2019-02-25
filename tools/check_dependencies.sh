@@ -6,10 +6,10 @@
 #   * Checks for libtool, zlib
 #   * Checks that the python environment has numpy, setuptools and pyparsing
 # Sets exit code accordingly
-# 
-# 
+#
+#
 # This codes takes mostly from Kaldi check_dependencies.sh,
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -21,14 +21,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
-# 
+#
+#
 # Usage: ./check_dependencies.sh [PYTHON]
-# 
+#
 #   PYTHON is the python executable to use (optional, defaults to current python)
-# 
+#
 # TODO (VM):
-#   Check pip matches python 
+#   Check pip matches python
 ################################################################################################
 
 set -e
@@ -36,7 +36,7 @@ CXX=${CXX:-g++}
 status=0
 
 # Which packages to check
-PKGS=( git cmake autoconf automake curl make g++ unzip wget svn pkg-config libtoolize )
+PKGS=( git cmake autoconf automake curl make g++ unzip wget svn pkg-config )
 
 # Which python packages to check
 PY_PKGS=( numpy setuptools pyparsing )
@@ -73,6 +73,11 @@ if ! echo "#include <zlib.h>" | $CXX -E - >&/dev/null; then
     echo "zlib is not installed."
     echo ""
     status=1
+fi
+
+if ! which libtoolize >&/dev/null && ! which glibtoolize >&/dev/null; then
+  echo "$0: neither libtoolize nor glibtoolize is installed"
+  add_packages libtool libtool libtool
 fi
 
 # TODO: Check build-essential, libatlas3-base

@@ -63,22 +63,22 @@ set(OPENFST_LIB_DIR "${KALDI_TOOLS_DIR}/openfst/lib")
 #  Set compiler and linker flags
 ####################################################################################################
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS} -Wno-maybe-uninitialized")
-if(DEBUG)
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-endif(DEBUG)
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed ${LD_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LD_FLAGS} ${LD_LIBS}")
 if(CUDA)
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CUDA_LD_FLAGS}")
-  set(LD_LIBS "${LD_LIBS} ${CUDA_LD_LIBS}")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CUDA_LD_FLAGS} ${CUDA_LD_LIBS}")
 endif(CUDA)
-separate_arguments(LD_LIBS)
 
 set(CMAKE_INSTALL_RPATH "${PYTHON_LIB_DIR};${KALDI_LIBRARIES_DIR};${OPENFST_LIB_DIR}")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(ORIGIN "@loader_path")
+else()
+  set(ORIGIN "$ORIGIN")
+endif()
 file(GLOB children RELATIVE ${CMAKE_SOURCE_DIR}/kaldi ${CMAKE_SOURCE_DIR}/kaldi/*)
 foreach(child ${children})
   if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/kaldi/${child})
-    LIST(APPEND CMAKE_INSTALL_RPATH "$ORIGIN/../${child}")
+    LIST(APPEND CMAKE_INSTALL_RPATH "${ORIGIN}/../${child}")
   endif()
 endforeach()
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
@@ -138,7 +138,7 @@ function(add_pyclif_library name pyclif_file)
           ${PYOUTPUT}
           --matcher_bin=${CLIF_MATCHER}
           --ccdeps_out ${gen_cc} --header_out ${gen_h} --ccinit_out ${gen_init}
-          --modname=${module_name}
+          --modname=${PACKAGE}.${module_name}
           --prepend=clif/python/types.h
           -I${CMAKE_SOURCE_DIR}/kaldi/lib
           -I${CMAKE_SOURCE_DIR}/kaldi
@@ -217,6 +217,7 @@ function(add_CC_library module_name SOURCES)
 
   # Create extension module
   add_library(${module_name} SHARED ${SOURCES})
+  set_target_properties(${module_name} PROPERTIES SUFFIX ".so")
 
   if(DEBUG)
     message("- Dependencies:")
@@ -255,11 +256,6 @@ function(add_CC_library module_name SOURCES)
     if(DEBUG)
       message("    ${LIB}")
     endif(DEBUG)
-    target_link_libraries(${module_name} ${LIB})
-  endforeach(LIB)
-
-  # Link with other libraries
-  foreach(LIB ${LD_LIBS})
     target_link_libraries(${module_name} ${LIB})
   endforeach(LIB)
 

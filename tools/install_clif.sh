@@ -76,8 +76,29 @@ if (( PV[0] < 3 || PV[0] == 3 && PV[1] < 2 )); then
   exit 1
 fi
 PROTOBUF_PREFIX_PATH="$(dirname "$(dirname "$(which protoc)")")"
-PROTOBUF_INCLUDE="$(pkg-config --cflags protobuf)"
-PROTOBUF_LIBS="$(pkg-config --libs protobuf)"
+PYCLIF_CFLAGS="$(pkg-config --cflags protobuf)"
+PYCLIF_LDFLAGS="$(pkg-config --libs protobuf)"
+
+####################################################################
+# Set C++ system include directory and standard library
+####################################################################
+
+CXX_SYSTEM_INCLUDE_DIR_FLAGS=
+if [ "`uname`" == "Darwin" ]; then
+  PYCLIF_CFLAGS="${PYCLIF_CFLAGS} -stdlib=libc++"
+  XCODE_TOOLCHAIN_DIR="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain"
+  COMMAND_LINE_TOOLCHAIN_DIR="/Library/Developer/CommandLineTools"
+  if [ -d "$XCODE_TOOLCHAIN_DIR" ]; then
+    CXX_SYSTEM_INCLUDE_DIR="${XCODE_TOOLCHAIN_DIR}/usr/include/c++/v1"
+  elif [ -d "$COMMAND_LINE_TOOLCHAIN_DIR" ]; then
+    CXX_SYSTEM_INCLUDE_DIR="${COMMAND_LINE_TOOLCHAIN_DIR}/usr/include/c++/v1"
+  else
+    echo "Could not find toolchain directory!"
+    echo "Install xcode command line tools, e.g. xcode-select --install"
+    exit 1
+  fi
+  CXX_SYSTEM_INCLUDE_DIR_FLAGS="-DCXX_SYSTEM_INCLUDE_DIR=$CXX_SYSTEM_INCLUDE_DIR"
+fi
 
 ######################################################################
 
@@ -94,7 +115,7 @@ fi
 cd "$CLIF_DIR"
 git pull
 
-declare -a CMAKE_G_FLAG
+declare -a CMAKE_G_FLAGS
 declare -a MAKE_PARALLELISM
 if which ninja; then
   CMAKE_G_FLAGS=(-G Ninja)
@@ -140,6 +161,7 @@ cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
       -DLLVM_BUILD_DOCS=false \
       -DLLVM_TARGETS_TO_BUILD=X86 \
       "${CMAKE_PY_FLAGS[@]}" \
+      "${CXX_SYSTEM_INCLUDE_DIR_FLAGS}" \
       "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
 "$MAKE_OR_NINJA" "${MAKE_PARALLELISM[@]}" clif-matcher clif_python_utils_proto_util
 "$MAKE_OR_NINJA" "${MAKE_INSTALL_PARALLELISM[@]}" install
@@ -164,10 +186,10 @@ if [ ! -w $PYTHON_PACKAGE_DIR ]; then
   echo "*** Writing to PYTHON_PACKAGE_DIR requires sudo access."
   echo "*** Run the following command to install pyclif Python package."
   echo ""
-  echo "sudo CFLAGS=\"$PROTOBUF_INCLUDE\" LDFLAGS=\"$PROTOBUF_LIBS\" $PYTHON_PIP install $CLIF_DIR"
+  echo "sudo CFLAGS=\"$PYCLIF_CFLAGS\" LDFLAGS=\"$PYCLIF_LDFLAGS\" $PYTHON_PIP install $CLIF_DIR"
   exit 1
 else
-  CFLAGS="$PROTOBUF_INCLUDE" LDFLAGS="$PROTOBUF_LIBS" $PYTHON_PIP install .
+  CFLAGS="$PYCLIF_CFLAGS" LDFLAGS="$PYCLIF_LDFLAGS" $PYTHON_PIP install .
 fi
 
 echo "Done installing CLIF."

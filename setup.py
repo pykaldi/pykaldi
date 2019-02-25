@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import os
+import platform
 import subprocess
 import sys
 
@@ -114,6 +115,26 @@ if KALDI_TFRNNLM:
                               "bazel-bin", "tensorflow")
     subprocess.check_call(["rm", "Makefile"])
 
+if platform.system() == "Darwin":
+    XCODE_TOOLCHAIN_DIR = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain"
+    COMMAND_LINE_TOOLCHAIN_DIR = "/Library/Developer/CommandLineTools"
+    if os.path.isdir(XCODE_TOOLCHAIN_DIR):
+        TOOLCHAIN_DIR = XCODE_TOOLCHAIN_DIR
+    elif os.path.isdir(COMMAND_LINE_TOOLCHAIN_DIR):
+        TOOLCHAIN_DIR = COMMAND_LINE_TOOLCHAIN_DIR
+    else:
+        print("\nCould not find toolchain directory!\nInstall xcode command "
+              "line tools, e.g. xcode-select --install", file=sys.stderr)
+        sys.exit(1)
+    CXX_SYSTEM_INCLUDE_DIR = os.path.join(TOOLCHAIN_DIR, "usr/include/c++/v1")
+    CLIF_CXX_FLAGS += " -isystem {}".format(CXX_SYSTEM_INCLUDE_DIR)
+    LD_FLAGS += " -undefined dynamic_lookup"
+elif platform.system() == "Linux":
+    CXX_FLAGS += " -Wno-maybe-uninitialized"
+    LD_FLAGS += " -Wl,--as-needed"
+    if DEBUG:
+        LD_FLAGS += " -Wl,--no-undefined"
+
 MAKE_NUM_JOBS = os.getenv('MAKE_NUM_JOBS')
 if not MAKE_NUM_JOBS:
     # This is the logic ninja uses to guess the number of parallel jobs.
@@ -223,6 +244,8 @@ class build_ext(setuptools.command.build_ext.build_ext):
 
         if DEBUG:
             CMAKE_ARGS += ['-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON']
+        else:
+            CMAKE_ARGS += ['-Wno-dev']
 
         if not os.path.exists(BUILD_DIR):
             os.makedirs(BUILD_DIR)

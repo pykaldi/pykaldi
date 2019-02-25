@@ -398,9 +398,9 @@ dimensions:
 
 ## Installation
 
-For the moment, PyKaldi installation scripts do not work on non-Linux platforms.
-If you are on a relatively recent Linux platform, such as Ubuntu >= 16.04 or
-CentOS >= 7, you should be able to install PyKaldi without too much trouble.
+If you are using a relatively recent Linux or macOS, such as Ubuntu >= 16.04,
+CentOS >= 7 or macOS >= 10.13, you should be able to install PyKaldi without too
+much trouble. Otherwise, you will likely need to tweak the installation scripts.
 
 ### Conda
 
@@ -452,20 +452,29 @@ source env/bin/activate
 
 #### Step 2: Install Dependencies
 
-On Ubuntu 16.04, running the following commands will install system packages
-needed for building PyKaldi from source.
+Running the commands below will install the system packages needed for building
+PyKaldi from source.
 
 ```bash
+# Ubuntu
 sudo apt-get install autoconf automake cmake curl g++ git graphviz \
     libatlas3-base libtool make pkg-config subversion unzip wget zlib1g-dev
 
+# macOS
+brew install automake cmake git graphviz libtool pkg-config wget
+```
+
+Running the commands below will install the Python packages needed for building
+PyKaldi from source.
+
+```bash
 pip install --upgrade pip
 pip install --upgrade setuptools
 pip install numpy pyparsing
 pip install ninja  # not required but strongly recommended
 ```
 
-In addition to above listed system packages, we also need PyKaldi compatible
+In addition to above listed packages, we also need PyKaldi compatible
 installations of the following software:
 
 * [Google Protobuf](https://github.com/google/protobuf.git) v3.2 or later. Both
@@ -523,12 +532,6 @@ limit the number of parallel jobs used for building PyKaldi as follows:
 ```bash
 MAKE_NUM_JOBS=2 python setup.py install
 ```
-
-### How do I build PyKaldi on MacOS?
-
-At the moment, PyKaldi installation scripts do not work on non-Linux platforms.
-It should not be too hard to get them to work on MacOS but we haven't yet looked
-into it.
 
 ### How do I build PyKaldi on Windows?
 
