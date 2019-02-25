@@ -13,6 +13,7 @@ from __future__ import division
 from . import cudamatrix as _cumatrix
 from . import decoder as _dec
 from . import fstext as _fst
+from .fstext import enums as _fst_enums
 from .fstext import _fst as _fst_fst
 from .fstext import properties as _fst_props
 from .fstext import special as _fst_spec
@@ -1939,12 +1940,12 @@ class LatticeLmRescorer(object):
         self.old_lm_compose_cache = _fst_spec.LatticeTableComposeCache.from_compose_opts(
             _fst_spec.TableComposeOptions.from_matcher_opts(
                 _fst_spec.TableMatcherOptions(),
-                table_match_type=_fst.MatchType.MATCH_INPUT))
+                table_match_type=_fst_enums.MatchType.MATCH_INPUT))
         if not self.phi_label:
             self.new_lm_compose_cache = _fst_spec.LatticeTableComposeCache.from_compose_opts(
                 _fst_spec.TableComposeOptions.from_matcher_opts(
                     _fst_spec.TableMatcherOptions(),
-                    table_match_type=_fst.MatchType.MATCH_INPUT))
+                    table_match_type=_fst_enums.MatchType.MATCH_INPUT))
 
     def rescore(self, lat):
         """Rescores input lattice.

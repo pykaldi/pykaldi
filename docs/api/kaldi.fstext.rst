@@ -61,7 +61,6 @@ kaldi\.fstext
       CompactLatticeVectorFstMutableArcIterator
       CompactLatticeVectorFstStateIterator
       CompactLatticeWeight
-      EncodeType
       FstHeader
       FstReadOptions
       FstWriteOptions
@@ -102,7 +101,6 @@ kaldi\.fstext
       LogVectorFstMutableArcIterator
       LogVectorFstStateIterator
       LogWeight
-      MatchType
       StdArc
       StdConstFst
       StdConstFstArcIterator
@@ -118,6 +116,60 @@ kaldi\.fstext
       SymbolTableIterator
       SymbolTableTextOptions
       TropicalWeight
+   
+   
+
+   
+   
+   
+kaldi\.fstext\.enums
+--------------------
+
+.. automodule:: kaldi.fstext.enums
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :nosignatures:
+   
+      GetArcSortType
+      GetClosureType
+      GetComposeFilter
+      GetDeterminizeType
+      GetEncodeFlags
+      GetEpsNormalizeType
+      GetMapType
+      GetProjectType
+      GetPushFlags
+      GetQueueType
+      GetRandArcSelection
+      GetReplaceLabelType
+      GetReweightType
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :nosignatures:
+   
+      ArcSortType
+      ClosureType
+      ComposeFilter
+      DeterminizeType
+      EncodeType
+      EpsNormalizeType
+      MapType
+      MatchType
+      ProjectType
+      QueueType
+      RandArcSelection
+      ReplaceLabelType
+      ReweightType
    
    
 
