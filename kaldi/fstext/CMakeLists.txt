@@ -100,7 +100,7 @@ add_pyclif_library("_fstext_utils" fstext-utils.clif
 
 add_pyclif_library("_fstext_utils_inl" fstext-utils-inl.clif
   NAMESPACES fst
-  CLIF_DEPS _mutable_fst _vector_fst
+  CLIF_DEPS _expanded_fst _mutable_fst _vector_fst
   LIBRARIES kaldi-fstext
 )
 
