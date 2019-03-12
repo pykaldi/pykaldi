@@ -565,7 +565,7 @@ class _RandomAccessReaderMappedBase(object):
         """
         super(_RandomAccessReaderMappedBase, self).__init__()
         if table_rspecifier != "" and map_rspecifier != "":
-            if not self.Open(table_rspecifier, map_rspecifier):
+            if not self.open(table_rspecifier, map_rspecifier):
                 raise IOError("Error opening mapped random access table reader "
                               "with table_rspecifier: {}, map_rspecifier: {}"
                               .format(table_rspecifier, map_rspecifier))
