@@ -260,7 +260,7 @@ class _FstBase(object):
             show_weight_one=self._properties(_props.WEIGHTED, True) == _props.WEIGHTED)
 
     def _valid_state_id(self, s):
-        if not self._properties(EXPANDED, True):
+        if not self._properties(_props.EXPANDED, True):
             _logging.error("Cannot get number of states for unexpanded FST")
             return False
         if s < 0 or s >= self._ops.count_states(self):
