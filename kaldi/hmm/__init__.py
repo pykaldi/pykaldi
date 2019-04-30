@@ -133,12 +133,20 @@ The main things the TransitionModel object can do are:
 
 from ._hmm_topology import *
 from ._hmm_utils import *
+from ._hmm_utils import _get_h_transducer
 from ._hmm_utils_ext import *
 from ._posterior import *
 from ._posterior_ext import *
 from ._transition_model import *
 from ._tree_accu import *
+from kaldi.fstext import StdVectorFst
+
+def get_h_transducer(self, ilabel_info, ctx_dep, trans_model, config):
+  """Python wrapper for _hmm_utils.get_h_transducer. Post-process output into StdVectorFst."""
+  h_transducer, disambig_syms_left = _get_h_transducer(ilabel_info, ctx_dep, trans_model, config)
+  return StdVectorFst(h_transducer), disambig_syms_left
 
 __all__ = [name for name in dir()
            if name[0] != '_'
            and not name.endswith('Base')]
+

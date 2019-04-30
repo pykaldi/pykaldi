@@ -28,13 +28,12 @@ from "hmm/hmm-utils.h":
     # NOTE(Dogan): No need for the following functions in Python.
     # GetHmmAsFsa, GetHmmAsFsaSimple
 
-    def `GetHTransducer` as get_h_transducer(
+    def `GetHTransducer` as _get_h_transducer(
       ilabel_info: list<list<int>>, ctx_dep: ContextDependencyInterface,
       trans_model: TransitionModel, config: HTransducerConfig)
       -> (h_transducer: StdVectorFst, disambig_syms_left: list<int>):
       """Creates the H transducer."""
-      return StdVectorFst(...)
-
+      
     def `GetIlabelMapping` as get_ilabel_mapping(
       ilabel_info_old: list<list<int>>, ctx_dep: ContextDependencyInterface,
       trans_model: TransitionModel) -> list<int>:
