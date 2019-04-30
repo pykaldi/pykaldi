@@ -141,7 +141,7 @@ from ._transition_model import *
 from ._tree_accu import *
 from kaldi.fstext import StdVectorFst
 
-def get_h_transducer(self, ilabel_info, ctx_dep, trans_model, config):
+def get_h_transducer(ilabel_info, ctx_dep, trans_model, config):
   """Python wrapper for _hmm_utils.get_h_transducer. Post-process output into StdVectorFst."""
   h_transducer, disambig_syms_left = _get_h_transducer(ilabel_info, ctx_dep, trans_model, config)
   return StdVectorFst(h_transducer), disambig_syms_left
