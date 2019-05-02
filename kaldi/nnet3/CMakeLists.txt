@@ -206,6 +206,6 @@ add_pyclif_library("_decodable_simple_looped" decodable-simple-looped.clif
 )
 
 add_pyclif_library("_decodable_online_looped" decodable-online-looped.clif
-  CLIF_DEPS _online_feature_itf _decodable_simple_looped _matrix_ext
+  CLIF_DEPS _online_feature_itf _decodable_simple_looped
   LIBRARIES kaldi-nnet3
 )
