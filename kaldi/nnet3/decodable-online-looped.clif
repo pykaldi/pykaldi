@@ -1,6 +1,7 @@
 from "itf/online-feature-itf-clifwrap.h" import *
 from "hmm/transition-model-clifwrap.h" import *
 from "nnet3/decodable-simple-looped-clifwrap.h" import *
+from "matrix/matrix-ext.h" import *
 
 from kaldi.itf._decodable_itf import DecodableInterface
 
@@ -27,6 +28,9 @@ from "nnet3/decodable-online-looped.h":
       def `FrameSubsamplingFactor` as frame_subsampling_factor(self) -> int:
         """Returns the frame subsampling factor."""
 
+      def `LogLikelihoods` as log_likelihoods(self, frame: int) -> SubVector:
+        """Returns the log-likelihoods for the given frame"""
+
     class DecodableAmNnetLoopedOnline(DecodableInterface):
       """DecodableAmNnetLoopedOnline"""
       def __init__(self, trans_model: TransitionModel,
@@ -48,3 +52,7 @@ from "nnet3/decodable-online-looped.h":
 
       def `FrameSubsamplingFactor` as frame_subsampling_factor(self) -> int:
         """Returns the frame subsampling factor."""
+
+      def `LogLikelihoods` as log_likelihoods(self, frame: int) -> SubVector:
+        """Returns the log-likelihoods for the given frame"""
+
