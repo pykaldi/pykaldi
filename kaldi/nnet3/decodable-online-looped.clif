@@ -35,6 +35,10 @@ from "nnet3/decodable-online-looped.h":
         """Returns the log-likelihoods for the given frame"""
         return _vector_wrapper(...)
 
+      def `LogLikelihoods` as log_likelihoods(self, frame: int, num_frames: int) -> Matrix:
+        """Returns the log-likelihoods for the given frame"""
+	return _matrix_wrapper(...)
+
     class DecodableAmNnetLoopedOnline(DecodableInterface):
       """DecodableAmNnetLoopedOnline"""
       def __init__(self, trans_model: TransitionModel,
@@ -61,7 +65,7 @@ from "nnet3/decodable-online-looped.h":
         """Returns the log-likelihoods for the given frame"""
 	return _vector_wrapper(...)
 
-      def `LogLikelihoods` as log_likelihoods(self, frame_from: int, frame_to: int) -> Matrix:
+      def `LogLikelihoods` as log_likelihoods(self, frame: int, num_frames: int) -> Matrix:
         """Returns the log-likelihoods for the given frame"""
 	return _matrix_wrapper(...)
 

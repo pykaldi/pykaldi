@@ -63,7 +63,7 @@ for key, wav in SequentialWaveReader("scp:wav.scp"):
             feat_pipeline.input_finished()
         nr = d.num_frames_ready()
         if nr > prev_num_frames_computed:
-            x = d.log_likelihoods(prev_num_frames_computed, nr).numpy()
+            x = d.log_likelihoods(prev_num_frames_computed, nr - prev_num_frames_computed).numpy()
             print(x.shape, x)
             prev_num_frames_computed = nr
         asr.advance_decoding()
