@@ -7,7 +7,9 @@
 
 from __future__ import print_function
 
-from kaldi.asr import NnetLatticeFasterOnlineRecognizer
+import numpy
+
+from kaldi.asr import NnetLatticeFasterOnlineRecognizer, MappedLatticeFasterRecognizer
 from kaldi.decoder import LatticeFasterDecoderOptions
 from kaldi.nnet3 import NnetSimpleLoopedComputationOptions
 from kaldi.online2 import (OnlineEndpointConfig,
@@ -17,7 +19,7 @@ from kaldi.online2 import (OnlineEndpointConfig,
                            OnlineNnetFeaturePipeline,
                            OnlineSilenceWeighting)
 from kaldi.util.options import ParseOptions
-from kaldi.util.table import SequentialWaveReader
+from kaldi.util.table import SequentialWaveReader, MatrixWriter, SequentialMatrixReader
 
 chunk_size = 1440
 
@@ -45,36 +47,53 @@ asr = NnetLatticeFasterOnlineRecognizer.from_files(
     endpoint_opts=endpoint_opts)
 
 # Decode (chunked + partial output + log_likelihoods)
-for key, wav in SequentialWaveReader("scp:wav.scp"):
-    feat_pipeline = OnlineNnetFeaturePipeline(feat_info)
-    asr.set_input_pipeline(feat_pipeline)
-    d = asr._decodable
-    asr.init_decoding()
-    data = wav.data()[0]
-    last_chunk = False
-    part = 1
-    prev_num_frames_decoded = 0
-    prev_num_frames_computed = 0
-    for i in range(0, len(data), chunk_size):
-        if i + chunk_size >= len(data):
-            last_chunk = True
-        feat_pipeline.accept_waveform(wav.samp_freq, data[i:i + chunk_size])
-        if last_chunk:
-            feat_pipeline.input_finished()
-        nr = d.num_frames_ready()
-        if nr > prev_num_frames_computed:
-            x = d.log_likelihoods(prev_num_frames_computed, nr - prev_num_frames_computed).numpy()
-            print(x.shape, x)
-            prev_num_frames_computed = nr
-        asr.advance_decoding()
-        num_frames_decoded = asr.decoder.num_frames_decoded()
-        if not last_chunk:
-            if num_frames_decoded > prev_num_frames_decoded:
-                prev_num_frames_decoded = num_frames_decoded
-                out = asr.get_partial_output()
-                print(key + "-part%d" % part, out["text"], flush=True)
-                part += 1
-    asr.finalize_decoding()
-    out = asr.get_output()
-    print(key + "-final", out["text"], flush=True)
+with MatrixWriter("ark:loglikes.ark") as llout:
+    for key, wav in SequentialWaveReader("scp:wav.scp"):
+        feat_pipeline = OnlineNnetFeaturePipeline(feat_info)
+        asr.set_input_pipeline(feat_pipeline)
+        d = asr._decodable
+        asr.init_decoding()
+        data = wav.data()[0]
+        last_chunk = False
+        part = 1
+        prev_num_frames_decoded = 0
+        prev_num_frames_computed = 0
+        llhs = list()
+        for i in range(0, len(data), chunk_size):
+            if i + chunk_size >= len(data):
+                last_chunk = True
+            feat_pipeline.accept_waveform(wav.samp_freq, data[i:i + chunk_size])
+            if last_chunk:
+                feat_pipeline.input_finished()
+            nr = d.num_frames_ready()
+            if nr > prev_num_frames_computed:
+                x = d.log_likelihoods(prev_num_frames_computed, nr - prev_num_frames_computed).numpy()
+                llhs.append(x)
+                prev_num_frames_computed = nr
+            asr.advance_decoding()
+            num_frames_decoded = asr.decoder.num_frames_decoded()
+            if not last_chunk:
+                if num_frames_decoded > prev_num_frames_decoded:
+                    prev_num_frames_decoded = num_frames_decoded
+                    out = asr.get_partial_output()
+                    print(key + "-part%d" % part, out["text"], flush=True)
+                    part += 1
+        asr.finalize_decoding()
+        out = asr.get_output()
+        print(key + "-final", out["text"], flush=True)
+
+        llout[key] = numpy.concatenate(llhs, axis=0)
+
+# Do it again, Sam, but perhaps with a different HCLG.fst
+
+# Decode log-likelihoods stored as kaldi matrices.
+asr = MappedLatticeFasterRecognizer.from_files(
+    "final.mdl", "HCLG.fst", "words.txt",
+    acoustic_scale=1.0, decoder_opts=decoder_opts)
+
+with SequentialMatrixReader("ark:loglikes.ark") as llin:
+    for key, loglikes in llin:
+        out = asr.decode(loglikes)
+        print(key + '-fromllhs', out["text"], flush=True)
+
 
