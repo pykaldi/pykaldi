@@ -201,7 +201,7 @@ add_pyclif_library("_nnet_am_decodable_simple" nnet-am-decodable-simple.clif
 )
 
 add_pyclif_library("_decodable_simple_looped" decodable-simple-looped.clif
-  CLIF_DEPS _transition_model _am_nnet_simple _nnet_compute _nnet_optimize
+  CLIF_DEPS _transition_model _am_nnet_simple _nnet_compute _nnet_optimize 
   LIBRARIES kaldi-util kaldi-nnet3
 )
 
