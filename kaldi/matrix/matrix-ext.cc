@@ -127,6 +127,7 @@ static PyObject* _allocator(PyTypeObject* type, Py_ssize_t nitems);
 static int _ctor(PyObject* self, PyObject* args, PyObject* kw);
 
 static void _deallocator(PyObject* self) {
+  reinterpret_cast<wrapper*>(self)->cpp.Destruct();
   Py_XDECREF(reinterpret_cast<wrapper*>(self)->base);
   Py_TYPE(self)->tp_free(self);
 }
@@ -350,6 +351,7 @@ static PyObject* _allocator(PyTypeObject* type, Py_ssize_t nitems);
 static int _ctor(PyObject* self, PyObject* args, PyObject* kw);
 
 static void _deallocator(PyObject* self) {
+  reinterpret_cast<wrapper*>(self)->cpp.Destruct();
   Py_XDECREF(reinterpret_cast<wrapper*>(self)->base);
   Py_TYPE(self)->tp_free(self);
 }
@@ -558,6 +560,7 @@ static PyObject* _allocator(PyTypeObject* type, Py_ssize_t nitems);
 static int _ctor(PyObject* self, PyObject* args, PyObject* kw);
 
 static void _deallocator(PyObject* self) {
+  reinterpret_cast<wrapper*>(self)->cpp.Destruct();
   Py_XDECREF(reinterpret_cast<wrapper*>(self)->base);
   Py_TYPE(self)->tp_free(self);
 }
@@ -781,6 +784,7 @@ static PyObject* _allocator(PyTypeObject* type, Py_ssize_t nitems);
 static int _ctor(PyObject* self, PyObject* args, PyObject* kw);
 
 static void _deallocator(PyObject* self) {
+  reinterpret_cast<wrapper*>(self)->cpp.Destruct();
   Py_XDECREF(reinterpret_cast<wrapper*>(self)->base);
   Py_TYPE(self)->tp_free(self);
 }
