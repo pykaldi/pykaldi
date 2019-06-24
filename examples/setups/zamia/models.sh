@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wget --no-check-certificate http://goofy.zamia.org/zamia-speech/asr-models/kaldi-generic-en-tdnn_f-r20190227.tar.xz
+wget --no-check-certificate https://goofy.zamia.org/zamia-speech/asr-models/kaldi-generic-en-tdnn_f-r20190609.tar.xz
 tar -xJf kaldi-generic-en-tdnn_f-r20190227.tar.xz
 rm -f kaldi-generic-en-tdnn_f-r20190227.tar.xz
 
