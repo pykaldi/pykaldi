@@ -311,7 +311,7 @@ class _VectorBase(object):
             raise ValueError("The number of rows of the input matrix ({})"
                              "should match the size of this vector ({})."
                              .format(M.num_rows, self.dim))
-        if not instance(col, int) or not (0 <= col < M.num_cols):
+        if not isinstance(col, int) or not (0 <= col < M.num_cols):
             raise IndexError()
         if isinstance(M, _kaldi_matrix.MatrixBase):
             _kaldi_vector_ext._copy_col_from_mat(self, M, col)
@@ -1684,7 +1684,7 @@ class _DoubleVectorBase(object):
             raise ValueError("The number of rows of the input matrix ({})"
                              "should match the size of this vector ({})."
                              .format(M.num_rows, self.dim))
-        if not instance(col, int) or not (0 <= col < M.num_cols):
+        if not isinstance(col, int) or not (0 <= col < M.num_cols):
             raise IndexError()
         if isinstance(M, _kaldi_matrix.DoubleMatrixBase):
             _kaldi_vector_ext._copy_col_from_mat_double(self, M, col)
