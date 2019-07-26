@@ -628,7 +628,7 @@ an issue for discussion.
 [OpenFst]: http://www.openfst.org
 [PyKaldi Examples]: https://github.com/pykaldi/pykaldi/tree/master/examples/
 [PyKaldi ASR Examples]: https://github.com/pykaldi/pykaldi/tree/master/examples/asr/
-[PyKaldi Online ASR Example]: https://github.com/pykaldi/pykaldi/tree/master/examples/asr/nnet3-online-recognizer.py
+[PyKaldi Online ASR Example]: https://github.com/pykaldi/pykaldi/tree/master/examples/scripts/asr/nnet3-online-recognizer.py
 [PyKaldi Docs]: https://pykaldi.github.io
 [`asr`]: https://pykaldi.github.io/api/kaldi.asr.html
 [`alignment`]: https://pykaldi.github.io/api/kaldi.alignment.html
