@@ -48,8 +48,10 @@ class _SequentialReaderBase(object):
 
     def __iter__(self):
         while not self.done():
-            yield self.key(), self.value()
+            key = self.key()
+            value = self.value()
             self.next()
+            yield key, value
 
     def open(self, rspecifier):
         """Opens the table for reading.
