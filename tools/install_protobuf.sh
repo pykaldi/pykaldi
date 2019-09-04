@@ -78,7 +78,7 @@ cd "$PROTOBUF_DIR"
 
 ./autogen.sh
 ./configure --prefix $PROTOBUF_DIR
-make -j4  && make install
+make -j`nproc`  && make install
 
 echo "Installing Protobuf Python package..."
 cd "$PROTOBUF_DIR/python"
