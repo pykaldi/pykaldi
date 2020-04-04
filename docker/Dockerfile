@@ -1,5 +1,5 @@
 # Dockerfile for building PyKaldi image from Ubuntu 16.04 image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # Install necessary system packages
 RUN apt-get update \
