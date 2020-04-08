@@ -18,6 +18,7 @@ RUN apt-get update \
     libtool \
     make \
     pkg-config \
+    sox \
     subversion \
     unzip \
     wget \
