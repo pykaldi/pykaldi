@@ -1,5 +1,5 @@
 # Dockerfile for building PyKaldi min image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # We do this in a single RUN so that it does not add weight by creating layers
 RUN apt-get update \
