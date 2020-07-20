@@ -74,8 +74,8 @@ from "gmm/mle-diag-gmm.h":
 
         def `AugmentGmmFlags` as augment_gmm_flags(f: int) -> int 
 
-        # def MleDiagGmmUpdate(self, config: MleDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out:float, count_out: float, floored_elements_out: int = default, floored_gauss_out: int = default, removed_gauss_out: int = default)
+        def `MleDiagGmmUpdate` as mle_diag_gmm_update(config: MleDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out:float, count_out: float, floored_elements_out: int = default, floored_gauss_out: int = default, removed_gauss_out: int = default)
 
-        # def MapDiagGmmUpdate(self, config: MapDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out: float, count_out: float)
+        def `MapDiagGmmUpdate`as map_diag_gmm_update(config: MapDiagGmmOptions, diag_gmm_acc: AccumDiagGmm, flags: int, gmm:DiagGmm) -> (obj_change_out: float, count_out: float)
 
-        # def MlObjective(self, gmm: DiagGmm, diag_gmm_acc:AccumDiagGmm) -> float
+        def `MlObjective` as ml_objective(gmm: DiagGmm, diag_gmm_acc:AccumDiagGmm) -> float
