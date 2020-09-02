@@ -87,8 +87,11 @@ CXX_SYSTEM_INCLUDE_DIR_FLAGS=
 if [ "`uname`" == "Darwin" ]; then
   PYCLIF_CFLAGS="${PYCLIF_CFLAGS} -stdlib=libc++"
   XCODE_TOOLCHAIN_DIR="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain"
+  XCODE_SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
   COMMAND_LINE_TOOLCHAIN_DIR="/Library/Developer/CommandLineTools"
-  if [ -d "$XCODE_TOOLCHAIN_DIR" ]; then
+  if [ -d "$XCODE_SDK_DIR" ]; then
+    CXX_SYSTEM_INCLUDE_DIR="${XCODE_SDK_DIR}/usr/include"
+  elif [ -d "$XCODE_TOOLCHAIN_DIR" ]; then
     CXX_SYSTEM_INCLUDE_DIR="${XCODE_TOOLCHAIN_DIR}/usr/include/c++/v1"
   elif [ -d "$COMMAND_LINE_TOOLCHAIN_DIR" ]; then
     CXX_SYSTEM_INCLUDE_DIR="${COMMAND_LINE_TOOLCHAIN_DIR}/usr/include/c++/v1"
@@ -97,7 +100,6 @@ if [ "`uname`" == "Darwin" ]; then
     echo "Install xcode command line tools, e.g. xcode-select --install"
     exit 1
   fi
-  CXX_SYSTEM_INCLUDE_DIR="${CXX_SYSTEM_INCLUDE_DIR} -isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/"
   CXX_SYSTEM_INCLUDE_DIR_FLAGS="-DCXX_SYSTEM_INCLUDE_DIR=$CXX_SYSTEM_INCLUDE_DIR"
 fi
 
