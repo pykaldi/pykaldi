@@ -97,6 +97,7 @@ if [ "`uname`" == "Darwin" ]; then
     echo "Install xcode command line tools, e.g. xcode-select --install"
     exit 1
   fi
+  CXX_SYSTEM_INCLUDE_DIR="${CXX_SYSTEM_INCLUDE_DIR} -isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/"
   CXX_SYSTEM_INCLUDE_DIR_FLAGS="-DCXX_SYSTEM_INCLUDE_DIR=$CXX_SYSTEM_INCLUDE_DIR"
 fi
 
