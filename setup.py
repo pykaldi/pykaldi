@@ -133,7 +133,6 @@ if platform.system() == "Darwin":
         CXX_SYSTEM_INCLUDE_DIR = os.path.join(XCODE_SDK_DIR, "usr/include")
         CLIF_CXX_FLAGS += " -isystem {}".format(CXX_SYSTEM_INCLUDE_DIR)
     LD_FLAGS += " -undefined dynamic_lookup"
-    print(CLIF_CXX_FLAGS)
 elif platform.system() == "Linux":
     CXX_FLAGS += " -Wno-maybe-uninitialized"
     LD_FLAGS += " -Wl,--as-needed"
