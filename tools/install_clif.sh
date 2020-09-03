@@ -175,7 +175,6 @@ cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
 cd "$CLIF_DIR"
 # Grab the python compiled .proto
 cp "$BUILD_DIR/tools/clif/protos/ast_pb2.py" clif/protos/
-error: cannot initialize a member subobject of type 'Py_ssize_t' (aka 'long') with an rvalue of type 'nullptr_t'# Grab CLIF generated wrapper implementation for proto_util.
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.cc" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
