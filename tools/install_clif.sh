@@ -87,11 +87,9 @@ CXX_SYSTEM_INCLUDE_DIR_FLAGS=
 if [ "`uname`" == "Darwin" ]; then
   PYCLIF_CFLAGS="${PYCLIF_CFLAGS} -stdlib=libc++"
   XCODE_TOOLCHAIN_DIR="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain"
-  XCODE_SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+  XCODE_SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
   COMMAND_LINE_TOOLCHAIN_DIR="/Library/Developer/CommandLineTools"
-  if [ -d "$XCODE_SDK_DIR" ]; then
-    CXX_SYSTEM_INCLUDE_DIR="${XCODE_SDK_DIR}/usr/include"
-  elif [ -d "$XCODE_TOOLCHAIN_DIR" ]; then
+  if [ -d "$XCODE_TOOLCHAIN_DIR" ]; then
     CXX_SYSTEM_INCLUDE_DIR="${XCODE_TOOLCHAIN_DIR}/usr/include/c++/v1"
   elif [ -d "$COMMAND_LINE_TOOLCHAIN_DIR" ]; then
     CXX_SYSTEM_INCLUDE_DIR="${COMMAND_LINE_TOOLCHAIN_DIR}/usr/include/c++/v1"
@@ -99,6 +97,9 @@ if [ "`uname`" == "Darwin" ]; then
     echo "Could not find toolchain directory!"
     echo "Install xcode command line tools, e.g. xcode-select --install"
     exit 1
+  fi
+  if [ -d "$XCODE_SDK_DIR" ]; then
+    CXX_SYSTEM_INCLUDE_DIR="${CXX_SYSTEM_INCLUDE_DIR} -isystem ${XCODE_SDK_DIR}"
   fi
   CXX_SYSTEM_INCLUDE_DIR_FLAGS="-DCXX_SYSTEM_INCLUDE_DIR=$CXX_SYSTEM_INCLUDE_DIR"
 fi
@@ -174,7 +175,7 @@ cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
 cd "$CLIF_DIR"
 # Grab the python compiled .proto
 cp "$BUILD_DIR/tools/clif/protos/ast_pb2.py" clif/protos/
-# Grab CLIF generated wrapper implementation for proto_util.
+error: cannot initialize a member subobject of type 'Py_ssize_t' (aka 'long') with an rvalue of type 'nullptr_t'# Grab CLIF generated wrapper implementation for proto_util.
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.cc" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.h" clif/python/utils/
 cp "$BUILD_DIR/tools/clif/python/utils/proto_util.init.cc" clif/python/utils/
