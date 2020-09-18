@@ -116,6 +116,7 @@ if KALDI_TFRNNLM:
     subprocess.check_call(["rm", "Makefile"])
 
 if platform.system() == "Darwin":
+    XCODE_SDK_DIR = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
     XCODE_TOOLCHAIN_DIR = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain"
     COMMAND_LINE_TOOLCHAIN_DIR = "/Library/Developer/CommandLineTools"
     if os.path.isdir(XCODE_TOOLCHAIN_DIR):
@@ -128,6 +129,9 @@ if platform.system() == "Darwin":
         sys.exit(1)
     CXX_SYSTEM_INCLUDE_DIR = os.path.join(TOOLCHAIN_DIR, "usr/include/c++/v1")
     CLIF_CXX_FLAGS += " -isystem {}".format(CXX_SYSTEM_INCLUDE_DIR)
+    if os.path.isdir(XCODE_SDK_DIR):
+        CXX_SYSTEM_INCLUDE_DIR = os.path.join(XCODE_SDK_DIR, "usr/include")
+        CLIF_CXX_FLAGS += " -isystem {}".format(CXX_SYSTEM_INCLUDE_DIR)
     LD_FLAGS += " -undefined dynamic_lookup"
 elif platform.system() == "Linux":
     CXX_FLAGS += " -Wno-maybe-uninitialized"
