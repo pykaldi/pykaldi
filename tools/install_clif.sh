@@ -107,6 +107,7 @@ fi
 ######################################################################
 
 CLIF_GIT="-b pykaldi https://github.com/pykaldi/clif.git"
+LLVM_GIT="--depth=1200 -b llvmorg-5.0.0-rc1 https://github.com/llvm/llvm-project.git"
 LLVM_DIR="$CLIF_DIR/../clif_backend"
 BUILD_DIR="$LLVM_DIR/build_matcher"
 
@@ -142,14 +143,17 @@ else
   echo "Using make.  Build will take a long time.  Consider installing ninja."
 fi
 
-# Download, build and install LLVM and Clang (needs a specific revision).
+# Download, build and install LLVM and Clang (needs a specific revision, 307315).
 
-mkdir -p "$LLVM_DIR"
-cd "$LLVM_DIR"
-svn co https://llvm.org/svn/llvm-project/llvm/trunk@307315 llvm
-cd llvm/tools
-svn co https://llvm.org/svn/llvm-project/cfe/trunk@307315 clang
-ln -s -f -n "$CLIF_DIR/clif" clif
+if [ ! -d "$LLVM_DIR" ]; then
+  git clone $LLVM_GIT $LLVM_DIR
+  cd "$LLVM_DIR"
+  git checkout 1cda1d76b110dca737d9c3b8dafe27bab9adbb04
+  mv clang llvm/tools
+  ln -s -f -n "$CLIF_DIR/clif" llvm/tools/clif
+else
+  echo "Destination $LLVM_DIR already exists."
+fi
 
 # Build and install the CLIF backend.  Our backend is part of the llvm build.
 # NOTE: To speed up, we build only for X86. If you need it for a different
