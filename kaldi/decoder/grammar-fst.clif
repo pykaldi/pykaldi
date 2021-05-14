@@ -38,13 +38,13 @@ from "decoder/grammar-fst.h":
             nextstate (int): The destination state for the arc.
         """
 
-    class GrammarFst:
+    class `GrammarFstTpl<StdConstFst>` as GrammarFst:
       """Grammar FST."""
 
       @add__init__
-      def `GrammarFst` as from_fsts(self, top_fst: StdConstFst,
-                                    ifsts: list<tuple<int, StdConstFst>>,
-                                    nonterm_phones_offset: int):
+      def `GrammarFst` as from_fsts(self, nonterm_phones_offset: int,
+                                    top_fst: StdConstFst,
+                                    ifsts: list<tuple<int, StdConstFst>>):
         """Creates a new grammar FST from input FSTs.
 
         Args:
@@ -80,7 +80,7 @@ from "decoder/grammar-fst.h":
         """Returns the FST type."""
 
 
-    class `ArcIterator<GrammarFst>` as GrammarFstArcIterator:
+    class `ArcIterator<GrammarFstTpl<StdConstFst>>` as GrammarFstArcIterator:
       """Grammar FST arc iterator.
 
       Args:
