@@ -1,4 +1,5 @@
 from "base/iostream-clifwrap.h" import *
+from "util/text-utils-clifwrap.h" import *
 from "cudamatrix/cu-matrixdim-clifwrap.h" import *
 from "cudamatrix/cu-array-clifwrap.h" import *
 from "cudamatrix/cu-vector-clifwrap.h" import *
