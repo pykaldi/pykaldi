@@ -5,7 +5,7 @@
 
 namespace kaldi {
 
-  typedef LatticeFasterOnlineDecoderTpl<fst::GrammarFst> LatticeFasterOnlineGrammarDecoder;
+  typedef LatticeFasterOnlineDecoderTpl<fst::GrammarFstTpl<fst::StdConstFst>> LatticeFasterOnlineGrammarDecoder;
 
 }  // namespace kaldi
 
