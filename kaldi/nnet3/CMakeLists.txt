@@ -141,7 +141,7 @@ add_pyclif_library("_nnet_compile_looped" nnet-compile-looped.clif
 )
 
 add_pyclif_library("_nnet_computation_graph" nnet-computation-graph.clif
-  CLIF_DEPS _nnet_computation
+  CLIF_DEPS _nnet_computation _nnet_nnet
   LIBRARIES kaldi-nnet3
 )
 
