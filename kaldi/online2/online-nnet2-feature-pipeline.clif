@@ -151,8 +151,8 @@ from "online2/online-nnet2-feature-pipeline.h":
         and finalize the pitch features (making them more accurate).
         """
 
-      def `IvectorFeature` as ivector_feature(self) -> OnlineIvectorFeature:
-        """Returns the ivector-extraction part of the feature pipeline (or None if iVectors are not being used)."""
+      #def `IvectorFeature` as ivector_feature(self) -> OnlineIvectorFeature:
+      #  """Returns the ivector-extraction part of the feature pipeline (or None if iVectors are not being used)."""
 
       def `InputFeature` as input_feature(self) -> OnlineFeatureInterface:
         """Returns the part of the feature pipeline that would be given as the primary (non-iVector) input to neural network."""
