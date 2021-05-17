@@ -16,8 +16,8 @@ add_pyclif_library("_nnet_example" nnet-example.clif
 )
 
 add_pyclif_library("_nnet_parse" nnet-parse.clif
-  CLIF_DEPS _iostream _sstream _cu_matrix
-  LIBRARIES kaldi-nnet3
+  CLIF_DEPS _iostream _sstream _cu_matrix _text_utils
+  LIBRARIES kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_computation_graph_ext" nnet-computation-graph-ext.clif
@@ -31,18 +31,18 @@ add_pyclif_library("_nnet_misc_computation_info" nnet-misc-computation-info.clif
 )
 
 add_pyclif_library("_nnet_component_itf" nnet-component-itf.clif
-  CLIF_DEPS _nnet_parse _nnet_computation_graph_ext _nnet_misc_computation_info
-  LIBRARIES kaldi-nnet3
+  CLIF_DEPS _nnet_parse _nnet_computation_graph_ext _nnet_misc_computation_info _text_utils
+  LIBRARIES kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_simple_component" nnet-simple-component.clif
-  CLIF_DEPS _nnet_component_itf
-  LIBRARIES kaldi-nnet3
+  CLIF_DEPS _nnet_component_itf _text_utils
+  LIBRARIES kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_combined_component" nnet-combined-component.clif
-  CLIF_DEPS _nnet_component_itf
-  LIBRARIES kaldi-nnet3
+  CLIF_DEPS _nnet_component_itf _text_utils
+  LIBRARIES kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_normalize_component" nnet-normalize-component.clif
@@ -56,8 +56,8 @@ add_pyclif_library("_convolution" convolution.clif
 )
 
 add_pyclif_library("_nnet_convolutional_component" nnet-convolutional-component.clif
-  CLIF_DEPS _nnet_component_itf
-  LIBRARIES kaldi-cudamatrix kaldi-nnet3
+  CLIF_DEPS _nnet_component_itf _text_utils
+  LIBRARIES kaldi-cudamatrix kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_attention" attention.clif
@@ -66,13 +66,13 @@ add_pyclif_library("_attention" attention.clif
 )
 
 add_pyclif_library("_nnet_attention_component" nnet-attention-component.clif
-  CLIF_DEPS _nnet_component_itf
-  LIBRARIES kaldi-matrix kaldi-cudamatrix kaldi-nnet3
+  CLIF_DEPS _nnet_component_itf _text_utils
+  LIBRARIES kaldi-matrix kaldi-cudamatrix kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_general_component" nnet-general-component.clif
-  CLIF_DEPS _nnet_component_itf
-  LIBRARIES kaldi-nnet3
+  CLIF_DEPS _nnet_component_itf _text_utils
+  LIBRARIES kaldi-nnet3 kaldi-util
 )
 
 add_pyclif_library("_nnet_descriptor" nnet-descriptor.clif
@@ -191,8 +191,8 @@ add_pyclif_library("_nnet_chain_training" nnet-chain-training.clif
 )
 
 add_pyclif_library("_am_nnet_simple" am-nnet-simple.clif
-  CLIF_DEPS _nnet_nnet
-  LIBRARIES kaldi-nnet3
+  CLIF_DEPS _nnet_nnet _text_utils
+  LIBRARIES kaldi-util kaldi-nnet3 
 )
 
 add_pyclif_library("_nnet_am_decodable_simple" nnet-am-decodable-simple.clif
