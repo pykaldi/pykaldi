@@ -38,7 +38,7 @@ from "decoder/grammar-fst.h":
             nextstate (int): The destination state for the arc.
         """
 
-    class `GrammarFstTpl<StdConstFst>` as GrammarFst:
+    class `GrammarFst` as GrammarFst:
       """Grammar FST."""
 
       @add__init__
@@ -80,7 +80,7 @@ from "decoder/grammar-fst.h":
         """Returns the FST type."""
 
 
-    class `ArcIterator<GrammarFstTpl<StdConstFst>>` as GrammarFstArcIterator:
+    class `ArcIterator<GrammarFst>` as GrammarFstArcIterator:
       """Grammar FST arc iterator.
 
       Args:
