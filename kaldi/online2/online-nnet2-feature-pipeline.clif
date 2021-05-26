@@ -4,7 +4,9 @@ from "itf/online-feature-itf-clifwrap.h" import *
 from "feat/feature-mfcc-clifwrap.h" import *
 from "feat/feature-plp-clifwrap.h" import *
 from "feat/feature-fbank-clifwrap.h" import *
+from "feat/online-feature-clifwrap.h" import *
 from "matrix/kaldi-vector-clifwrap.h" import *
+from "matrix/kaldi-matrix-clifwrap.h" import *
 from "feat/pitch-functions-clifwrap.h" import *
 
 from kaldi.itf._online_feature_itf import OnlineFeatureInterface
@@ -27,6 +29,10 @@ from "online2/online-nnet2-feature-pipeline.h":
       """Configuration file for PLP features (e.g. conf/plp.conf)"""
       fbank_config: str
       """Configuration file for filterbank features (e.g. conf/fbank.conf)"""
+      cmvn_config: str
+      """Configuration file for cmvn config"""
+      global_cmvn_stats_rxfilename: str
+      """Path to the global cmvn stats file"""
       add_pitch: bool
       """Append pitch features to raw MFCC/PLP features (default=False)"""
       online_pitch_config: str
@@ -75,6 +81,14 @@ from "online2/online-nnet2-feature-pipeline.h":
       """Options for pitch features"""
       pitch_process_opts: ProcessPitchOptions
       """Options for post-processing pitch features"""
+      use_cmvn: bool
+      """If the user specified --cmvn-config, we set 'use_cmvn' to true,
+      and the OnlineCmvn is added to the feature preparation pipeline."""
+      cmvn_opts: OnlineCmvnOptions
+      """Options for online cmvn, read from config file."""
+      global_cmvn_stats: DoubleMatrix
+      """Matrix with global cmvn stats in OnlineCmvn.""" 
+
       use_ivectors: bool
       """Use iVectors as an extra input to the neural net"""
 
@@ -132,6 +146,13 @@ from "online2/online-nnet2-feature-pipeline.h":
 
       def `GetAdaptationState` as get_adaptation_state(self, adaptation_state: OnlineIvectorExtractorAdaptationState):
         """Gets online iVector adaptation state."""
+
+      def `SetCmvnState` as set_cmvn_state(self, cmvn_state: OnlineCmvnState):
+        """Set the CMVN state to a particular value.
+           (for features on nnet3 input, not the i-vector input)."""
+
+      def `GetCmvnState` as get_cmvn_state(self) -> OnlineCmvnState:
+        """Get the CMVN state"""
 
       def `AcceptWaveform` as accept_waveform(self, sampling_rate: float, waveform: VectorBase):
         """Accepts more data to process.
