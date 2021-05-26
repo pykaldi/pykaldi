@@ -27,7 +27,7 @@ touch "python/.use_default_python"
 make -j4
 
 cd ../src
-./configure --shared
+./configure --shared --use-cuda=no --static-math
 make clean -j && make depend -j && make -j4
 
 echo "Done installing Kaldi."
