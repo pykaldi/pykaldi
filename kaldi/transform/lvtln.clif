@@ -18,11 +18,7 @@ from "transform/lvtln.h":
 
       def `GetTransform` as get_transform(self, i: int, transform: MatrixBase)
 
-      # FIXME:
-      # Needs C++ wrapper
-      # def `ComputeTransform` as compute_transform(self,
-      #     accs: FmllrDiagGmmAccs, norm_type: str, logdet_scale: float,
-      #     Ws: MatrixBase, logdet_out: float, objf_impr: float, count: float)
+      def `ComputeTransform` as compute_transform(self, accs: FmllrDiagGmmAccs, norm_type: str, logdet_scale: float, Ws: MatrixBase) -> (class_idx: int, logdet_out: float, objf_impr: float, count: float)
 
       def `Read` as read(self, is: istream, binary: bool)
 
