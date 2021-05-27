@@ -42,9 +42,10 @@ from "decoder/grammar-fst.h":
       """Grammar FST."""
 
       @add__init__
-      def `GrammarFst` as from_fsts(self, nonterm_phones_offset: int,
+      def `GrammarFst` as from_fsts(self, 
                                     top_fst: StdConstFst,
-                                    ifsts: list<tuple<int, StdConstFst>>):
+                                    ifsts: list<tuple<int, StdConstFst>>,
+                                    nonterm_phones_offset: int):
         """Creates a new grammar FST from input FSTs.
 
         Args:
