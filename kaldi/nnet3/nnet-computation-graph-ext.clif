@@ -1,5 +1,7 @@
 from "base/iostream-clifwrap.h" import *
 from "nnet3/nnet-common-clifwrap.h" import *
+#from "nnet3/nnet-nnet-clifwrap.h" import *
+#from "nnet3/nnet-computation-clifwrap.h" import *
 
 from "nnet3/nnet-computation-graph.h":
   namespace `kaldi::nnet3`:
@@ -18,6 +20,35 @@ from "nnet3/nnet-computation-graph.h":
       def `Renumber` as renumber(self, start_cindex_id: int, keep: list<bool>)
 
       def `Print` as print_graph(self, os: ostream, node_names: list<str>)
+    
+    class ComputationGraphBuilder:  
+#
+#      def __init__(self, nnet: Nnet, graph: ComputationGraph)
+#
+#      def `Compute` as compute(self, request: ComputationRequest)
+#
+#      def `AllOutputsAreComputable` as all_outputs_are_computable(self) -> bool
+#
+#      def `ExplainWhyAllOutputsNotComputable` as explain_why_all_outputs_not_computable(self)
+#
+#      def `GetComputableInfo` as get_computable_info(self) -> list<list<bool>>
+#
+#      def `Prune` as prune(self)
+# 
+      enum ComputableInfo with:
+            `kUnknown` as UNKNOWN
+            `kComputable` as COMPUTABLE
+            `kNotComputable` as NOT_COMPUTABLE
+            `kWillNotCompute` as WILL_NOT_COMPUTE
+    
+      class CindexInfo:
+          computable: ComputableInfo
+          usable_count: int
+          queued: bool
+          dependencies_computed: bool
+         
+          def __init__(self)
+
 
     class CindexSet:
       def `operator()` as __contains__(self, cindex: tuple<int, Index>) -> bool
@@ -26,11 +57,11 @@ from "nnet3/nnet-computation-graph.h":
 
       @add__init__
       def `CindexSet` as from_computable(self, graph: ComputationGraph,
-                                             is_computable: list<int>,
+                                             is_computable: list<ComputationGraphBuilder.CindexInfo>,
                                              treat_unknown_as_computable: bool)
 
     class IndexSet:
       def `operator()` as __contains__(self, index: Index) -> bool
 
-      def __init__(self, graph: ComputationGraph, computable_info: list<int>,
+      def __init__(self, graph: ComputationGraph, computable_info: list<ComputationGraphBuilder.CindexInfo>,
                    node_id: int, treat_unknown_as_computable: bool)

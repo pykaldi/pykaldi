@@ -161,7 +161,7 @@ fi
 
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
-cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
+CXX="/usr/bin/c++" cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
       -DCMAKE_PREFIX_PATH="$PROTOBUF_PREFIX_PATH" \
       -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=true \
       -DLLVM_INSTALL_TOOLCHAIN_ONLY=true \
@@ -171,8 +171,8 @@ cmake -DCMAKE_INSTALL_PREFIX="$PYTHON_ENV/clang" \
       "${CMAKE_PY_FLAGS[@]}" \
       "${CXX_SYSTEM_INCLUDE_DIR_FLAGS}" \
       "${CMAKE_G_FLAGS[@]}" "$LLVM_DIR/llvm"
-"$MAKE_OR_NINJA" "${MAKE_PARALLELISM[@]}" clif-matcher clif_python_utils_proto_util
-"$MAKE_OR_NINJA" "${MAKE_INSTALL_PARALLELISM[@]}" install
+CXX="/usr/bin/c++" "$MAKE_OR_NINJA" "${MAKE_PARALLELISM[@]}" clif-matcher clif_python_utils_proto_util
+CXX="/usr/bin/c++" "$MAKE_OR_NINJA" "${MAKE_INSTALL_PARALLELISM[@]}" install
 
 # Get back to the CLIF Python directory and have pip run setup.py.
 

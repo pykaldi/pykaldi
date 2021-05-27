@@ -12,9 +12,9 @@ from "ivector/agglomerative-clustering.h":
       def __init__(self, id: int, p1: int, p2: int, utts: list<int>)
 
     class AgglomerativeClusterer:
-      def __init__(self, costs: Matrix, thresh: float, min_clust: int)
+      def __init__(self, costs: Matrix, thresh: float, min_clust: int, first_pass_max_points: int, max_cluster_fraction: float)
 
       def `Cluster` as cluster(self) -> list<int>
 
     def `AgglomerativeCluster` as agglomerative_cluster(
-      costs: Matrix, thresh: float, min_clust: int) -> list<int>
+      costs: Matrix, thresh: float, min_clust: int, first_pass_max_points: int, max_cluster_fraction: float) -> list<int>

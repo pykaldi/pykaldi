@@ -74,15 +74,15 @@ if not os.path.isfile(KALDI_MK_PATH):
         "directory or set KALDI_DIR environment variable.", file=sys.stderr)
   sys.exit(1)
 
-try:
-    KALDI_HEAD = check_output(['git', '-C', KALDI_DIR, 'rev-parse', 'HEAD'])
-    subprocess.check_call(['git', '-C', KALDI_DIR, 'merge-base',
-                           '--is-ancestor', KALDI_MIN_REQUIRED, KALDI_HEAD])
-except subprocess.CalledProcessError:
-    print("\nKaldi installation at {} is not supported.\nPlease update Kaldi "
-          "to match https://github.com/pykaldi/kaldi/tree/pykaldi."
-          .format(KALDI_DIR), file=sys.stderr)
-    sys.exit(1)
+#try:
+#    KALDI_HEAD = check_output(['git', '-C', KALDI_DIR, 'rev-parse', 'HEAD'])
+#    subprocess.check_call(['git', '-C', KALDI_DIR, 'merge-base',
+#                           '--is-ancestor', KALDI_MIN_REQUIRED, KALDI_HEAD])
+#except subprocess.CalledProcessError:
+#    print("\nKaldi installation at {} is not supported.\nPlease update Kaldi "
+#          "to match https://github.com/pykaldi/kaldi/tree/pykaldi."
+#          .format(KALDI_DIR), file=sys.stderr)
+#    sys.exit(1)
 
 with open("Makefile", "w") as makefile:
     print("include {}".format(KALDI_MK_PATH), file=makefile)
@@ -339,7 +339,7 @@ with open(os.path.join('kaldi', '__version__.py')) as f:
 setup(name = 'pykaldi',
       version = __version__,
       description = 'A Python wrapper for Kaldi',
-      author = 'Dogan Can, Victor Martinez',
+      author = 'Dogan Can, Victor Martinez, Benjamin Milde',
       ext_modules=extensions,
       cmdclass = {
           'build': build,

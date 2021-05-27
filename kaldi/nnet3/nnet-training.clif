@@ -54,7 +54,8 @@ from "nnet3/nnet-training.h":
 
       def `PrintTotalStats` as print_total_stats(self) -> bool
 
-      def `PrintMaxChangeStats` as print_max_change_stats(self)
+      # not in nnet-training.h anymore
+      #def `PrintMaxChangeStats` as print_max_change_stats(self)
 
     def `ComputeObjectiveFunction` as compute_objective_function(supervision: GeneralMatrix,
                                  objective_type: ObjectiveType,

@@ -10,7 +10,7 @@ add_pyclif_library("_cu_matrixdim" cu-matrixdim.clif)
 
 add_pyclif_library("_cu_array" cu-array.clif
   CLIF_DEPS _iostream _matrix_common _cu_matrixdim
-  LIBRARIES kaldi-base kaldi-cudamatrix
+  LIBRARIES kaldi-base kaldi-matrix kaldi-cudamatrix
 )
 
 add_pyclif_library("_cu_vector" cu-vector.clif

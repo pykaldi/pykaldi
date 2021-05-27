@@ -1,4 +1,5 @@
 from "base/iostream-clifwrap.h" import *
+from "util/text-utils-clifwrap.h" import *
 from "cudamatrix/cu-matrix-clifwrap.h" import *
 from "nnet3/nnet-common-clifwrap.h" import *
 from "nnet3/nnet-parse-clifwrap.h" import *

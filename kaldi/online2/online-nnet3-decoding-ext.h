@@ -5,7 +5,7 @@
 
 namespace kaldi {
 
-  typedef SingleUtteranceNnet3DecoderTpl<fst::GrammarFst> SingleUtteranceNnet3GrammarDecoder;
+  typedef SingleUtteranceNnet3DecoderTpl<fst::GrammarFstTpl<fst::StdConstFst>> SingleUtteranceNnet3GrammarDecoder;
 
 }  // namespace kaldi
 

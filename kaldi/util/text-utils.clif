@@ -1,0 +1,28 @@
+from "base/iostream-clifwrap.h" import *
+from "base/sstream-clifwrap.h" import *
+
+from "util/text-utils.h":
+  namespace `kaldi`:
+    class ConfigLine:
+      def `ParseLine` as parse_line(self, line: str) -> bool
+
+      def `GetValue` as get_str(self, key: str) -> (suc: bool, value: str)
+      def `GetValue` as get_float(self, key: str) -> (suc: bool, value: float)
+      def `GetValue` as get_int(self, key: str) -> (suc: bool, value: int)
+      def `GetValue` as get_intlist(self, key: str) -> (suc: bool,
+                                                        value: list<int>)
+      def `GetValue` as get_bool(self, key: str) -> (suc: bool, value: bool)
+
+      def `HasUnusedValues` as has_unused_values(self) -> bool
+
+      def `UnusedValues` as unused_values(self) -> str
+
+      def `FirstToken` as first_token(self) -> str
+
+      def `WholeLine` as whole_line(self) -> str
+
+    def `IsValidName` as is_valid_name(name: str) -> bool
+
+    def `ReadConfigLines` as read_config_lines(is: istream) -> list<str>
+
+    def `ParseConfigLines` as parse_config_lines(lines: list<str>) -> list<ConfigLine>

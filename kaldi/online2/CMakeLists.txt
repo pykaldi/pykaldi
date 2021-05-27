@@ -21,7 +21,7 @@ add_pyclif_library("_online_ivector_feature" online-ivector-feature.clif
   LIBRARIES kaldi-online2
 )
 add_pyclif_library("_online_nnet2_feature_pipeline" online-nnet2-feature-pipeline.clif
-  CLIF_DEPS _options_itf _kaldi_vector _online_feature _online_ivector_feature _pitch_functions
+  CLIF_DEPS _options_itf _kaldi_vector _kaldi_matrix _online_feature _online_ivector_feature _pitch_functions
   LIBRARIES kaldi-online2
 )
 add_pyclif_library("_online_nnet3_decoding" online-nnet3-decoding.clif

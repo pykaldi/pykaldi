@@ -8,24 +8,33 @@ from "nnet3/nnet-nnet-clifwrap.h" import *
 from "nnet3/nnet-computation-graph.h":
   namespace `kaldi::nnet3`:
 
-    class ComputationGraphBuilder:
-      def __init__(self, nnet: Nnet, graph: ComputationGraph)
-
-      def `Compute` as compute(self, request: ComputationRequest)
-
-      def `AllOutputsAreComputable` as all_outputs_are_computable(self) -> bool
-
-      def `ExplainWhyAllOutputsNotComputable` as explain_why_all_outputs_not_computable(self)
-
-      def `GetComputableInfo` as get_computable_info(self) -> list<list<bool>>
-
-      def `Prune` as prune(self)
-
-      enum ComputableInfo with:
-        `kUnknown` as UNKNOWN
-        `kComputable` as COMPUTABLE
-        `kNotComputable` as NOT_COMPUTABLE
-        `kWillNotCompute` as WILL_NOT_COMPUTE
+# benjamin FIXME: we need ComputableInfo and CindexInfo in nnet-computation-graph, but ComputationRequest and ComputationGraph can't be referenced there
+#    class ComputationGraphBuilder:
+#      def __init__(self, nnet: Nnet, graph: ComputationGraph)
+#
+#      def `Compute` as compute(self, request: ComputationRequest)
+#
+#      def `AllOutputsAreComputable` as all_outputs_are_computable(self) -> bool
+#
+#      def `ExplainWhyAllOutputsNotComputable` as explain_why_all_outputs_not_computable(self)
+#
+#      def `GetComputableInfo` as get_computable_info(self) -> list<list<bool>>
+#
+#      def `Prune` as prune(self)
+#
+#      enum ComputableInfo with:
+#        `kUnknown` as UNKNOWN
+#        `kComputable` as COMPUTABLE
+#        `kNotComputable` as NOT_COMPUTABLE
+#        `kWillNotCompute` as WILL_NOT_COMPUTE
+#
+#      class CindexInfo:
+#          computable: ComputableInfo
+#          usable_count: int
+#          queued: bool
+#          dependencies_computed: bool
+#
+#          def __init__(self)
 
     def `ComputeComputationPhases` as compute_computation_phases(nnet: Nnet, graph: ComputationGraph)
         -> list<list<list<int>>>

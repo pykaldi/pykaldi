@@ -39,3 +39,7 @@ add_pyclif_library("_const_integer_set" const-integer-set.clif
 add_pyclif_library("_edit_distance" edit-distance.clif
   LIBRARIES kaldi-base
 )
+
+add_pyclif_library("_text_utils" text-utils.clif
+  LIBRARIES kaldi-util
+)
