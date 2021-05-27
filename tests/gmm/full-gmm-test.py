@@ -215,7 +215,7 @@ class TestFullGmm(unittest.TestCase):
         gmm2.merge(1)
         loglike1 = gmm1.log_likelihood(feat)
         loglike2 = gmm2.log_likelihood(feat)
-        self.assertAlmostEqual(loglike1, loglike2, delta = 0.01)
+        self.assertAlmostEqual(loglike1, loglike2, delta = 0.015)
 
     def testCovars(self):
         gmm = FullGmm()
