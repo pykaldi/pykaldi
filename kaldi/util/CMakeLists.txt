@@ -41,5 +41,6 @@ add_pyclif_library("_edit_distance" edit-distance.clif
 )
 
 add_pyclif_library("_text_utils" text-utils.clif
+  CLIF_DEPS _iostream _sstream
   LIBRARIES kaldi-util
 )
