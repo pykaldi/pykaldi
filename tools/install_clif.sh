@@ -151,6 +151,12 @@ if [ ! -d "$LLVM_DIR" ]; then
   git checkout 1cda1d76b110dca737d9c3b8dafe27bab9adbb04
   mv clang llvm/tools
   ln -s -f -n "$CLIF_DIR/clif" llvm/tools/clif
+
+  # a patch to compile llvm5.0 with gcc>=8 (see
+  # https://bugzilla.redhat.com/attachment.cgi?id=1389687&action=diff and
+  # https://github.com/pykaldi/pykaldi/issues/255)
+  sed -i '716s|<char>|<uint8_t>|' llvm/include/llvm/ExecutionEngine/Orc/OrcRemoteTargetClient.h
+
 else
   echo "Destination $LLVM_DIR already exists."
 fi
