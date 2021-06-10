@@ -76,12 +76,14 @@ def get_python_library(python_version):
             if masd:
                 if masd.startswith(os.sep):
                     masd = masd[len(os.sep):]
-                libdir = os.path.join(libdir, masd)
+                if not libdir.endswith(masd):
+                    libdir = os.path.join(libdir, masd)
 
         if libdir is None:
             libdir = os.path.abspath(os.path.join(
                 sysconfig.get_config_var('LIBDEST'), "..", "libs"))
 
+      
         candidates = (
             os.path.join(
                 libdir,
