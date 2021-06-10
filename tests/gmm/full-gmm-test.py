@@ -147,11 +147,11 @@ class TestFullGmm(unittest.TestCase):
         self.assertAlmostEqual(loglike1, loglike_gmm2, delta = 0.01)
 
         loglikes = gmm2.log_likelihoods(feat)
-        self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2)
+        self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2, delta = 0.01)
 
         indices = list(range(gmm2.num_gauss()))
         loglikes = gmm2.log_likelihoods_preselect(feat, indices)
-        self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2)
+        self.assertAlmostEqual(loglikes.log_sum_exp(), loglike_gmm2, delta = 0.01)
 
         # Simple component mean accessor + mutator
         gmm3 = FullGmm(gmm.num_gauss(), gmm.dim())
