@@ -607,6 +607,25 @@ follows:
 ```
 
 
+## Releases
+
+This project uses [bump2version](https://pypi.org/project/bump2version/) for
+creating new releases. Only the maintainer(s) of this repo should bump versions
+and this should be done only on the master branch. To bump the version first
+install the package `pip3 install bump2version` and then from the command line
+run:
+
+```bash
+    bump2version major/minor/patch
+```
+
+Then push the tags to the repository:
+
+```bash
+    git push && git push --tags
+```
+
+
 ## Contributing
 
 We appreciate all contributions! If you find a bug, feel free to open an issue
