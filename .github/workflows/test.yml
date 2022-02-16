@@ -59,12 +59,19 @@ jobs:
         sudo ./install_mkl.sh
         cd ../../..
         ./install_kaldi.sh
-    - name: Build PyKaldi
+    - name: Build PyKaldi and Wheel
       run: |
         source pykaldi_env/bin/activate
         python3 setup.py install
+        python3 setup.py bdist_wheel
     - name: Test PyKaldi
       run: |
         source pykaldi_env/bin/activate
         python3 setup.py test
-        
+    - name: Upload PyKaldi
+      run: |
+        find dist -type f -exec curl --netrc --user $FTP_USER:$FTP_PW --ftp-create-dirs -T {} ftp://$FTP_DOMAIN:990/public/ -k --ftp-ssl \;
+      env:
+        FTP_USER : ${{ secrets.FTP_USERNAME }}
+        FTP_PW : ${{ secrets.FTP_PASSWORD }}
+        FTP_DOMAIN : ${{ secrets.FTP_DOMAIN }}
