@@ -650,6 +650,17 @@ building Kaldi, go to `KALDI_DIR/src/tfrnnlm/` directory and follow the
 instructions given in the Makefile. Make sure the symbolic link for the
 `kaldi-tensorflow-rnnlm` library is added to the `KALDI_DIR/src/lib/` directory.
 
+## Projects using PyKaldi
+
+[Shennong](https://github.com/bootphon/shennong) - a toolbox for speech features extraction, like MFCC, PLP etc. using PyKaldi.
+
+[Kaldi model server](https://github.com/uhh-lt/kaldi-model-server) - a threaded kaldi model server for live decoding. Can directly decode speech from your microphone with a nnet3 compatible model. Example models for English and German are available. Uses the PyKaldi online2 decoder.
+
+[MeetingBot](https://github.com/uhh-lt/MeetingBot) - example of a web application for meeting transcription and summarization that makes use of a pykaldi/kaldi-model-server backend to display ASR output in the browser. 
+
+[Subtitle2go](https://github.com/uhh-lt/subtitle2go) - automatic subtitle generation for any media file. Uses pykaldi for ASR with a batch decoder.
+
+If you have a cool open source project that makes use of PyKaldi that you'd like to showcase here, let us know!
 
 ## Citing
 
