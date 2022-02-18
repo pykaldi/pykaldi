@@ -15,6 +15,7 @@ import setuptools.extension
 
 from distutils.file_util import copy_file
 from setuptools import setup, find_packages, Command
+from sysconfig import get_paths
 
 def check_output(*args, **kwargs):
     return subprocess.check_output(*args, **kwargs).decode("utf-8").strip()
@@ -35,6 +36,7 @@ CLIF_MATCHER = os.getenv('CLIF_MATCHER')
 KALDI_DIR = os.getenv('KALDI_DIR')
 CWD = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = os.path.join(CWD, 'build')
+PYTHON_INCLUDE_DIR = get_paths()["include"]
 
 if not PYCLIF:
     PYCLIF = os.path.join(sys.prefix, 'bin/pyclif')
@@ -133,6 +135,7 @@ if platform.system() == "Darwin":
         CXX_SYSTEM_INCLUDE_DIR = os.path.join(XCODE_SDK_DIR, "usr/include")
         CLIF_CXX_FLAGS += " -isystem {}".format(CXX_SYSTEM_INCLUDE_DIR)
     LD_FLAGS += " -undefined dynamic_lookup"
+    CXX_FLAGS += " -Wno-return-type -Wunused-command-line-argument"
 elif platform.system() == "Linux":
     CXX_FLAGS += " -Wno-maybe-uninitialized"
     LD_FLAGS += " -Wl,--as-needed"
@@ -174,6 +177,7 @@ if DEBUG:
     print("LD_LIBS:", LD_LIBS)
     print("BUILD_DIR:", BUILD_DIR)
     print("CUDA:", CUDA)
+    print("PYTHON_INCLUDE_DIR:", PYTHON_INCLUDE_DIR)
     if CUDA:
         print("CUDA_LD_FLAGS:", CUDA_LD_FLAGS)
         print("CUDA_LD_LIBS:", CUDA_LD_LIBS)
@@ -231,6 +235,7 @@ class build_ext(setuptools.command.build_ext.build_ext):
                       '-DLD_FLAGS=' + LD_FLAGS,
                       '-DLD_LIBS=' + LD_LIBS,
                       '-DNUMPY_INC_DIR='+ np.get_include(),
+                      '-DPYTHON_INCLUDE_DIR='+ PYTHON_INCLUDE_DIR,
                       '-DCUDA=TRUE' if CUDA else '-DCUDA=FALSE',
                       '-DTFRNNLM=TRUE' if KALDI_TFRNNLM else '-DTFRNNLM=FALSE',
                       '-DDEBUG=TRUE' if DEBUG else '-DDEBUG=FALSE']
