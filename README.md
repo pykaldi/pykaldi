@@ -514,7 +514,7 @@ You can then also create a whl package. The whl package makes it easy to install
 python setup.py bdist_wheel
 ```
 
-The whl file can then be found in the "dist" folder. The whl filename depends on the pykaldi version, your Python version and your architecture. For a Python 3.9 build on x86_64 with pykaldi 0.2.1 it may look like: dist/pykaldi-0.2.1-cp39-cp39-linux_x86_64.whl  
+The whl file can then be found in the "dist" folder. The whl filename depends on the pykaldi version, your Python version and your architecture. For a Python 3.9 build on x86_64 with pykaldi 0.2.2 it may look like: dist/pykaldi-0.2.2-cp39-cp39-linux_x86_64.whl  
 
 ## Starting a new project with a pykaldi whl package
 
