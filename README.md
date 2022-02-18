@@ -402,29 +402,6 @@ If you are using a relatively recent Linux or macOS, such as Ubuntu >= 16.04,
 CentOS >= 7 or macOS >= 10.13, you should be able to install PyKaldi without too
 much trouble. Otherwise, you will likely need to tweak the installation scripts.
 
-### Conda
-
-To install PyKaldi with CUDA support:
-
-```bash
-conda install -c pykaldi pykaldi
-```
-
-To install PyKaldi without CUDA support (CPU only):
-
-```bash
-conda install -c pykaldi pykaldi-cpu
-```
-
-Note that PyKaldi conda package does not provide Kaldi executables. If you would
-like to use Kaldi executables along with PyKaldi, e.g. as part of read/write
-specifiers, you need to install Kaldi separately.
-
-### Docker
-
-If you would like to use PyKaldi inside a Docker container, follow the
-instructions in the `docker` folder.
-
 ### From Source
 
 To install PyKaldi from source, follow the steps given below.
@@ -461,7 +438,8 @@ sudo apt-get install autoconf automake cmake curl g++ git graphviz \
     libatlas3-base libtool make pkg-config subversion unzip wget zlib1g-dev
 
 # macOS
-brew install automake cmake git graphviz libtool pkg-config wget
+brew install automake cmake git graphviz libtool pkg-config wget gnu-sed openblas subversion
+PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 ```
 
 Running the commands below will install the Python packages needed for building
@@ -508,6 +486,12 @@ cd tools
 cd ..
 ```
 
+Note, if you are compiling Kaldi on Apple Silicion and ./install_kaldi.sh gets stuck right at the beginning compiling sctk, you might need to remove -march=native from tools/kaldi/tools/Makefile, e.g. by uncommeting it in this line like this:
+
+```bash
+SCTK_CXFLAGS = -w #-march=native
+```
+
 #### Step 3: Install PyKaldi
 
 If Kaldi is installed inside the `tools` directory and all Python dependencies
@@ -524,6 +508,82 @@ Once installed, you can run PyKaldi tests with the following command.
 python setup.py test
 ```
 
+You can then also create a whl package. The whl package makes it easy to install pykaldi into a new project environment for your speech project.
+
+```bash
+python setup.py bdist_wheel
+```
+
+The whl file can then be found in the "dist" folder. The whl filename depends on the pykaldi version, your Python version and your architecture. For a Python 3.9 build on x86_64 with pykaldi 0.2.1 it may look like: dist/pykaldi-0.2.1-cp39-cp39-linux_x86_64.whl  
+
+## Starting a new project with a pykaldi whl package
+
+Create a new project folder, for example:
+
+```bash
+mkdir -p ~/projects/myASR
+cd ~/projects/myASR
+```
+
+Create and activate a virtual environment with the same Python version as the whl package, e.g:
+
+```bash
+virtualenv -p /usr/bin/python3.9 myasr_env
+. myasr_env/bin/activate
+```
+
+```bash
+pip3 install numpy
+pip3 install pykaldi-0.2.1-cp39-cp39-linux_x86_64.whl  
+```
+
+Copy pykaldi/tools/install_kaldi.sh to your myASR project. Use the install_kaldi.sh script to install a pykaldi compatible kaldi version for your project:
+
+```bash
+./install_kaldi.sh
+```
+
+Copy pykaldi/tools/path.sh to your project. Path.sh is used to make pykaldi find the Kaldi libraries and binaries in the kaldi folder. Source path.sh with:
+
+```bash
+. path.sh
+```
+
+Congratulations, you are ready to use pykaldi in your project! 
+
+Note: Anytime you open a new shell, you need to source the project environment and path.sh:
+
+```bash
+. myasr_env/bin/activate
+. path.sh
+```
+
+### Conda
+
+Note: Unfortunatly, the PyKaldi Conda packages are outdated. If you would like to maintain it, please get in touch with us.
+
+To install PyKaldi with CUDA support:
+
+```bash
+conda install -c pykaldi pykaldi
+```
+
+To install PyKaldi without CUDA support (CPU only):
+
+```bash
+conda install -c pykaldi pykaldi-cpu
+```
+
+Note that PyKaldi conda package does not provide Kaldi executables. If you would
+like to use Kaldi executables along with PyKaldi, e.g. as part of read/write
+specifiers, you need to install Kaldi separately.
+
+### Docker
+
+Note: The docker instructions below may be outdated. If you would like to maintain a docker image for PyKaldi, please get in touch with us.
+
+If you would like to use PyKaldi inside a Docker container, follow the
+instructions in the `docker` folder.
 
 ## FAQ
 
