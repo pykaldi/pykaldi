@@ -532,6 +532,8 @@ virtualenv -p /usr/bin/python3.9 myasr_env
 . myasr_env/bin/activate
 ```
 
+Install numpy and pykaldi into your myASR environment:
+
 ```bash
 pip3 install numpy
 pip3 install pykaldi-0.2.1-cp39-cp39-linux_x86_64.whl  
