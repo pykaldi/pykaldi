@@ -404,7 +404,7 @@ much trouble. Otherwise, you will likely need to tweak the installation scripts.
 
 ### Pip / whl packages
 
-We are currently working on ready-to-use packages for pip. A package for python 2.7 already exists, PyKaldi versions for newer Python versions will soon be added. In the meantime, you can also use the unofficial whl builds for Python 3.9 from [Uni-Hamburgs pykaldi repo.](http://ltdata1.informatik.uni-hamburg.de/pykaldi/)
+We are currently working on ready-to-use packages for pip. A package for python 3.7 already exists, PyKaldi versions for newer Python versions will soon be added. In the meantime, you can also use the unofficial whl builds for Python 3.9 from [Uni-Hamburgs pykaldi repo.](http://ltdata1.informatik.uni-hamburg.de/pykaldi/)
 
 If you decide to use a whl package then you can skip the next section and head straight to "Starting a new project with a pykaldi whl package" to setup your project.
 
