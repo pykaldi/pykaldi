@@ -664,7 +664,7 @@ instructions given in the Makefile. Make sure the symbolic link for the
 
 [MeetingBot](https://github.com/uhh-lt/MeetingBot) - example of a web application for meeting transcription and summarization that makes use of a pykaldi/kaldi-model-server backend to display ASR output in the browser. 
 
-[Subtitle2go](https://github.com/uhh-lt/subtitle2go) - automatic subtitle generation for any media file. Uses pykaldi for ASR with a batch decoder.
+[Subtitle2go](https://github.com/uhh-lt/subtitle2go) - automatic subtitle generation for any media file. Uses PyKaldi for ASR with a batch decoder.
 
 If you have a cool open source project that makes use of PyKaldi that you'd like to showcase here, let us know!
 
