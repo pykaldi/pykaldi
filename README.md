@@ -468,6 +468,7 @@ the C++ library and the Python package must be installed.
 streamline PyKaldi development, we made some changes to CLIF codebase. We
 are hoping to upstream these changes over time. **These changes are in the pykaldi branch:**
 ```bash
+# This command will be automatically run for you in the tools install scripts.
 git clone -b pykaldi https://github.com/pykaldi/clif
 ```
 
@@ -475,6 +476,7 @@ git clone -b pykaldi https://github.com/pykaldi/clif
 comply with CLIF requirements we had to make some changes to Kaldi codebase. We
 are hoping to upstream these changes over time.**These changes are in the pykaldi branch:**
 ```bash
+# This command will be automatically run for you in the tools install scripts.
 git clone -b pykaldi https://github.com/pykaldi/kaldi
 ```
 
