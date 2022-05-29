@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# This installation script has been copied from Kaldi's tools folder,
+# see https://github.com/kaldi-asr/kaldi/blob/master/tools/extras/install_mkl.sh
+#
+# Licensed under the Apache License v 2.0,
+# https://github.com/kaldi-asr/kaldi/blob/master/COPYING
+
 # Intel MKL is now freely available even for commercial use. This script
 # attempts to install the MKL package automatically from Intel's repository.
 #
