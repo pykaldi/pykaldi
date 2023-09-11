@@ -32,6 +32,7 @@ jobs:
         python -m virtualenv pykaldi_env
         pykaldi_env/bin/python3 -m pip install numpy pyparsing ninja wheel
         # Kaldi dependencies
+        sudo apt-get update
         sudo apt-get install sox
     - name: Check dependencies
       run: |
