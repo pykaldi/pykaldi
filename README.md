@@ -404,13 +404,13 @@ much trouble. Otherwise, you will likely need to tweak the installation scripts.
 
 ### Pip / whl packages
 
-We are currently working on ready-to-use packages for pip. A package for python 3.7 already exists, PyKaldi versions for newer Python versions will soon be added. In the meantime, you can also use the unofficial whl builds for Python 3.9 from [Uni-Hamburgs pykaldi repo.](http://ltdata1.informatik.uni-hamburg.de/pykaldi/)
+You can now download official whl packages from our [github release page](https://github.com/pykaldi/pykaldi/releases). We have whl packages for Python 3.7, 3.8, ... , 3.11 on Linux and a few (experimental) builds for Mac M1/M2.
 
-If you decide to use a whl package then you can skip the next section and head straight to "Starting a new project with a pykaldi whl package" to setup your project.
+If you decide to use a whl package then you can skip the next sections and head straight to "[Starting a new project with a pykaldi whl package](#starting-a-new-project-with-a-pykaldi-whl-package)" to setup your project. Note that you still need to compile a PyKaldi-compatible version of Kaldi.
 
 ### From Source
 
-To install PyKaldi from source, follow the steps given below.
+To install and build PyKaldi from source, follow the steps given below.
 
 #### Step 1: Clone PyKaldi Repository and Create a New Python Environment
 
@@ -533,7 +533,7 @@ mkdir -p ~/projects/myASR
 cd ~/projects/myASR
 ```
 
-Create and activate a virtual environment with the same Python version as the whl package, e.g:
+Create and activate a virtual environment with the same Python version as the whl package, e.g for Python 2.9:
 
 ```bash
 virtualenv -p /usr/bin/python3.9 myasr_env
@@ -544,7 +544,7 @@ Install numpy and pykaldi into your myASR environment:
 
 ```bash
 pip3 install numpy
-pip3 install pykaldi-0.2.1-cp39-cp39-linux_x86_64.whl  
+pip3 install pykaldi-0.2.2-cp39-cp39-linux_x86_64.whl  
 ```
 
 Copy pykaldi/tools/install_kaldi.sh to your myASR project. Use the install_kaldi.sh script to install a pykaldi compatible kaldi version for your project:

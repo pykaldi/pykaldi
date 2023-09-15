@@ -51,6 +51,7 @@ jobs:
         ./install_clif.sh
     - name: Build kaldi
       run: |
+        sudo apt-get install python2.7
         source pykaldi_env/bin/activate
         cd tools
         git clone -b pykaldi_02 https://github.com/pykaldi/kaldi.git
