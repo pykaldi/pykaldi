@@ -239,7 +239,7 @@ class Aligner(object):
                 includes symbols instead of integer indices.
 
         Returns:
-            List[Tuple[int,int,int]]: A list of triplets representing, for
+            List[Tuple[Union[str,int],int,int]]: A list of triplets representing, for
             each phone in the input, the phone index/symbol, the begin time (in
             frames) and the duration (in frames).
         """
@@ -265,7 +265,7 @@ class Aligner(object):
             word_boundary_info (WordBoundaryInfo): Word boundary information.
 
         Returns:
-            List[Tuple[int,int,int]]: A list of triplets representing, for each
+            List[Tuple[Union[str,int],int,int]]: A list of triplets representing, for each
             word in the input, the word index/symbol, the begin time (in frames)
             and the duration (in frames). The zero/epsilon words correspond to
             optional silences.
