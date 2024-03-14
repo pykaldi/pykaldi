@@ -30,7 +30,7 @@ jobs:
         python -m pip install --upgrade pip setuptools
         python -m pip install virtualenv
         python -m virtualenv pykaldi_env
-        pykaldi_env/bin/python3 -m pip install numpy pyparsing ninja wheel
+        pykaldi_env/bin/python3 -m pip install numpy pyparsing ninja wheel setuptools
         # Kaldi dependencies
         sudo apt-get update
         sudo apt-get install sox
