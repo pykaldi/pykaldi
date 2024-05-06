@@ -40,7 +40,7 @@ from "feat/feature-window.h":
       """Whether to output only frames that fit in the waveform (default=True)"""
 
       allow_downsample: bool
-      """Whether input waveform can have a higher sampling frequency than specified (default=False)"""
+      """Whether input waveform can have a lower sampling frequency than specified (default=False)"""
 
       allow_upsample: bool
       """Whether input waveform can have a higher sampling frequency than specified (default=False)"""
