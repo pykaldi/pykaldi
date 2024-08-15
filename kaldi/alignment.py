@@ -13,7 +13,6 @@ from . import nnet3 as _nnet3
 from . import tree as _tree
 from .util import io as _util_io
 
-
 __all__ = ['Aligner', 'MappedAligner', 'GmmAligner', 'NnetAligner']
 
 
@@ -41,11 +40,16 @@ class Aligner(object):
     """
     def __init__(self, transition_model, tree, lexicon, symbols=None,
                  disambig_symbols=None, graph_compiler_opts=None, beam=200.0,
-                 transition_scale=1.0, self_loop_scale=1.0, acoustic_scale=0.1):
+                 transition_scale=1.0, self_loop_scale=1.0, acoustic_scale=0.1, is_text2phone=False):
         self.transition_model = transition_model
         self.symbols = symbols
+        self.disambig_symbols = disambig_symbols
         if not graph_compiler_opts:
             graph_compiler_opts = _dec.TrainingGraphCompilerOptions()
+        if is_text2phone:
+            self.text2phone = lexicon
+            del lexicon
+            lexicon = _fst.StdVectorFst()
         self.graph_compiler = _dec.TrainingGraphCompiler(
             transition_model, tree, lexicon,
             disambig_symbols, graph_compiler_opts)
@@ -74,6 +78,8 @@ class Aligner(object):
         Returns:
             StdFst: Lexicon FST.
         """
+        if lexicon_rxfilename is None:
+            return None
         return _fst.read_fst_kaldi(lexicon_rxfilename)
 
     @staticmethod
@@ -102,6 +108,19 @@ class Aligner(object):
                 return [int(line.strip()) for line in ki]
 
     @staticmethod
+    def read_text2phone(text2phone_rxfilename):
+        """Reads text-phone rules from an extended filename.
+
+        Returns:
+            Dict[str:List[int]]: List of disambiguation symbols.
+        """
+        if text2phone_rxfilename is None:
+            return None
+        else:
+            with _util_io.xopen(text2phone_rxfilename, "rt") as ki:
+                return {line.split()[0]: [int(phn_id) for phn_id in line.strip().split()[1:]] for line in ki}
+
+    @staticmethod
     def read_model(model_rxfilename):
         """Reads transition model from an extended filename.
 
@@ -112,7 +131,7 @@ class Aligner(object):
             return _hmm.TransitionModel().read(ki.stream(), ki.binary)
 
     @classmethod
-    def from_files(cls, model_rxfilename, tree_rxfilename, lexicon_rxfilename,
+    def from_files(cls, model_rxfilename_or_object, tree_rxfilename, lexicon_rxfilename,
                    symbols_filename=None, disambig_rxfilename=None,
                    graph_compiler_opts=None, beam=200.0, transition_scale=1.0,
                    self_loop_scale=1.0, acoustic_scale=0.1):
@@ -142,7 +161,7 @@ class Aligner(object):
         Returns:
             A new aligner object.
         """
-        transition_model = cls.read_model(model_rxfilename)
+        transition_model = model_rxfilename_or_object if isinstance(model_rxfilename_or_object, _hmm.TransitionModel) else cls.read_model(model_rxfilename_or_object)
         tree = cls.read_tree(tree_rxfilename)
         lexicon = cls.read_lexicon(lexicon_rxfilename)
         symbols = cls.read_symbols(symbols_filename)
@@ -150,6 +169,55 @@ class Aligner(object):
         return cls(transition_model, tree, lexicon, symbols,
                    disambig_symbols, graph_compiler_opts, beam,
                    transition_scale, self_loop_scale, acoustic_scale)
+
+    @classmethod
+    def from_files_without_lexicon(cls, model_rxfilename_or_object, tree_rxfilename, text2phone_rxfilename,
+                   symbols_filename=None, disambig_rxfilename=None,
+                   graph_compiler_opts=None, beam=200.0, transition_scale=1.0,
+                   self_loop_scale=1.0, acoustic_scale=0.1):
+        """Constructs a new GMM aligner from given files.
+
+        os.system(f"compile-train-graphs-without-lexicon \
+        --read-disambig-syms={lang_nosp}/phones/disambig.int \
+        {tdnnf_mdl}/tree {tdnnf_mdl}/final.mdl \
+        \"ark,t:{wav_path}/text.int\" \
+        \"ark,t:{wav_path}/text-phone.int\" \
+        \"ark:|gzip -c > {wav_ali}/fsts.1.gz\"")
+
+        Args:
+            model_rxfilename (str, TransitionModel): Extended filename for reading the transition
+                model, or the TransitionModel object (to save time not to read model again)
+            tree_rxfilename (str): Extended filename for reading the phonetic
+                decision tree.
+            text2phone_rxfilename (str): Extended filename for reading the text-phone
+                rules.
+            symbols_filename (str): The symbols file. If provided, "text" input
+                of :meth:`align` should include symbols instead of integer
+                indices.
+            disambig_rxfilename (str): Extended filename for reading the list
+                of disambiguation symbols.
+            graph_compiler_opts (TrainingGraphCompilerOptions): Configuration
+                options for graph compiler.
+            beam (float): Decoding beam used in alignment.
+            transition_scale (float): The scale on non-self-loop transition
+                probabilities.
+            self_loop_scale (float): The scale on self-loop transition
+                probabilities.
+            acoustic_scale (float): Acoustic score scale.
+
+        Returns:
+            A new aligner object.
+        """
+        transition_model = model_rxfilename_or_object if isinstance(model_rxfilename_or_object, _hmm.TransitionModel) else cls.read_model(model_rxfilename_or_object)
+        tree = cls.read_tree(tree_rxfilename)
+        symbols = cls.read_symbols(symbols_filename)
+        text2phone = cls.read_text2phone(text2phone_rxfilename)
+        disambig_symbols = cls.read_disambig_symbols(disambig_rxfilename)
+        # See: https://github.com/kaldi-asr/kaldi/blob/master/src/bin/compile-train-graphs-without-lexicon.cc#L154
+        is_text2phone = True
+        return cls(transition_model, tree, text2phone, symbols,
+                   disambig_symbols, graph_compiler_opts, beam,
+                   transition_scale, self_loop_scale, acoustic_scale, is_text2phone)
 
     def _make_decodable(self, loglikes):
         """Constructs a new decodable object from input log-likelihoods.
@@ -193,6 +261,9 @@ class Aligner(object):
 
         Raises:
             RuntimeError: If alignment fails.
+
+        Compares:
+            https://github.com/kaldi-asr/kaldi/blob/master/src/bin/compile-train-graphs.cc
         """
         if self.symbols:
             words = _fst.symbols_to_indices(self.symbols, text.split())
@@ -229,6 +300,138 @@ class Aligner(object):
             "likelihood": likelihood,
             "weight": weight
         }
+
+    def align_without_lexicon(self, input, text, utt_id):
+        """Aligns input with text but with self-defined text-phone rules.
+
+        Output is a dictionary with the following `(key, value)` pairs:
+
+        ================ =========================== ===========================
+        key              value                       value type
+        ================ =========================== ===========================
+        "alignment"      Frame-level alignment       `List[int]`
+        "best_path"      Best lattice path           `CompactLattice`
+        "likelihood"     Log-likelihood of best path `float`
+        "weight"         Cost of best path           `LatticeWeight`
+        ================ =========================== ===========================
+
+        If :attr:`symbols` is ``None``, the "text" input should be a
+        string of space separated integer indices. Otherwise it should be a
+        string of space separated symbols. The "weight" output is a lattice
+        weight consisting of (graph-score, acoustic-score).
+        
+        Args:
+            text2phone_rxfilename (str): Extended filename for reading the text2phone
+                    txt mapping file.
+            input (object): Input to align.
+            text (str): Reference text to align.
+
+        Returns:
+            A dictionary representing alignment output.
+
+        Raises:
+            RuntimeError: If alignment fails.
+
+        Compares:
+            https://github.com/kaldi-asr/kaldi/blob/master/src/bin/compile-train-graphs-without-lexicon.cc
+        """
+        if self.symbols:
+            words = _fst.symbols_to_indices(self.symbols, text.split())
+        else:
+            words = text.split()
+
+        # MakeLinearLG
+        silence_id = 1
+        disambig_id = self.disambig_symbols[-1] + 1
+        ofst = self.make_linear_lg(words, utt_id, self.text2phone, silence_id, disambig_id)
+
+        graph = self.graph_compiler.compile_graph_from_lg(ofst)
+        _hmm.add_transition_probs(self.transition_model, [],
+                                  self.transition_scale, self.self_loop_scale,
+                                  graph)
+        decoder = _dec.FasterDecoder(graph, self.decoder_opts)
+        decoder.decode(self._make_decodable(input))
+
+        if not decoder.reached_final():
+            raise RuntimeError("No final state was active on the last frame.")
+
+        try:
+            best_path = decoder.get_best_path()
+        except RuntimeError:
+            raise RuntimeError("Empty alignment output.")
+        
+        ali, _, weight = _fst_utils.get_linear_symbol_sequence(best_path)
+        likelihood = - (weight.value1 + weight.value2)
+
+        if self.acoustic_scale != 0.0:
+            scale = _fst_utils.acoustic_lattice_scale(1.0 / self.acoustic_scale)
+            _fst_utils.scale_lattice(scale, best_path)
+
+        best_path = _fst_utils.convert_lattice_to_compact_lattice(best_path)
+
+        return {
+            "alignment": ali,
+            "best_path": best_path,
+            "likelihood": likelihood,
+            "weight": weight
+        }
+
+    def make_linear_lg(self, transcripts, utt_id, linear_lexicon, silence_id, disambig_id):
+        """Generate a customized fst path based on the provided text-phone rules.
+
+        Args:
+            transcripts (List[int]): Word IDs.
+            utt_id (str): Utterance ID.
+            linear_lexicon (Dict[str:List[int]]: Text-phone rules.
+            silence_id (int): Silence ID.
+            disambig_id (int): Disambiguation symbol ID.
+
+        Returns:
+            StdFst: The customized FST.
+        """
+
+        ofst = _fst.StdVectorFst()
+        cur_state = ofst.add_state()
+        ofst.set_start(cur_state)
+
+        # Add arcs for silence and header silences
+        next_state = ofst.add_state()
+        sil_state = ofst.add_state()
+        ofst.add_arc(cur_state, _fst.StdArc(0, 0, _fst.TropicalWeight(1.0), next_state))
+        ofst.add_arc(cur_state, _fst.StdArc(0, 0, _fst.TropicalWeight(1.0), sil_state))
+        ofst.add_arc(sil_state, _fst.StdArc(silence_id, 0, _fst.TropicalWeight(1.0), next_state))
+        cur_state = next_state
+
+        # words
+        for i, word_id in enumerate(transcripts):
+            lex_id = f"{utt_id}.{i}"
+            if lex_id not in linear_lexicon:
+                raise ValueError(f"No lexicon item: {lex_id}")
+            phone_seq = linear_lexicon[lex_id]
+
+            for j, phone_id in enumerate(phone_seq[:-1]):
+                next_state = ofst.add_state()
+                ilabel = phone_id
+                olabel = word_id if j == 0 else 0
+                ofst.add_arc(cur_state, _fst.StdArc(ilabel, olabel, _fst.TropicalWeight(1.0), next_state))
+                cur_state = next_state
+
+            # Add arcs for the last phone with an optional silence
+            ilabel = phone_seq[-1]
+            next_state = ofst.add_state()
+            sil_state = ofst.add_state()
+            ofst.add_arc(cur_state, _fst.StdArc(ilabel, 0, _fst.TropicalWeight(1.0), next_state))
+            ofst.add_arc(cur_state, _fst.StdArc(ilabel, 0, _fst.TropicalWeight(1.0), sil_state))
+            ofst.add_arc(sil_state, _fst.StdArc(silence_id, 0, _fst.TropicalWeight(1.0), next_state))
+            cur_state = next_state
+
+        # Add arcs for the tail
+        ofst.set_final(cur_state, _fst.TropicalWeight(1.0))
+        next_state = ofst.add_state()
+        ofst.add_arc(cur_state, _fst.StdArc(disambig_id, 0, _fst.TropicalWeight(1.0), next_state))
+        ofst.add_arc(next_state, _fst.StdArc(disambig_id, 0, _fst.TropicalWeight(1.0), next_state))
+        ofst.set_final(next_state, _fst.TropicalWeight(1.0))
+        return ofst
 
     def to_phone_alignment(self, alignment, phones=None):
         """Converts frame-level alignment to phone-level alignment.

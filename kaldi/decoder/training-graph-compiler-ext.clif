@@ -28,6 +28,10 @@ from "decoder/training-graph-compiler-ext.h":
         -> (success: bool, out_fst: StdVectorFst):
         return _value_error_on_false(...)
 
+      def `CompileGraphFromLG` as compile_graph_from_lg(self, phone2word_fst: StdVectorFst)
+        -> (success: bool, out_fst: StdVectorFst):
+        return _value_error_on_false(...)
+
       def `CompileGraphsFromText` as compile_graphs_from_text(self, transcripts: list<list<int>>)
         -> (success: bool, out_fsts: list<StdVectorFst>):
         return _value_error_on_false(...)
