@@ -145,22 +145,29 @@ fi
 
 # Download, build and install LLVM and Clang (needs a specific revision, 307315).
 
+is_macos() {
+  [[ "$(uname)" == "Darwin" ]]
+}
+ 
 if [ ! -d "$LLVM_DIR" ]; then
   git clone $LLVM_GIT $LLVM_DIR
   cd "$LLVM_DIR"
   git checkout 1cda1d76b110dca737d9c3b8dafe27bab9adbb04
   mv clang llvm/tools
   ln -s -f -n "$CLIF_DIR/clif" llvm/tools/clif
-
+  
   # a patch to compile llvm5.0 with gcc>=8 (see
   # https://bugzilla.redhat.com/attachment.cgi?id=1389687&action=diff and
   # https://github.com/pykaldi/pykaldi/issues/255)
-  sed -i '716s|<char>|<uint8_t>|' llvm/include/llvm/ExecutionEngine/Orc/OrcRemoteTargetClient.h
+  if is_macos; then
+    sed -i '' '716s|<char>|<uint8_t>|' llvm/include/llvm/ExecutionEngine/Orc/OrcRemoteTargetClient.h
+  else
+    sed -i '716s|<char>|<uint8_t>|' llvm/include/llvm/ExecutionEngine/Orc/OrcRemoteTargetClient.h
+  fi
 
 else
   echo "Destination $LLVM_DIR already exists."
 fi
-
 # Build and install the CLIF backend.  Our backend is part of the llvm build.
 # NOTE: To speed up, we build only for X86. If you need it for a different
 # arch, change it to your arch, or just remove the =X86 line below.
