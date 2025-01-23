@@ -61,6 +61,19 @@ class TrainingGraphCompiler(TrainingGraphCompiler):
                      self).compile_graph_from_text(transcript)
         return _fst.StdVectorFst(ofst)
 
+    def compile_graph_from_lg(self, phone2word_fst):
+        """Compiles a single training graph from a weighted acceptor.
+
+        Args:
+            phone2word_fst (StdVectorFst): Weighted acceptor `G` at the word level.
+
+        Returns:
+            StdVectorFst: The training graph `HCLG`.
+        """
+        ofst = super(TrainingGraphCompiler,
+                     self).compile_graph_from_lg(phone2word_fst)
+        return _fst.StdVectorFst(ofst)
+
     def compile_graphs_from_text(self, transcripts):
         """Compiles training graphs from transcripts.
 
