@@ -2617,7 +2617,7 @@ def arcmap(ifst, map_type="identity", delta=_weight.DELTA, weight=None):
     except ValueError:
         raise ValueError("Unknown map type: {!r}".format(map_type))
     weight = _get_weight_or_default(ifst._weight_factory, weight,
-                                    map_type == MapType.TIMES_MAPPER)
+                                    map_type == _getters.MapType.TIMES_MAPPER)
     ofst = ifst._mutable_fst_type()
     ifst._ops.map(ifst, ofst, map_type, delta, weight)
     return ofst
