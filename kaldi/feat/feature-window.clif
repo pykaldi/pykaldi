@@ -42,6 +42,9 @@ from "feat/feature-window.h":
       allow_downsample: bool
       """Whether input waveform can have a higher sampling frequency than specified (default=False)"""
 
+      allow_upsample: bool
+      """Whether input waveform can have a lower sampling frequency than specified (default=False)"""
+
       def `Register` as register(self, opts: OptionsItf):
         """Registers options with an object implementing the options interface.
 
