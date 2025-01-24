@@ -17,6 +17,10 @@ add_pyclif_library("_chain_supervision" chain-supervision.clif
   CLIF_DEPS _vector_fst _options_itf _transition_model
   LIBRARIES kaldi-chain
 )
+add_pyclif_library("_chain_supervision_ext" chain-supervision-ext.clif
+  CLIF_DEPS _chain_supervision
+  LIBRARIES kaldi-chain
+)
 add_pyclif_library("_chain_training_ext" chain-training-ext.clif
   CLIF_DEPS _cu_matrix _chain_den_graph _chain_training _chain_supervision
   LIBRARIES kaldi-chain
