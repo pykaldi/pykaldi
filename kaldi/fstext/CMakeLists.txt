@@ -1,4 +1,5 @@
 set(PACKAGE "${PACKAGE}.fstext")
+link_libraries(dl)
 
 add_pyclif_library("properties" properties.clif)
 
