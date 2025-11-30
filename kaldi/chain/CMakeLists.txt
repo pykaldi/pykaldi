@@ -2,7 +2,7 @@ set(PACKAGE "${PACKAGE}.chain")
 
 add_pyclif_library("_chain_datastruct" chain-datastruct.clif)
 add_pyclif_library("_chain_den_graph" chain-den-graph.clif
-  CLIF_DEPS _cu_matrixdim _cu_vector _vector_fst _transition_model _context_dep
+  CLIF_DEPS _cu_matrixdim _cu_vector _vector_fst _transition_model _context_dep _chain_datastruct
   LIBRARIES kaldi-chain
 )
 add_pyclif_library("_chain_training" chain-training.clif
