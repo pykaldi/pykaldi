@@ -14,3 +14,4 @@ mv extractor exp/nnet3_chain/.
 mv ivectors_test_hires exp/nnet3_chain/.
 ln -sr exp/nnet3_chain/ivectors_test_hires/conf/ivector_extractor.conf conf/.
 ln -sr ../aspire/data/test data/.
+
