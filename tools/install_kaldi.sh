@@ -23,7 +23,7 @@ touch "python/.use_default_python"
 
 ./extras/check_dependencies.sh
 
-make -j4
+make -j`nproc`
 
 cd ../src
 ./configure --shared --use-cuda=no --static-math

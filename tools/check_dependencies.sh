@@ -44,11 +44,11 @@ PY_PKGS=( numpy setuptools pyparsing )
 ################################################################################################
 # Checks python binaries in system installation
 ################################################################################################
-if ! which python2.7 >&/dev/null; then
-  echo ""
-  echo "$0: python2.7 is not installed"
-  echo ""
-fi
+#if ! which python2.7 >&/dev/null; then
+#  echo ""
+#  echo "$0: python2.7 is not installed"
+#  echo ""
+#fi
 
 if ! which python3 >&/dev/null; then
   echo ""
