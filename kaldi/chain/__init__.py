@@ -4,6 +4,7 @@ from ._chain_training import *
 from ._chain_training_ext import *
 from ._chain_denominator import *
 from ._chain_supervision import *
+from ._chain_supervision_ext import *
 from ._chain_numerator import *
 from ._chain_generic_numerator import *
 from ._language_model import *

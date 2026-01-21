@@ -1,0 +1,6 @@
+from "chain/chain-supervision-clifwrap.h" import *
+
+from "chain/chain-supervision-ext.h":
+  namespace `kaldi::chain`:
+    def `MergeSupervisionExt` as merge_supervison(input: list<Supervision>)
+        -> Supervision
